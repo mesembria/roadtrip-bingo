@@ -83,7 +83,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     func startGame() {
         guard isHost, !connectedPlayerNames.isEmpty else { return }
         multipeerSession?.stopAdvertising()
-        // Phase 2: deal boards and send gameStarted message
+        // Phase 2: replace [:] with real board assignment
+        multipeerSession?.send(.gameStarted(boards: [:]))
         screen = .game
     }
 
