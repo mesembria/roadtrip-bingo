@@ -108,22 +108,30 @@ extension MultipeerSession: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         invitationHandler(true, mcSession)
     }
+
+    func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
+        print("[MultipeerSession] Failed to start advertising: \(error)")
+    }
 }
 
 // MARK: - MCNearbyServiceBrowserDelegate
 
 extension MultipeerSession: MCNearbyServiceBrowserDelegate {
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String: String]?) {
-        foundPeerIDs[peerID.displayName] = peerID
         DispatchQueue.main.async {
+            self.foundPeerIDs[peerID.displayName] = peerID
             self.delegate?.multipeerSession(self, foundPeer: peerID.displayName)
         }
     }
 
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        foundPeerIDs.removeValue(forKey: peerID.displayName)
         DispatchQueue.main.async {
+            self.foundPeerIDs.removeValue(forKey: peerID.displayName)
             self.delegate?.multipeerSession(self, lostPeer: peerID.displayName)
         }
+    }
+
+    func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
+        print("[MultipeerSession] Failed to start browsing: \(error)")
     }
 }
