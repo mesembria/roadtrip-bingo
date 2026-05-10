@@ -28,7 +28,6 @@ struct LobbyView: View {
             if appState.connectedPlayerNames.isEmpty {
                 Text("Waiting for players to join…").font(.caption).foregroundColor(.secondary)
             }
-            Spacer()
             Button("Cancel", role: .destructive, action: appState.goHome).foregroundColor(.secondary)
         }.padding(48)
     }
@@ -65,7 +64,6 @@ struct LobbyView: View {
                     ForEach(appState.connectedPlayerNames, id: \.self) { playerRow(name: $0, label: nil) }
                 }.frame(maxWidth: 400)
             }
-            Spacer()
             Button("Cancel", role: .destructive, action: appState.goHome).foregroundColor(.secondary)
         }.padding(48)
     }

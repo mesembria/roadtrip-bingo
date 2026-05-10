@@ -35,6 +35,7 @@ struct HomeView: View {
                             .background(Color.blue).foregroundColor(.white)
                             .cornerRadius(14)
                     }
+                    .disabled(appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty)
                     Button(action: {
                         guard !appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
                         appState.joinGame()
@@ -45,6 +46,7 @@ struct HomeView: View {
                             .background(Color.white.opacity(0.12)).foregroundColor(.white)
                             .cornerRadius(14)
                     }
+                    .disabled(appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
             .padding(48)
