@@ -73,13 +73,15 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         localBoard = nil
         completedLine = nil
         opponentMarked = [:]
+        isHost = false
+        // winHistory is intentionally preserved across sessions
         screen = .home
     }
 
     // MARK: - Lobby (host only) — Phase 2 will fill startGame()
 
     func startGame() {
-        guard isHost else { return }
+        guard isHost, !connectedPlayerNames.isEmpty else { return }
         multipeerSession?.stopAdvertising()
         // Phase 2: deal boards and send gameStarted message
         screen = .game
@@ -115,11 +117,13 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     func multipeerSession(_ session: MultipeerSession, didReceive message: MultipeerMessage, from peerName: String) {
         switch message {
         case .gameStarted(let boards):
+            let freeSquarePosition = 12
             if let mySquares = boards[playerName] {
                 localBoard = BingoBoard(squares: mySquares)
             }
+            opponentMarked = [:]
             for (name, _) in boards where name != playerName {
-                opponentMarked[name] = [12]
+                opponentMarked[name] = [freeSquarePosition]
             }
             completedLine = nil
             multipeerSession?.stopBrowsing()
@@ -135,11 +139,13 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             screen = .win(winnerName: byName)
 
         case .playAgain(let boards):
+            let freeSquarePosition = 12
             if let mySquares = boards[playerName] {
                 localBoard = BingoBoard(squares: mySquares)
             }
+            opponentMarked = [:]
             for (name, _) in boards where name != playerName {
-                opponentMarked[name] = [12]
+                opponentMarked[name] = [freeSquarePosition]
             }
             completedLine = nil
             screen = .game
