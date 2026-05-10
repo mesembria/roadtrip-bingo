@@ -7,7 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D16366F1525405AB2B03711 /* GameEngine.swift */; };
+		556352E19419BFFBD6B22566 /* LobbyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67A9EA37EF3D8484426DF49 /* LobbyView.swift */; };
+		7A6139AB5EA84B50F9B9E4F5 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2A797358229A5D3E6811F /* HomeView.swift */; };
+		9825D61245605C593D8BC7C7 /* MultipeerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */; };
+		A0860CB6E7BE9B69EE4C4EF2 /* MultipeerMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */; };
+		C8EE6560303C250D0F3288BA /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2F72F89251294BFE85AD72 /* MultipeerSession.swift */; };
+		CC8A31998772D2D2461D94B4 /* BingoBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C3DF2FD55D24FDE3C8DDB8 /* BingoBoard.swift */; };
 		D9D750B1F831A92C75001561 /* RoadTripBingoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259798FF46BAE52D20FB5AC /* RoadTripBingoApp.swift */; };
+		ED0A27E6447052ED0FDA3AD9 /* BingoSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6FA963025C170363180C6E8 /* BingoSquare.swift */; };
+		F4E182EC5AF674AA80E50C98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */; };
+		F5111507C220551AF21A652F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EB052E3667A4113B417DE3 /* AppState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -22,16 +32,26 @@
 
 /* Begin PBXFileReference section */
 		028F3F38843730F1A67E72D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerMessageTests.swift; sourceTree = "<group>"; };
+		1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerMessage.swift; sourceTree = "<group>"; };
 		24F534579B9712082DB264D8 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		27FE15FDD36D024BA300BFBD /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		2ED2A797358229A5D3E6811F /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		41AADAA0C173D2D47BEFABFA /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		447D221F341187CAE8CBCCAC /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		50BC137311D249C3539DE524 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		74EB052E3667A4113B417DE3 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		7D16366F1525405AB2B03711 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
+		A6FA963025C170363180C6E8 /* BingoSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoSquare.swift; sourceTree = "<group>"; };
 		A986750ED27B1F71AAA70A01 /* RoadTripBingo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RoadTripBingo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C259798FF46BAE52D20FB5AC /* RoadTripBingoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadTripBingoApp.swift; sourceTree = "<group>"; };
+		C67A9EA37EF3D8484426DF49 /* LobbyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LobbyView.swift; sourceTree = "<group>"; };
+		CB2F72F89251294BFE85AD72 /* MultipeerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerSession.swift; sourceTree = "<group>"; };
 		CF25072B4B10081D74671B8B /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		D133CAE4C15AE8E031D8FA73 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		D14D2B684CFA211C27CD3E79 /* RoadTripBingoTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoadTripBingoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2C3DF2FD55D24FDE3C8DDB8 /* BingoBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoBoard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -47,6 +67,8 @@
 			isa = PBXGroup;
 			children = (
 				27FE15FDD36D024BA300BFBD /* .gitkeep */,
+				2ED2A797358229A5D3E6811F /* HomeView.swift */,
+				C67A9EA37EF3D8484426DF49 /* LobbyView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -55,6 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				24F534579B9712082DB264D8 /* .gitkeep */,
+				0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */,
 			);
 			path = RoadTripBingoTests;
 			sourceTree = "<group>";
@@ -72,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				D133CAE4C15AE8E031D8FA73 /* .gitkeep */,
+				7D16366F1525405AB2B03711 /* GameEngine.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -80,6 +104,9 @@
 			isa = PBXGroup;
 			children = (
 				50BC137311D249C3539DE524 /* .gitkeep */,
+				F2C3DF2FD55D24FDE3C8DDB8 /* BingoBoard.swift */,
+				A6FA963025C170363180C6E8 /* BingoSquare.swift */,
+				1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -88,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				447D221F341187CAE8CBCCAC /* .gitkeep */,
+				74EB052E3667A4113B417DE3 /* AppState.swift */,
 			);
 			path = State;
 			sourceTree = "<group>";
@@ -95,6 +123,7 @@
 		B45B514F37DB2261244A3B79 /* RoadTripBingo */ = {
 			isa = PBXGroup;
 			children = (
+				485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */,
 				028F3F38843730F1A67E72D5 /* Info.plist */,
 				C259798FF46BAE52D20FB5AC /* RoadTripBingoApp.swift */,
 				5729BA7758400481F7EBC412 /* Game */,
@@ -111,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				CF25072B4B10081D74671B8B /* .gitkeep */,
+				CB2F72F89251294BFE85AD72 /* MultipeerSession.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -201,6 +231,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0860CB6E7BE9B69EE4C4EF2 /* MultipeerMessageTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,6 +239,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5111507C220551AF21A652F /* AppState.swift in Sources */,
+				CC8A31998772D2D2461D94B4 /* BingoBoard.swift in Sources */,
+				ED0A27E6447052ED0FDA3AD9 /* BingoSquare.swift in Sources */,
+				F4E182EC5AF674AA80E50C98 /* ContentView.swift in Sources */,
+				183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */,
+				7A6139AB5EA84B50F9B9E4F5 /* HomeView.swift in Sources */,
+				556352E19419BFFBD6B22566 /* LobbyView.swift in Sources */,
+				9825D61245605C593D8BC7C7 /* MultipeerMessage.swift in Sources */,
+				C8EE6560303C250D0F3288BA /* MultipeerSession.swift in Sources */,
 				D9D750B1F831A92C75001561 /* RoadTripBingoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
