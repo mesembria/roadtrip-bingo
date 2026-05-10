@@ -2,9 +2,12 @@ import SwiftUI
 
 @main
 struct RoadTripBingoApp: App {
+    @StateObject private var appState = AppState()
+
     var body: some Scene {
         WindowGroup {
-            Text("Road Trip Bingo")
+            ContentView()
+                .environmentObject(appState)
         }
     }
 }
