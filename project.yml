@@ -1,0 +1,38 @@
+# project.yml
+name: RoadTripBingo
+options:
+  bundleIdPrefix: com.roadtripbingo
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+targets:
+  RoadTripBingo:
+    type: application
+    platform: iOS
+    sources:
+      - RoadTripBingo
+    resources:
+      - RoadTripBingo/Resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.roadtripbingo.app
+        TARGETED_DEVICE_FAMILY: "2"
+        SUPPORTS_MAC_DESIGNED_FOR_IPAD: NO
+        SWIFT_VERSION: "5.9"
+        DEVELOPMENT_TEAM: ""   # Fill in your team ID before running on device
+    plist:
+      path: RoadTripBingo/Info.plist
+      properties:
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        NSLocalNetworkUsageDescription: "Road Trip Bingo uses your local network to find other players nearby."
+        NSBonjourServices:
+          - _rtbingo._tcp
+          - _rtbingo._udp
+  RoadTripBingoTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: RoadTripBingoTests
+    dependencies:
+      - target: RoadTripBingo
