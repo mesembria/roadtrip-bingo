@@ -1,0 +1,29 @@
+# Xcode user-specific files
+xcuserdata/
+*.xcuserstate
+
+# Derived data
+DerivedData/
+*.xccheckout
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+# Build artifacts
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Superpowers brainstorm files (not for source control)
+.superpowers/

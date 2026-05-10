@@ -19,17 +19,8 @@ targets:
         TARGETED_DEVICE_FAMILY: "2"
         SUPPORTS_MAC_DESIGNED_FOR_IPAD: NO
         SWIFT_VERSION: "5.9"
-        DEVELOPMENT_TEAM: ""   # Fill in your team ID before running on device
-    plist:
-      path: RoadTripBingo/Info.plist
-      properties:
-        UISupportedInterfaceOrientations~ipad:
-          - UIInterfaceOrientationLandscapeLeft
-          - UIInterfaceOrientationLandscapeRight
-        NSLocalNetworkUsageDescription: "Road Trip Bingo uses your local network to find other players nearby."
-        NSBonjourServices:
-          - _rtbingo._tcp
-          - _rtbingo._udp
+        DEVELOPMENT_TEAM: ""
+        INFOPLIST_FILE: RoadTripBingo/Info.plist
   RoadTripBingoTests:
     type: bundle.unit-test
     platform: iOS
