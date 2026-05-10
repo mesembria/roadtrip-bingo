@@ -51,8 +51,20 @@ project.yml                           # xcodegen config
 **Key design decisions:**
 - `AppState` is the single ObservableObject injected at root. All views get it via `@EnvironmentObject`. No separate per-screen view models — the coordinator pattern keeps navigation and Multipeer message handling in one place.
 - `squareToggled` sends `position: Int` (board index 0–24), not `squareId: UUID`. The spec lists squareId, but since opponents don't have each other's board layout, only the position is useful for rendering the mini dot-grid.
-- Player names must be unique within a session. MCPeerID displayName is used as the dictionary key in all `[String: ...]` board maps sent over the wire. The app shows a warning if someone tries to join with a duplicate name.
+- Player names must be unique within a session. MCPeerID displayName is used as the dictionary key in all `[String: ...]` board maps sent over the wire.
 - Multipeer serviceType: `"rtbingo"` (7 chars, satisfies the 1–15 ASCII alphanumeric+hyphen requirement).
+
+---
+
+## Build Order
+
+Multipeer on real devices is the highest-risk piece. The plan is structured in two phases:
+
+**Phase 1 — Connectivity spike (Tasks 1–6):** Get the app installable on real iPads and prove that two devices can discover each other, connect, and exchange messages. No game logic yet — just the plumbing working on hardware.
+
+**Phase 2 — Game logic (Tasks 7–15):** Add the bingo mechanics, square pool, win detection, and all the game screens on top of the proven connectivity foundation.
+
+> ⚠️ **Real device requirement:** MultipeerConnectivity between two simulator instances is unreliable. Tasks 1–6 must be validated on two physical iPads before proceeding to Phase 2. You will need an Apple Developer account (free tier works for local device testing) and both iPads trusted to your Mac.
 
 ---
 
@@ -95,6 +107,7 @@ targets:
         TARGETED_DEVICE_FAMILY: "2"
         SUPPORTS_MAC_DESIGNED_FOR_IPAD: NO
         SWIFT_VERSION: "5.9"
+        DEVELOPMENT_TEAM: ""   # Fill in your team ID before running on device
     plist:
       path: RoadTripBingo/Info.plist
       properties:
@@ -150,196 +163,40 @@ xcodegen generate
 
 Expected: `RoadTripBingo.xcodeproj` created with no errors.
 
-- [ ] **Step 6: Verify the project builds**
+- [ ] **Step 6: Verify the project builds in simulator**
 
 ```bash
 xcodebuild -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   build | tail -5
 ```
 
 Expected: `** BUILD SUCCEEDED **`
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 7: Set up code signing for device**
+
+Open in Xcode, select the `RoadTripBingo` target → Signing & Capabilities → set Team to your Apple ID (Xcode will auto-register a free provisioning profile). Do this before attempting to run on hardware.
+
+- [ ] **Step 8: Commit**
 
 ```bash
-git init
 git add project.yml RoadTripBingo/ RoadTripBingoTests/
 git commit -m "chore: project scaffold with xcodegen"
 ```
 
 ---
 
-## Task 2: Core Data Models
+## Task 2: MultipeerMessage + Core Models
 
 **Files:**
 - Create: `RoadTripBingo/Models/BingoSquare.swift`
-- Create: `RoadTripBingo/Models/BingoBoard.swift`
-- Create: `RoadTripBingoTests/BingoBoardTests.swift`
-
-- [ ] **Step 1: Write the failing tests for BingoBoard**
-
-Create `RoadTripBingoTests/BingoBoardTests.swift`:
-
-```swift
-import XCTest
-@testable import RoadTripBingo
-
-final class BingoBoardTests: XCTestCase {
-
-    private func makeBoard() -> BingoBoard {
-        let squares = (0..<25).map { i -> BingoSquare in
-            if i == 12 { return .free }
-            return BingoSquare(
-                id: UUID(),
-                text: "Item \(i)",
-                emoji: "🚗",
-                category: .vehicles
-            )
-        }
-        return BingoBoard(squares: squares)
-    }
-
-    func test_freeSquare_isAtIndex12() {
-        let board = makeBoard()
-        XCTAssertEqual(board.squares[12].id, BingoSquare.freeSquareID)
-    }
-
-    func test_freeSquare_isPreMarked() {
-        let board = makeBoard()
-        XCTAssertTrue(board.isMarked(at: 12))
-    }
-
-    func test_toggle_marksUnmarkedSquare() {
-        var board = makeBoard()
-        XCTAssertFalse(board.isMarked(at: 0))
-        board.toggle(at: 0)
-        XCTAssertTrue(board.isMarked(at: 0))
-    }
-
-    func test_toggle_unmarksMarkedSquare() {
-        var board = makeBoard()
-        board.toggle(at: 0)
-        board.toggle(at: 0)
-        XCTAssertFalse(board.isMarked(at: 0))
-    }
-
-    func test_toggle_doesNotUnmarkFreeSquare() {
-        var board = makeBoard()
-        board.toggle(at: 12)
-        XCTAssertTrue(board.isMarked(at: 12))
-    }
-}
-```
-
-- [ ] **Step 2: Run tests — verify they fail (types not defined yet)**
-
-```bash
-xcodebuild test \
-  -project RoadTripBingo.xcodeproj \
-  -scheme RoadTripBingoTests \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
-  2>&1 | grep -E "error:|FAILED"
-```
-
-Expected: compile errors because `BingoSquare` and `BingoBoard` do not exist yet.
-
-- [ ] **Step 3: Implement BingoSquare**
-
-Create `RoadTripBingo/Models/BingoSquare.swift`:
-
-```swift
-import Foundation
-
-enum SquareCategory: String, Codable, CaseIterable {
-    case vehicles, nature, food, landmarks, weather, signs
-}
-
-struct BingoSquare: Codable, Identifiable, Hashable {
-    let id: UUID
-    let text: String
-    let emoji: String
-    let category: SquareCategory
-
-    static let freeSquareID = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-    static let free = BingoSquare(
-        id: freeSquareID,
-        text: "FREE",
-        emoji: "⭐",
-        category: .landmarks
-    )
-}
-```
-
-- [ ] **Step 4: Implement BingoBoard**
-
-Create `RoadTripBingo/Models/BingoBoard.swift`:
-
-```swift
-import Foundation
-
-struct BingoBoard {
-    // 25 squares row-major. Index 12 must always be BingoSquare.free.
-    let squares: [BingoSquare]
-    var marked: Set<UUID>
-
-    init(squares: [BingoSquare]) {
-        precondition(squares.count == 25, "Board must have exactly 25 squares")
-        precondition(squares[12].id == BingoSquare.freeSquareID, "Index 12 must be the FREE square")
-        self.squares = squares
-        self.marked = [BingoSquare.freeSquareID]
-    }
-
-    mutating func toggle(at position: Int) {
-        let id = squares[position].id
-        guard id != BingoSquare.freeSquareID else { return }
-        if marked.contains(id) {
-            marked.remove(id)
-        } else {
-            marked.insert(id)
-        }
-    }
-
-    func isMarked(at position: Int) -> Bool {
-        marked.contains(squares[position].id)
-    }
-}
-```
-
-- [ ] **Step 5: Run tests — verify they pass**
-
-```bash
-xcodebuild test \
-  -project RoadTripBingo.xcodeproj \
-  -scheme RoadTripBingoTests \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
-  -only-testing:RoadTripBingoTests/BingoBoardTests \
-  2>&1 | grep -E "Test Suite|passed|failed"
-```
-
-Expected: `Test Suite 'BingoBoardTests' passed`
-
-- [ ] **Step 6: Commit**
-
-```bash
-git add RoadTripBingo/Models/ RoadTripBingoTests/BingoBoardTests.swift
-git commit -m "feat: add BingoSquare and BingoBoard models with tests"
-```
-
----
-
-## Task 3: MultipeerMessage
-
-**Files:**
 - Create: `RoadTripBingo/Models/MultipeerMessage.swift`
 - Create: `RoadTripBingoTests/MultipeerMessageTests.swift`
 
-The `squareToggled` message uses `position: Int` (0–24 board index) rather than `squareId: UUID`. Receivers don't have each other's board layout, so they need the position to update the opponent mini-grid.
+These are the only models needed to get connectivity working. `BingoBoard` and `BingoSquare` full game logic come in Phase 2.
 
-MCPeerID is not Codable — all board dictionaries use player display name (String) as key.
-
-- [ ] **Step 1: Write failing tests**
+- [ ] **Step 1: Write failing tests for MultipeerMessage**
 
 Create `RoadTripBingoTests/MultipeerMessageTests.swift`:
 
@@ -397,20 +254,47 @@ final class MultipeerMessageTests: XCTestCase {
 }
 ```
 
-- [ ] **Step 2: Run — verify compile error**
+- [ ] **Step 2: Run — verify compile error (types not defined)**
 
 ```bash
 xcodebuild test \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingoTests \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   -only-testing:RoadTripBingoTests/MultipeerMessageTests \
   2>&1 | grep "error:" | head -5
 ```
 
-Expected: compile error — `MultipeerMessage` not found.
+Expected: compile error — `BingoSquare` and `MultipeerMessage` not found.
 
-- [ ] **Step 3: Implement MultipeerMessage**
+- [ ] **Step 3: Implement BingoSquare (minimal — just enough for messages)**
+
+Create `RoadTripBingo/Models/BingoSquare.swift`:
+
+```swift
+import Foundation
+
+enum SquareCategory: String, Codable, CaseIterable {
+    case vehicles, nature, food, landmarks, weather, signs
+}
+
+struct BingoSquare: Codable, Identifiable, Hashable {
+    let id: UUID
+    let text: String
+    let emoji: String
+    let category: SquareCategory
+
+    static let freeSquareID = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+    static let free = BingoSquare(
+        id: freeSquareID,
+        text: "FREE",
+        emoji: "⭐",
+        category: .landmarks
+    )
+}
+```
+
+- [ ] **Step 4: Implement MultipeerMessage**
 
 Create `RoadTripBingo/Models/MultipeerMessage.swift`:
 
@@ -470,514 +354,32 @@ enum MultipeerMessage: Codable {
 }
 ```
 
-- [ ] **Step 4: Run tests — verify pass**
-
-```bash
-xcodebuild test \
-  -project RoadTripBingo.xcodeproj \
-  -scheme RoadTripBingoTests \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
-  -only-testing:RoadTripBingoTests/MultipeerMessageTests \
-  2>&1 | grep -E "Test Suite|passed|failed"
-```
-
-Expected: `Test Suite 'MultipeerMessageTests' passed`
-
-- [ ] **Step 5: Commit**
-
-```bash
-git add RoadTripBingo/Models/MultipeerMessage.swift RoadTripBingoTests/MultipeerMessageTests.swift
-git commit -m "feat: add MultipeerMessage Codable enum with tests"
-```
-
----
-
-## Task 4: Square Pool
-
-**Files:**
-- Create: `makeSquares.swift` (generation script, repo root)
-- Create: `RoadTripBingo/Resources/squares.json` (generated)
-- Create: `RoadTripBingo/Game/SquarePool.swift`
-- Create: `RoadTripBingoTests/SquarePoolTests.swift`
-
-- [ ] **Step 1: Write failing tests**
-
-Create `RoadTripBingoTests/SquarePoolTests.swift`:
-
-```swift
-import XCTest
-@testable import RoadTripBingo
-
-final class SquarePoolTests: XCTestCase {
-
-    func test_load_returnsAtLeast150Squares() {
-        let pool = SquarePool.load()
-        XCTAssertGreaterThanOrEqual(pool.count, 150)
-    }
-
-    func test_load_allIDsAreUnique() {
-        let pool = SquarePool.load()
-        let ids = pool.map(\.id)
-        XCTAssertEqual(ids.count, Set(ids).count)
-    }
-
-    func test_load_noSquareHasFreeID() {
-        let pool = SquarePool.load()
-        XCTAssertFalse(pool.contains { $0.id == BingoSquare.freeSquareID })
-    }
-
-    func test_dealBoards_eachBoardHas25Squares() {
-        let pool = SquarePool.load()
-        let boards = SquarePool.dealBoards(for: ["A", "B", "C"], from: pool)
-        XCTAssertEqual(boards["A"]?.count, 25)
-        XCTAssertEqual(boards["B"]?.count, 25)
-        XCTAssertEqual(boards["C"]?.count, 25)
-    }
-
-    func test_dealBoards_index12IsFree() {
-        let pool = SquarePool.load()
-        let boards = SquarePool.dealBoards(for: ["A", "B"], from: pool)
-        XCTAssertEqual(boards["A"]?[12].id, BingoSquare.freeSquareID)
-        XCTAssertEqual(boards["B"]?[12].id, BingoSquare.freeSquareID)
-    }
-
-    func test_dealBoards_noOverlapBetweenPlayers() {
-        let pool = SquarePool.load()
-        let boards = SquarePool.dealBoards(for: ["A", "B"], from: pool)
-        let aIDs = Set(boards["A"]!.map(\.id)).subtracting([BingoSquare.freeSquareID])
-        let bIDs = Set(boards["B"]!.map(\.id)).subtracting([BingoSquare.freeSquareID])
-        XCTAssertTrue(aIDs.isDisjoint(with: bIDs))
-    }
-}
-```
-
-- [ ] **Step 2: Create the square generation script**
-
-Create `makeSquares.swift` at the repo root:
-
-```swift
-#!/usr/bin/env swift
-// Run: swift makeSquares.swift > RoadTripBingo/Resources/squares.json
-
-import Foundation
-
-struct S: Encodable {
-    let id: String
-    let text: String
-    let emoji: String
-    let category: String
-}
-
-func s(_ text: String, _ emoji: String, _ cat: String) -> S {
-    S(id: UUID().uuidString, text: text, emoji: emoji, category: cat)
-}
-
-let squares: [S] = [
-    // Vehicles (25)
-    s("Semi Truck", "🚛", "vehicles"),
-    s("RV", "🚐", "vehicles"),
-    s("Motorcycle", "🏍️", "vehicles"),
-    s("School Bus", "🚌", "vehicles"),
-    s("Tractor", "🚜", "vehicles"),
-    s("Pickup Truck", "🛻", "vehicles"),
-    s("Police Car", "🚔", "vehicles"),
-    s("Fire Truck", "🚒", "vehicles"),
-    s("Helicopter", "🚁", "vehicles"),
-    s("Small Plane", "✈️", "vehicles"),
-    s("Horse Trailer", "🐴", "vehicles"),
-    s("Flatbed Truck", "🚚", "vehicles"),
-    s("Dump Truck", "🚧", "vehicles"),
-    s("Ambulance", "🚑", "vehicles"),
-    s("Convertible", "🚗", "vehicles"),
-    s("Food Truck", "🌮", "vehicles"),
-    s("Mail Truck", "📦", "vehicles"),
-    s("Boat on Trailer", "⛵", "vehicles"),
-    s("Construction Vehicle", "🏗️", "vehicles"),
-    s("Tow Truck", "🚗", "vehicles"),
-    s("Double-Decker Bus", "🚌", "vehicles"),
-    s("Minivan", "🚐", "vehicles"),
-    s("Sports Car", "🏎️", "vehicles"),
-    s("Ice Cream Truck", "🍦", "vehicles"),
-    s("Tank Truck", "🛢️", "vehicles"),
-    // Nature (25)
-    s("Cow", "🐄", "nature"),
-    s("Horse", "🐎", "nature"),
-    s("Deer", "🦌", "nature"),
-    s("Red Barn", "🏚️", "nature"),
-    s("Sunflower Field", "🌻", "nature"),
-    s("Hay Bale", "🌾", "nature"),
-    s("Wind Turbine", "💨", "nature"),
-    s("Mountain", "🏔️", "nature"),
-    s("River", "🌊", "nature"),
-    s("Lake", "🏞️", "nature"),
-    s("Rainbow", "🌈", "nature"),
-    s("Double Rainbow", "🌈", "nature"),
-    s("Cactus", "🌵", "nature"),
-    s("Cornfield", "🌽", "nature"),
-    s("Orchard", "🍎", "nature"),
-    s("Flock of Birds", "🐦", "nature"),
-    s("Goat", "🐐", "nature"),
-    s("Sheep", "🐑", "nature"),
-    s("Pig", "🐷", "nature"),
-    s("Dog in Car Window", "🐶", "nature"),
-    s("Wildflowers", "💐", "nature"),
-    s("Waterfall", "💦", "nature"),
-    s("Vineyard", "🍇", "nature"),
-    s("Buffalo", "🦬", "nature"),
-    s("Hawk", "🦅", "nature"),
-    // Food & Stops (25)
-    s("McDonald's", "🍟", "food"),
-    s("Starbucks", "☕", "food"),
-    s("Subway", "🥖", "food"),
-    s("Gas Station", "⛽", "food"),
-    s("Rest Stop", "🅿️", "food"),
-    s("Drive-Through", "🚗", "food"),
-    s("Billboard", "📢", "food"),
-    s("Roadside Diner", "🍽️", "food"),
-    s("Fruit Stand", "🍑", "food"),
-    s("Ice Cream Stand", "🍦", "food"),
-    s("Wendy's", "🍔", "food"),
-    s("Taco Bell", "🌮", "food"),
-    s("Chick-fil-A", "🐔", "food"),
-    s("Dairy Queen", "🍦", "food"),
-    s("Cracker Barrel", "🪑", "food"),
-    s("Waffle House", "🧇", "food"),
-    s("Truck Stop", "🚛", "food"),
-    s("Car Wash", "🚿", "food"),
-    s("Motel Sign", "🏨", "food"),
-    s("Campground Sign", "⛺", "food"),
-    s("Dollar General", "💵", "food"),
-    s("Fireworks Stand", "🎆", "food"),
-    s("Roadside BBQ", "🍖", "food"),
-    s("RV Park", "🏕️", "food"),
-    s("Outlet Mall", "🛍️", "food"),
-    // Landmarks (25)
-    s("Bridge", "🌉", "landmarks"),
-    s("Overpass", "🛣️", "landmarks"),
-    s("Railroad Crossing", "🚂", "landmarks"),
-    s("State Border Sign", "🪧", "landmarks"),
-    s("Toll Booth", "💰", "landmarks"),
-    s("Welcome Sign", "👋", "landmarks"),
-    s("Water Tower", "🏗️", "landmarks"),
-    s("Church Steeple", "⛪", "landmarks"),
-    s("Grain Silo", "🏠", "landmarks"),
-    s("Sports Stadium", "🏟️", "landmarks"),
-    s("Fairground", "🎡", "landmarks"),
-    s("State Capitol", "🏛️", "landmarks"),
-    s("Wind Farm", "🌬️", "landmarks"),
-    s("Solar Farm", "☀️", "landmarks"),
-    s("Mining Facility", "⛏️", "landmarks"),
-    s("Airport", "✈️", "landmarks"),
-    s("Radio Tower", "📡", "landmarks"),
-    s("Drive-In Theater", "🎬", "landmarks"),
-    s("Covered Bridge", "🌉", "landmarks"),
-    s("Lighthouse", "🗼", "landmarks"),
-    s("National Park Sign", "🌲", "landmarks"),
-    s("Monument", "🗿", "landmarks"),
-    s("Dam", "🌊", "landmarks"),
-    s("Ghost Town", "👻", "landmarks"),
-    s("Roadside Attraction", "⭐", "landmarks"),
-    // Weather (25)
-    s("Dark Clouds", "☁️", "weather"),
-    s("Fog", "🌫️", "weather"),
-    s("Dust Storm", "🌪️", "weather"),
-    s("Snow on Mountains", "❄️", "weather"),
-    s("Puddles", "💧", "weather"),
-    s("Sun Glare", "☀️", "weather"),
-    s("Thunderstorm", "⛈️", "weather"),
-    s("Lightning", "⚡", "weather"),
-    s("Hail", "🌨️", "weather"),
-    s("Tornado Warning Sign", "🌪️", "weather"),
-    s("Mirage", "🏜️", "weather"),
-    s("Dramatic Sunset", "🌅", "weather"),
-    s("Low-Hanging Moon", "🌕", "weather"),
-    s("Stars Visible", "⭐", "weather"),
-    s("Hot Haze Shimmer", "🌡️", "weather"),
-    s("Wildfire Smoke", "🔥", "weather"),
-    s("Dust Devil", "🌀", "weather"),
-    s("Ice on Road Sign", "🧊", "weather"),
-    s("Flash Flood Sign", "🌊", "weather"),
-    s("Overcast Sky", "🌥️", "weather"),
-    s("Sprinkles", "🌦️", "weather"),
-    s("Windy Flags", "🚩", "weather"),
-    s("Frost on Windows", "🌨️", "weather"),
-    s("Morning Mist", "🌁", "weather"),
-    s("Dramatic Clouds", "🌤️", "weather"),
-    // Signs & Roads (25)
-    s("Speed Limit 75+", "🛑", "signs"),
-    s("Construction Zone", "🚧", "signs"),
-    s("Detour Sign", "↩️", "signs"),
-    s("No Passing Zone", "⛔", "signs"),
-    s("Weigh Station", "⚖️", "signs"),
-    s("Mile Marker ×0", "🔢", "signs"),
-    s("Highway Interchange", "🔄", "signs"),
-    s("Rest Area Sign", "🛏️", "signs"),
-    s("Runaway Truck Ramp", "🚛", "signs"),
-    s("Deer Crossing Sign", "🦌", "signs"),
-    s("Falling Rock Sign", "🪨", "signs"),
-    s("Chain Control Sign", "⛓️", "signs"),
-    s("Low Clearance Sign", "⬇️", "signs"),
-    s("Wrong Way Sign", "🚫", "signs"),
-    s("Divided Highway Sign", "↔️", "signs"),
-    s("Scenic Overlook Sign", "🏞️", "signs"),
-    s("Historical Marker", "📜", "signs"),
-    s("Adopt-a-Highway Sign", "♻️", "signs"),
-    s("Road Narrows Sign", "➡️", "signs"),
-    s("Bridge Ices Sign", "🌉", "signs"),
-    s("Slippery When Wet", "💧", "signs"),
-    s("No U-Turn Sign", "🔃", "signs"),
-    s("Merging Traffic Sign", "🔀", "signs"),
-    s("End Construction Sign", "✅", "signs"),
-    s("State Highway Sign", "🛣️", "signs"),
-]
-
-let encoder = JSONEncoder()
-encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-let data = try! encoder.encode(squares)
-print(String(data: data, encoding: .utf8)!)
-```
-
-- [ ] **Step 3: Generate squares.json**
-
-```bash
-swift makeSquares.swift > RoadTripBingo/Resources/squares.json
-```
-
-Verify the output has 150 entries:
-
-```bash
-python3 -c "import json; d=json.load(open('RoadTripBingo/Resources/squares.json')); print(len(d), 'squares')"
-```
-
-Expected: `150 squares`
-
-- [ ] **Step 4: Implement SquarePool**
-
-Create `RoadTripBingo/Game/SquarePool.swift`:
-
-```swift
-import Foundation
-
-enum SquarePool {
-    static func load() -> [BingoSquare] {
-        guard let url = Bundle.main.url(forResource: "squares", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let squares = try? JSONDecoder().decode([BingoSquare].self, from: data)
-        else {
-            fatalError("squares.json missing from bundle or malformed")
-        }
-        return squares
-    }
-
-    // Returns one 25-square array per player name (index 12 = FREE).
-    // Each player's 24 non-FREE squares are drawn from non-overlapping slices of the pool.
-    // Precondition: pool.count >= playerNames.count * 24
-    static func dealBoards(for playerNames: [String], from pool: [BingoSquare]) -> [String: [BingoSquare]] {
-        precondition(pool.count >= playerNames.count * 24,
-                     "Pool has \(pool.count) squares — need \(playerNames.count * 24) for \(playerNames.count) players")
-        var remaining = pool.shuffled()
-        var result: [String: [BingoSquare]] = [:]
-        for name in playerNames {
-            var squares = Array(remaining.prefix(24))
-            remaining.removeFirst(24)
-            squares.insert(.free, at: 12)
-            result[name] = squares
-        }
-        return result
-    }
-}
-```
-
 - [ ] **Step 5: Run tests — verify pass**
 
 ```bash
 xcodebuild test \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingoTests \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
-  -only-testing:RoadTripBingoTests/SquarePoolTests \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
+  -only-testing:RoadTripBingoTests/MultipeerMessageTests \
   2>&1 | grep -E "Test Suite|passed|failed"
 ```
 
-Expected: `Test Suite 'SquarePoolTests' passed`
+Expected: `Test Suite 'MultipeerMessageTests' passed`
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add makeSquares.swift RoadTripBingo/Resources/squares.json \
-        RoadTripBingo/Game/SquarePool.swift RoadTripBingoTests/SquarePoolTests.swift
-git commit -m "feat: add square pool JSON and SquarePool loader with tests"
+git add RoadTripBingo/Models/ RoadTripBingoTests/MultipeerMessageTests.swift
+git commit -m "feat: add BingoSquare and MultipeerMessage with Codable tests"
 ```
 
 ---
 
-## Task 5: GameEngine
-
-**Files:**
-- Create: `RoadTripBingo/Game/GameEngine.swift`
-- Create: `RoadTripBingoTests/GameEngineTests.swift`
-
-- [ ] **Step 1: Write failing tests**
-
-Create `RoadTripBingoTests/GameEngineTests.swift`:
-
-```swift
-import XCTest
-@testable import RoadTripBingo
-
-final class GameEngineTests: XCTestCase {
-
-    // Build a board with specific squares pre-marked
-    private func makeBoard(marking positions: Set<Int> = []) -> BingoBoard {
-        let squares = (0..<25).map { i -> BingoSquare in
-            if i == 12 { return .free }
-            return BingoSquare(id: UUID(), text: "Item \(i)", emoji: "🔵", category: .vehicles)
-        }
-        var board = BingoBoard(squares: squares)
-        for pos in positions {
-            if pos != 12 { board.toggle(at: pos) }
-        }
-        return board
-    }
-
-    // MARK: - Win detection
-
-    func test_noWin_onFreshBoard() {
-        let board = makeBoard()
-        XCTAssertNil(GameEngine.winningLine(for: board))
-    }
-
-    func test_win_firstRow() {
-        let board = makeBoard(marking: [0, 1, 2, 3, 4])
-        let line = GameEngine.winningLine(for: board)
-        XCTAssertEqual(line, [0, 1, 2, 3, 4])
-    }
-
-    func test_win_lastRow() {
-        let board = makeBoard(marking: [20, 21, 22, 23, 24])
-        let line = GameEngine.winningLine(for: board)
-        XCTAssertEqual(line, [20, 21, 22, 23, 24])
-    }
-
-    func test_win_firstColumn() {
-        let board = makeBoard(marking: [0, 5, 10, 15, 20])
-        let line = GameEngine.winningLine(for: board)
-        XCTAssertEqual(line, [0, 5, 10, 15, 20])
-    }
-
-    func test_win_lastColumn() {
-        let board = makeBoard(marking: [4, 9, 14, 19, 24])
-        let line = GameEngine.winningLine(for: board)
-        XCTAssertEqual(line, [4, 9, 14, 19, 24])
-    }
-
-    func test_win_mainDiagonal() {
-        // FREE (12) is pre-marked, so only need 0, 6, 18, 24
-        let board = makeBoard(marking: [0, 6, 18, 24])
-        let line = GameEngine.winningLine(for: board)
-        XCTAssertEqual(line, [0, 6, 12, 18, 24])
-    }
-
-    func test_win_antiDiagonal() {
-        // FREE (12) is pre-marked, so only need 4, 8, 16, 20
-        let board = makeBoard(marking: [4, 8, 16, 20])
-        let line = GameEngine.winningLine(for: board)
-        XCTAssertEqual(line, [4, 8, 12, 16, 20])
-    }
-
-    func test_noWin_fourInRow() {
-        let board = makeBoard(marking: [0, 1, 2, 3])
-        XCTAssertNil(GameEngine.winningLine(for: board))
-    }
-
-    func test_winLines_has12Lines() {
-        XCTAssertEqual(GameEngine.winLines.count, 12)
-    }
-
-    // MARK: - Board dealing
-
-    func test_dealBoards_eachBoardHas25Squares() {
-        let pool = SquarePool.load()
-        let boards = SquarePool.dealBoards(for: ["A", "B"], from: pool)
-        XCTAssertEqual(boards["A"]?.count, 25)
-    }
-
-    func test_dealBoards_markedSetContainsFreeOnNewBoard() {
-        let pool = SquarePool.load()
-        let squaresForA = SquarePool.dealBoards(for: ["A"], from: pool)["A"]!
-        let board = BingoBoard(squares: squaresForA)
-        XCTAssertTrue(board.isMarked(at: 12))
-    }
-}
-```
-
-- [ ] **Step 2: Run — verify compile error**
-
-```bash
-xcodebuild test \
-  -project RoadTripBingo.xcodeproj \
-  -scheme RoadTripBingoTests \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
-  -only-testing:RoadTripBingoTests/GameEngineTests \
-  2>&1 | grep "error:" | head -3
-```
-
-Expected: compile error — `GameEngine` not found.
-
-- [ ] **Step 3: Implement GameEngine**
-
-Create `RoadTripBingo/Game/GameEngine.swift`:
-
-```swift
-import Foundation
-
-enum GameEngine {
-    static let winLines: [[Int]] = {
-        var lines = [[Int]]()
-        for row in 0..<5 { lines.append((0..<5).map { row * 5 + $0 }) }
-        for col in 0..<5 { lines.append((0..<5).map { $0 * 5 + col }) }
-        lines.append([0, 6, 12, 18, 24])
-        lines.append([4, 8, 12, 16, 20])
-        return lines
-    }()
-
-    // Returns the first completed line's positions, or nil if no win.
-    static func winningLine(for board: BingoBoard) -> [Int]? {
-        winLines.first { line in
-            line.allSatisfy { board.isMarked(at: $0) }
-        }
-    }
-}
-```
-
-- [ ] **Step 4: Run tests — verify pass**
-
-```bash
-xcodebuild test \
-  -project RoadTripBingo.xcodeproj \
-  -scheme RoadTripBingoTests \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
-  -only-testing:RoadTripBingoTests/GameEngineTests \
-  2>&1 | grep -E "Test Suite|passed|failed"
-```
-
-Expected: `Test Suite 'GameEngineTests' passed`
-
-- [ ] **Step 5: Commit**
-
-```bash
-git add RoadTripBingo/Game/GameEngine.swift RoadTripBingoTests/GameEngineTests.swift
-git commit -m "feat: add GameEngine with win detection for all 12 lines"
-```
-
----
-
-## Task 6: MultipeerSession
+## Task 3: MultipeerSession
 
 **Files:**
 - Create: `RoadTripBingo/Network/MultipeerSession.swift`
-
-No unit tests — MultipeerConnectivity requires real devices/simulators to exercise. The class is verified by building cleanly.
 
 - [ ] **Step 1: Implement MultipeerSession**
 
@@ -991,7 +393,6 @@ protocol MultipeerSessionDelegate: AnyObject {
     func multipeerSession(_ session: MultipeerSession, didReceive message: MultipeerMessage, from peerName: String)
     func multipeerSession(_ session: MultipeerSession, peerDidConnect peerName: String)
     func multipeerSession(_ session: MultipeerSession, peerDidDisconnect peerName: String)
-    // Called on host during browse: a new nearby game was found or lost
     func multipeerSession(_ session: MultipeerSession, foundPeer peerName: String)
     func multipeerSession(_ session: MultipeerSession, lostPeer peerName: String)
 }
@@ -1002,6 +403,7 @@ final class MultipeerSession: NSObject {
     private let mcSession: MCSession
     private var advertiser: MCNearbyServiceAdvertiser?
     private var browser: MCNearbyServiceBrowser?
+    private var foundPeerIDs: [String: MCPeerID] = [:]
 
     weak var delegate: MultipeerSessionDelegate?
 
@@ -1041,10 +443,6 @@ final class MultipeerSession: NSObject {
     }
 
     func invitePeer(named name: String) {
-        // Invite the first found peer matching the name.
-        // The browser tracks found peers; we invite on tap.
-        // MCNearbyServiceBrowser keeps a list internally — we re-invite by name
-        // via the stored foundPeerIDs map.
         guard let peer = foundPeerIDs[name] else { return }
         browser?.invitePeer(peer, to: mcSession, withContext: nil, timeout: 30)
     }
@@ -1062,11 +460,6 @@ final class MultipeerSession: NSObject {
         stopBrowsing()
         mcSession.disconnect()
     }
-
-    // MARK: - Internal
-
-    // Maps displayName → MCPeerID for peers found during browsing (joiner side).
-    private var foundPeerIDs: [String: MCPeerID] = [:]
 }
 
 // MARK: - MCSessionDelegate
@@ -1100,7 +493,6 @@ extension MultipeerSession: MCSessionDelegate {
 // MARK: - MCNearbyServiceAdvertiserDelegate
 
 extension MultipeerSession: MCNearbyServiceAdvertiserDelegate {
-    // Auto-accept all incoming invitations.
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         invitationHandler(true, mcSession)
     }
@@ -1125,17 +517,17 @@ extension MultipeerSession: MCNearbyServiceBrowserDelegate {
 }
 ```
 
-- [ ] **Step 2: Verify it builds cleanly**
+- [ ] **Step 2: Verify it builds**
 
 ```bash
 xcodebuild build \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   2>&1 | grep -E "error:|BUILD SUCCEEDED"
 ```
 
-Expected: `** BUILD SUCCEEDED **` with no errors.
+Expected: `** BUILD SUCCEEDED **`
 
 - [ ] **Step 3: Commit**
 
@@ -1146,12 +538,12 @@ git commit -m "feat: add MultipeerSession wrapping MCSession with auto-accept"
 
 ---
 
-## Task 7: AppState
+## Task 4: Minimal AppState (Connectivity Only)
 
 **Files:**
 - Create: `RoadTripBingo/State/AppState.swift`
 
-AppState is the central ObservableObject that owns navigation, session, board state, and all Multipeer message handling. Views never touch MultipeerSession directly.
+This is the connectivity-only version of AppState. It handles navigation between Home and Lobby, and owns the MultipeerSession. Game logic (boards, win detection, etc.) is added in Phase 2.
 
 - [ ] **Step 1: Implement AppState**
 
@@ -1170,6 +562,7 @@ enum AppScreen: Equatable {
 }
 
 final class AppState: ObservableObject, MultipeerSessionDelegate {
+
     // MARK: - Navigation
     @Published var screen: AppScreen = .home
 
@@ -1180,18 +573,16 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     // MARK: - Lobby
     @Published var isHost = false
-    @Published var connectedPlayerNames: [String] = []   // does not include local player
-    @Published var foundGameNames: [String] = []          // for joiner: discovered nearby games
+    @Published var connectedPlayerNames: [String] = []
+    @Published var foundGameNames: [String] = []
 
-    // MARK: - Game
+    // MARK: - Game (Phase 2 — stubbed for now)
     @Published var localBoard: BingoBoard?
-    @Published var completedLine: [Int]?                  // set when BINGO! is available
-    // opponentMarked[playerName] = Set of board positions (0–24) they have marked
+    @Published var completedLine: [Int]?
     @Published var opponentMarked: [String: Set<Int>] = [:]
 
     // MARK: - Post-game
-    @Published var winHistory: [String: Int] = [:]        // name -> wins this session
-    @Published var lastWinnerName: String = ""
+    @Published var winHistory: [String: Int] = [:]
 
     // MARK: - Network
     private(set) var multipeerSession: MultipeerSession?
@@ -1226,71 +617,6 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         multipeerSession?.invitePeer(named: name)
     }
 
-    // MARK: - Lobby actions (host only)
-
-    func startGame() {
-        guard isHost else { return }
-        let pool = SquarePool.load()
-        let allNames = [playerName] + connectedPlayerNames
-        let boards = SquarePool.dealBoards(for: allNames, from: pool)
-
-        // Set up local board
-        if let mySquares = boards[playerName] {
-            localBoard = BingoBoard(squares: mySquares)
-        }
-        // Set up opponent tracking
-        for name in connectedPlayerNames {
-            opponentMarked[name] = [12]  // FREE is pre-marked
-        }
-
-        multipeerSession?.stopAdvertising()
-        let msg = MultipeerMessage.gameStarted(boards: boards)
-        multipeerSession?.send(msg)
-        completedLine = nil
-        screen = .game
-    }
-
-    // MARK: - Game actions
-
-    func toggleSquare(at position: Int) {
-        guard screen == .game else { return }
-        localBoard?.toggle(at: position)
-        let isNowMarked = localBoard?.isMarked(at: position) ?? false
-        multipeerSession?.send(.squareToggled(position: position, isMarked: isNowMarked))
-
-        // Check for win
-        if let board = localBoard {
-            completedLine = GameEngine.winningLine(for: board)
-        }
-    }
-
-    func callBingo() {
-        guard completedLine != nil else { return }
-        multipeerSession?.send(.bingoAnnounced(byName: playerName))
-        recordWin(for: playerName)
-        screen = .win(winnerName: playerName)
-    }
-
-    // MARK: - Play again (host only)
-
-    func requestPlayAgain() {
-        guard isHost else { return }
-        let pool = SquarePool.load()
-        let allNames = [playerName] + connectedPlayerNames
-        let boards = SquarePool.dealBoards(for: allNames, from: pool)
-
-        if let mySquares = boards[playerName] {
-            localBoard = BingoBoard(squares: mySquares)
-        }
-        for name in connectedPlayerNames {
-            opponentMarked[name] = [12]
-        }
-        completedLine = nil
-
-        multipeerSession?.send(.playAgain(boards: boards))
-        screen = .game
-    }
-
     func goHome() {
         multipeerSession?.disconnect()
         multipeerSession = nil
@@ -1300,6 +626,40 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         completedLine = nil
         opponentMarked = [:]
         screen = .home
+    }
+
+    // MARK: - Lobby (host only) — Phase 2 will fill startGame()
+
+    func startGame() {
+        guard isHost else { return }
+        multipeerSession?.stopAdvertising()
+        // Phase 2: deal boards and send gameStarted message
+        screen = .game
+    }
+
+    // MARK: - Game actions — Phase 2
+
+    func toggleSquare(at position: Int) {
+        guard screen == .game else { return }
+        localBoard?.toggle(at: position)
+        let isNowMarked = localBoard?.isMarked(at: position) ?? false
+        multipeerSession?.send(.squareToggled(position: position, isMarked: isNowMarked))
+        if let board = localBoard {
+            completedLine = GameEngine.winningLine(for: board)
+        }
+    }
+
+    func callBingo() {
+        guard completedLine != nil else { return }
+        multipeerSession?.send(.bingoAnnounced(byName: playerName))
+        winHistory[playerName, default: 0] += 1
+        screen = .win(winnerName: playerName)
+    }
+
+    func requestPlayAgain() {
+        guard isHost else { return }
+        // Phase 2: deal new boards
+        screen = .game
     }
 
     // MARK: - MultipeerSessionDelegate
@@ -1323,8 +683,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             opponentMarked[peerName] = current
 
         case .bingoAnnounced(let byName):
-            recordWin(for: byName)
-            lastWinnerName = byName
+            winHistory[byName, default: 0] += 1
             screen = .win(winnerName: byName)
 
         case .playAgain(let boards):
@@ -1359,18 +718,45 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     func multipeerSession(_ session: MultipeerSession, lostPeer peerName: String) {
         foundGameNames.removeAll { $0 == peerName }
     }
-
-    // MARK: - Helpers
-
-    private func recordWin(for name: String) {
-        winHistory[name, default: 0] += 1
-    }
 }
 ```
 
-- [ ] **Step 2: Update app entry point to inject AppState**
+Note: `AppState` references `BingoBoard` and `GameEngine` which don't exist yet. Add stub files to keep it building:
 
-Replace `RoadTripBingo/RoadTripBingoApp.swift` with:
+Create `RoadTripBingo/Models/BingoBoard.swift`:
+
+```swift
+import Foundation
+
+// Stub — full implementation in Phase 2 (Task 7)
+struct BingoBoard {
+    let squares: [BingoSquare]
+    var marked: Set<UUID>
+
+    init(squares: [BingoSquare]) {
+        self.squares = squares
+        self.marked = [BingoSquare.freeSquareID]
+    }
+
+    mutating func toggle(at position: Int) {}
+    func isMarked(at position: Int) -> Bool { false }
+}
+```
+
+Create `RoadTripBingo/Game/GameEngine.swift`:
+
+```swift
+import Foundation
+
+// Stub — full implementation in Phase 2 (Task 8)
+enum GameEngine {
+    static func winningLine(for board: BingoBoard) -> [Int]? { nil }
+}
+```
+
+- [ ] **Step 2: Update app entry point**
+
+Replace `RoadTripBingo/RoadTripBingoApp.swift`:
 
 ```swift
 import SwiftUI
@@ -1388,7 +774,7 @@ struct RoadTripBingoApp: App {
 }
 ```
 
-- [ ] **Step 3: Create stub ContentView to keep it building**
+- [ ] **Step 3: Create stub ContentView**
 
 Create `RoadTripBingo/ContentView.swift`:
 
@@ -1399,7 +785,10 @@ struct ContentView: View {
     @EnvironmentObject var appState: AppState
 
     var body: some View {
-        Text("Screen: \(String(describing: appState.screen))")
+        Text("Connected peers: \(appState.connectedPlayerNames.joined(separator: ", "))")
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.black)
     }
 }
 ```
@@ -1410,7 +799,7 @@ struct ContentView: View {
 xcodebuild build \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   2>&1 | grep -E "error:|BUILD SUCCEEDED"
 ```
 
@@ -1420,17 +809,20 @@ Expected: `** BUILD SUCCEEDED **`
 
 ```bash
 git add RoadTripBingo/State/AppState.swift \
+        RoadTripBingo/Models/BingoBoard.swift \
+        RoadTripBingo/Game/GameEngine.swift \
         RoadTripBingo/RoadTripBingoApp.swift \
         RoadTripBingo/ContentView.swift
-git commit -m "feat: add AppState coordinator with full Multipeer message handling"
+git commit -m "feat: add AppState coordinator with stub game types — connectivity wired"
 ```
 
 ---
 
-## Task 8: HomeView
+## Task 5: Minimal HomeView + LobbyView
 
 **Files:**
 - Create: `RoadTripBingo/Views/HomeView.swift`
+- Create: `RoadTripBingo/Views/LobbyView.swift`
 
 - [ ] **Step 1: Implement HomeView**
 
@@ -1444,25 +836,15 @@ struct HomeView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 0.05, green: 0.07, blue: 0.13)
-                .ignoresSafeArea()
-
+            Color(red: 0.05, green: 0.07, blue: 0.13).ignoresSafeArea()
             VStack(spacing: 40) {
                 VStack(spacing: 8) {
-                    Text("🚗")
-                        .font(.system(size: 72))
+                    Text("🚗").font(.system(size: 72))
                     Text("Road Trip Bingo")
                         .font(.system(size: 42, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                 }
-
                 VStack(spacing: 12) {
-                    Text("Your name")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 4)
-
                     TextField("Enter your name", text: $appState.playerName)
                         .font(.title3)
                         .padding()
@@ -1473,7 +855,6 @@ struct HomeView: View {
                         .textInputAutocapitalization(.words)
                 }
                 .frame(maxWidth: 360)
-
                 VStack(spacing: 14) {
                     Button(action: {
                         guard !appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
@@ -1481,23 +862,18 @@ struct HomeView: View {
                     }) {
                         Label("Create Game", systemImage: "plus.circle.fill")
                             .font(.title3.bold())
-                            .frame(maxWidth: 360)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
+                            .frame(maxWidth: 360).padding()
+                            .background(Color.blue).foregroundColor(.white)
                             .cornerRadius(14)
                     }
-
                     Button(action: {
                         guard !appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
                         appState.joinGame()
                     }) {
                         Label("Join Game", systemImage: "arrow.right.circle.fill")
                             .font(.title3.bold())
-                            .frame(maxWidth: 360)
-                            .padding()
-                            .background(Color.white.opacity(0.12))
-                            .foregroundColor(.white)
+                            .frame(maxWidth: 360).padding()
+                            .background(Color.white.opacity(0.12)).foregroundColor(.white)
                             .cornerRadius(14)
                     }
                 }
@@ -1506,40 +882,9 @@ struct HomeView: View {
         }
     }
 }
-
-#Preview {
-    HomeView()
-        .environmentObject(AppState())
-}
 ```
 
-- [ ] **Step 2: Verify build**
-
-```bash
-xcodebuild build \
-  -project RoadTripBingo.xcodeproj \
-  -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
-  2>&1 | grep -E "error:|BUILD SUCCEEDED"
-```
-
-Expected: `** BUILD SUCCEEDED **`
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add RoadTripBingo/Views/HomeView.swift
-git commit -m "feat: add HomeView with name entry and create/join buttons"
-```
-
----
-
-## Task 9: LobbyView
-
-**Files:**
-- Create: `RoadTripBingo/Views/LobbyView.swift`
-
-- [ ] **Step 1: Implement LobbyView**
+- [ ] **Step 2: Implement LobbyView**
 
 Create `RoadTripBingo/Views/LobbyView.swift`:
 
@@ -1552,183 +897,671 @@ struct LobbyView: View {
     var body: some View {
         ZStack {
             Color(red: 0.05, green: 0.07, blue: 0.13).ignoresSafeArea()
-
-            if appState.isHost {
-                hostView
-            } else {
-                joinerView
-            }
+            if appState.isHost { hostView } else { joinerView }
         }
     }
-
-    // MARK: - Host
 
     private var hostView: some View {
         VStack(spacing: 32) {
-            Text("Lobby")
-                .font(.system(size: 34, weight: .bold, design: .rounded))
-                .foregroundColor(.white)
-
-            Text("Other players will appear automatically nearby")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-
+            Text("Lobby").font(.system(size: 34, weight: .bold, design: .rounded)).foregroundColor(.white)
+            Text("Other players appear automatically nearby").font(.subheadline).foregroundColor(.secondary)
             VStack(spacing: 10) {
                 playerRow(name: appState.playerName, label: "you (host)")
-                ForEach(appState.connectedPlayerNames, id: \.self) { name in
-                    playerRow(name: name, label: nil)
-                }
-            }
-            .frame(maxWidth: 400)
-
+                ForEach(appState.connectedPlayerNames, id: \.self) { playerRow(name: $0, label: nil) }
+            }.frame(maxWidth: 400)
             Button(action: appState.startGame) {
                 Text("Start Game ▶")
-                    .font(.title3.bold())
-                    .frame(maxWidth: 360)
-                    .padding()
+                    .font(.title3.bold()).frame(maxWidth: 360).padding()
                     .background(appState.connectedPlayerNames.isEmpty ? Color.blue.opacity(0.3) : Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(14)
+                    .foregroundColor(.white).cornerRadius(14)
             }
             .disabled(appState.connectedPlayerNames.isEmpty)
-
             if appState.connectedPlayerNames.isEmpty {
-                Text("Waiting for players to join…")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                Text("Waiting for players to join…").font(.caption).foregroundColor(.secondary)
             }
-
             Spacer()
-
-            Button("Cancel", role: .destructive, action: appState.goHome)
-                .foregroundColor(.secondary)
-        }
-        .padding(48)
+            Button("Cancel", role: .destructive, action: appState.goHome).foregroundColor(.secondary)
+        }.padding(48)
     }
-
-    // MARK: - Joiner
 
     private var joinerView: some View {
         VStack(spacing: 32) {
-            Text("Join Game")
-                .font(.system(size: 34, weight: .bold, design: .rounded))
-                .foregroundColor(.white)
-
+            Text("Join Game").font(.system(size: 34, weight: .bold, design: .rounded)).foregroundColor(.white)
             if appState.connectedPlayerNames.isEmpty {
-                // Not yet connected: show discovered games list
                 VStack(spacing: 16) {
                     if appState.foundGameNames.isEmpty {
-                        ProgressView()
-                            .tint(.white)
-                        Text("Looking for nearby games…")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                        ProgressView().tint(.white)
+                        Text("Looking for nearby games…").font(.subheadline).foregroundColor(.secondary)
                     } else {
-                        Text("Games nearby:")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                        Text("Games nearby:").font(.subheadline).foregroundColor(.secondary)
                         ForEach(appState.foundGameNames, id: \.self) { name in
                             Button(action: { appState.inviteGame(named: name) }) {
                                 HStack {
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text(name)
-                                            .font(.headline)
-                                            .foregroundColor(.white)
-                                        Text("Tap to join")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
+                                        Text(name).font(.headline).foregroundColor(.white)
+                                        Text("Tap to join").font(.caption).foregroundColor(.secondary)
                                     }
                                     Spacer()
-                                    Image(systemName: "arrow.right.circle.fill")
-                                        .font(.title2)
-                                        .foregroundColor(.blue)
+                                    Image(systemName: "arrow.right.circle.fill").font(.title2).foregroundColor(.blue)
                                 }
-                                .padding()
-                                .background(Color.white.opacity(0.08))
-                                .cornerRadius(12)
+                                .padding().background(Color.white.opacity(0.08)).cornerRadius(12)
                             }
                         }
                     }
-                }
-                .frame(maxWidth: 400)
+                }.frame(maxWidth: 400)
             } else {
-                // Connected: waiting for host to start
                 VStack(spacing: 10) {
-                    Text("Connected! Waiting for host to start…")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    ForEach([appState.playerName] + appState.connectedPlayerNames, id: \.self) { name in
-                        let label: String? = name == appState.playerName ? "you" : nil
-                        playerRow(name: name, label: label)
-                    }
-                }
-                .frame(maxWidth: 400)
+                    Text("Connected! Waiting for host…").font(.subheadline).foregroundColor(.secondary)
+                    playerRow(name: appState.playerName, label: "you")
+                    ForEach(appState.connectedPlayerNames, id: \.self) { playerRow(name: $0, label: nil) }
+                }.frame(maxWidth: 400)
             }
-
             Spacer()
-
-            Button("Cancel", role: .destructive, action: appState.goHome)
-                .foregroundColor(.secondary)
-        }
-        .padding(48)
+            Button("Cancel", role: .destructive, action: appState.goHome).foregroundColor(.secondary)
+        }.padding(48)
     }
-
-    // MARK: - Shared
 
     private func playerRow(name: String, label: String?) -> some View {
         HStack(spacing: 12) {
-            Circle()
-                .fill(Color.green)
-                .frame(width: 10, height: 10)
-            Text(name)
-                .font(.headline)
-                .foregroundColor(.white)
-            if let label {
-                Text(label)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
+            Circle().fill(Color.green).frame(width: 10, height: 10)
+            Text(name).font(.headline).foregroundColor(.white)
+            if let label { Text(label).font(.caption).foregroundColor(.secondary) }
             Spacer()
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(Color.white.opacity(0.06))
-        .cornerRadius(10)
+        .padding(.horizontal, 16).padding(.vertical, 10)
+        .background(Color.white.opacity(0.06)).cornerRadius(10)
     }
-}
-
-#Preview {
-    LobbyView()
-        .environmentObject({
-            let s = AppState()
-            s.playerName = "Emma"
-            return s
-        }())
 }
 ```
 
-- [ ] **Step 2: Verify build**
+- [ ] **Step 3: Wire navigation in ContentView**
+
+Replace `RoadTripBingo/ContentView.swift`:
+
+```swift
+import SwiftUI
+
+struct ContentView: View {
+    @EnvironmentObject var appState: AppState
+
+    var body: some View {
+        ZStack {
+            switch appState.screen {
+            case .home:
+                HomeView().transition(.opacity)
+            case .lobby:
+                LobbyView().transition(.opacity)
+            case .game, .win, .playAgain:
+                // Phase 2: game screens added in Tasks 9–14
+                Text("Game coming soon").foregroundColor(.white)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.black)
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: appState.screen)
+    }
+}
+```
+
+- [ ] **Step 4: Verify build**
 
 ```bash
 xcodebuild build \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   2>&1 | grep -E "error:|BUILD SUCCEEDED"
 ```
 
 Expected: `** BUILD SUCCEEDED **`
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
-git add RoadTripBingo/Views/LobbyView.swift
-git commit -m "feat: add LobbyView for host and joiner flows"
+git add RoadTripBingo/Views/HomeView.swift \
+        RoadTripBingo/Views/LobbyView.swift \
+        RoadTripBingo/ContentView.swift
+git commit -m "feat: add HomeView and LobbyView — connectivity UI complete"
 ```
 
 ---
 
-## Task 10: Bingo Grid Views
+## Task 6: Install on Device and Validate Connectivity
+
+> **This task requires two physical iPads.** Multipeer does not reliably simulate connection between two simulator instances.
+
+- [ ] **Step 1: Set your Development Team in Xcode**
+
+Open `RoadTripBingo.xcodeproj` → Target → Signing & Capabilities → set Team to your Apple ID. Xcode will create a free provisioning profile automatically.
+
+- [ ] **Step 2: Install on iPad 1 (host device)**
+
+Connect first iPad via USB. In Xcode select it as the run destination and press Run (⌘R). Accept the "Trust this computer" prompt on the iPad if it appears. The app should launch showing the home screen.
+
+- [ ] **Step 3: Install on iPad 2 (joiner device)**
+
+Connect second iPad, select it in Xcode, press Run again. Both iPads should now have the app installed.
+
+- [ ] **Step 4: Test the full connection flow**
+
+On iPad 1 (host):
+- Enter a name (e.g., "Emma")
+- Tap **Create Game**
+- Lobby screen should appear showing "Emma (you, host)" and "Waiting for players..."
+
+On iPad 2 (joiner):
+- Enter a different name (e.g., "Liam")
+- Tap **Join Game**
+- After a few seconds, "Emma" should appear in the games list
+- Tap **Emma** to join
+
+Expected on iPad 1: Liam appears in the lobby, "Start Game" button becomes active.
+Expected on iPad 2: Shows "Connected! Waiting for host…" with both names.
+
+- [ ] **Step 5: Test Start Game transition**
+
+On iPad 1: tap **Start Game**.
+
+Expected: both iPads immediately show "Game coming soon" screen (Phase 2 placeholder). This proves the session handoff works.
+
+- [ ] **Step 6: Test Cancel / disconnect**
+
+On either device tap **Cancel**. Both devices should return to the home screen cleanly.
+
+- [ ] **Step 7: Document any issues before proceeding**
+
+If discovery fails (joiner never sees host), check:
+- Both iPads are on the same WiFi network OR Bluetooth is enabled on both
+- Neither iPad has a firewall/VPN blocking local traffic
+- The `NSBonjourServices` entries in Info.plist match the `serviceType = "rtbingo"` in `MultipeerSession`
+
+Do not proceed to Phase 2 until Task 6 Step 5 passes on real hardware.
+
+---
+
+## — Phase 2: Game Logic —
+
+*Complete Tasks 1–6 and validate on device before starting here.*
+
+---
+
+## Task 7: BingoBoard + Tests (Replace Stub)
+
+**Files:**
+- Modify: `RoadTripBingo/Models/BingoBoard.swift` (replace stub)
+- Create: `RoadTripBingoTests/BingoBoardTests.swift`
+
+- [ ] **Step 1: Write failing tests**
+
+Create `RoadTripBingoTests/BingoBoardTests.swift`:
+
+```swift
+import XCTest
+@testable import RoadTripBingo
+
+final class BingoBoardTests: XCTestCase {
+
+    private func makeBoard() -> BingoBoard {
+        let squares = (0..<25).map { i -> BingoSquare in
+            if i == 12 { return .free }
+            return BingoSquare(id: UUID(), text: "Item \(i)", emoji: "🚗", category: .vehicles)
+        }
+        return BingoBoard(squares: squares)
+    }
+
+    func test_freeSquare_isAtIndex12() {
+        let board = makeBoard()
+        XCTAssertEqual(board.squares[12].id, BingoSquare.freeSquareID)
+    }
+
+    func test_freeSquare_isPreMarked() {
+        let board = makeBoard()
+        XCTAssertTrue(board.isMarked(at: 12))
+    }
+
+    func test_toggle_marksUnmarkedSquare() {
+        var board = makeBoard()
+        XCTAssertFalse(board.isMarked(at: 0))
+        board.toggle(at: 0)
+        XCTAssertTrue(board.isMarked(at: 0))
+    }
+
+    func test_toggle_unmarksMarkedSquare() {
+        var board = makeBoard()
+        board.toggle(at: 0)
+        board.toggle(at: 0)
+        XCTAssertFalse(board.isMarked(at: 0))
+    }
+
+    func test_toggle_doesNotUnmarkFreeSquare() {
+        var board = makeBoard()
+        board.toggle(at: 12)
+        XCTAssertTrue(board.isMarked(at: 12))
+    }
+}
+```
+
+- [ ] **Step 2: Run — verify tests fail (stub toggle does nothing)**
+
+```bash
+xcodebuild test \
+  -project RoadTripBingo.xcodeproj \
+  -scheme RoadTripBingoTests \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
+  -only-testing:RoadTripBingoTests/BingoBoardTests \
+  2>&1 | grep -E "passed|failed"
+```
+
+Expected: `FAILED` (stub toggle is a no-op).
+
+- [ ] **Step 3: Replace BingoBoard stub with full implementation**
+
+Replace the contents of `RoadTripBingo/Models/BingoBoard.swift`:
+
+```swift
+import Foundation
+
+struct BingoBoard {
+    // 25 squares row-major. Index 12 must always be BingoSquare.free.
+    let squares: [BingoSquare]
+    var marked: Set<UUID>
+
+    init(squares: [BingoSquare]) {
+        precondition(squares.count == 25, "Board must have exactly 25 squares")
+        precondition(squares[12].id == BingoSquare.freeSquareID, "Index 12 must be the FREE square")
+        self.squares = squares
+        self.marked = [BingoSquare.freeSquareID]
+    }
+
+    mutating func toggle(at position: Int) {
+        let id = squares[position].id
+        guard id != BingoSquare.freeSquareID else { return }
+        if marked.contains(id) { marked.remove(id) } else { marked.insert(id) }
+    }
+
+    func isMarked(at position: Int) -> Bool {
+        marked.contains(squares[position].id)
+    }
+}
+```
+
+- [ ] **Step 4: Run tests — verify pass**
+
+```bash
+xcodebuild test \
+  -project RoadTripBingo.xcodeproj \
+  -scheme RoadTripBingoTests \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
+  -only-testing:RoadTripBingoTests/BingoBoardTests \
+  2>&1 | grep -E "Test Suite|passed|failed"
+```
+
+Expected: `Test Suite 'BingoBoardTests' passed`
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add RoadTripBingo/Models/BingoBoard.swift RoadTripBingoTests/BingoBoardTests.swift
+git commit -m "feat: implement BingoBoard with toggle and FREE immutability"
+```
+
+---
+
+## Task 8: GameEngine (Replace Stub) + Square Pool
+
+**Files:**
+- Modify: `RoadTripBingo/Game/GameEngine.swift` (replace stub)
+- Create: `RoadTripBingo/Game/SquarePool.swift`
+- Create: `makeSquares.swift`
+- Create: `RoadTripBingo/Resources/squares.json`
+- Create: `RoadTripBingoTests/GameEngineTests.swift`
+- Create: `RoadTripBingoTests/SquarePoolTests.swift`
+
+- [ ] **Step 1: Write failing GameEngine tests**
+
+Create `RoadTripBingoTests/GameEngineTests.swift`:
+
+```swift
+import XCTest
+@testable import RoadTripBingo
+
+final class GameEngineTests: XCTestCase {
+
+    private func makeBoard(marking positions: Set<Int> = []) -> BingoBoard {
+        let squares = (0..<25).map { i -> BingoSquare in
+            if i == 12 { return .free }
+            return BingoSquare(id: UUID(), text: "Item \(i)", emoji: "🔵", category: .vehicles)
+        }
+        var board = BingoBoard(squares: squares)
+        for pos in positions where pos != 12 { board.toggle(at: pos) }
+        return board
+    }
+
+    func test_noWin_onFreshBoard() {
+        XCTAssertNil(GameEngine.winningLine(for: makeBoard()))
+    }
+
+    func test_win_firstRow() {
+        XCTAssertEqual(GameEngine.winningLine(for: makeBoard(marking: [0,1,2,3,4])), [0,1,2,3,4])
+    }
+
+    func test_win_lastRow() {
+        XCTAssertEqual(GameEngine.winningLine(for: makeBoard(marking: [20,21,22,23,24])), [20,21,22,23,24])
+    }
+
+    func test_win_firstColumn() {
+        XCTAssertEqual(GameEngine.winningLine(for: makeBoard(marking: [0,5,10,15,20])), [0,5,10,15,20])
+    }
+
+    func test_win_lastColumn() {
+        XCTAssertEqual(GameEngine.winningLine(for: makeBoard(marking: [4,9,14,19,24])), [4,9,14,19,24])
+    }
+
+    func test_win_mainDiagonal() {
+        // Index 12 (FREE) is pre-marked; only need 0,6,18,24
+        XCTAssertEqual(GameEngine.winningLine(for: makeBoard(marking: [0,6,18,24])), [0,6,12,18,24])
+    }
+
+    func test_win_antiDiagonal() {
+        // Index 12 (FREE) is pre-marked; only need 4,8,16,20
+        XCTAssertEqual(GameEngine.winningLine(for: makeBoard(marking: [4,8,16,20])), [4,8,12,16,20])
+    }
+
+    func test_noWin_fourInRow() {
+        XCTAssertNil(GameEngine.winningLine(for: makeBoard(marking: [0,1,2,3])))
+    }
+
+    func test_winLines_has12Lines() {
+        XCTAssertEqual(GameEngine.winLines.count, 12)
+    }
+}
+```
+
+- [ ] **Step 2: Write failing SquarePool tests**
+
+Create `RoadTripBingoTests/SquarePoolTests.swift`:
+
+```swift
+import XCTest
+@testable import RoadTripBingo
+
+final class SquarePoolTests: XCTestCase {
+
+    func test_load_returnsAtLeast150Squares() {
+        XCTAssertGreaterThanOrEqual(SquarePool.load().count, 150)
+    }
+
+    func test_load_allIDsUnique() {
+        let pool = SquarePool.load()
+        XCTAssertEqual(pool.map(\.id).count, Set(pool.map(\.id)).count)
+    }
+
+    func test_load_noFreeSquareInPool() {
+        XCTAssertFalse(SquarePool.load().contains { $0.id == BingoSquare.freeSquareID })
+    }
+
+    func test_dealBoards_eachBoardHas25Squares() {
+        let boards = SquarePool.dealBoards(for: ["A","B","C"], from: SquarePool.load())
+        XCTAssertEqual(boards["A"]?.count, 25)
+        XCTAssertEqual(boards["B"]?.count, 25)
+        XCTAssertEqual(boards["C"]?.count, 25)
+    }
+
+    func test_dealBoards_index12IsFree() {
+        let boards = SquarePool.dealBoards(for: ["A"], from: SquarePool.load())
+        XCTAssertEqual(boards["A"]?[12].id, BingoSquare.freeSquareID)
+    }
+
+    func test_dealBoards_noOverlapBetweenPlayers() {
+        let boards = SquarePool.dealBoards(for: ["A","B"], from: SquarePool.load())
+        let aIDs = Set(boards["A"]!.map(\.id)).subtracting([BingoSquare.freeSquareID])
+        let bIDs = Set(boards["B"]!.map(\.id)).subtracting([BingoSquare.freeSquareID])
+        XCTAssertTrue(aIDs.isDisjoint(with: bIDs))
+    }
+}
+```
+
+- [ ] **Step 3: Run — verify failures**
+
+```bash
+xcodebuild test \
+  -project RoadTripBingo.xcodeproj \
+  -scheme RoadTripBingoTests \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
+  2>&1 | grep -E "passed|failed"
+```
+
+Expected: GameEngineTests fail (stub returns nil always), SquarePoolTests fail (SquarePool not defined).
+
+- [ ] **Step 4: Replace GameEngine stub**
+
+Replace `RoadTripBingo/Game/GameEngine.swift`:
+
+```swift
+import Foundation
+
+enum GameEngine {
+    static let winLines: [[Int]] = {
+        var lines = [[Int]]()
+        for row in 0..<5 { lines.append((0..<5).map { row * 5 + $0 }) }
+        for col in 0..<5 { lines.append((0..<5).map { $0 * 5 + col }) }
+        lines.append([0, 6, 12, 18, 24])
+        lines.append([4, 8, 12, 16, 20])
+        return lines
+    }()
+
+    static func winningLine(for board: BingoBoard) -> [Int]? {
+        winLines.first { line in line.allSatisfy { board.isMarked(at: $0) } }
+    }
+}
+```
+
+- [ ] **Step 5: Create the squares generation script**
+
+Create `makeSquares.swift` at the repo root:
+
+```swift
+#!/usr/bin/env swift
+// Run once: swift makeSquares.swift > RoadTripBingo/Resources/squares.json
+// Commit the result — do not regenerate or existing square IDs will change.
+
+import Foundation
+
+struct S: Encodable {
+    let id: String; let text: String; let emoji: String; let category: String
+}
+func s(_ text: String, _ emoji: String, _ cat: String) -> S {
+    S(id: UUID().uuidString, text: text, emoji: emoji, category: cat)
+}
+
+let squares: [S] = [
+    // Vehicles (25)
+    s("Semi Truck","🚛","vehicles"), s("RV","🚐","vehicles"), s("Motorcycle","🏍️","vehicles"),
+    s("School Bus","🚌","vehicles"), s("Tractor","🚜","vehicles"), s("Pickup Truck","🛻","vehicles"),
+    s("Police Car","🚔","vehicles"), s("Fire Truck","🚒","vehicles"), s("Helicopter","🚁","vehicles"),
+    s("Small Plane","✈️","vehicles"), s("Horse Trailer","🐴","vehicles"), s("Flatbed Truck","🚚","vehicles"),
+    s("Dump Truck","🚧","vehicles"), s("Ambulance","🚑","vehicles"), s("Convertible","🚗","vehicles"),
+    s("Food Truck","🌮","vehicles"), s("Mail Truck","📦","vehicles"), s("Boat on Trailer","⛵","vehicles"),
+    s("Construction Vehicle","🏗️","vehicles"), s("Tow Truck","🔧","vehicles"),
+    s("Double-Decker Bus","🚌","vehicles"), s("Minivan","🚐","vehicles"), s("Sports Car","🏎️","vehicles"),
+    s("Ice Cream Truck","🍦","vehicles"), s("Tank Truck","🛢️","vehicles"),
+    // Nature (25)
+    s("Cow","🐄","nature"), s("Horse","🐎","nature"), s("Deer","🦌","nature"),
+    s("Red Barn","🏚️","nature"), s("Sunflower Field","🌻","nature"), s("Hay Bale","🌾","nature"),
+    s("Wind Turbine","💨","nature"), s("Mountain","🏔️","nature"), s("River","🌊","nature"),
+    s("Lake","🏞️","nature"), s("Rainbow","🌈","nature"), s("Double Rainbow","🌈","nature"),
+    s("Cactus","🌵","nature"), s("Cornfield","🌽","nature"), s("Orchard","🍎","nature"),
+    s("Flock of Birds","🐦","nature"), s("Goat","🐐","nature"), s("Sheep","🐑","nature"),
+    s("Pig","🐷","nature"), s("Dog in Car Window","🐶","nature"), s("Wildflowers","💐","nature"),
+    s("Waterfall","💦","nature"), s("Vineyard","🍇","nature"), s("Buffalo","🦬","nature"),
+    s("Hawk","🦅","nature"),
+    // Food & Stops (25)
+    s("McDonald's","🍟","food"), s("Starbucks","☕","food"), s("Subway","🥖","food"),
+    s("Gas Station","⛽","food"), s("Rest Stop","🅿️","food"), s("Drive-Through","🚗","food"),
+    s("Billboard","📢","food"), s("Roadside Diner","🍽️","food"), s("Fruit Stand","🍑","food"),
+    s("Ice Cream Stand","🍦","food"), s("Wendy's","🍔","food"), s("Taco Bell","🌮","food"),
+    s("Chick-fil-A","🐔","food"), s("Dairy Queen","🍦","food"), s("Cracker Barrel","🪑","food"),
+    s("Waffle House","🧇","food"), s("Truck Stop","🚛","food"), s("Car Wash","🚿","food"),
+    s("Motel Sign","🏨","food"), s("Campground Sign","⛺","food"), s("Dollar General","💵","food"),
+    s("Fireworks Stand","🎆","food"), s("Roadside BBQ","🍖","food"), s("RV Park","🏕️","food"),
+    s("Outlet Mall","🛍️","food"),
+    // Landmarks (25)
+    s("Bridge","🌉","landmarks"), s("Overpass","🛣️","landmarks"), s("Railroad Crossing","🚂","landmarks"),
+    s("State Border Sign","🪧","landmarks"), s("Toll Booth","💰","landmarks"),
+    s("Welcome Sign","👋","landmarks"), s("Water Tower","🏗️","landmarks"),
+    s("Church Steeple","⛪","landmarks"), s("Grain Silo","🏠","landmarks"),
+    s("Sports Stadium","🏟️","landmarks"), s("Fairground","🎡","landmarks"),
+    s("State Capitol","🏛️","landmarks"), s("Wind Farm","🌬️","landmarks"),
+    s("Solar Farm","☀️","landmarks"), s("Airport","✈️","landmarks"), s("Radio Tower","📡","landmarks"),
+    s("Drive-In Theater","🎬","landmarks"), s("Covered Bridge","🌉","landmarks"),
+    s("Lighthouse","🗼","landmarks"), s("National Park Sign","🌲","landmarks"),
+    s("Monument","🗿","landmarks"), s("Dam","🌊","landmarks"), s("Ghost Town","👻","landmarks"),
+    s("Roadside Attraction","⭐","landmarks"), s("Mining Facility","⛏️","landmarks"),
+    // Weather (25)
+    s("Dark Clouds","☁️","weather"), s("Fog","🌫️","weather"), s("Dust Storm","🌪️","weather"),
+    s("Snow on Mountains","❄️","weather"), s("Puddles","💧","weather"), s("Sun Glare","☀️","weather"),
+    s("Thunderstorm","⛈️","weather"), s("Lightning","⚡","weather"), s("Hail","🌨️","weather"),
+    s("Tornado Warning Sign","🌪️","weather"), s("Mirage","🏜️","weather"),
+    s("Dramatic Sunset","🌅","weather"), s("Low-Hanging Moon","🌕","weather"),
+    s("Stars Visible","⭐","weather"), s("Hot Haze Shimmer","🌡️","weather"),
+    s("Wildfire Smoke","🔥","weather"), s("Dust Devil","🌀","weather"),
+    s("Ice on Road Sign","🧊","weather"), s("Flash Flood Sign","🌊","weather"),
+    s("Overcast Sky","🌥️","weather"), s("Sprinkles","🌦️","weather"),
+    s("Windy Flags","🚩","weather"), s("Frost on Windows","🌨️","weather"),
+    s("Morning Mist","🌁","weather"), s("Dramatic Clouds","🌤️","weather"),
+    // Signs & Roads (25)
+    s("Speed Limit 75+","🛑","signs"), s("Construction Zone","🚧","signs"),
+    s("Detour Sign","↩️","signs"), s("No Passing Zone","⛔","signs"),
+    s("Weigh Station","⚖️","signs"), s("Mile Marker ×0","🔢","signs"),
+    s("Highway Interchange","🔄","signs"), s("Rest Area Sign","🛏️","signs"),
+    s("Runaway Truck Ramp","🚛","signs"), s("Deer Crossing Sign","🦌","signs"),
+    s("Falling Rock Sign","🪨","signs"), s("Chain Control Sign","⛓️","signs"),
+    s("Low Clearance Sign","⬇️","signs"), s("Wrong Way Sign","🚫","signs"),
+    s("Divided Highway Sign","↔️","signs"), s("Scenic Overlook Sign","🏞️","signs"),
+    s("Historical Marker","📜","signs"), s("Adopt-a-Highway Sign","♻️","signs"),
+    s("Road Narrows Sign","➡️","signs"), s("Bridge Ices Sign","🌉","signs"),
+    s("Slippery When Wet","💧","signs"), s("No U-Turn Sign","🔃","signs"),
+    s("Merging Traffic Sign","🔀","signs"), s("End Construction Sign","✅","signs"),
+    s("State Highway Sign","🛣️","signs"),
+]
+
+let encoder = JSONEncoder()
+encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+print(String(data: try! encoder.encode(squares), encoding: .utf8)!)
+```
+
+- [ ] **Step 6: Generate squares.json**
+
+```bash
+swift makeSquares.swift > RoadTripBingo/Resources/squares.json
+python3 -c "import json; d=json.load(open('RoadTripBingo/Resources/squares.json')); print(len(d), 'squares')"
+```
+
+Expected: `150 squares`
+
+- [ ] **Step 7: Implement SquarePool**
+
+Create `RoadTripBingo/Game/SquarePool.swift`:
+
+```swift
+import Foundation
+
+enum SquarePool {
+    static func load() -> [BingoSquare] {
+        guard let url = Bundle.main.url(forResource: "squares", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let squares = try? JSONDecoder().decode([BingoSquare].self, from: data)
+        else { fatalError("squares.json missing from bundle or malformed") }
+        return squares
+    }
+
+    // Returns one 25-element array per player name (index 12 = FREE).
+    // Each player's 24 non-FREE squares are non-overlapping slices of the shuffled pool.
+    // Precondition: pool.count >= playerNames.count * 24
+    static func dealBoards(for playerNames: [String], from pool: [BingoSquare]) -> [String: [BingoSquare]] {
+        precondition(pool.count >= playerNames.count * 24)
+        var remaining = pool.shuffled()
+        var result: [String: [BingoSquare]] = [:]
+        for name in playerNames {
+            var squares = Array(remaining.prefix(24))
+            remaining.removeFirst(24)
+            squares.insert(.free, at: 12)
+            result[name] = squares
+        }
+        return result
+    }
+}
+```
+
+- [ ] **Step 8: Update AppState.startGame() to deal real boards**
+
+In `RoadTripBingo/State/AppState.swift`, replace the `startGame()` method:
+
+```swift
+func startGame() {
+    guard isHost else { return }
+    let pool = SquarePool.load()
+    let allNames = [playerName] + connectedPlayerNames
+    let boards = SquarePool.dealBoards(for: allNames, from: pool)
+
+    if let mySquares = boards[playerName] {
+        localBoard = BingoBoard(squares: mySquares)
+    }
+    for name in connectedPlayerNames {
+        opponentMarked[name] = [12]
+    }
+    completedLine = nil
+    multipeerSession?.stopAdvertising()
+    multipeerSession?.send(.gameStarted(boards: boards))
+    screen = .game
+}
+```
+
+Also replace `requestPlayAgain()`:
+
+```swift
+func requestPlayAgain() {
+    guard isHost else { return }
+    let pool = SquarePool.load()
+    let allNames = [playerName] + connectedPlayerNames
+    let boards = SquarePool.dealBoards(for: allNames, from: pool)
+
+    if let mySquares = boards[playerName] {
+        localBoard = BingoBoard(squares: mySquares)
+    }
+    for name in connectedPlayerNames {
+        opponentMarked[name] = [12]
+    }
+    completedLine = nil
+    multipeerSession?.send(.playAgain(boards: boards))
+    screen = .game
+}
+```
+
+- [ ] **Step 9: Run all tests — verify pass**
+
+```bash
+xcodebuild test \
+  -project RoadTripBingo.xcodeproj \
+  -scheme RoadTripBingoTests \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
+  2>&1 | grep -E "Test Suite 'All tests'|passed|failed"
+```
+
+Expected: `Test Suite 'All tests' passed`
+
+- [ ] **Step 10: Commit**
+
+```bash
+git add RoadTripBingo/Game/ RoadTripBingo/State/AppState.swift \
+        RoadTripBingo/Resources/squares.json makeSquares.swift \
+        RoadTripBingoTests/GameEngineTests.swift RoadTripBingoTests/SquarePoolTests.swift
+git commit -m "feat: implement GameEngine, SquarePool, and real board dealing"
+```
+
+---
+
+## Task 9: Bingo Grid Views
 
 **Files:**
 - Create: `RoadTripBingo/Views/BingoSquareView.swift`
@@ -1744,7 +1577,7 @@ import SwiftUI
 struct BingoSquareView: View {
     let square: BingoSquare
     let isMarked: Bool
-    let isHighlighted: Bool   // part of the winning line
+    let isHighlighted: Bool
     let onTap: () -> Void
 
     var body: some View {
@@ -1756,34 +1589,22 @@ struct BingoSquareView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .strokeBorder(isHighlighted ? Color.yellow : Color.clear, lineWidth: 3)
                     )
-
                 VStack(spacing: 4) {
                     if square.id == BingoSquare.freeSquareID {
-                        Text("⭐")
-                            .font(.system(size: 28))
-                        Text("FREE")
-                            .font(.system(size: 12, weight: .bold, design: .rounded))
-                            .foregroundColor(.black)
+                        Text("⭐").font(.system(size: 28))
+                        Text("FREE").font(.system(size: 12, weight: .bold, design: .rounded)).foregroundColor(.black)
                     } else if isMarked {
-                        Text("✓")
-                            .font(.system(size: 28, weight: .bold))
-                            .foregroundColor(.white)
+                        Text("✓").font(.system(size: 28, weight: .bold)).foregroundColor(.white)
                         Text(square.text)
                             .font(.system(size: 11, weight: .medium, design: .rounded))
-                            .foregroundColor(.white.opacity(0.85))
-                            .multilineTextAlignment(.center)
-                            .lineLimit(2)
+                            .foregroundColor(.white.opacity(0.85)).multilineTextAlignment(.center).lineLimit(2)
                     } else {
-                        Text(square.emoji)
-                            .font(.system(size: 24))
+                        Text(square.emoji).font(.system(size: 24))
                         Text(square.text)
                             .font(.system(size: 11, weight: .medium, design: .rounded))
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(2)
+                            .foregroundColor(.secondary).multilineTextAlignment(.center).lineLimit(2)
                     }
-                }
-                .padding(4)
+                }.padding(4)
             }
         }
         .buttonStyle(.plain)
@@ -1792,9 +1613,9 @@ struct BingoSquareView: View {
     }
 
     private var backgroundColor: Color {
-        if square.id == BingoSquare.freeSquareID { return Color.yellow }
+        if square.id == BingoSquare.freeSquareID { return .yellow }
         if isHighlighted { return Color.yellow.opacity(0.3) }
-        if isMarked { return Color.blue }
+        if isMarked { return .blue }
         return Color.white.opacity(0.08)
     }
 }
@@ -1822,8 +1643,7 @@ struct BingoGridView: View {
                     isMarked: board.isMarked(at: position),
                     isHighlighted: highlightedPositions.contains(position),
                     onTap: { onTap(position) }
-                )
-                .aspectRatio(1, contentMode: .fit)
+                ).aspectRatio(1, contentMode: .fit)
             }
         }
     }
@@ -1836,7 +1656,7 @@ struct BingoGridView: View {
 xcodebuild build \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   2>&1 | grep -E "error:|BUILD SUCCEEDED"
 ```
 
@@ -1851,7 +1671,7 @@ git commit -m "feat: add BingoSquareView and BingoGridView"
 
 ---
 
-## Task 11: OpponentStripView
+## Task 10: OpponentStripView
 
 **Files:**
 - Create: `RoadTripBingo/Views/OpponentStripView.swift`
@@ -1864,7 +1684,6 @@ Create `RoadTripBingo/Views/OpponentStripView.swift`:
 import SwiftUI
 
 struct OpponentStripView: View {
-    // opponentMarked: [playerName: Set<boardPosition>]
     let opponentMarked: [String: Set<Int>]
 
     var body: some View {
@@ -1872,28 +1691,19 @@ struct OpponentStripView: View {
             ForEach(opponentMarked.keys.sorted(), id: \.self) { name in
                 let marked = opponentMarked[name] ?? []
                 VStack(spacing: 6) {
-                    Text(name)
-                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        .foregroundColor(.secondary)
-
+                    Text(name).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundColor(.secondary)
                     MiniGridView(markedPositions: marked)
-
-                    Text("\(marked.count) ✓")
-                        .font(.system(size: 10))
-                        .foregroundColor(.secondary)
+                    Text("\(marked.count) ✓").font(.system(size: 10)).foregroundColor(.secondary)
                 }
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 10)
-        .background(Color.white.opacity(0.05))
-        .cornerRadius(12)
+        .padding(.horizontal, 20).padding(.vertical, 10)
+        .background(Color.white.opacity(0.05)).cornerRadius(12)
     }
 }
 
 private struct MiniGridView: View {
     let markedPositions: Set<Int>
-
     private let size: CGFloat = 10
     private let gap: CGFloat = 2
 
@@ -1904,17 +1714,12 @@ private struct MiniGridView: View {
                     ForEach(0..<5, id: \.self) { col in
                         let pos = row * 5 + col
                         RoundedRectangle(cornerRadius: 2)
-                            .fill(dotColor(for: pos))
+                            .fill(pos == 12 ? Color.yellow : markedPositions.contains(pos) ? Color.blue : Color.white.opacity(0.15))
                             .frame(width: size, height: size)
                     }
                 }
             }
         }
-    }
-
-    private func dotColor(for position: Int) -> Color {
-        if position == 12 { return .yellow }
-        return markedPositions.contains(position) ? .blue : Color.white.opacity(0.15)
     }
 }
 ```
@@ -1925,7 +1730,7 @@ private struct MiniGridView: View {
 xcodebuild build \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   2>&1 | grep -E "error:|BUILD SUCCEEDED"
 ```
 
@@ -1940,7 +1745,7 @@ git commit -m "feat: add OpponentStripView with mini dot-grids"
 
 ---
 
-## Task 12: GameView
+## Task 11: GameView
 
 **Files:**
 - Create: `RoadTripBingo/Views/GameView.swift`
@@ -1958,34 +1763,23 @@ struct GameView: View {
     var body: some View {
         ZStack {
             Color(red: 0.05, green: 0.07, blue: 0.13).ignoresSafeArea()
-
             if let board = appState.localBoard {
                 VStack(spacing: 12) {
-                    // Opponent strip (only shown if there are opponents)
                     if !appState.opponentMarked.isEmpty {
-                        OpponentStripView(opponentMarked: appState.opponentMarked)
-                            .padding(.horizontal, 16)
+                        OpponentStripView(opponentMarked: appState.opponentMarked).padding(.horizontal, 16)
                     }
-
-                    // Bingo grid
                     BingoGridView(
                         board: board,
                         highlightedPositions: Set(appState.completedLine ?? []),
                         onTap: appState.toggleSquare(at:)
-                    )
-                    .padding(.horizontal, 16)
-
-                    // BINGO! button — spring-animates in when a line is complete
+                    ).padding(.horizontal, 16)
                     if appState.completedLine != nil {
                         Button(action: appState.callBingo) {
                             Text("🎉 BINGO!")
                                 .font(.system(size: 28, weight: .black, design: .rounded))
-                                .padding(.horizontal, 48)
-                                .padding(.vertical, 16)
-                                .background(Color.yellow)
-                                .foregroundColor(.black)
-                                .cornerRadius(20)
-                                .shadow(color: .yellow.opacity(0.6), radius: 16)
+                                .padding(.horizontal, 48).padding(.vertical, 16)
+                                .background(Color.yellow).foregroundColor(.black)
+                                .cornerRadius(20).shadow(color: .yellow.opacity(0.6), radius: 16)
                         }
                         .transition(.scale.combined(with: .opacity))
                     }
@@ -1993,8 +1787,7 @@ struct GameView: View {
                 .padding(.vertical, 12)
                 .animation(.spring(response: 0.35, dampingFraction: 0.7), value: appState.completedLine != nil)
             } else {
-                ProgressView("Setting up board…")
-                    .tint(.white)
+                ProgressView("Setting up board…").tint(.white)
             }
         }
     }
@@ -2007,7 +1800,7 @@ struct GameView: View {
 xcodebuild build \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   2>&1 | grep -E "error:|BUILD SUCCEEDED"
 ```
 
@@ -2022,7 +1815,7 @@ git commit -m "feat: add GameView with grid, opponent strip, and BINGO! button"
 
 ---
 
-## Task 13: WinView and ConfettiView
+## Task 12: WinView + ConfettiView
 
 **Files:**
 - Create: `RoadTripBingo/Views/ConfettiView.swift`
@@ -2039,17 +1832,13 @@ struct ConfettiView: View {
     @State private var particles: [ConfettiParticle] = []
 
     var body: some View {
-        GeometryReader { geo in
+        GeometryReader { _ in
             ForEach(particles) { p in
-                Circle()
-                    .fill(p.color)
-                    .frame(width: p.size, height: p.size)
-                    .position(p.position)
-                    .opacity(p.opacity)
+                Circle().fill(p.color).frame(width: p.size, height: p.size)
+                    .position(p.position).opacity(p.opacity)
             }
         }
-        .ignoresSafeArea()
-        .allowsHitTesting(false)
+        .ignoresSafeArea().allowsHitTesting(false)
         .onAppear {
             particles = (0..<80).map { _ in ConfettiParticle() }
             withAnimation(.linear(duration: 2.5)) {
@@ -2065,10 +1854,7 @@ struct ConfettiView: View {
 
 private struct ConfettiParticle: Identifiable {
     let id = UUID()
-    var position = CGPoint(
-        x: CGFloat.random(in: 0...UIScreen.main.bounds.width),
-        y: CGFloat.random(in: -200...0)
-    )
+    var position = CGPoint(x: CGFloat.random(in: 0...1024), y: CGFloat.random(in: -200...0))
     let color = [Color.blue, .yellow, .red, .green, .orange, .purple].randomElement()!
     let size = CGFloat.random(in: 6...14)
     var opacity: Double = 1.0
@@ -2085,49 +1871,31 @@ import SwiftUI
 struct WinView: View {
     let winnerName: String
     @EnvironmentObject var appState: AppState
-
     private var isLocalWin: Bool { winnerName == appState.playerName }
 
     var body: some View {
         ZStack {
             Color(red: 0.05, green: 0.07, blue: 0.13).ignoresSafeArea()
-
-            if isLocalWin {
-                ConfettiView()
-            }
-
+            if isLocalWin { ConfettiView() }
             VStack(spacing: 32) {
-                Text(isLocalWin ? "🏆" : "🎯")
-                    .font(.system(size: 96))
-
+                Text(isLocalWin ? "🏆" : "🎯").font(.system(size: 96))
                 Text(isLocalWin ? "YOU GOT BINGO!" : "\(winnerName) got BINGO!")
                     .font(.system(size: 42, weight: .black, design: .rounded))
-                    .foregroundColor(isLocalWin ? .yellow : .white)
-                    .multilineTextAlignment(.center)
-
+                    .foregroundColor(isLocalWin ? .yellow : .white).multilineTextAlignment(.center)
                 if let line = appState.completedLine, isLocalWin, let board = appState.localBoard {
                     HStack(spacing: 8) {
                         ForEach(line, id: \.self) { pos in
-                            Text(board.squares[pos].emoji)
-                                .font(.title)
-                                .padding(8)
-                                .background(Color.yellow.opacity(0.25))
-                                .cornerRadius(8)
+                            Text(board.squares[pos].emoji).font(.title)
+                                .padding(8).background(Color.yellow.opacity(0.25)).cornerRadius(8)
                         }
                     }
                 }
-
                 Button(action: { appState.screen = .playAgain }) {
                     Text("Continue →")
-                        .font(.title3.bold())
-                        .padding(.horizontal, 48)
-                        .padding(.vertical, 16)
-                        .background(Color.white.opacity(0.15))
-                        .foregroundColor(.white)
-                        .cornerRadius(14)
+                        .font(.title3.bold()).padding(.horizontal, 48).padding(.vertical, 16)
+                        .background(Color.white.opacity(0.15)).foregroundColor(.white).cornerRadius(14)
                 }
-            }
-            .padding(48)
+            }.padding(48)
         }
     }
 }
@@ -2139,7 +1907,7 @@ struct WinView: View {
 xcodebuild build \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   2>&1 | grep -E "error:|BUILD SUCCEEDED"
 ```
 
@@ -2154,7 +1922,7 @@ git commit -m "feat: add WinView with confetti celebration"
 
 ---
 
-## Task 14: PlayAgainView
+## Task 13: PlayAgainView
 
 **Files:**
 - Create: `RoadTripBingo/Views/PlayAgainView.swift`
@@ -2172,60 +1940,37 @@ struct PlayAgainView: View {
     var body: some View {
         ZStack {
             Color(red: 0.05, green: 0.07, blue: 0.13).ignoresSafeArea()
-
             VStack(spacing: 36) {
                 Text("Session Standings")
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-
+                    .font(.system(size: 34, weight: .bold, design: .rounded)).foregroundColor(.white)
                 VStack(spacing: 10) {
                     ForEach(appState.winHistory.sorted(by: { $0.value > $1.value }), id: \.key) { name, wins in
                         HStack {
                             Text(wins == appState.winHistory.values.max() ? "🏆" : "  ")
-                            Text(name)
-                                .font(.headline)
-                                .foregroundColor(.white)
+                            Text(name).font(.headline).foregroundColor(.white)
                             Spacer()
-                            Text("\(wins) win\(wins == 1 ? "" : "s")")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                            Text("\(wins) win\(wins == 1 ? "" : "s")").font(.subheadline).foregroundColor(.secondary)
                         }
-                        .padding()
-                        .background(Color.white.opacity(0.06))
-                        .cornerRadius(10)
+                        .padding().background(Color.white.opacity(0.06)).cornerRadius(10)
                     }
-                }
-                .frame(maxWidth: 400)
-
+                }.frame(maxWidth: 400)
                 VStack(spacing: 14) {
                     if appState.isHost {
                         Button(action: appState.requestPlayAgain) {
                             Label("New Game", systemImage: "arrow.clockwise")
-                                .font(.title3.bold())
-                                .frame(maxWidth: 360)
-                                .padding()
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(14)
+                                .font(.title3.bold()).frame(maxWidth: 360).padding()
+                                .background(Color.blue).foregroundColor(.white).cornerRadius(14)
                         }
                     } else {
-                        Text("Waiting for host to start a new game…")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                        Text("Waiting for host to start a new game…").font(.subheadline).foregroundColor(.secondary)
                     }
-
                     Button(action: appState.goHome) {
                         Label("Go Home", systemImage: "house.fill")
-                            .font(.title3.bold())
-                            .frame(maxWidth: 360)
-                            .padding()
-                            .background(Color.white.opacity(0.10))
-                            .foregroundColor(.white)
-                            .cornerRadius(14)
+                            .font(.title3.bold()).frame(maxWidth: 360).padding()
+                            .background(Color.white.opacity(0.10)).foregroundColor(.white).cornerRadius(14)
                     }
                 }
-            }
-            .padding(48)
+            }.padding(48)
         }
     }
 }
@@ -2237,7 +1982,7 @@ struct PlayAgainView: View {
 xcodebuild build \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   2>&1 | grep -E "error:|BUILD SUCCEEDED"
 ```
 
@@ -2252,14 +1997,14 @@ git commit -m "feat: add PlayAgainView with win tally and new game controls"
 
 ---
 
-## Task 15: Wire Navigation and Run End-to-End
+## Task 14: Wire Full Navigation + Final Device Test
 
 **Files:**
 - Modify: `RoadTripBingo/ContentView.swift`
 
-- [ ] **Step 1: Replace ContentView with full navigation switch**
+- [ ] **Step 1: Replace stub ContentView with full navigation**
 
-Replace the contents of `RoadTripBingo/ContentView.swift` with:
+Replace `RoadTripBingo/ContentView.swift`:
 
 ```swift
 import SwiftUI
@@ -2271,20 +2016,15 @@ struct ContentView: View {
         ZStack {
             switch appState.screen {
             case .home:
-                HomeView()
-                    .transition(.opacity)
+                HomeView().transition(.opacity)
             case .lobby:
-                LobbyView()
-                    .transition(.opacity)
+                LobbyView().transition(.opacity)
             case .game:
-                GameView()
-                    .transition(.opacity)
+                GameView().transition(.opacity)
             case .win(let winnerName):
-                WinView(winnerName: winnerName)
-                    .transition(.opacity)
+                WinView(winnerName: winnerName).transition(.opacity)
             case .playAgain:
-                PlayAgainView()
-                    .transition(.opacity)
+                PlayAgainView().transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.25), value: appState.screen)
@@ -2292,47 +2032,32 @@ struct ContentView: View {
 }
 ```
 
-- [ ] **Step 2: Verify final build**
-
-```bash
-xcodebuild build \
-  -project RoadTripBingo.xcodeproj \
-  -scheme RoadTripBingo \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
-  2>&1 | grep -E "error:|BUILD SUCCEEDED"
-```
-
-Expected: `** BUILD SUCCEEDED **`
-
-- [ ] **Step 3: Run all tests**
+- [ ] **Step 2: Run all tests**
 
 ```bash
 xcodebuild test \
   -project RoadTripBingo.xcodeproj \
   -scheme RoadTripBingoTests \
-  -destination "platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)" \
+  -destination "platform=iOS Simulator,name=iPad Pro 13-inch (M4)" \
   2>&1 | grep -E "Test Suite 'All tests'|passed|failed"
 ```
 
 Expected: `Test Suite 'All tests' passed`
 
-- [ ] **Step 4: Smoke test on simulator**
+- [ ] **Step 3: Install on both iPads and run full end-to-end**
 
-Launch the app in the simulator:
+Install on both iPads via Xcode. Run through the complete game flow:
+1. iPad 1 creates game, iPad 2 discovers and joins
+2. Host taps Start Game — both devices receive their boards
+3. Each player marks several squares — opponent mini-grid updates in real time on the other device
+4. A player completes a line — BINGO! button appears, player taps it
+5. Both devices show the win screen (winner sees confetti, other sees name)
+6. Host taps New Game — both devices get fresh boards and return to game screen
+7. Host taps Go Home — both devices return to home screen
 
-```bash
-open RoadTripBingo.xcodeproj
-```
-
-Verify in Xcode:
-1. Run on an iPad simulator in landscape
-2. Home screen appears with name field and two buttons
-3. Type a name → tap "Create Game" → lobby appears showing your name
-4. BINGO! button does not appear until a full line is marked
-
-- [ ] **Step 5: Final commit**
+- [ ] **Step 4: Final commit**
 
 ```bash
 git add RoadTripBingo/ContentView.swift
-git commit -m "feat: wire full navigation in ContentView — app complete"
+git commit -m "feat: wire full navigation — app complete"
 ```
