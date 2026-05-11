@@ -16,25 +16,6 @@ final class SquarePoolTests: XCTestCase {
         XCTAssertFalse(SquarePool.load().contains { $0.id == BingoSquare.freeSquareID })
     }
 
-    func test_dealBoards_eachBoardHas25Squares() {
-        let boards = SquarePool.dealBoards(for: ["A","B","C"], from: SquarePool.load())
-        XCTAssertEqual(boards["A"]?.count, 25)
-        XCTAssertEqual(boards["B"]?.count, 25)
-        XCTAssertEqual(boards["C"]?.count, 25)
-    }
-
-    func test_dealBoards_index12IsFree() {
-        let boards = SquarePool.dealBoards(for: ["A"], from: SquarePool.load())
-        XCTAssertEqual(boards["A"]?[12].id, BingoSquare.freeSquareID)
-    }
-
-    func test_dealBoards_noOverlapBetweenPlayers() {
-        let boards = SquarePool.dealBoards(for: ["A","B"], from: SquarePool.load())
-        let aIDs = Set(boards["A"]!.map(\.id)).subtracting([BingoSquare.freeSquareID])
-        let bIDs = Set(boards["B"]!.map(\.id)).subtracting([BingoSquare.freeSquareID])
-        XCTAssertTrue(aIDs.isDisjoint(with: bIDs))
-    }
-
     func test_load_semiTruckIsVeryCommon() {
         let semiTruck = SquarePool.load().first { $0.text == "Semi Truck" }
         XCTAssertEqual(semiTruck?.rarity, .veryCommon)
@@ -43,5 +24,47 @@ final class SquarePoolTests: XCTestCase {
     func test_load_ghostTownIsVeryRare() {
         let ghostTown = SquarePool.load().first { $0.text == "Ghost Town" }
         XCTAssertEqual(ghostTown?.rarity, .veryRare)
+    }
+
+    func test_dealBoards_eachBoardHas25Squares() {
+        let players = [("A", BoardDifficulty.backseat), ("B", .backseat), ("C", .backseat)]
+            .map { (name: $0.0, difficulty: $0.1) }
+        let boards = SquarePool.dealBoards(for: players, from: SquarePool.load())
+        XCTAssertEqual(boards["A"]?.count, 25)
+        XCTAssertEqual(boards["B"]?.count, 25)
+        XCTAssertEqual(boards["C"]?.count, 25)
+    }
+
+    func test_dealBoards_index12IsFree() {
+        let players = [(name: "A", difficulty: BoardDifficulty.backseat)]
+        let boards = SquarePool.dealBoards(for: players, from: SquarePool.load())
+        XCTAssertEqual(boards["A"]?[12].id, BingoSquare.freeSquareID)
+    }
+
+    func test_dealBoards_noOverlapBetweenPlayers() {
+        let players = [(name: "A", difficulty: BoardDifficulty.backseat),
+                       (name: "B", difficulty: BoardDifficulty.backseat)]
+        let boards = SquarePool.dealBoards(for: players, from: SquarePool.load())
+        let aIDs = Set(boards["A"]!.map(\.id)).subtracting([BingoSquare.freeSquareID])
+        let bIDs = Set(boards["B"]!.map(\.id)).subtracting([BingoSquare.freeSquareID])
+        XCTAssertTrue(aIDs.isDisjoint(with: bIDs))
+    }
+
+    func test_dealBoards_backseatBoardHasAtLeast15CommonOrBetterSquares() {
+        let players = [(name: "A", difficulty: BoardDifficulty.backseat)]
+        let boards = SquarePool.dealBoards(for: players, from: SquarePool.load())
+        let nonFree = boards["A"]!.filter { $0.id != BingoSquare.freeSquareID }
+        let easyCount = nonFree.filter { $0.rarity == .veryCommon || $0.rarity == .common }.count
+        XCTAssertGreaterThanOrEqual(easyCount, 15,
+            "Backseat board should have at least 15 veryCommon+common squares")
+    }
+
+    func test_dealBoards_navigatorBoardHasAtLeast8RareOrVeryRareSquares() {
+        let players = [(name: "A", difficulty: BoardDifficulty.navigator)]
+        let boards = SquarePool.dealBoards(for: players, from: SquarePool.load())
+        let nonFree = boards["A"]!.filter { $0.id != BingoSquare.freeSquareID }
+        let hardCount = nonFree.filter { $0.rarity == .rare || $0.rarity == .veryRare }.count
+        XCTAssertGreaterThanOrEqual(hardCount, 8,
+            "Navigator board should have at least 8 rare+veryRare squares")
     }
 }

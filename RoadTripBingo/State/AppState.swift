@@ -84,7 +84,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         guard isHost else { return }
         let pool = SquarePool.load()
         let allNames = [playerName] + connectedPlayerNames
-        let boards = SquarePool.dealBoards(for: allNames, from: pool)
+        let players = allNames.map { (name: $0, difficulty: BoardDifficulty.backseat) }
+        let boards = SquarePool.dealBoards(for: players, from: pool)
 
         if let mySquares = boards[playerName] {
             localBoard = BingoBoard(squares: mySquares)
@@ -121,7 +122,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         guard isHost else { return }
         let pool = SquarePool.load()
         let allNames = [playerName] + connectedPlayerNames
-        let boards = SquarePool.dealBoards(for: allNames, from: pool)
+        let players = allNames.map { (name: $0, difficulty: BoardDifficulty.backseat) }
+        let boards = SquarePool.dealBoards(for: players, from: pool)
 
         if let mySquares = boards[playerName] {
             localBoard = BingoBoard(squares: mySquares)
@@ -171,6 +173,10 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             }
             completedLine = nil
             screen = .game
+
+        case .difficultyChosen:
+            // Placeholder — full handling wired in Task 6.
+            break
         }
     }
 
