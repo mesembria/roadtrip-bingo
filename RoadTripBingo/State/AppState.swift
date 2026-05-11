@@ -23,6 +23,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     @Published var isHost = false
     @Published var connectedPlayerNames: [String] = []
     @Published var foundGameNames: [String] = []
+    @Published var playerDifficulty: BoardDifficulty = .backseat
+    var playerDifficulties: [String: BoardDifficulty] = [:]  // host only: name → difficulty
 
     // MARK: - Game (Phase 2 — stubbed for now)
     @Published var localBoard: BingoBoard?
@@ -65,6 +67,13 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         multipeerSession?.invitePeer(named: name)
     }
 
+    func chooseDifficulty(_ difficulty: BoardDifficulty) {
+        playerDifficulty = difficulty
+        if !isHost {
+            multipeerSession?.send(.difficultyChosen(byName: playerName, difficulty: difficulty))
+        }
+    }
+
     func goHome() {
         multipeerSession?.disconnect()
         multipeerSession = nil
@@ -74,6 +83,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         completedLine = nil
         opponentMarked = [:]
         isHost = false
+        playerDifficulty = .backseat
+        playerDifficulties = [:]
         // winHistory is intentionally preserved across sessions
         screen = .home
     }
@@ -84,7 +95,10 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         guard isHost else { return }
         let pool = SquarePool.load()
         let allNames = [playerName] + connectedPlayerNames
-        let players = allNames.map { (name: $0, difficulty: BoardDifficulty.backseat) }
+        let players = allNames.map { name -> (name: String, difficulty: BoardDifficulty) in
+            let diff = name == playerName ? playerDifficulty : (playerDifficulties[name] ?? .backseat)
+            return (name: name, difficulty: diff)
+        }
         let boards = SquarePool.dealBoards(for: players, from: pool)
 
         if let mySquares = boards[playerName] {
@@ -122,7 +136,10 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         guard isHost else { return }
         let pool = SquarePool.load()
         let allNames = [playerName] + connectedPlayerNames
-        let players = allNames.map { (name: $0, difficulty: BoardDifficulty.backseat) }
+        let players = allNames.map { name -> (name: String, difficulty: BoardDifficulty) in
+            let diff = name == playerName ? playerDifficulty : (playerDifficulties[name] ?? .backseat)
+            return (name: name, difficulty: diff)
+        }
         let boards = SquarePool.dealBoards(for: players, from: pool)
 
         if let mySquares = boards[playerName] {
@@ -174,9 +191,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             completedLine = nil
             screen = .game
 
-        case .difficultyChosen:
-            // Placeholder — full handling wired in Task 6.
-            break
+        case .difficultyChosen(let byName, let difficulty):
+            playerDifficulties[byName] = difficulty
         }
     }
 
