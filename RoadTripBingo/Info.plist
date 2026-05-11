@@ -25,6 +25,8 @@
     <string>Road Trip Bingo uses your local network to find other players nearby.</string>
     <key>UISupportedInterfaceOrientations~ipad</key>
     <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
         <string>UIInterfaceOrientationLandscapeLeft</string>
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
