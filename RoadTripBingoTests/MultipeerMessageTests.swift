@@ -48,4 +48,14 @@ final class MultipeerMessageTests: XCTestCase {
         }
         XCTAssertEqual(decodedBoards["Zoe"]?.first?.text, "Barn")
     }
+
+    func test_difficultyChosen_roundtrip() throws {
+        let msg = MultipeerMessage.difficultyChosen(byName: "Zoe", difficulty: .navigator)
+        let decoded = try roundtrip(msg)
+        guard case .difficultyChosen(let name, let diff) = decoded else {
+            return XCTFail("Wrong case decoded")
+        }
+        XCTAssertEqual(name, "Zoe")
+        XCTAssertEqual(diff, .navigator)
+    }
 }
