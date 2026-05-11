@@ -10,11 +10,12 @@ struct ContentView: View {
                 HomeView().transition(.opacity)
             case .lobby:
                 LobbyView().transition(.opacity)
-            case .game, .win(_), .playAgain:
-                // Phase 2: game screens added in Tasks 9–14
-                Text("Game coming soon").foregroundColor(.white)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.black)
+            case .game:
+                GameView().transition(.opacity)
+            case .win(let winnerName):
+                WinView(winnerName: winnerName).transition(.opacity)
+            case .playAgain:
+                PlayAgainView().transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.25), value: appState.screen)
