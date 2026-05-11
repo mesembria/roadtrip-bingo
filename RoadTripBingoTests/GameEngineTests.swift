@@ -6,7 +6,7 @@ final class GameEngineTests: XCTestCase {
     private func makeBoard(marking positions: Set<Int> = []) -> BingoBoard {
         let squares = (0..<25).map { i -> BingoSquare in
             if i == 12 { return .free }
-            return BingoSquare(id: UUID(), text: "Item \(i)", emoji: "🔵", category: .vehicles)
+            return BingoSquare(id: UUID(), text: "Item \(i)", emoji: "🔵", category: .vehicles, rarity: .common)
         }
         var board = BingoBoard(squares: squares)
         for pos in positions where pos != 12 { board.toggle(at: pos) }

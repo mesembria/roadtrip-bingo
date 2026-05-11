@@ -9,7 +9,7 @@ final class MultipeerMessageTests: XCTestCase {
     }
 
     func test_gameStarted_roundtrip() throws {
-        let square = BingoSquare(id: UUID(), text: "Cow", emoji: "🐄", category: .nature)
+        let square = BingoSquare(id: UUID(), text: "Cow", emoji: "🐄", category: .nature, rarity: .veryCommon)
         let boards: [String: [BingoSquare]] = ["Emma": [square]]
         let msg = MultipeerMessage.gameStarted(boards: boards)
         let decoded = try roundtrip(msg)
@@ -39,7 +39,7 @@ final class MultipeerMessageTests: XCTestCase {
     }
 
     func test_playAgain_roundtrip() throws {
-        let square = BingoSquare(id: UUID(), text: "Barn", emoji: "🏚️", category: .nature)
+        let square = BingoSquare(id: UUID(), text: "Barn", emoji: "🏚️", category: .nature, rarity: .veryCommon)
         let boards: [String: [BingoSquare]] = ["Zoe": [square]]
         let msg = MultipeerMessage.playAgain(boards: boards)
         let decoded = try roundtrip(msg)

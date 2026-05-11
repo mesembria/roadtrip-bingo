@@ -34,4 +34,14 @@ final class SquarePoolTests: XCTestCase {
         let bIDs = Set(boards["B"]!.map(\.id)).subtracting([BingoSquare.freeSquareID])
         XCTAssertTrue(aIDs.isDisjoint(with: bIDs))
     }
+
+    func test_load_semiTruckIsVeryCommon() {
+        let semiTruck = SquarePool.load().first { $0.text == "Semi Truck" }
+        XCTAssertEqual(semiTruck?.rarity, .veryCommon)
+    }
+
+    func test_load_ghostTownIsVeryRare() {
+        let ghostTown = SquarePool.load().first { $0.text == "Ghost Town" }
+        XCTAssertEqual(ghostTown?.rarity, .veryRare)
+    }
 }

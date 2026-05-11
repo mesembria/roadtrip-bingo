@@ -17,12 +17,14 @@ struct BingoSquare: Codable, Identifiable, Hashable {
     let text: String
     let emoji: String
     let category: SquareCategory
+    let rarity: SquareRarity
 
     static let freeSquareID = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
     static let free = BingoSquare(
         id: freeSquareID,
         text: "FREE",
         emoji: "⭐",
-        category: .landmarks
+        category: .landmarks,
+        rarity: .veryCommon
     )
 }

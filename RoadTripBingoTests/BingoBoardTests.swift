@@ -6,7 +6,7 @@ final class BingoBoardTests: XCTestCase {
     private func makeBoard() -> BingoBoard {
         let squares = (0..<25).map { i -> BingoSquare in
             if i == 12 { return .free }
-            return BingoSquare(id: UUID(), text: "Item \(i)", emoji: "🚗", category: .vehicles)
+            return BingoSquare(id: UUID(), text: "Item \(i)", emoji: "🚗", category: .vehicles, rarity: .common)
         }
         return BingoBoard(squares: squares)
     }
