@@ -1,5 +1,13 @@
 import Foundation
 
+enum SquareRarity: String, Codable, CaseIterable {
+    case veryCommon
+    case common
+    case uncommon
+    case rare
+    case veryRare
+}
+
 enum SquareCategory: String, Codable, CaseIterable {
     case vehicles, nature, food, landmarks, weather, signs
 }
