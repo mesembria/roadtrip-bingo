@@ -192,7 +192,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             screen = .game
 
         case .difficultyChosen(let byName, let difficulty):
-            playerDifficulties[byName] = difficulty
+            if isHost {
+                playerDifficulties[byName] = difficulty
+            }
         }
     }
 
