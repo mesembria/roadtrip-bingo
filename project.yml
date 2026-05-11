@@ -25,5 +25,8 @@ targets:
     type: bundle.unit-test
     platform: iOS
     sources: RoadTripBingoTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
     dependencies:
       - target: RoadTripBingo
