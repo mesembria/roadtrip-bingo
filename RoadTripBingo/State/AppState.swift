@@ -81,10 +81,20 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     // MARK: - Lobby (host only) — Phase 2 will fill startGame()
 
     func startGame() {
-        guard isHost, !connectedPlayerNames.isEmpty else { return }
+        guard isHost else { return }
+        let pool = SquarePool.load()
+        let allNames = [playerName] + connectedPlayerNames
+        let boards = SquarePool.dealBoards(for: allNames, from: pool)
+
+        if let mySquares = boards[playerName] {
+            localBoard = BingoBoard(squares: mySquares)
+        }
+        for name in connectedPlayerNames {
+            opponentMarked[name] = [12]
+        }
+        completedLine = nil
         multipeerSession?.stopAdvertising()
-        // Phase 2: replace [:] with real board assignment
-        multipeerSession?.send(.gameStarted(boards: [:]))
+        multipeerSession?.send(.gameStarted(boards: boards))
         screen = .game
     }
 
@@ -109,7 +119,18 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func requestPlayAgain() {
         guard isHost else { return }
-        // Phase 2: deal new boards
+        let pool = SquarePool.load()
+        let allNames = [playerName] + connectedPlayerNames
+        let boards = SquarePool.dealBoards(for: allNames, from: pool)
+
+        if let mySquares = boards[playerName] {
+            localBoard = BingoBoard(squares: mySquares)
+        }
+        for name in connectedPlayerNames {
+            opponentMarked[name] = [12]
+        }
+        completedLine = nil
+        multipeerSession?.send(.playAgain(boards: boards))
         screen = .game
     }
 
