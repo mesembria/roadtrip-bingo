@@ -14,9 +14,13 @@ struct LobbyView: View {
         VStack(spacing: 32) {
             Text("Lobby").font(.system(size: 34, weight: .bold, design: .rounded)).foregroundColor(.white)
             Text("Other players appear automatically nearby").font(.subheadline).foregroundColor(.white.opacity(0.6))
+            difficultyPicker
             VStack(spacing: 10) {
-                playerRow(name: appState.playerName, label: "you (host)")
-                ForEach(appState.connectedPlayerNames, id: \.self) { playerRow(name: $0, label: nil) }
+                playerRow(name: appState.playerName, label: "you (host)", difficulty: appState.playerDifficulty)
+                ForEach(appState.connectedPlayerNames, id: \.self) { name in
+                    playerRow(name: name, label: nil,
+                              difficulty: appState.playerDifficulties[name] ?? .backseat)
+                }
             }.frame(maxWidth: 400)
             Button(action: appState.startGame) {
                 Text("Start Game ▶")
@@ -35,6 +39,7 @@ struct LobbyView: View {
     private var joinerView: some View {
         VStack(spacing: 32) {
             Text("Join Game").font(.system(size: 34, weight: .bold, design: .rounded)).foregroundColor(.white)
+            difficultyPicker
             if appState.connectedPlayerNames.isEmpty {
                 VStack(spacing: 16) {
                     if appState.foundGameNames.isEmpty {
@@ -60,20 +65,44 @@ struct LobbyView: View {
             } else {
                 VStack(spacing: 10) {
                     Text("Connected! Waiting for host…").font(.subheadline).foregroundColor(.white.opacity(0.6))
-                    playerRow(name: appState.playerName, label: "you")
-                    ForEach(appState.connectedPlayerNames, id: \.self) { playerRow(name: $0, label: nil) }
+                    playerRow(name: appState.playerName, label: "you", difficulty: nil)
+                    ForEach(appState.connectedPlayerNames, id: \.self) { playerRow(name: $0, label: nil, difficulty: nil) }
                 }.frame(maxWidth: 400)
             }
             Button("Cancel", role: .destructive, action: appState.goHome).foregroundColor(.white.opacity(0.6))
         }.padding(48)
     }
 
-    private func playerRow(name: String, label: String?) -> some View {
+    private var difficultyPicker: some View {
+        HStack(spacing: 8) {
+            ForEach(BoardDifficulty.allCases, id: \.self) { difficulty in
+                Button(action: { appState.chooseDifficulty(difficulty) }) {
+                    Text(difficulty.displayName)
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(appState.playerDifficulty == difficulty
+                                    ? Color.blue
+                                    : Color.white.opacity(0.08))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+            }
+        }
+        .frame(maxWidth: 400)
+    }
+
+    private func playerRow(name: String, label: String?, difficulty: BoardDifficulty?) -> some View {
         HStack(spacing: 12) {
             Circle().fill(Color.green).frame(width: 10, height: 10)
             Text(name).font(.headline).foregroundColor(.white)
             if let label { Text(label).font(.caption).foregroundColor(.white.opacity(0.6)) }
             Spacer()
+            if let difficulty {
+                Text(difficulty.displayName)
+                    .font(.caption)
+                    .foregroundColor(.white.opacity(0.6))
+            }
         }
         .padding(.horizontal, 16).padding(.vertical, 10)
         .background(Color.white.opacity(0.06)).cornerRadius(10)

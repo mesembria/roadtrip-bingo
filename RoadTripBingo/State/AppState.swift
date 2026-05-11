@@ -24,7 +24,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     @Published var connectedPlayerNames: [String] = []
     @Published var foundGameNames: [String] = []
     @Published var playerDifficulty: BoardDifficulty = .backseat
-    var playerDifficulties: [String: BoardDifficulty] = [:]  // host only: name → difficulty
+    @Published var playerDifficulties: [String: BoardDifficulty] = [:]  // host only: name → difficulty
 
     // MARK: - Game (Phase 2 — stubbed for now)
     @Published var localBoard: BingoBoard?
