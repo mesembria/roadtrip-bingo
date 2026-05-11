@@ -8,18 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D16366F1525405AB2B03711 /* GameEngine.swift */; };
+		2E8B64CFB6574C864BB4D4B2 /* OpponentStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */; };
 		312E1E01EF66D434A2BF17E8 /* squares.json in Resources */ = {isa = PBXBuildFile; fileRef = 731548D4671F0ACB06D7FB47 /* squares.json */; };
 		45DE5727C9CAA0C3D8E56CD1 /* BingoBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C8339E3F7AED215C031136 /* BingoBoardTests.swift */; };
 		4BA5BDA24B68E3B57192949A /* SquarePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3D480C0DA2C83DE9B7934 /* SquarePool.swift */; };
 		556352E19419BFFBD6B22566 /* LobbyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67A9EA37EF3D8484426DF49 /* LobbyView.swift */; };
 		7A6139AB5EA84B50F9B9E4F5 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2A797358229A5D3E6811F /* HomeView.swift */; };
+		88766EBA70426FB6DA55992C /* BingoSquareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2753B43B839BD0EEA8B4201B /* BingoSquareView.swift */; };
+		8FB2A8F6DD2B692CA54FBC51 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA225771BADF1C45329F34 /* ConfettiView.swift */; };
+		93C17D72CA88102C970BA6F9 /* WinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D7079330D5309CC9B40FCD /* WinView.swift */; };
 		9825D61245605C593D8BC7C7 /* MultipeerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */; };
 		A0860CB6E7BE9B69EE4C4EF2 /* MultipeerMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */; };
+		B0DC156F866FE2A177773370 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A758A06BC27257832CE90F20 /* GameView.swift */; };
 		B7D9C83BCFBE2834F3BD892D /* SquarePoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B46A1ED1B1B26F8D1865E /* SquarePoolTests.swift */; };
 		C8EE6560303C250D0F3288BA /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2F72F89251294BFE85AD72 /* MultipeerSession.swift */; };
 		CC8A31998772D2D2461D94B4 /* BingoBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C3DF2FD55D24FDE3C8DDB8 /* BingoBoard.swift */; };
+		CCEC755BB280931555EACB11 /* PlayAgainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D0F5ED86EDDC60416BD6A6 /* PlayAgainView.swift */; };
 		D7116BC21D6FB0816B01952D /* GameEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6D110F4EABD34F22BFDA52 /* GameEngineTests.swift */; };
 		D9D750B1F831A92C75001561 /* RoadTripBingoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259798FF46BAE52D20FB5AC /* RoadTripBingoApp.swift */; };
+		DB30D839E435F5EE576BD79C /* BingoGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8C0599EECB353352C2464 /* BingoGridView.swift */; };
 		ED0A27E6447052ED0FDA3AD9 /* BingoSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6FA963025C170363180C6E8 /* BingoSquare.swift */; };
 		F4E182EC5AF674AA80E50C98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */; };
 		F5111507C220551AF21A652F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EB052E3667A4113B417DE3 /* AppState.swift */; };
@@ -38,19 +45,26 @@
 /* Begin PBXFileReference section */
 		028F3F38843730F1A67E72D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerMessageTests.swift; sourceTree = "<group>"; };
+		10D7079330D5309CC9B40FCD /* WinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinView.swift; sourceTree = "<group>"; };
 		1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerMessage.swift; sourceTree = "<group>"; };
 		24F534579B9712082DB264D8 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		26CA225771BADF1C45329F34 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
+		2753B43B839BD0EEA8B4201B /* BingoSquareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoSquareView.swift; sourceTree = "<group>"; };
 		27FE15FDD36D024BA300BFBD /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		2ED2A797358229A5D3E6811F /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		31D0F5ED86EDDC60416BD6A6 /* PlayAgainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayAgainView.swift; sourceTree = "<group>"; };
 		35C8339E3F7AED215C031136 /* BingoBoardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoBoardTests.swift; sourceTree = "<group>"; };
 		41AADAA0C173D2D47BEFABFA /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		447D221F341187CAE8CBCCAC /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		50BC137311D249C3539DE524 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentStripView.swift; sourceTree = "<group>"; };
 		731548D4671F0ACB06D7FB47 /* squares.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = squares.json; sourceTree = "<group>"; };
 		74EB052E3667A4113B417DE3 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		76A8C0599EECB353352C2464 /* BingoGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoGridView.swift; sourceTree = "<group>"; };
 		7D16366F1525405AB2B03711 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
 		A6FA963025C170363180C6E8 /* BingoSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoSquare.swift; sourceTree = "<group>"; };
+		A758A06BC27257832CE90F20 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		A986750ED27B1F71AAA70A01 /* RoadTripBingo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RoadTripBingo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C259798FF46BAE52D20FB5AC /* RoadTripBingoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadTripBingoApp.swift; sourceTree = "<group>"; };
 		C67A9EA37EF3D8484426DF49 /* LobbyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LobbyView.swift; sourceTree = "<group>"; };
@@ -78,8 +92,15 @@
 			isa = PBXGroup;
 			children = (
 				27FE15FDD36D024BA300BFBD /* .gitkeep */,
+				76A8C0599EECB353352C2464 /* BingoGridView.swift */,
+				2753B43B839BD0EEA8B4201B /* BingoSquareView.swift */,
+				26CA225771BADF1C45329F34 /* ConfettiView.swift */,
+				A758A06BC27257832CE90F20 /* GameView.swift */,
 				2ED2A797358229A5D3E6811F /* HomeView.swift */,
 				C67A9EA37EF3D8484426DF49 /* LobbyView.swift */,
+				6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */,
+				31D0F5ED86EDDC60416BD6A6 /* PlayAgainView.swift */,
+				10D7079330D5309CC9B40FCD /* WinView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -271,15 +292,22 @@
 			files = (
 				F5111507C220551AF21A652F /* AppState.swift in Sources */,
 				CC8A31998772D2D2461D94B4 /* BingoBoard.swift in Sources */,
+				DB30D839E435F5EE576BD79C /* BingoGridView.swift in Sources */,
 				ED0A27E6447052ED0FDA3AD9 /* BingoSquare.swift in Sources */,
+				88766EBA70426FB6DA55992C /* BingoSquareView.swift in Sources */,
+				8FB2A8F6DD2B692CA54FBC51 /* ConfettiView.swift in Sources */,
 				F4E182EC5AF674AA80E50C98 /* ContentView.swift in Sources */,
 				183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */,
+				B0DC156F866FE2A177773370 /* GameView.swift in Sources */,
 				7A6139AB5EA84B50F9B9E4F5 /* HomeView.swift in Sources */,
 				556352E19419BFFBD6B22566 /* LobbyView.swift in Sources */,
 				9825D61245605C593D8BC7C7 /* MultipeerMessage.swift in Sources */,
 				C8EE6560303C250D0F3288BA /* MultipeerSession.swift in Sources */,
+				2E8B64CFB6574C864BB4D4B2 /* OpponentStripView.swift in Sources */,
+				CCEC755BB280931555EACB11 /* PlayAgainView.swift in Sources */,
 				D9D750B1F831A92C75001561 /* RoadTripBingoApp.swift in Sources */,
 				4BA5BDA24B68E3B57192949A /* SquarePool.swift in Sources */,
+				93C17D72CA88102C970BA6F9 /* WinView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
