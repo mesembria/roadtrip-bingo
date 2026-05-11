@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B659BDBDBA79256A60461F0 /* BoardDifficulty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */; };
 		183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D16366F1525405AB2B03711 /* GameEngine.swift */; };
 		2E8B64CFB6574C864BB4D4B2 /* OpponentStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */; };
 		312E1E01EF66D434A2BF17E8 /* squares.json in Resources */ = {isa = PBXBuildFile; fileRef = 731548D4671F0ACB06D7FB47 /* squares.json */; };
@@ -46,6 +47,7 @@
 		028F3F38843730F1A67E72D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerMessageTests.swift; sourceTree = "<group>"; };
 		10D7079330D5309CC9B40FCD /* WinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinView.swift; sourceTree = "<group>"; };
+		1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardDifficulty.swift; sourceTree = "<group>"; };
 		1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerMessage.swift; sourceTree = "<group>"; };
 		24F534579B9712082DB264D8 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		26CA225771BADF1C45329F34 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 				50BC137311D249C3539DE524 /* .gitkeep */,
 				F2C3DF2FD55D24FDE3C8DDB8 /* BingoBoard.swift */,
 				A6FA963025C170363180C6E8 /* BingoSquare.swift */,
+				1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */,
 				1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */,
 			);
 			path = Models;
@@ -295,6 +298,7 @@
 				DB30D839E435F5EE576BD79C /* BingoGridView.swift in Sources */,
 				ED0A27E6447052ED0FDA3AD9 /* BingoSquare.swift in Sources */,
 				88766EBA70426FB6DA55992C /* BingoSquareView.swift in Sources */,
+				0B659BDBDBA79256A60461F0 /* BoardDifficulty.swift in Sources */,
 				8FB2A8F6DD2B692CA54FBC51 /* ConfettiView.swift in Sources */,
 				F4E182EC5AF674AA80E50C98 /* ContentView.swift in Sources */,
 				183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */,
