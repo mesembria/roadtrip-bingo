@@ -8,9 +8,9 @@ struct OpponentStripView: View {
             ForEach(opponentMarked.keys.sorted(), id: \.self) { name in
                 let marked = opponentMarked[name] ?? []
                 VStack(spacing: 6) {
-                    Text(name).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundColor(.secondary)
+                    Text(name).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundColor(.white.opacity(0.6))
                     MiniGridView(markedPositions: marked)
-                    Text("\(marked.count) ✓").font(.system(size: 10)).foregroundColor(.secondary)
+                    Text("\(marked.count) ✓").font(.system(size: 10)).foregroundColor(.white.opacity(0.6))
                 }
             }
         }

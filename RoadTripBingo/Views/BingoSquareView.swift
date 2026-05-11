@@ -28,7 +28,7 @@ struct BingoSquareView: View {
                         Text(square.emoji).font(.system(size: 24))
                         Text(square.text)
                             .font(.system(size: 11, weight: .medium, design: .rounded))
-                            .foregroundColor(.secondary).multilineTextAlignment(.center).lineLimit(2)
+                            .foregroundColor(.white.opacity(0.6)).multilineTextAlignment(.center).lineLimit(2)
                     }
                 }.padding(4)
             }

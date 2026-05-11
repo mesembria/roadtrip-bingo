@@ -17,7 +17,7 @@ struct PlayAgainView: View {
                             Text(wins == appState.winHistory.values.max() ? "🏆" : "  ")
                             Text(name).font(.headline).foregroundColor(.white)
                             Spacer()
-                            Text("\(wins) win\(wins == 1 ? "" : "s")").font(.subheadline).foregroundColor(.secondary)
+                            Text("\(wins) win\(wins == 1 ? "" : "s")").font(.subheadline).foregroundColor(.white.opacity(0.6))
                         }
                         .padding().background(Color.white.opacity(0.06)).cornerRadius(10)
                     }
@@ -30,7 +30,7 @@ struct PlayAgainView: View {
                                 .background(Color.blue).foregroundColor(.white).cornerRadius(14)
                         }
                     } else {
-                        Text("Waiting for host to start a new game…").font(.subheadline).foregroundColor(.secondary)
+                        Text("Waiting for host to start a new game…").font(.subheadline).foregroundColor(.white.opacity(0.6))
                     }
                     Button(action: appState.goHome) {
                         Label("Go Home", systemImage: "house.fill")

@@ -13,7 +13,7 @@ struct LobbyView: View {
     private var hostView: some View {
         VStack(spacing: 32) {
             Text("Lobby").font(.system(size: 34, weight: .bold, design: .rounded)).foregroundColor(.white)
-            Text("Other players appear automatically nearby").font(.subheadline).foregroundColor(.secondary)
+            Text("Other players appear automatically nearby").font(.subheadline).foregroundColor(.white.opacity(0.6))
             VStack(spacing: 10) {
                 playerRow(name: appState.playerName, label: "you (host)")
                 ForEach(appState.connectedPlayerNames, id: \.self) { playerRow(name: $0, label: nil) }
@@ -26,9 +26,9 @@ struct LobbyView: View {
             }
             .disabled(appState.connectedPlayerNames.isEmpty)
             if appState.connectedPlayerNames.isEmpty {
-                Text("Waiting for players to join…").font(.caption).foregroundColor(.secondary)
+                Text("Waiting for players to join…").font(.caption).foregroundColor(.white.opacity(0.6))
             }
-            Button("Cancel", role: .destructive, action: appState.goHome).foregroundColor(.secondary)
+            Button("Cancel", role: .destructive, action: appState.goHome).foregroundColor(.white.opacity(0.6))
         }.padding(48)
     }
 
@@ -39,15 +39,15 @@ struct LobbyView: View {
                 VStack(spacing: 16) {
                     if appState.foundGameNames.isEmpty {
                         ProgressView().tint(.white)
-                        Text("Looking for nearby games…").font(.subheadline).foregroundColor(.secondary)
+                        Text("Looking for nearby games…").font(.subheadline).foregroundColor(.white.opacity(0.6))
                     } else {
-                        Text("Games nearby:").font(.subheadline).foregroundColor(.secondary)
+                        Text("Games nearby:").font(.subheadline).foregroundColor(.white.opacity(0.6))
                         ForEach(appState.foundGameNames, id: \.self) { name in
                             Button(action: { appState.inviteGame(named: name) }) {
                                 HStack {
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(name).font(.headline).foregroundColor(.white)
-                                        Text("Tap to join").font(.caption).foregroundColor(.secondary)
+                                        Text("Tap to join").font(.caption).foregroundColor(.white.opacity(0.6))
                                     }
                                     Spacer()
                                     Image(systemName: "arrow.right.circle.fill").font(.title2).foregroundColor(.blue)
@@ -59,12 +59,12 @@ struct LobbyView: View {
                 }.frame(maxWidth: 400)
             } else {
                 VStack(spacing: 10) {
-                    Text("Connected! Waiting for host…").font(.subheadline).foregroundColor(.secondary)
+                    Text("Connected! Waiting for host…").font(.subheadline).foregroundColor(.white.opacity(0.6))
                     playerRow(name: appState.playerName, label: "you")
                     ForEach(appState.connectedPlayerNames, id: \.self) { playerRow(name: $0, label: nil) }
                 }.frame(maxWidth: 400)
             }
-            Button("Cancel", role: .destructive, action: appState.goHome).foregroundColor(.secondary)
+            Button("Cancel", role: .destructive, action: appState.goHome).foregroundColor(.white.opacity(0.6))
         }.padding(48)
     }
 
@@ -72,7 +72,7 @@ struct LobbyView: View {
         HStack(spacing: 12) {
             Circle().fill(Color.green).frame(width: 10, height: 10)
             Text(name).font(.headline).foregroundColor(.white)
-            if let label { Text(label).font(.caption).foregroundColor(.secondary) }
+            if let label { Text(label).font(.caption).foregroundColor(.white.opacity(0.6)) }
             Spacer()
         }
         .padding(.horizontal, 16).padding(.vertical, 10)
