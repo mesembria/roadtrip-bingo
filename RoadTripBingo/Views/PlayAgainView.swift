@@ -10,7 +10,9 @@ struct PlayAgainView: View {
                 Text("Session Standings")
                     .font(.system(size: 34, weight: .bold, design: .rounded)).foregroundColor(.white)
                 VStack(spacing: 10) {
-                    ForEach(appState.winHistory.sorted(by: { $0.value > $1.value }), id: \.key) { name, wins in
+                    ForEach(appState.winHistory.sorted(by: { $0.value > $1.value }), id: \.key) { entry in
+                        let name = entry.key
+                        let wins = entry.value
                         HStack {
                             Text(wins == appState.winHistory.values.max() ? "🏆" : "  ")
                             Text(name).font(.headline).foregroundColor(.white)
