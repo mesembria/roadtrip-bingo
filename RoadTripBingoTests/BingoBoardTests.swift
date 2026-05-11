@@ -40,4 +40,58 @@ final class BingoBoardTests: XCTestCase {
         board.toggle(at: 12)
         XCTAssertTrue(board.isMarked(at: 12))
     }
+
+    // MARK: - mark / unmark
+
+    func test_mark_marksTile() {
+        var board = makeBoard()
+        board.mark(at: 0)
+        XCTAssertTrue(board.isMarked(at: 0))
+    }
+
+    func test_mark_isIdempotent() {
+        var board = makeBoard()
+        board.mark(at: 0)
+        board.mark(at: 0)
+        XCTAssertTrue(board.isMarked(at: 0))
+    }
+
+    func test_unmark_unmarksTile() {
+        var board = makeBoard()
+        board.toggle(at: 0)
+        board.unmark(at: 0)
+        XCTAssertFalse(board.isMarked(at: 0))
+    }
+
+    func test_unmark_ignoresFreeSquare() {
+        var board = makeBoard()
+        board.unmark(at: 12)
+        XCTAssertTrue(board.isMarked(at: 12))
+    }
+
+    // MARK: - replaceSquare
+
+    func test_replaceSquare_changesContent() {
+        var board = makeBoard()
+        let newSquare = BingoSquare(id: UUID(), text: "New", emoji: "⭐", category: .vehicles, rarity: .rare)
+        board.replaceSquare(at: 0, with: newSquare)
+        XCTAssertEqual(board.squares[0].text, "New")
+    }
+
+    func test_replaceSquare_unmarksOldTile() {
+        var board = makeBoard()
+        board.toggle(at: 0)
+        XCTAssertTrue(board.isMarked(at: 0))
+        let newSquare = BingoSquare(id: UUID(), text: "New", emoji: "⭐", category: .vehicles, rarity: .rare)
+        board.replaceSquare(at: 0, with: newSquare)
+        XCTAssertFalse(board.isMarked(at: 0))
+    }
+
+    func test_replaceSquare_doesNotAffectFreeSquare() {
+        var board = makeBoard()
+        let oldID = board.squares[12].id
+        let newSquare = BingoSquare(id: UUID(), text: "Not Free", emoji: "❌", category: .vehicles, rarity: .common)
+        board.replaceSquare(at: 12, with: newSquare)
+        XCTAssertEqual(board.squares[12].id, oldID)
+    }
 }
