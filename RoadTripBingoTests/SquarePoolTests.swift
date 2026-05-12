@@ -67,4 +67,25 @@ final class SquarePoolTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(hardCount, 8,
             "Navigator board should have at least 8 rare+veryRare squares")
     }
+
+    func test_dealReserve_returnsCorrectCountPerPlayer() {
+        let pool = SquarePool.load()
+        let players = [(name: "A", difficulty: BoardDifficulty.backseat),
+                       (name: "B", difficulty: BoardDifficulty.navigator)]
+        let boards = SquarePool.dealBoards(for: players, from: pool)
+        let usedIDs = Set(boards.values.flatMap { $0 }.map(\.id))
+        let reserve = SquarePool.dealReserve(for: players, count: 6, excluding: usedIDs, from: pool)
+        XCTAssertEqual(reserve["A"]?.count, 6)
+        XCTAssertEqual(reserve["B"]?.count, 6)
+    }
+
+    func test_dealReserve_noOverlapWithDealtBoards() {
+        let pool = SquarePool.load()
+        let players = [(name: "A", difficulty: BoardDifficulty.shotgun)]
+        let boards = SquarePool.dealBoards(for: players, from: pool)
+        let usedIDs = Set(boards.values.flatMap { $0 }.map(\.id))
+        let reserve = SquarePool.dealReserve(for: players, count: 6, excluding: usedIDs, from: pool)
+        let reserveIDs = Set(reserve["A"]!.map(\.id))
+        XCTAssertTrue(reserveIDs.isDisjoint(with: usedIDs))
+    }
 }
