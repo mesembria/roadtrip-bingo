@@ -2,15 +2,28 @@ import SwiftUI
 
 struct OpponentStripView: View {
     let opponentMarked: [String: Set<Int>]
+    let tokenBalances: [String: Int]
 
     var body: some View {
         HStack(spacing: 24) {
             ForEach(opponentMarked.keys.sorted(), id: \.self) { name in
                 let marked = opponentMarked[name] ?? []
+                let coins = tokenBalances[name]
                 VStack(spacing: 6) {
-                    Text(name).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundColor(.white.opacity(0.6))
+                    HStack(spacing: 4) {
+                        Text(name)
+                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                            .foregroundColor(.white.opacity(0.6))
+                        if let coins {
+                            Text("· 🪙\(coins)")
+                                .font(.system(size: 11, weight: .medium, design: .rounded))
+                                .foregroundColor(.yellow.opacity(0.8))
+                        }
+                    }
                     MiniGridView(markedPositions: marked)
-                    Text("\(marked.count) ✓").font(.system(size: 10)).foregroundColor(.white.opacity(0.6))
+                    Text("\(marked.count) ✓")
+                        .font(.system(size: 10))
+                        .foregroundColor(.white.opacity(0.6))
                 }
             }
         }
@@ -31,7 +44,9 @@ private struct MiniGridView: View {
                     ForEach(0..<5, id: \.self) { col in
                         let pos = row * 5 + col
                         RoundedRectangle(cornerRadius: 2)
-                            .fill(pos == 12 ? Color.yellow : markedPositions.contains(pos) ? Color.blue : Color.white.opacity(0.15))
+                            .fill(pos == 12 ? Color.yellow :
+                                  markedPositions.contains(pos) ? Color.blue :
+                                  Color.white.opacity(0.15))
                             .frame(width: size, height: size)
                     }
                 }
