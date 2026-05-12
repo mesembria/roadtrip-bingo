@@ -24,12 +24,24 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     @Published var connectedPlayerNames: [String] = []
     @Published var foundGameNames: [String] = []
     @Published var playerDifficulty: BoardDifficulty = .backseat
-    @Published var playerDifficulties: [String: BoardDifficulty] = [:]  // host only: name → difficulty
+    @Published var playerDifficulties: [String: BoardDifficulty] = [:]
 
-    // MARK: - Game (Phase 2 — stubbed for now)
+    // MARK: - Game
     @Published var localBoard: BingoBoard?
     @Published var completedLine: [Int]?
     @Published var opponentMarked: [String: Set<Int>] = [:]
+    var opponentBoards: [String: [BingoSquare]] = [:]
+    var reserveSquares: [BingoSquare] = []
+
+    // MARK: - Tokens
+    @Published var tokenBalance: Int = 0
+    @Published var tokenBalances: [String: Int] = [:]
+    @Published var pendingToastMessage: String? = nil   // consumed by GameView to show toast
+
+    // MARK: - Achievement guards (reset each round)
+    private var firstMarkClaimedThisRound = false
+    private var patternsAwardedThisRound: Set<String> = []
+    private var closeCallsAwardedThisRound: Set<String> = []
 
     // MARK: - Post-game
     @Published var winHistory: [String: Int] = [:]
@@ -82,14 +94,20 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         localBoard = nil
         completedLine = nil
         opponentMarked = [:]
+        opponentBoards = [:]
+        reserveSquares = []
         isHost = false
         playerDifficulty = .backseat
         playerDifficulties = [:]
-        // winHistory is intentionally preserved across sessions
+        tokenBalance = 0
+        tokenBalances = [:]
+        pendingToastMessage = nil
+        resetRound()
+        // winHistory intentionally preserved
         screen = .home
     }
 
-    // MARK: - Lobby (host only) — Phase 2 will fill startGame()
+    // MARK: - Lobby (host only)
 
     func startGame() {
         guard isHost else { return }
@@ -100,33 +118,55 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             return (name: name, difficulty: diff)
         }
         let boards = SquarePool.dealBoards(for: players, from: pool)
+        let usedIDs = Set(boards.values.flatMap { $0 }.map(\.id))
+        let reserve = SquarePool.dealReserve(for: players, count: 6, excluding: usedIDs, from: pool)
 
         if let mySquares = boards[playerName] {
             localBoard = BingoBoard(squares: mySquares)
         }
+        opponentBoards = [:]
+        opponentMarked = [:]
         for name in connectedPlayerNames {
+            opponentBoards[name] = boards[name]
             opponentMarked[name] = [12]
         }
+        reserveSquares = reserve[playerName] ?? []
         completedLine = nil
+        resetRound()
+
         multipeerSession?.stopAdvertising()
         multipeerSession?.send(.gameStarted(boards: boards))
+        for name in connectedPlayerNames {
+            multipeerSession?.send(.reserveDealt(toName: name, squares: reserve[name] ?? []))
+        }
+
+        earnTokens(2)  // round-start bonus for host
         screen = .game
     }
 
-    // MARK: - Game actions — Phase 2
+    // MARK: - Game actions
 
     func toggleSquare(at position: Int) {
         guard screen == .game else { return }
+        let wasMarked = localBoard?.isMarked(at: position) ?? false
         localBoard?.toggle(at: position)
         let isNowMarked = localBoard?.isMarked(at: position) ?? false
         multipeerSession?.send(.squareToggled(position: position, isMarked: isNowMarked))
-        if let board = localBoard {
-            completedLine = GameEngine.winningLine(for: board)
+
+        guard let board = localBoard else { return }
+
+        if isNowMarked && !wasMarked && !firstMarkClaimedThisRound {
+            firstMarkClaimedThisRound = true
+            earnTokens(1)
         }
+
+        completedLine = GameEngine.winningLine(for: board)
+        checkBonuses(for: board)
     }
 
     func callBingo() {
         guard completedLine != nil else { return }
+        earnTokens(5)   // win bonus
         multipeerSession?.send(.bingoAnnounced(byName: playerName))
         winHistory[playerName, default: 0] += 1
         screen = .win(winnerName: playerName)
@@ -141,16 +181,60 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             return (name: name, difficulty: diff)
         }
         let boards = SquarePool.dealBoards(for: players, from: pool)
+        let usedIDs = Set(boards.values.flatMap { $0 }.map(\.id))
+        let reserve = SquarePool.dealReserve(for: players, count: 6, excluding: usedIDs, from: pool)
 
         if let mySquares = boards[playerName] {
             localBoard = BingoBoard(squares: mySquares)
         }
+        opponentBoards = [:]
+        opponentMarked = [:]
         for name in connectedPlayerNames {
+            opponentBoards[name] = boards[name]
             opponentMarked[name] = [12]
         }
+        reserveSquares = reserve[playerName] ?? []
         completedLine = nil
+        resetRound()
+
         multipeerSession?.send(.playAgain(boards: boards))
+        for name in connectedPlayerNames {
+            multipeerSession?.send(.reserveDealt(toName: name, squares: reserve[name] ?? []))
+        }
+
+        earnTokens(2)  // round-start bonus for host
         screen = .game
+    }
+
+    // MARK: - Token helpers
+
+    func earnTokens(_ amount: Int) {
+        tokenBalance += amount
+        pendingToastMessage = "+\(amount)🪙"
+        multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
+    }
+
+    private func resetRound() {
+        firstMarkClaimedThisRound = false
+        patternsAwardedThisRound = []
+        closeCallsAwardedThisRound = []
+    }
+
+    private func checkBonuses(for board: BingoBoard) {
+        for line in GameEngine.closeCallLines(for: board) {
+            let id = line.map(String.init).joined(separator: ",")
+            if !closeCallsAwardedThisRound.contains(id) {
+                closeCallsAwardedThisRound.insert(id)
+                earnTokens(3)
+            }
+        }
+        for line in GameEngine.completedLines(for: board) {
+            let id = line.map(String.init).joined(separator: ",")
+            if !patternsAwardedThisRound.contains(id) {
+                patternsAwardedThisRound.insert(id)
+                earnTokens(2)
+            }
+        }
     }
 
     // MARK: - MultipeerSessionDelegate
@@ -158,16 +242,19 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     func multipeerSession(_ session: MultipeerSession, didReceive message: MultipeerMessage, from peerName: String) {
         switch message {
         case .gameStarted(let boards):
-            let freeSquarePosition = 12
             if let mySquares = boards[playerName] {
                 localBoard = BingoBoard(squares: mySquares)
             }
+            opponentBoards = [:]
             opponentMarked = [:]
-            for (name, _) in boards where name != playerName {
-                opponentMarked[name] = [freeSquarePosition]
+            for (name, squares) in boards where name != playerName {
+                opponentBoards[name] = squares
+                opponentMarked[name] = [12]
             }
             completedLine = nil
+            resetRound()
             multipeerSession?.stopBrowsing()
+            earnTokens(2)   // round-start bonus for joiner
             screen = .game
 
         case .squareToggled(let position, let isMarked):
@@ -180,33 +267,31 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             screen = .win(winnerName: byName)
 
         case .playAgain(let boards):
-            let freeSquarePosition = 12
             if let mySquares = boards[playerName] {
                 localBoard = BingoBoard(squares: mySquares)
             }
+            opponentBoards = [:]
             opponentMarked = [:]
-            for (name, _) in boards where name != playerName {
-                opponentMarked[name] = [freeSquarePosition]
+            for (name, squares) in boards where name != playerName {
+                opponentBoards[name] = squares
+                opponentMarked[name] = [12]
             }
             completedLine = nil
+            resetRound()
+            earnTokens(2)   // round-start bonus for joiner
             screen = .game
 
         case .difficultyChosen(let byName, let difficulty):
-            if isHost {
-                playerDifficulties[byName] = difficulty
-            }
+            if isHost { playerDifficulties[byName] = difficulty }
 
-        case .tokenEarned:
-            // Task 6: handle token balance sync
-            break
+        case .tokenEarned(let byName, let newBalance):
+            tokenBalances[byName] = newBalance
+
+        case .reserveDealt(let toName, let squares):
+            if toName == playerName { reserveSquares = squares }
 
         case .powerUpUsed:
-            // Task 7: handle power-up application
-            break
-
-        case .reserveDealt:
-            // Task 6: handle reserve squares distribution
-            break
+            break  // handled in Task 7
         }
     }
 
@@ -219,12 +304,11 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     func multipeerSession(_ session: MultipeerSession, peerDidDisconnect peerName: String) {
         connectedPlayerNames.removeAll { $0 == peerName }
         opponentMarked.removeValue(forKey: peerName)
+        opponentBoards.removeValue(forKey: peerName)
     }
 
     func multipeerSession(_ session: MultipeerSession, foundPeer peerName: String) {
-        if !foundGameNames.contains(peerName) {
-            foundGameNames.append(peerName)
-        }
+        if !foundGameNames.contains(peerName) { foundGameNames.append(peerName) }
     }
 
     func multipeerSession(_ session: MultipeerSession, lostPeer peerName: String) {
