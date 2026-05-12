@@ -13,4 +13,14 @@ enum GameEngine {
     static func winningLine(for board: BingoBoard) -> [Int]? {
         winLines.first { line in line.allSatisfy { board.isMarked(at: $0) } }
     }
+
+    static func closeCallLines(for board: BingoBoard) -> [[Int]] {
+        winLines.filter { line in
+            line.filter { board.isMarked(at: $0) }.count == 4
+        }
+    }
+
+    static func completedLines(for board: BingoBoard) -> [[Int]] {
+        winLines.filter { $0.allSatisfy { board.isMarked(at: $0) } }
+    }
 }

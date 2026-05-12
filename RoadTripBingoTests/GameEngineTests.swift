@@ -50,4 +50,41 @@ final class GameEngineTests: XCTestCase {
     func test_winLines_has12Lines() {
         XCTAssertEqual(GameEngine.winLines.count, 12)
     }
+
+    // MARK: - closeCallLines
+
+    func test_closeCallLines_emptyBoardReturnsNone() {
+        let board = makeBoard()
+        XCTAssertTrue(GameEngine.closeCallLines(for: board).isEmpty)
+    }
+
+    func test_closeCallLines_detectsFourInARow() {
+        var board = makeBoard()
+        // Mark row 0 positions 0–3 (not 4)
+        for i in [0, 1, 2, 3] { board.toggle(at: i) }
+        let lines = GameEngine.closeCallLines(for: board)
+        XCTAssertTrue(lines.contains([0, 1, 2, 3, 4]))
+    }
+
+    func test_closeCallLines_excludesCompleteLines() {
+        var board = makeBoard()
+        for i in 0..<5 { board.toggle(at: i) }    // complete row 0
+        let lines = GameEngine.closeCallLines(for: board)
+        XCTAssertFalse(lines.contains([0, 1, 2, 3, 4]))
+    }
+
+    // MARK: - completedLines
+
+    func test_completedLines_emptyBoardReturnsNone() {
+        let board = makeBoard()
+        XCTAssertTrue(GameEngine.completedLines(for: board).isEmpty)
+    }
+
+    func test_completedLines_returnsAllCompleteLines() {
+        var board = makeBoard()
+        for i in 0..<5 { board.toggle(at: i) }       // complete row 0
+        for i in [0, 5, 10, 15, 20] { board.toggle(at: i) }  // complete col 0 (pos 0 already marked)
+        let lines = GameEngine.completedLines(for: board)
+        XCTAssertEqual(lines.count, 2)
+    }
 }
