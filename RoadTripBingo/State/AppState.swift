@@ -1,6 +1,11 @@
 import Foundation
 import SwiftUI
 
+struct ToastEvent: Equatable {
+    let id = UUID()
+    let message: String
+}
+
 enum AppScreen: Equatable {
     case home
     case lobby
@@ -36,7 +41,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     // MARK: - Tokens
     @Published var tokenBalance: Int = 0
     @Published var tokenBalances: [String: Int] = [:]
-    @Published var pendingToastMessage: String? = nil   // consumed by GameView to show toast
+    @Published var pendingToast: ToastEvent? = nil
 
     // MARK: - Achievement guards (reset each round)
     private var firstMarkClaimedThisRound = false
@@ -101,7 +106,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         playerDifficulties = [:]
         tokenBalance = 0
         tokenBalances = [:]
-        pendingToastMessage = nil
+        pendingToast = nil
         resetRound()
         // winHistory intentionally preserved
         screen = .home
@@ -111,37 +116,10 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func startGame() {
         guard isHost else { return }
-        let pool = SquarePool.load()
-        let allNames = [playerName] + connectedPlayerNames
-        let players = allNames.map { name -> (name: String, difficulty: BoardDifficulty) in
-            let diff = name == playerName ? playerDifficulty : (playerDifficulties[name] ?? .backseat)
-            return (name: name, difficulty: diff)
+        dealAndLaunchRound { [weak self] boards in
+            self?.multipeerSession?.stopAdvertising()
+            self?.multipeerSession?.send(.gameStarted(boards: boards))
         }
-        let boards = SquarePool.dealBoards(for: players, from: pool)
-        let usedIDs = Set(boards.values.flatMap { $0 }.map(\.id))
-        let reserve = SquarePool.dealReserve(for: players, count: 6, excluding: usedIDs, from: pool)
-
-        if let mySquares = boards[playerName] {
-            localBoard = BingoBoard(squares: mySquares)
-        }
-        opponentBoards = [:]
-        opponentMarked = [:]
-        for name in connectedPlayerNames {
-            opponentBoards[name] = boards[name]
-            opponentMarked[name] = [12]
-        }
-        reserveSquares = reserve[playerName] ?? []
-        completedLine = nil
-        resetRound()
-
-        multipeerSession?.stopAdvertising()
-        multipeerSession?.send(.gameStarted(boards: boards))
-        for name in connectedPlayerNames {
-            multipeerSession?.send(.reserveDealt(toName: name, squares: reserve[name] ?? []))
-        }
-
-        earnTokens(2)  // round-start bonus for host
-        screen = .game
     }
 
     // MARK: - Game actions
@@ -174,6 +152,14 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func requestPlayAgain() {
         guard isHost else { return }
+        dealAndLaunchRound { [weak self] boards in
+            self?.multipeerSession?.send(.playAgain(boards: boards))
+        }
+    }
+
+    // MARK: - Token helpers
+
+    private func dealAndLaunchRound(sendBoardsMessage: @escaping ([String: [BingoSquare]]) -> Void) {
         let pool = SquarePool.load()
         let allNames = [playerName] + connectedPlayerNames
         let players = allNames.map { name -> (name: String, difficulty: BoardDifficulty) in
@@ -197,20 +183,17 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         completedLine = nil
         resetRound()
 
-        multipeerSession?.send(.playAgain(boards: boards))
+        sendBoardsMessage(boards)
         for name in connectedPlayerNames {
             multipeerSession?.send(.reserveDealt(toName: name, squares: reserve[name] ?? []))
         }
-
-        earnTokens(2)  // round-start bonus for host
+        earnTokens(2)
         screen = .game
     }
 
-    // MARK: - Token helpers
-
-    func earnTokens(_ amount: Int) {
+    private func earnTokens(_ amount: Int) {
         tokenBalance += amount
-        pendingToastMessage = "+\(amount)🪙"
+        pendingToast = ToastEvent(message: "+\(amount)🪙")
         multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
     }
 
@@ -305,6 +288,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         connectedPlayerNames.removeAll { $0 == peerName }
         opponentMarked.removeValue(forKey: peerName)
         opponentBoards.removeValue(forKey: peerName)
+        tokenBalances.removeValue(forKey: peerName)
     }
 
     func multipeerSession(_ session: MultipeerSession, foundPeer peerName: String) {
