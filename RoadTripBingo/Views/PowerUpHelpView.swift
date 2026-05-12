@@ -3,8 +3,7 @@ import SwiftUI
 struct PowerUpHelpView: View {
     @Environment(\.dismiss) private var dismiss
 
-    private struct HelpItem: Identifiable {
-        let id = UUID()
+    private struct HelpItem {
         let emoji: String
         let name: String
         let description: String
@@ -41,7 +40,8 @@ struct PowerUpHelpView: View {
 
     var body: some View {
         NavigationStack {
-            List(items) { item in
+            List(items.indices, id: \.self) { i in
+                let item = items[i]
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
                         Text(item.emoji).font(.title2)
