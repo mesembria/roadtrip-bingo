@@ -13,6 +13,7 @@ struct BingoBoard {
     }
 
     mutating func toggle(at position: Int) {
+        guard (0..<25).contains(position) else { return }
         let id = squares[position].id
         guard id != BingoSquare.freeSquareID else { return }
         if marked.contains(id) { marked.remove(id) } else { marked.insert(id) }
@@ -20,6 +21,7 @@ struct BingoBoard {
 
     // Force-marks a square without toggling. No-op on the FREE square.
     mutating func mark(at position: Int) {
+        guard (0..<25).contains(position) else { return }
         let id = squares[position].id
         guard id != BingoSquare.freeSquareID else { return }
         marked.insert(id)
@@ -27,15 +29,16 @@ struct BingoBoard {
 
     // Force-unmarks a square. No-op on the FREE square.
     mutating func unmark(at position: Int) {
+        guard (0..<25).contains(position) else { return }
         let id = squares[position].id
         guard id != BingoSquare.freeSquareID else { return }
         marked.remove(id)
     }
 
     // Replaces the tile at position with newSquare, clearing its old mark.
-    // No-op if position 12 (the FREE square must not be replaced).
+    // No-op if position is 12 (the FREE square must not be replaced).
     mutating func replaceSquare(at position: Int, with newSquare: BingoSquare) {
-        guard position != 12 else { return }
+        guard (0..<25).contains(position), position != 12 else { return }
         let oldID = squares[position].id
         marked.remove(oldID)
         squares[position] = newSquare

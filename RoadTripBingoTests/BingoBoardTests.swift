@@ -56,6 +56,12 @@ final class BingoBoardTests: XCTestCase {
         XCTAssertTrue(board.isMarked(at: 0))
     }
 
+    func test_mark_ignoresFreeSquare() {
+        var board = makeBoard()
+        board.mark(at: 12)
+        XCTAssertTrue(board.isMarked(at: 12))
+    }
+
     func test_unmark_unmarksTile() {
         var board = makeBoard()
         board.toggle(at: 0)
