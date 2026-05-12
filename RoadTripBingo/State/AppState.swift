@@ -352,13 +352,16 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     }
 
     private func markedOpponentTile() -> (String, Int)? {
-        for oppName in opponentMarked.keys.sorted() {
+        var best: (name: String, idx: Int)? = nil
+        for oppName in opponentMarked.keys {
             let marked = opponentMarked[oppName] ?? []
             if let idx = marked.filter({ $0 != 12 }).max() {
-                return (oppName, idx)
+                if best == nil || idx > best!.idx {
+                    best = (oppName, idx)
+                }
             }
         }
-        return nil
+        return best.map { ($0.name, $0.idx) }
     }
 
     // MARK: - MultipeerSessionDelegate
