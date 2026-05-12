@@ -86,6 +86,7 @@ struct PowerUpStripView: View {
             .padding(.vertical, 6).padding(.horizontal, 8)
             .background(Color.white.opacity(0.12))
             .cornerRadius(8)
+            .accessibilityLabel("Power-up help")
             .onTapGesture { showHelp = true }
     }
 }
