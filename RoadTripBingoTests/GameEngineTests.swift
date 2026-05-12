@@ -73,6 +73,14 @@ final class GameEngineTests: XCTestCase {
         XCTAssertFalse(lines.contains([0, 1, 2, 3, 4]))
     }
 
+    func test_closeCallLines_detectsFourInDiagonal() {
+        var board = makeBoard()
+        // Main diagonal [0,6,12,18,24]: pos 12 is FREE (pre-marked). Mark 3 more.
+        for i in [0, 6, 18] { board.toggle(at: i) }
+        let lines = GameEngine.closeCallLines(for: board)
+        XCTAssertTrue(lines.contains([0, 6, 12, 18, 24]))
+    }
+
     // MARK: - completedLines
 
     func test_completedLines_emptyBoardReturnsNone() {
@@ -82,8 +90,8 @@ final class GameEngineTests: XCTestCase {
 
     func test_completedLines_returnsAllCompleteLines() {
         var board = makeBoard()
-        for i in 0..<5 { board.toggle(at: i) }       // complete row 0
-        for i in [0, 5, 10, 15, 20] { board.toggle(at: i) }  // complete col 0 (pos 0 already marked)
+        for i in 0..<5 { board.toggle(at: i) }           // complete row 0
+        for i in [5, 10, 15, 20] { board.toggle(at: i) } // complete col 0 (pos 0 already marked)
         let lines = GameEngine.completedLines(for: board)
         XCTAssertEqual(lines.count, 2)
     }
