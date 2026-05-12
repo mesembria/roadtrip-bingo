@@ -85,4 +85,19 @@ final class AppStateTests: XCTestCase {
 
         XCTAssertNil(state.pendingToast)
     }
+
+    func test_powerUpUsed_unmark_random_postsThreatsToast() {
+        let state = AppState()
+        state.playerName = "Zoe"
+        state.localBoard = makeBoard(targetText: "Scenic Overlook", atIndex: 5)
+
+        state.multipeerSession(makeSession(),
+            didReceive: .powerUpUsed(byName: "Liam", powerUp: .unmarkOpponentRandom,
+                                     targetPlayer: "Zoe", targetIndex: 5,
+                                     replacementSquare: nil),
+            from: "Liam")
+
+        XCTAssertEqual(state.pendingToast?.message, "💥 Liam erased 'Scenic Overlook'")
+        XCTAssertEqual(state.pendingToast?.style, .threat)
+    }
 }

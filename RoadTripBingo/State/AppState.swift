@@ -426,6 +426,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
                 let tileName = board.squares[idx].text
                 let verb: String
                 let emoji: String
+                // Random and targeted variants use the same verb — the distinction isn't surfaced to the target player
                 switch powerUp {
                 case .downgradeTileRandom, .downgradeTileTargeted:
                     verb = "downgraded"; emoji = "💣"
