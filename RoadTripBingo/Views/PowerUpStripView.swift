@@ -8,6 +8,7 @@ struct PowerUpStripView: View {
 
     private struct StripItem {
         let emoji: String
+        let label: String
         let randomVariant: PowerUpType?
         let targetedVariant: PowerUpType
 
@@ -15,10 +16,10 @@ struct PowerUpStripView: View {
     }
 
     private let items: [StripItem] = [
-        StripItem(emoji: "🔀", randomVariant: .upgradeTileRandom,    targetedVariant: .upgradeTileTargeted),
-        StripItem(emoji: "💣", randomVariant: .downgradeTileRandom,  targetedVariant: .downgradeTileTargeted),
-        StripItem(emoji: "✅", randomVariant: nil,                   targetedVariant: .freeMark),
-        StripItem(emoji: "💥", randomVariant: .unmarkOpponentRandom, targetedVariant: .unmarkOpponentTargeted),
+        StripItem(emoji: "🔀", label: "Upgrade",   randomVariant: .upgradeTileRandom,    targetedVariant: .upgradeTileTargeted),
+        StripItem(emoji: "💣", label: "Sabotage",  randomVariant: .downgradeTileRandom,  targetedVariant: .downgradeTileTargeted),
+        StripItem(emoji: "✅", label: "Free Mark", randomVariant: nil,                   targetedVariant: .freeMark),
+        StripItem(emoji: "💥", label: "Erase",     randomVariant: .unmarkOpponentRandom, targetedVariant: .unmarkOpponentTargeted),
     ]
 
     var body: some View {
@@ -40,6 +41,9 @@ struct PowerUpStripView: View {
             let canAfford = tokenBalance >= item.displayCost
             VStack(spacing: 2) {
                 Text(item.emoji).font(.system(size: 22))
+                Text(item.label)
+                    .font(.system(size: 8, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.7))
                 Text("\(item.displayCost)🪙")
                     .font(.system(size: 9, weight: .medium))
                     .foregroundColor(.white.opacity(0.8))
