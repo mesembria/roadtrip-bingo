@@ -8,16 +8,17 @@ struct PowerUpStripView: View {
 
     private struct StripItem {
         let emoji: String
-        let cost: Int
         let randomVariant: PowerUpType?
         let targetedVariant: PowerUpType
+
+        var displayCost: Int { randomVariant?.cost ?? targetedVariant.cost }
     }
 
     private let items: [StripItem] = [
-        StripItem(emoji: "🔀", cost: 3, randomVariant: .upgradeTileRandom,    targetedVariant: .upgradeTileTargeted),
-        StripItem(emoji: "💣", cost: 3, randomVariant: .downgradeTileRandom,  targetedVariant: .downgradeTileTargeted),
-        StripItem(emoji: "✅", cost: 5, randomVariant: nil,                   targetedVariant: .freeMark),
-        StripItem(emoji: "💥", cost: 4, randomVariant: .unmarkOpponentRandom, targetedVariant: .unmarkOpponentTargeted),
+        StripItem(emoji: "🔀", randomVariant: .upgradeTileRandom,    targetedVariant: .upgradeTileTargeted),
+        StripItem(emoji: "💣", randomVariant: .downgradeTileRandom,  targetedVariant: .downgradeTileTargeted),
+        StripItem(emoji: "✅", randomVariant: nil,                   targetedVariant: .freeMark),
+        StripItem(emoji: "💥", randomVariant: .unmarkOpponentRandom, targetedVariant: .unmarkOpponentTargeted),
     ]
 
     var body: some View {
@@ -36,10 +37,10 @@ struct PowerUpStripView: View {
     @ViewBuilder private var buttons: some View {
         ForEach(items.indices, id: \.self) { i in
             let item = items[i]
-            let canAfford = tokenBalance >= item.cost
+            let canAfford = tokenBalance >= item.displayCost
             VStack(spacing: 2) {
                 Text(item.emoji).font(.system(size: 22))
-                Text("\(item.cost)🪙")
+                Text("\(item.displayCost)🪙")
                     .font(.system(size: 9, weight: .medium))
                     .foregroundColor(.white.opacity(0.8))
             }
@@ -56,7 +57,7 @@ struct PowerUpStripView: View {
                 }
             }
             .onLongPressGesture(minimumDuration: 0.4) {
-                guard canAfford else { return }
+                guard tokenBalance >= item.targetedVariant.cost else { return }
                 onRequestTargeted(item.targetedVariant)
             }
         }

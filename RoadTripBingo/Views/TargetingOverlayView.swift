@@ -28,6 +28,7 @@ struct TargetingOverlayView: View {
                     .font(.system(size: 15, weight: .medium))
                     .foregroundColor(.white.opacity(0.5))
             }
+            .frame(maxHeight: UIScreen.main.bounds.height * 0.8)
             .padding(24)
             .background(Color(red: 0.10, green: 0.14, blue: 0.22))
             .cornerRadius(20)
@@ -44,7 +45,10 @@ struct TargetingOverlayView: View {
                     let isMarked = board.isMarked(at: idx)
                     let selectable: Bool = {
                         guard !isFree else { return false }
-                        return powerUp == .freeMark ? !isMarked : true
+                        switch powerUp {
+                        case .freeMark, .upgradeTileTargeted: return !isMarked
+                        default: return true
+                        }
                     }()
                     TargetTileView(square: square, isMarked: isMarked, isSelectable: selectable) {
                         if selectable { onSelect(nil, idx) }
