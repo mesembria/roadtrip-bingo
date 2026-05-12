@@ -419,12 +419,31 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             if toName == playerName { reserveSquares = squares }
 
         case .powerUpUsed(let byName, let powerUp, let targetPlayer, let targetIndex, let replacementSquare):
+            // Capture tile name before effect mutates the board
+            var threatMessage: String? = nil
+            if targetPlayer == playerName, powerUp.affectsOpponent,
+               let idx = targetIndex, let board = localBoard, idx < board.squares.count {
+                let tileName = board.squares[idx].text
+                let verb: String
+                let emoji: String
+                switch powerUp {
+                case .downgradeTileRandom, .downgradeTileTargeted:
+                    verb = "downgraded"; emoji = "💣"
+                default:
+                    verb = "erased"; emoji = "💥"
+                }
+                threatMessage = "\(emoji) \(byName) \(verb) '\(tileName)'"
+            }
+
             applyPowerUpEffect(powerUp, byName: byName,
                                targetPlayer: targetPlayer,
                                targetIndex: targetIndex,
                                replacementSquare: replacementSquare)
             if let board = localBoard {
                 completedLine = GameEngine.winningLine(for: board)
+            }
+            if let msg = threatMessage {
+                pendingToast = ToastEvent(message: msg, style: .threat)
             }
         }
     }
