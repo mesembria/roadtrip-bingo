@@ -143,7 +143,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     }
 
     func callBingo() {
-        guard completedLine != nil else { return }
+        guard screen == .game, completedLine != nil else { return }
         earnTokens(5)   // win bonus
         multipeerSession?.send(.bingoAnnounced(byName: playerName))
         winHistory[playerName, default: 0] += 1
@@ -258,7 +258,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         // Pop reserve only after confirming we will proceed
         if powerUp == .upgradeTileRandom || powerUp == .upgradeTileTargeted ||
            powerUp == .downgradeTileRandom || powerUp == .downgradeTileTargeted {
-            replacementSquare = reserveSquares.isEmpty ? nil : reserveSquares.removeFirst()
+            guard !reserveSquares.isEmpty else { return }
+            replacementSquare = reserveSquares.removeFirst()
         }
 
         tokenBalance -= powerUp.cost
@@ -344,7 +345,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         var best: (name: String, idx: Int, rank: Int)? = nil
         for (oppName, oppBoard) in opponentBoards {
             let marked = opponentMarked[oppName] ?? []
-            for idx in 0..<25 {
+            for idx in 0..<oppBoard.count {
                 guard oppBoard[idx].id != BingoSquare.freeSquareID,
                       !marked.contains(idx) else { continue }
                 let rank = rarityOrder.firstIndex(of: oppBoard[idx].rarity) ?? 99
@@ -427,6 +428,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
                                targetPlayer: targetPlayer,
                                targetIndex: targetIndex,
                                replacementSquare: replacementSquare)
+            if let board = localBoard {
+                completedLine = GameEngine.winningLine(for: board)
+            }
         }
     }
 
