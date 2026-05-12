@@ -11,15 +11,20 @@
 		183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D16366F1525405AB2B03711 /* GameEngine.swift */; };
 		2E8B64CFB6574C864BB4D4B2 /* OpponentStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */; };
 		312E1E01EF66D434A2BF17E8 /* squares.json in Resources */ = {isa = PBXBuildFile; fileRef = 731548D4671F0ACB06D7FB47 /* squares.json */; };
+		361B5DFCB064D6B926002432 /* PowerUpStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F575318E432FD2D90841DB00 /* PowerUpStripView.swift */; };
 		45DE5727C9CAA0C3D8E56CD1 /* BingoBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C8339E3F7AED215C031136 /* BingoBoardTests.swift */; };
+		4B92C5F3E5B72793E019B939 /* PowerUpTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BEF6DA2FE4E1927881F43B3 /* PowerUpTypeTests.swift */; };
 		4BA5BDA24B68E3B57192949A /* SquarePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3D480C0DA2C83DE9B7934 /* SquarePool.swift */; };
 		556352E19419BFFBD6B22566 /* LobbyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67A9EA37EF3D8484426DF49 /* LobbyView.swift */; };
 		7A6139AB5EA84B50F9B9E4F5 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2A797358229A5D3E6811F /* HomeView.swift */; };
 		88766EBA70426FB6DA55992C /* BingoSquareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2753B43B839BD0EEA8B4201B /* BingoSquareView.swift */; };
 		8FB2A8F6DD2B692CA54FBC51 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA225771BADF1C45329F34 /* ConfettiView.swift */; };
+		933CB7A0DF5265AD0584F2CA /* TargetingOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D46307EA94F37A0304C16 /* TargetingOverlayView.swift */; };
 		93C17D72CA88102C970BA6F9 /* WinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D7079330D5309CC9B40FCD /* WinView.swift */; };
 		9825D61245605C593D8BC7C7 /* MultipeerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */; };
+		9E4054EE031302195F3AC49F /* PowerUpType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B185FB25828686F54F6EFC9 /* PowerUpType.swift */; };
 		A0860CB6E7BE9B69EE4C4EF2 /* MultipeerMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */; };
+		A3CC74A7D457A84CD876EFE1 /* TokenToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F149B6878223BB2C3678B549 /* TokenToastView.swift */; };
 		B0DC156F866FE2A177773370 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A758A06BC27257832CE90F20 /* GameView.swift */; };
 		B7D9C83BCFBE2834F3BD892D /* SquarePoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B46A1ED1B1B26F8D1865E /* SquarePoolTests.swift */; };
 		C8EE6560303C250D0F3288BA /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2F72F89251294BFE85AD72 /* MultipeerSession.swift */; };
@@ -47,6 +52,7 @@
 		028F3F38843730F1A67E72D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerMessageTests.swift; sourceTree = "<group>"; };
 		10D7079330D5309CC9B40FCD /* WinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinView.swift; sourceTree = "<group>"; };
+		1B185FB25828686F54F6EFC9 /* PowerUpType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerUpType.swift; sourceTree = "<group>"; };
 		1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardDifficulty.swift; sourceTree = "<group>"; };
 		1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerMessage.swift; sourceTree = "<group>"; };
 		24F534579B9712082DB264D8 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
@@ -59,12 +65,14 @@
 		41AADAA0C173D2D47BEFABFA /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		447D221F341187CAE8CBCCAC /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4BEF6DA2FE4E1927881F43B3 /* PowerUpTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerUpTypeTests.swift; sourceTree = "<group>"; };
 		50BC137311D249C3539DE524 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentStripView.swift; sourceTree = "<group>"; };
 		731548D4671F0ACB06D7FB47 /* squares.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = squares.json; sourceTree = "<group>"; };
 		74EB052E3667A4113B417DE3 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		76A8C0599EECB353352C2464 /* BingoGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoGridView.swift; sourceTree = "<group>"; };
 		7D16366F1525405AB2B03711 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
+		976D46307EA94F37A0304C16 /* TargetingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetingOverlayView.swift; sourceTree = "<group>"; };
 		A6FA963025C170363180C6E8 /* BingoSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoSquare.swift; sourceTree = "<group>"; };
 		A758A06BC27257832CE90F20 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		A986750ED27B1F71AAA70A01 /* RoadTripBingo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RoadTripBingo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,7 +85,9 @@
 		E4C3D480C0DA2C83DE9B7934 /* SquarePool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquarePool.swift; sourceTree = "<group>"; };
 		EA3B46A1ED1B1B26F8D1865E /* SquarePoolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquarePoolTests.swift; sourceTree = "<group>"; };
 		EE6D110F4EABD34F22BFDA52 /* GameEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngineTests.swift; sourceTree = "<group>"; };
+		F149B6878223BB2C3678B549 /* TokenToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenToastView.swift; sourceTree = "<group>"; };
 		F2C3DF2FD55D24FDE3C8DDB8 /* BingoBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoBoard.swift; sourceTree = "<group>"; };
+		F575318E432FD2D90841DB00 /* PowerUpStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerUpStripView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -102,6 +112,9 @@
 				C67A9EA37EF3D8484426DF49 /* LobbyView.swift */,
 				6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */,
 				31D0F5ED86EDDC60416BD6A6 /* PlayAgainView.swift */,
+				F575318E432FD2D90841DB00 /* PowerUpStripView.swift */,
+				976D46307EA94F37A0304C16 /* TargetingOverlayView.swift */,
+				F149B6878223BB2C3678B549 /* TokenToastView.swift */,
 				10D7079330D5309CC9B40FCD /* WinView.swift */,
 			);
 			path = Views;
@@ -114,6 +127,7 @@
 				35C8339E3F7AED215C031136 /* BingoBoardTests.swift */,
 				EE6D110F4EABD34F22BFDA52 /* GameEngineTests.swift */,
 				0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */,
+				4BEF6DA2FE4E1927881F43B3 /* PowerUpTypeTests.swift */,
 				EA3B46A1ED1B1B26F8D1865E /* SquarePoolTests.swift */,
 			);
 			path = RoadTripBingoTests;
@@ -146,6 +160,7 @@
 				A6FA963025C170363180C6E8 /* BingoSquare.swift */,
 				1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */,
 				1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */,
+				1B185FB25828686F54F6EFC9 /* PowerUpType.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -285,6 +300,7 @@
 				45DE5727C9CAA0C3D8E56CD1 /* BingoBoardTests.swift in Sources */,
 				D7116BC21D6FB0816B01952D /* GameEngineTests.swift in Sources */,
 				A0860CB6E7BE9B69EE4C4EF2 /* MultipeerMessageTests.swift in Sources */,
+				4B92C5F3E5B72793E019B939 /* PowerUpTypeTests.swift in Sources */,
 				B7D9C83BCFBE2834F3BD892D /* SquarePoolTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -309,8 +325,12 @@
 				C8EE6560303C250D0F3288BA /* MultipeerSession.swift in Sources */,
 				2E8B64CFB6574C864BB4D4B2 /* OpponentStripView.swift in Sources */,
 				CCEC755BB280931555EACB11 /* PlayAgainView.swift in Sources */,
+				361B5DFCB064D6B926002432 /* PowerUpStripView.swift in Sources */,
+				9E4054EE031302195F3AC49F /* PowerUpType.swift in Sources */,
 				D9D750B1F831A92C75001561 /* RoadTripBingoApp.swift in Sources */,
 				4BA5BDA24B68E3B57192949A /* SquarePool.swift in Sources */,
+				933CB7A0DF5265AD0584F2CA /* TargetingOverlayView.swift in Sources */,
+				A3CC74A7D457A84CD876EFE1 /* TokenToastView.swift in Sources */,
 				93C17D72CA88102C970BA6F9 /* WinView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -405,6 +425,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -503,6 +524,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
