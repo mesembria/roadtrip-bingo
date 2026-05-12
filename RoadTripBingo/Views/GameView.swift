@@ -4,6 +4,7 @@ struct GameView: View {
     @EnvironmentObject var appState: AppState
     @State private var targetingPowerUp: PowerUpType? = nil
     @State private var toastMessage: String? = nil
+    @State private var activeToastID: UUID? = nil
 
     var body: some View {
         ZStack {
@@ -32,9 +33,9 @@ struct GameView: View {
                     opponentMarked: appState.opponentMarked,
                     onSelect: { targetPlayer, targetIndex in
                         appState.activatePowerUp(powerUp, targetPlayer: targetPlayer, targetIndex: targetIndex)
-                        targetingPowerUp = nil
+                        withAnimation(.easeInOut(duration: 0.2)) { targetingPowerUp = nil }
                     },
-                    onCancel: { targetingPowerUp = nil }
+                    onCancel: { withAnimation(.easeInOut(duration: 0.2)) { targetingPowerUp = nil } }
                 )
                 .transition(.opacity)
             }
@@ -44,15 +45,18 @@ struct GameView: View {
                     Spacer()
                     TokenToastView(message: msg)
                         .padding(.bottom, 100)
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .onChange(of: appState.pendingToast) { toast in
             guard let toast else { return }
             withAnimation(.spring()) { toastMessage = toast.message }
+            activeToastID = toast.id
             appState.pendingToast = nil
+            let id = toast.id
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                guard activeToastID == id else { return }
                 withAnimation { toastMessage = nil }
             }
         }
@@ -130,7 +134,7 @@ struct GameView: View {
                 appState.activatePowerUp(powerUp)
             },
             onRequestTargeted: { powerUp in
-                targetingPowerUp = powerUp
+                withAnimation(.easeInOut(duration: 0.2)) { targetingPowerUp = powerUp }
             }
         )
         .padding(.horizontal, isVertical ? 0 : 16)

@@ -35,7 +35,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     @Published var localBoard: BingoBoard?
     @Published var completedLine: [Int]?
     @Published var opponentMarked: [String: Set<Int>] = [:]
-    var opponentBoards: [String: [BingoSquare]] = [:]
+    @Published var opponentBoards: [String: [BingoSquare]] = [:]
     var reserveSquares: [BingoSquare] = []
 
     // MARK: - Tokens
