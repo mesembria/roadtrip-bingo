@@ -195,6 +195,18 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             if isHost {
                 playerDifficulties[byName] = difficulty
             }
+
+        case .tokenEarned(let byName, let newBalance):
+            // Task 6: handle token balance sync
+            break
+
+        case .powerUpUsed(let byName, let powerUp, let targetPlayer, let targetIndex, let replacementSquare):
+            // Task 7: handle power-up application
+            break
+
+        case .reserveDealt(let toName, let squares):
+            // Task 6: handle reserve squares distribution
+            break
         }
     }
 

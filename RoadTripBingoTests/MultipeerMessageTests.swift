@@ -58,4 +58,62 @@ final class MultipeerMessageTests: XCTestCase {
         XCTAssertEqual(name, "Zoe")
         XCTAssertEqual(diff, .navigator)
     }
+
+    func test_tokenEarned_roundtrip() throws {
+        let msg = MultipeerMessage.tokenEarned(byName: "Zoe", newBalance: 12)
+        let decoded = try roundtrip(msg)
+        guard case .tokenEarned(let name, let balance) = decoded else {
+            return XCTFail("Wrong case")
+        }
+        XCTAssertEqual(name, "Zoe")
+        XCTAssertEqual(balance, 12)
+    }
+
+    func test_powerUpUsed_roundtrip_withAllFields() throws {
+        let square = BingoSquare(id: UUID(), text: "Cow", emoji: "🐄", category: .nature, rarity: .veryCommon)
+        let msg = MultipeerMessage.powerUpUsed(
+            byName: "Liam",
+            powerUp: .upgradeTileTargeted,
+            targetPlayer: nil,
+            targetIndex: 5,
+            replacementSquare: square
+        )
+        let decoded = try roundtrip(msg)
+        guard case .powerUpUsed(let name, let powerUp, let tp, let ti, let rs) = decoded else {
+            return XCTFail("Wrong case")
+        }
+        XCTAssertEqual(name, "Liam")
+        XCTAssertEqual(powerUp, .upgradeTileTargeted)
+        XCTAssertNil(tp)
+        XCTAssertEqual(ti, 5)
+        XCTAssertEqual(rs?.text, "Cow")
+    }
+
+    func test_powerUpUsed_roundtrip_nilFields() throws {
+        let msg = MultipeerMessage.powerUpUsed(
+            byName: "Liam",
+            powerUp: .unmarkOpponentRandom,
+            targetPlayer: "Zoe",
+            targetIndex: 3,
+            replacementSquare: nil
+        )
+        let decoded = try roundtrip(msg)
+        guard case .powerUpUsed(_, _, let tp, let ti, let rs) = decoded else {
+            return XCTFail("Wrong case")
+        }
+        XCTAssertEqual(tp, "Zoe")
+        XCTAssertEqual(ti, 3)
+        XCTAssertNil(rs)
+    }
+
+    func test_reserveDealt_roundtrip() throws {
+        let square = BingoSquare(id: UUID(), text: "Barn", emoji: "🏚️", category: .nature, rarity: .common)
+        let msg = MultipeerMessage.reserveDealt(toName: "Liam", squares: [square])
+        let decoded = try roundtrip(msg)
+        guard case .reserveDealt(let name, let squares) = decoded else {
+            return XCTFail("Wrong case")
+        }
+        XCTAssertEqual(name, "Liam")
+        XCTAssertEqual(squares.first?.text, "Barn")
+    }
 }
