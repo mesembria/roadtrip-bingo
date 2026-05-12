@@ -22,17 +22,20 @@ struct PowerUpStripView: View {
         StripItem(emoji: "💥", label: "Erase",     randomVariant: .unmarkOpponentRandom, targetedVariant: .unmarkOpponentTargeted),
     ]
 
+    @State private var showHelp = false
+
     var body: some View {
         Group {
             if isVertical {
-                VStack(spacing: 6) { buttons; balanceBadge }
+                VStack(spacing: 6) { buttons; helpButton; balanceBadge }
             } else {
-                HStack(spacing: 6) { buttons; balanceBadge }
+                HStack(spacing: 6) { buttons; helpButton; balanceBadge }
             }
         }
         .padding(8)
         .background(Color.white.opacity(0.07))
         .cornerRadius(12)
+        .sheet(isPresented: $showHelp) { PowerUpHelpView() }
     }
 
     @ViewBuilder private var buttons: some View {
@@ -74,5 +77,15 @@ struct PowerUpStripView: View {
             .background(Color.yellow)
             .foregroundColor(.black)
             .cornerRadius(8)
+    }
+
+    private var helpButton: some View {
+        Text("?")
+            .font(.system(size: 15, weight: .bold))
+            .foregroundColor(.white.opacity(0.7))
+            .padding(.vertical, 6).padding(.horizontal, 8)
+            .background(Color.white.opacity(0.12))
+            .cornerRadius(8)
+            .onTapGesture { showHelp = true }
     }
 }
