@@ -9,7 +9,8 @@ enum SquarePool {
         return squares
     }
 
-    // Returns one 25-element array per player (index 12 = FREE).
+    // Each player's 24 non-FREE squares are sampled from per-rarity buckets weighted by difficulty.
+    // Non-overlap between players is best-effort; overlaps may occur when a rarity bucket runs thin.
     static func dealBoards(
         for players: [(name: String, difficulty: BoardDifficulty)],
         from pool: [BingoSquare]
@@ -32,6 +33,8 @@ enum SquarePool {
         from pool: [BingoSquare]
     ) -> [String: [BingoSquare]] {
         let available = pool.filter { !usedIDs.contains($0.id) }
+        assert(available.count >= players.count * count,
+               "Reserve pool too thin: need \(players.count * count) squares, got \(available.count)")
         var queues = makeQueues(from: available)
         var result: [String: [BingoSquare]] = [:]
         for player in players {
@@ -72,6 +75,8 @@ enum SquarePool {
         if total == 24 {
             squares.shuffle()
             squares.insert(.free, at: 12)
+        } else {
+            squares.shuffle()
         }
         return squares
     }
@@ -89,7 +94,7 @@ enum SquarePool {
         var running = 0
         for (i, rarity) in tiers.enumerated() {
             if i == tiers.count - 1 {
-                counts[rarity] = total - running
+                counts[rarity] = max(0, total - running)
                 break
             }
             let n = Int((Double(total) * difficulty.weights[rarity, default: 0]).rounded())

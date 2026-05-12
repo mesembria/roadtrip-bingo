@@ -88,4 +88,16 @@ final class SquarePoolTests: XCTestCase {
         let reserveIDs = Set(reserve["A"]!.map(\.id))
         XCTAssertTrue(reserveIDs.isDisjoint(with: usedIDs))
     }
+
+    func test_dealReserve_noOverlapBetweenPlayers() {
+        let pool = SquarePool.load()
+        let players = [(name: "A", difficulty: BoardDifficulty.backseat),
+                       (name: "B", difficulty: BoardDifficulty.navigator)]
+        let boards = SquarePool.dealBoards(for: players, from: pool)
+        let usedIDs = Set(boards.values.flatMap { $0 }.map(\.id))
+        let reserve = SquarePool.dealReserve(for: players, count: 6, excluding: usedIDs, from: pool)
+        let aIDs = Set(reserve["A"]!.map(\.id))
+        let bIDs = Set(reserve["B"]!.map(\.id))
+        XCTAssertTrue(aIDs.isDisjoint(with: bIDs))
+    }
 }
