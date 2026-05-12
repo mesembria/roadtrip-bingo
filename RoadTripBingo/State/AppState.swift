@@ -220,6 +220,147 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         }
     }
 
+    // MARK: - Power-up activation
+
+    func activatePowerUp(_ powerUp: PowerUpType, targetPlayer: String? = nil, targetIndex: Int? = nil) {
+        guard tokenBalance >= powerUp.cost, localBoard != nil else { return }
+
+        var resolvedTargetPlayer = targetPlayer
+        var resolvedTargetIndex = targetIndex
+        var replacementSquare: BingoSquare? = nil
+
+        switch powerUp {
+        case .upgradeTileRandom:
+            resolvedTargetIndex = highestRarityIndex(on: localBoard!)
+            replacementSquare = reserveSquares.isEmpty ? nil : reserveSquares.removeFirst()
+        case .upgradeTileTargeted:
+            replacementSquare = reserveSquares.isEmpty ? nil : reserveSquares.removeFirst()
+        case .downgradeTileRandom:
+            if let (name, idx) = lowestRarityOpponentTile() {
+                resolvedTargetPlayer = name
+                resolvedTargetIndex = idx
+            }
+            replacementSquare = reserveSquares.isEmpty ? nil : reserveSquares.removeFirst()
+        case .downgradeTileTargeted:
+            replacementSquare = reserveSquares.isEmpty ? nil : reserveSquares.removeFirst()
+        case .freeMark:
+            break  // targetIndex provided by caller
+        case .unmarkOpponentRandom:
+            if let (name, idx) = markedOpponentTile() {
+                resolvedTargetPlayer = name
+                resolvedTargetIndex = idx
+            }
+        case .unmarkOpponentTargeted:
+            break  // targetPlayer and targetIndex provided by caller
+        }
+
+        guard resolvedTargetIndex != nil else { return }
+
+        tokenBalance -= powerUp.cost
+        multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
+
+        applyPowerUpEffect(powerUp, byName: playerName,
+                           targetPlayer: resolvedTargetPlayer,
+                           targetIndex: resolvedTargetIndex,
+                           replacementSquare: replacementSquare)
+
+        multipeerSession?.send(.powerUpUsed(byName: playerName, powerUp: powerUp,
+                                            targetPlayer: resolvedTargetPlayer,
+                                            targetIndex: resolvedTargetIndex,
+                                            replacementSquare: replacementSquare))
+
+        // Re-check win and bonus conditions after free mark
+        if powerUp == .freeMark, let board = localBoard {
+            completedLine = GameEngine.winningLine(for: board)
+            checkBonuses(for: board)
+        }
+    }
+
+    func applyPowerUpEffect(
+        _ powerUp: PowerUpType,
+        byName: String,
+        targetPlayer: String?,
+        targetIndex: Int?,
+        replacementSquare: BingoSquare?
+    ) {
+        switch powerUp {
+        case .upgradeTileRandom, .upgradeTileTargeted:
+            guard let idx = targetIndex, let newSquare = replacementSquare else { return }
+            if byName == playerName {
+                localBoard?.replaceSquare(at: idx, with: newSquare)
+            } else {
+                opponentBoards[byName]?[idx] = newSquare
+            }
+
+        case .downgradeTileRandom, .downgradeTileTargeted:
+            guard let target = targetPlayer, let idx = targetIndex,
+                  let newSquare = replacementSquare else { return }
+            if target == playerName {
+                localBoard?.replaceSquare(at: idx, with: newSquare)
+            } else {
+                opponentBoards[target]?[idx] = newSquare
+                opponentMarked[target]?.remove(idx)
+            }
+
+        case .freeMark:
+            guard let idx = targetIndex else { return }
+            if byName == playerName {
+                localBoard?.mark(at: idx)
+            } else {
+                opponentMarked[byName]?.insert(idx)
+            }
+
+        case .unmarkOpponentRandom, .unmarkOpponentTargeted:
+            guard let target = targetPlayer, let idx = targetIndex else { return }
+            if target == playerName {
+                localBoard?.unmark(at: idx)
+            } else {
+                opponentMarked[target]?.remove(idx)
+            }
+        }
+    }
+
+    // MARK: - Power-up target helpers
+
+    private func highestRarityIndex(on board: BingoBoard) -> Int? {
+        let rarityOrder: [SquareRarity] = [.veryRare, .rare, .uncommon, .common, .veryCommon]
+        let candidates = (0..<25).filter {
+            board.squares[$0].id != BingoSquare.freeSquareID && !board.isMarked(at: $0)
+        }
+        return candidates.min {
+            let ra = rarityOrder.firstIndex(of: board.squares[$0].rarity) ?? 99
+            let rb = rarityOrder.firstIndex(of: board.squares[$1].rarity) ?? 99
+            return ra < rb
+        }
+    }
+
+    private func lowestRarityOpponentTile() -> (String, Int)? {
+        let rarityOrder: [SquareRarity] = [.veryCommon, .common, .uncommon, .rare, .veryRare]
+        var best: (name: String, idx: Int, rank: Int)? = nil
+        for (oppName, oppBoard) in opponentBoards {
+            let marked = opponentMarked[oppName] ?? []
+            for idx in 0..<25 {
+                guard oppBoard[idx].id != BingoSquare.freeSquareID,
+                      !marked.contains(idx) else { continue }
+                let rank = rarityOrder.firstIndex(of: oppBoard[idx].rarity) ?? 99
+                if best == nil || rank < best!.rank {
+                    best = (oppName, idx, rank)
+                }
+            }
+        }
+        return best.map { ($0.name, $0.idx) }
+    }
+
+    private func markedOpponentTile() -> (String, Int)? {
+        for oppName in opponentMarked.keys.sorted() {
+            let marked = opponentMarked[oppName] ?? []
+            if let idx = marked.filter({ $0 != 12 }).max() {
+                return (oppName, idx)
+            }
+        }
+        return nil
+    }
+
     // MARK: - MultipeerSessionDelegate
 
     func multipeerSession(_ session: MultipeerSession, didReceive message: MultipeerMessage, from peerName: String) {
@@ -273,8 +414,11 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         case .reserveDealt(let toName, let squares):
             if toName == playerName { reserveSquares = squares }
 
-        case .powerUpUsed:
-            break  // handled in Task 7
+        case .powerUpUsed(let byName, let powerUp, let targetPlayer, let targetIndex, let replacementSquare):
+            applyPowerUpEffect(powerUp, byName: byName,
+                               targetPlayer: targetPlayer,
+                               targetIndex: targetIndex,
+                               replacementSquare: replacementSquare)
         }
     }
 
