@@ -32,6 +32,7 @@
 		CCEC755BB280931555EACB11 /* PlayAgainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D0F5ED86EDDC60416BD6A6 /* PlayAgainView.swift */; };
 		D7116BC21D6FB0816B01952D /* GameEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6D110F4EABD34F22BFDA52 /* GameEngineTests.swift */; };
 		D9D750B1F831A92C75001561 /* RoadTripBingoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259798FF46BAE52D20FB5AC /* RoadTripBingoApp.swift */; };
+		D9E9995D90F0564E151AE267 /* ToastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B20B738F1B24C9FB357A58 /* ToastTests.swift */; };
 		DB30D839E435F5EE576BD79C /* BingoGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8C0599EECB353352C2464 /* BingoGridView.swift */; };
 		ED0A27E6447052ED0FDA3AD9 /* BingoSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6FA963025C170363180C6E8 /* BingoSquare.swift */; };
 		F4E182EC5AF674AA80E50C98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */; };
@@ -65,6 +66,7 @@
 		41AADAA0C173D2D47BEFABFA /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		447D221F341187CAE8CBCCAC /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		48B20B738F1B24C9FB357A58 /* ToastTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		4BEF6DA2FE4E1927881F43B3 /* PowerUpTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerUpTypeTests.swift; sourceTree = "<group>"; };
 		50BC137311D249C3539DE524 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentStripView.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */,
 				4BEF6DA2FE4E1927881F43B3 /* PowerUpTypeTests.swift */,
 				EA3B46A1ED1B1B26F8D1865E /* SquarePoolTests.swift */,
+				48B20B738F1B24C9FB357A58 /* ToastTests.swift */,
 			);
 			path = RoadTripBingoTests;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 				A0860CB6E7BE9B69EE4C4EF2 /* MultipeerMessageTests.swift in Sources */,
 				4B92C5F3E5B72793E019B939 /* PowerUpTypeTests.swift in Sources */,
 				B7D9C83BCFBE2834F3BD892D /* SquarePoolTests.swift in Sources */,
+				D9E9995D90F0564E151AE267 /* ToastTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

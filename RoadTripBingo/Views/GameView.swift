@@ -5,6 +5,7 @@ struct GameView: View {
     @State private var targetingPowerUp: PowerUpType? = nil
     @State private var toastMessage: String? = nil
     @State private var activeToastID: UUID? = nil
+    @State private var toastStyle: ToastStyle = .earn
 
     var body: some View {
         ZStack {
@@ -43,7 +44,7 @@ struct GameView: View {
             if let msg = toastMessage {
                 VStack {
                     Spacer()
-                    TokenToastView(message: msg)
+                    TokenToastView(message: msg, style: toastStyle)
                         .padding(.bottom, 100)
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -51,6 +52,7 @@ struct GameView: View {
         }
         .onChange(of: appState.pendingToast) { toast in
             guard let toast else { return }
+            toastStyle = toast.style
             withAnimation(.spring()) { toastMessage = toast.message }
             activeToastID = toast.id
             appState.pendingToast = nil

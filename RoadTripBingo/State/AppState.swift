@@ -1,9 +1,12 @@
 import Foundation
 import SwiftUI
 
+enum ToastStyle: Equatable { case earn, threat }
+
 struct ToastEvent: Equatable {
     let id = UUID()
     let message: String
+    let style: ToastStyle
 }
 
 enum AppScreen: Equatable {
@@ -135,7 +138,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
         if isNowMarked && !wasMarked && !firstMarkClaimedThisRound {
             firstMarkClaimedThisRound = true
-            earnTokens(1)
+            earnTokens(1, reason: "First mark")
         }
 
         completedLine = GameEngine.winningLine(for: board)
@@ -144,7 +147,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func callBingo() {
         guard screen == .game, completedLine != nil else { return }
-        earnTokens(5)   // win bonus
+        earnTokens(5, reason: "BINGO!")   // win bonus
         multipeerSession?.send(.bingoAnnounced(byName: playerName))
         winHistory[playerName, default: 0] += 1
         screen = .win(winnerName: playerName)
@@ -187,13 +190,13 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         for name in connectedPlayerNames {
             multipeerSession?.send(.reserveDealt(toName: name, squares: reserve[name] ?? []))
         }
-        earnTokens(2)
+        earnTokens(2, reason: "Round start")
         screen = .game
     }
 
-    private func earnTokens(_ amount: Int) {
+    private func earnTokens(_ amount: Int, reason: String) {
         tokenBalance += amount
-        pendingToast = ToastEvent(message: "+\(amount)🪙")
+        pendingToast = ToastEvent(message: "+\(amount)🪙 \(reason)", style: .earn)
         multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
     }
 
@@ -208,14 +211,14 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             let id = line.map(String.init).joined(separator: ",")
             if !closeCallsAwardedThisRound.contains(id) {
                 closeCallsAwardedThisRound.insert(id)
-                earnTokens(3)
+                earnTokens(3, reason: "Close call!")
             }
         }
         for line in GameEngine.completedLines(for: board) {
             let id = line.map(String.init).joined(separator: ",")
             if !patternsAwardedThisRound.contains(id) {
                 patternsAwardedThisRound.insert(id)
-                earnTokens(2)
+                earnTokens(2, reason: "Pattern complete")
             }
         }
     }
@@ -387,7 +390,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             completedLine = nil
             resetRound()
             multipeerSession?.stopBrowsing()
-            earnTokens(2)   // round-start bonus for joiner
+            earnTokens(2, reason: "Round start")   // round-start bonus for joiner
             screen = .game
 
         case .squareToggled(let position, let isMarked):
@@ -411,7 +414,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             }
             completedLine = nil
             resetRound()
-            earnTokens(2)   // round-start bonus for joiner
+            earnTokens(2, reason: "Round start")   // round-start bonus for joiner
             screen = .game
 
         case .difficultyChosen(let byName, let difficulty):
