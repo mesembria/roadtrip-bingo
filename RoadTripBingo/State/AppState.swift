@@ -232,17 +232,15 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         switch powerUp {
         case .upgradeTileRandom:
             resolvedTargetIndex = highestRarityIndex(on: localBoard!)
-            replacementSquare = reserveSquares.isEmpty ? nil : reserveSquares.removeFirst()
         case .upgradeTileTargeted:
-            replacementSquare = reserveSquares.isEmpty ? nil : reserveSquares.removeFirst()
+            break  // targetIndex provided by caller
         case .downgradeTileRandom:
             if let (name, idx) = lowestRarityOpponentTile() {
                 resolvedTargetPlayer = name
                 resolvedTargetIndex = idx
             }
-            replacementSquare = reserveSquares.isEmpty ? nil : reserveSquares.removeFirst()
         case .downgradeTileTargeted:
-            replacementSquare = reserveSquares.isEmpty ? nil : reserveSquares.removeFirst()
+            break  // targetPlayer and targetIndex provided by caller
         case .freeMark:
             break  // targetIndex provided by caller
         case .unmarkOpponentRandom:
@@ -255,6 +253,13 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         }
 
         guard resolvedTargetIndex != nil else { return }
+        if powerUp.affectsOpponent { guard resolvedTargetPlayer != nil else { return } }
+
+        // Pop reserve only after confirming we will proceed
+        if powerUp == .upgradeTileRandom || powerUp == .upgradeTileTargeted ||
+           powerUp == .downgradeTileRandom || powerUp == .downgradeTileTargeted {
+            replacementSquare = reserveSquares.isEmpty ? nil : reserveSquares.removeFirst()
+        }
 
         tokenBalance -= powerUp.cost
         multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
