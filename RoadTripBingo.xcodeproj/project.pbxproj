@@ -12,6 +12,7 @@
 		2E8B64CFB6574C864BB4D4B2 /* OpponentStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */; };
 		312E1E01EF66D434A2BF17E8 /* squares.json in Resources */ = {isa = PBXBuildFile; fileRef = 731548D4671F0ACB06D7FB47 /* squares.json */; };
 		361B5DFCB064D6B926002432 /* PowerUpStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F575318E432FD2D90841DB00 /* PowerUpStripView.swift */; };
+		37E192F91D44E4C8B112DD40 /* ToastEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9693B97F5B0E3B8D989A90 /* ToastEvent.swift */; };
 		45DE5727C9CAA0C3D8E56CD1 /* BingoBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C8339E3F7AED215C031136 /* BingoBoardTests.swift */; };
 		4B92C5F3E5B72793E019B939 /* PowerUpTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BEF6DA2FE4E1927881F43B3 /* PowerUpTypeTests.swift */; };
 		4BA5BDA24B68E3B57192949A /* SquarePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3D480C0DA2C83DE9B7934 /* SquarePool.swift */; };
@@ -52,6 +53,7 @@
 /* Begin PBXFileReference section */
 		028F3F38843730F1A67E72D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerMessageTests.swift; sourceTree = "<group>"; };
+		0D9693B97F5B0E3B8D989A90 /* ToastEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastEvent.swift; sourceTree = "<group>"; };
 		10D7079330D5309CC9B40FCD /* WinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinView.swift; sourceTree = "<group>"; };
 		1B185FB25828686F54F6EFC9 /* PowerUpType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerUpType.swift; sourceTree = "<group>"; };
 		1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardDifficulty.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */,
 				1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */,
 				1B185FB25828686F54F6EFC9 /* PowerUpType.swift */,
+				0D9693B97F5B0E3B8D989A90 /* ToastEvent.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				D9D750B1F831A92C75001561 /* RoadTripBingoApp.swift in Sources */,
 				4BA5BDA24B68E3B57192949A /* SquarePool.swift in Sources */,
 				933CB7A0DF5265AD0584F2CA /* TargetingOverlayView.swift in Sources */,
+				37E192F91D44E4C8B112DD40 /* ToastEvent.swift in Sources */,
 				A3CC74A7D457A84CD876EFE1 /* TokenToastView.swift in Sources */,
 				93C17D72CA88102C970BA6F9 /* WinView.swift in Sources */,
 			);
