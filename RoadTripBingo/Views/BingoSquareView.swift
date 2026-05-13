@@ -7,7 +7,7 @@ struct BingoSquareView: View {
     let onTap: () -> Void
 
     var body: some View {
-        Button(action: onTap) {
+        Button(action: { withAnimation(.spring(response: 0.2)) { onTap() } }) {
             Group {
                 if square.id == BingoSquare.freeSquareID {
                     freeCell
@@ -17,7 +17,6 @@ struct BingoSquareView: View {
             }
         }
         .buttonStyle(.plain)
-        .animation(.spring(response: 0.2), value: isMarked)
     }
 
     private var freeCell: some View {
@@ -105,14 +104,15 @@ struct BingoSquareView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.white.opacity(0.55))
-            RoundedRectangle(cornerRadius: 6)
-                .strokeBorder(AmericanaTheme.red, lineWidth: 2)
-                .padding(4)
-                .rotationEffect(.degrees(-12))
-            Text("SPOTTED!")
-                .font(AmericanaTheme.rye(13))
-                .foregroundColor(AmericanaTheme.red)
-                .rotationEffect(.degrees(-12))
+            ZStack {
+                RoundedRectangle(cornerRadius: 6)
+                    .strokeBorder(AmericanaTheme.red, lineWidth: 2)
+                Text("SPOTTED!")
+                    .font(AmericanaTheme.rye(13))
+                    .foregroundColor(AmericanaTheme.red)
+            }
+            .padding(8)
+            .rotationEffect(.degrees(-12))
         }
     }
 
