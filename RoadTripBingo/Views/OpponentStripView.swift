@@ -3,44 +3,61 @@ import SwiftUI
 struct OpponentStripView: View {
     let opponentMarked: [String: Set<Int>]
     let tokenBalances: [String: Int]
+    var isVertical: Bool = false
 
     var body: some View {
-        HStack(spacing: 24) {
-            ForEach(opponentMarked.keys.sorted(), id: \.self) { name in
-                let marked = opponentMarked[name] ?? []
-                let coins = tokenBalances[name]
-                VStack(spacing: 6) {
-                    HStack(spacing: 4) {
-                        Text(name)
-                            .font(AmericanaTheme.barlowSemiBold(12))
-                            .foregroundColor(AmericanaTheme.ink.opacity(0.8))
-                        if let coins {
-                            HStack(spacing: 2) {
-                                if let img = AmericanaTheme.icon(named: "token") {
-                                    img.resizable().scaledToFit().frame(width: 14, height: 14)
-                                }
-                                Text("\(coins)")
-                                    .font(AmericanaTheme.barlowSemiBold(11))
-                                    .foregroundColor(AmericanaTheme.ink)
-                            }
+        containerStack
+            .padding(.horizontal, 16).padding(.vertical, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(AmericanaTheme.paper)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .strokeBorder(AmericanaTheme.ink.opacity(0.10), lineWidth: 1)
+                    )
+            )
+    }
+
+    @ViewBuilder private var containerStack: some View {
+        if isVertical {
+            VStack(spacing: 12) { opponentCards }
+        } else {
+            HStack(spacing: 24) { opponentCards }
+        }
+    }
+
+    @ViewBuilder private var opponentCards: some View {
+        ForEach(opponentMarked.keys.sorted(), id: \.self) { name in
+            opponentCard(name: name)
+        }
+    }
+
+    private func opponentCard(name: String) -> some View {
+        let marked = opponentMarked[name] ?? []
+        let coins = tokenBalances[name]
+        return VStack(spacing: 6) {
+            HStack(spacing: 4) {
+                Text(name)
+                    .font(AmericanaTheme.barlowSemiBold(12))
+                    .foregroundColor(AmericanaTheme.ink.opacity(0.8))
+                    .lineLimit(1)
+                if let coins {
+                    HStack(spacing: 2) {
+                        if let img = AmericanaTheme.icon(named: "token") {
+                            img.resizable().scaledToFit().frame(width: 14, height: 14)
                         }
+                        Text("\(coins)")
+                            .font(AmericanaTheme.barlowSemiBold(11))
+                            .foregroundColor(AmericanaTheme.ink)
                     }
-                    MiniGridView(markedPositions: marked)
-                    Text("\(marked.count) ✓")
-                        .font(AmericanaTheme.barlowSemiBold(10))
-                        .foregroundColor(AmericanaTheme.ink.opacity(0.6))
                 }
             }
+            MiniGridView(markedPositions: marked)
+            Text("\(marked.count) ✓")
+                .font(AmericanaTheme.barlowSemiBold(10))
+                .foregroundColor(AmericanaTheme.ink.opacity(0.6))
         }
-        .padding(.horizontal, 20).padding(.vertical, 10)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(AmericanaTheme.paper)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .strokeBorder(AmericanaTheme.ink.opacity(0.10), lineWidth: 1)
-                )
-        )
+        .frame(maxWidth: .infinity)
     }
 }
 

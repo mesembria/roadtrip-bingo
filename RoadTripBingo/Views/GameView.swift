@@ -84,23 +84,36 @@ struct GameView: View {
     }
 
     private func landscapeLayout(board: BingoBoard) -> some View {
-        VStack(spacing: 6) {
-            opponentHUD
-            HStack(spacing: 8) {
-                GeometryReader { geo in
-                    let gridSize = min(geo.size.width, geo.size.height)
-                    BingoGridView(
-                        board: board,
-                        highlightedPositions: Set(appState.completedLine ?? []),
-                        onTap: appState.toggleSquare(at:)
+        HStack(spacing: 8) {
+            // Left sidebar: opponents stacked vertically + BINGO button at bottom
+            VStack(spacing: 12) {
+                if !appState.opponentMarked.isEmpty {
+                    OpponentStripView(
+                        opponentMarked: appState.opponentMarked,
+                        tokenBalances: appState.tokenBalances,
+                        isVertical: true
                     )
-                    .frame(width: gridSize, height: gridSize)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                powerUpStrip(isVertical: true)
-                    .frame(width: 126)
+                Spacer()
+                bingoButton
             }
-            bingoButton
+            .frame(width: 130)
+
+            // Center: main grid
+            GeometryReader { geo in
+                let gridSize = min(geo.size.width, geo.size.height)
+                BingoGridView(
+                    board: board,
+                    highlightedPositions: Set(appState.completedLine ?? []),
+                    onTap: appState.toggleSquare(at:)
+                )
+                .frame(width: gridSize, height: gridSize)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+
+            // Right sidebar: power-up strip
+            powerUpStrip(isVertical: true)
+                .frame(width: 126)
         }
         .padding(.vertical, 6).padding(.horizontal, 8)
     }
