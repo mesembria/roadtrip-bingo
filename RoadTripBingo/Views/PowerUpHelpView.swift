@@ -15,26 +15,26 @@ struct PowerUpHelpView: View {
         HelpItem(
             emoji: "🔀", name: "Upgrade",
             description: "Swap one of your tiles for an easier one.",
-            tapDetail: "replaces your hardest tile (3🪙)",
-            holdDetail: "you pick the tile (7🪙)"
+            tapDetail: "replaces your hardest tile (3🟡)",
+            holdDetail: "you pick the tile (7🟡)"
         ),
         HelpItem(
             emoji: "💣", name: "Sabotage",
             description: "Make an opponent's unmarked tile harder.",
-            tapDetail: "random tile (3🪙)",
-            holdDetail: "you pick the tile (7🪙)"
+            tapDetail: "random tile (3🟡)",
+            holdDetail: "you pick the tile (7🟡)"
         ),
         HelpItem(
             emoji: "✅", name: "Free Mark",
             description: "Mark any of your tiles without spotting it.",
             tapDetail: nil,
-            holdDetail: "you pick the tile (5🪙)"
+            holdDetail: "you pick the tile (5🟡)"
         ),
         HelpItem(
             emoji: "💥", name: "Erase",
             description: "Remove a mark from an opponent's board.",
-            tapDetail: "their most recent mark (4🪙)",
-            holdDetail: "you pick the tile (7🪙)"
+            tapDetail: "their most recent mark (4🟡)",
+            holdDetail: "you pick the tile (7🟡)"
         ),
     ]
 

@@ -188,7 +188,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     private func earnTokens(_ amount: Int, reason: String) {
         tokenBalance += amount
-        pendingToast = ToastEvent(message: "+\(amount)🪙 \(reason)", style: .earn)
+        pendingToast = ToastEvent(message: "+\(amount)🟡 \(reason)", style: .earn)
         multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
     }
 

@@ -1048,5 +1048,229 @@
     "id" : "E63D9E68-57EA-4EB7-8AC4-A30215EAE5E1",
     "rarity" : "common",
     "text" : "State Highway Sign"
+  },
+  {
+    "category" : "vehicles",
+    "emoji" : "🚘",
+    "id" : "0BCFCD83-6C35-4830-9C1C-A8FB9BF8671B",
+    "rarity" : "common",
+    "text" : "Car Carrier"
+  },
+  {
+    "category" : "vehicles",
+    "emoji" : "🐄",
+    "id" : "744CE9F9-887F-460D-B022-262622D6BAB1",
+    "rarity" : "common",
+    "text" : "Livestock Trailer"
+  },
+  {
+    "category" : "vehicles",
+    "emoji" : "🪵",
+    "id" : "A4E493A3-C320-49CF-B905-BEDB2362844C",
+    "rarity" : "uncommon",
+    "text" : "Logging Truck"
+  },
+  {
+    "category" : "vehicles",
+    "emoji" : "⛏️",
+    "id" : "C44588F4-72FF-4691-8AB7-8B9C6DB664D9",
+    "rarity" : "uncommon",
+    "text" : "Coal Truck"
+  },
+  {
+    "category" : "vehicles",
+    "emoji" : "🛩️",
+    "id" : "14FF5A74-56CF-478F-BE68-46F280437D8C",
+    "rarity" : "uncommon",
+    "text" : "Crop Duster"
+  },
+  {
+    "category" : "vehicles",
+    "emoji" : "🐴",
+    "id" : "507FA95C-5CEB-40D3-B4E2-EEC40DDE2135",
+    "rarity" : "rare",
+    "text" : "Amish Buggy"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🦃",
+    "id" : "E7A4CC7D-0154-4E54-8087-27370DC12F6A",
+    "rarity" : "uncommon",
+    "text" : "Wild Turkey"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🦌",
+    "id" : "05150C84-9A42-4F02-9FA8-685C4881A307",
+    "rarity" : "rare",
+    "text" : "Elk"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🦌",
+    "id" : "C2738543-1B62-4D94-A914-3ECF040D81D0",
+    "rarity" : "rare",
+    "text" : "Pronghorn Antelope"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🦅",
+    "id" : "8C5057CC-7613-4CDD-B659-9ACBC78487FD",
+    "rarity" : "rare",
+    "text" : "Bald Eagle"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🐿️",
+    "id" : "D02A26D6-AE5F-4402-A3C7-8E39E20082B1",
+    "rarity" : "uncommon",
+    "text" : "Prairie Dogs"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🦙",
+    "id" : "E04D2A5D-C985-42DD-82E9-8C1234E9F839",
+    "rarity" : "uncommon",
+    "text" : "Llama Farm"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🌾",
+    "id" : "1532CC43-DDA7-400A-BFD0-0ADD8874D565",
+    "rarity" : "veryCommon",
+    "text" : "Wheat Field"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🪨",
+    "id" : "B7ED7D37-B022-45D6-8FFE-B8FA780B6684",
+    "rarity" : "common",
+    "text" : "Red Rock Cliffs"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🌊",
+    "id" : "60185DC6-14A2-4F24-A214-F724D068B1C7",
+    "rarity" : "uncommon",
+    "text" : "River Rapids"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🏚️",
+    "id" : "7912F43E-141F-40A4-B209-125709247146",
+    "rarity" : "uncommon",
+    "text" : "Tobacco Barn"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🎄",
+    "id" : "94D79C63-C9A1-4A13-8157-835C11343E6C",
+    "rarity" : "uncommon",
+    "text" : "Christmas Tree Farm"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🦆",
+    "id" : "D9C87165-5006-4079-89A8-BFCAFA874174",
+    "rarity" : "veryCommon",
+    "text" : "Farm Pond"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "⛰️",
+    "id" : "9ECF0037-9500-4C09-A8A7-F8DD573C4EAC",
+    "rarity" : "uncommon",
+    "text" : "Limestone Cliffs"
+  },
+  {
+    "category" : "nature",
+    "emoji" : "🐎",
+    "id" : "725B6E6E-33F5-413E-831B-1B0A79B00A99",
+    "rarity" : "common",
+    "text" : "White Fence Horse Farm"
+  },
+  {
+    "category" : "landmarks",
+    "emoji" : "🏗️",
+    "id" : "CB998D77-472F-4201-8025-9790FE1B3C82",
+    "rarity" : "common",
+    "text" : "Grain Elevator"
+  },
+  {
+    "category" : "landmarks",
+    "emoji" : "🛢️",
+    "id" : "AA9D965C-F49D-4B42-9B01-9D0976761427",
+    "rarity" : "common",
+    "text" : "Oil Pump Jack"
+  },
+  {
+    "category" : "landmarks",
+    "emoji" : "⛷️",
+    "id" : "60F03332-B413-4CBF-83C8-A65B266C65D0",
+    "rarity" : "uncommon",
+    "text" : "Ski Lift"
+  },
+  {
+    "category" : "landmarks",
+    "emoji" : "🎈",
+    "id" : "0D71D1E3-D56E-4584-B7DB-FD9EFA88B060",
+    "rarity" : "rare",
+    "text" : "Hot Air Balloon"
+  },
+  {
+    "category" : "landmarks",
+    "emoji" : "🏛️",
+    "id" : "61F546BA-61C6-4A2A-A616-CFCF2866F011",
+    "rarity" : "uncommon",
+    "text" : "County Courthouse"
+  },
+  {
+    "category" : "landmarks",
+    "emoji" : "🎣",
+    "id" : "1BEDAAAB-90B2-4CC4-A8BD-237E1D48C8DD",
+    "rarity" : "uncommon",
+    "text" : "Fisherman by Water"
+  },
+  {
+    "category" : "landmarks",
+    "emoji" : "🚣",
+    "id" : "3BD198B9-87C0-47FD-84B6-589A6B23738F",
+    "rarity" : "uncommon",
+    "text" : "Kayaker or Rafter"
+  },
+  {
+    "category" : "signs",
+    "emoji" : "🛣️",
+    "id" : "3220B1AF-B3AE-493C-8313-180D7C3D3E69",
+    "rarity" : "uncommon",
+    "text" : "Route 66 Sign"
+  },
+  {
+    "category" : "signs",
+    "emoji" : "🦌",
+    "id" : "87D08710-197C-4864-BE1A-C03FA82435E6",
+    "rarity" : "uncommon",
+    "text" : "Elk Crossing Sign"
+  },
+  {
+    "category" : "signs",
+    "emoji" : "🥾",
+    "id" : "4C15F891-AAD8-4653-A52A-E7DD059D3013",
+    "rarity" : "rare",
+    "text" : "Appalachian Trail Sign"
+  },
+  {
+    "category" : "signs",
+    "emoji" : "🚨",
+    "id" : "FB9D41AD-3615-480A-9499-B2ACDA6185A8",
+    "rarity" : "common",
+    "text" : "Tornado Siren"
+  },
+  {
+    "category" : "signs",
+    "emoji" : "🏷️",
+    "id" : "A6F7CA63-1204-4831-8F57-F7BBF95BED53",
+    "rarity" : "uncommon",
+    "text" : "Yard Sale"
   }
 ]
