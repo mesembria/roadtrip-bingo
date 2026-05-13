@@ -24,22 +24,49 @@ struct AmericanaTheme {
         AmericanaGridBackground()
     }
 
+    private static let tileImageCache = NSCache<NSString, UIImage>()
+    private static let iconCache = NSCache<NSString, UIImage>()
+
     static func tileImage(for square: BingoSquare) -> Image? {
+        let key = square.id.uuidString as NSString
+        if let cached = tileImageCache.object(forKey: key) {
+            return Image(uiImage: cached)
+        }
         guard let path = Bundle.main.path(
             forResource: square.id.uuidString,
             ofType: "png",
             inDirectory: "TileImages"
         ), let uiImage = UIImage(contentsOfFile: path) else { return nil }
+        tileImageCache.setObject(uiImage, forKey: key)
         return Image(uiImage: uiImage)
     }
 
     static func icon(named name: String) -> Image? {
+        let key = name as NSString
+        if let cached = iconCache.object(forKey: key) {
+            return Image(uiImage: cached)
+        }
         guard let path = Bundle.main.path(
             forResource: name,
             ofType: "png",
             inDirectory: "Icons"
         ), let uiImage = UIImage(contentsOfFile: path) else { return nil }
+        iconCache.setObject(uiImage, forKey: key)
         return Image(uiImage: uiImage)
+    }
+
+    // Call from a background Task before the board is shown to avoid first-render stall
+    static func prewarmTileImages(for squares: [BingoSquare]) {
+        for square in squares {
+            let key = square.id.uuidString as NSString
+            guard tileImageCache.object(forKey: key) == nil else { continue }
+            guard let path = Bundle.main.path(
+                forResource: square.id.uuidString,
+                ofType: "png",
+                inDirectory: "TileImages"
+            ), let uiImage = UIImage(contentsOfFile: path) else { continue }
+            tileImageCache.setObject(uiImage, forKey: key)
+        }
     }
 }
 

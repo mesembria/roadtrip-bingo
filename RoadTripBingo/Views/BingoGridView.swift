@@ -14,6 +14,12 @@ struct BingoGridView: View {
             gridArea
         }
         .shadow(color: AmericanaTheme.shadow, radius: 8, x: 0, y: 4)
+        .task {
+            let squares = board.squares
+            Task.detached(priority: .userInitiated) {
+                AmericanaTheme.prewarmTileImages(for: squares)
+            }
+        }
     }
 
     private var headerBar: some View {
