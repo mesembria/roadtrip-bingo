@@ -12,23 +12,35 @@ struct OpponentStripView: View {
                 VStack(spacing: 6) {
                     HStack(spacing: 4) {
                         Text(name)
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white.opacity(0.6))
+                            .font(AmericanaTheme.barlowSemiBold(12))
+                            .foregroundColor(AmericanaTheme.ink.opacity(0.8))
                         if let coins {
-                            Text("· 🪙\(coins)")
-                                .font(.system(size: 11, weight: .medium, design: .rounded))
-                                .foregroundColor(.yellow.opacity(0.8))
+                            HStack(spacing: 2) {
+                                if let img = AmericanaTheme.icon(named: "token") {
+                                    img.resizable().scaledToFit().frame(width: 14, height: 14)
+                                }
+                                Text("\(coins)")
+                                    .font(AmericanaTheme.barlowSemiBold(11))
+                                    .foregroundColor(AmericanaTheme.ink)
+                            }
                         }
                     }
                     MiniGridView(markedPositions: marked)
                     Text("\(marked.count) ✓")
-                        .font(.system(size: 10))
-                        .foregroundColor(.white.opacity(0.6))
+                        .font(AmericanaTheme.barlowSemiBold(10))
+                        .foregroundColor(AmericanaTheme.ink.opacity(0.6))
                 }
             }
         }
         .padding(.horizontal, 20).padding(.vertical, 10)
-        .background(Color.white.opacity(0.05)).cornerRadius(12)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(AmericanaTheme.paper)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(AmericanaTheme.ink.opacity(0.10), lineWidth: 1)
+                )
+        )
     }
 }
 
@@ -44,9 +56,9 @@ private struct MiniGridView: View {
                     ForEach(0..<5, id: \.self) { col in
                         let pos = row * 5 + col
                         RoundedRectangle(cornerRadius: 2)
-                            .fill(pos == 12 ? Color.yellow :
-                                  markedPositions.contains(pos) ? Color.blue :
-                                  Color.white.opacity(0.15))
+                            .fill(pos == 12 ? AmericanaTheme.yellow :
+                                  markedPositions.contains(pos) ? AmericanaTheme.green :
+                                  AmericanaTheme.ink.opacity(0.12))
                             .frame(width: size, height: size)
                     }
                 }
