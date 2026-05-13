@@ -7,7 +7,7 @@ struct PowerUpStripView: View {
     let onRequestTargeted: (PowerUpType) -> Void
 
     private struct StripItem {
-        let emoji: String
+        let iconName: String
         let label: String
         let randomVariant: PowerUpType?
         let targetedVariant: PowerUpType
@@ -16,10 +16,10 @@ struct PowerUpStripView: View {
     }
 
     private let items: [StripItem] = [
-        StripItem(emoji: "🔀", label: "Upgrade",   randomVariant: .upgradeTileRandom,    targetedVariant: .upgradeTileTargeted),
-        StripItem(emoji: "💣", label: "Sabotage",  randomVariant: .downgradeTileRandom,  targetedVariant: .downgradeTileTargeted),
-        StripItem(emoji: "✅", label: "Free Mark", randomVariant: nil,                   targetedVariant: .freeMark),
-        StripItem(emoji: "💥", label: "Erase",     randomVariant: .unmarkOpponentRandom, targetedVariant: .unmarkOpponentTargeted),
+        StripItem(iconName: "powerup-upgrade",  label: "Upgrade",   randomVariant: .upgradeTileRandom,    targetedVariant: .upgradeTileTargeted),
+        StripItem(iconName: "powerup-sabotage", label: "Sabotage",  randomVariant: .downgradeTileRandom,  targetedVariant: .downgradeTileTargeted),
+        StripItem(iconName: "powerup-freemark", label: "Free Mark", randomVariant: nil,                   targetedVariant: .freeMark),
+        StripItem(iconName: "powerup-erase",    label: "Erase",     randomVariant: .unmarkOpponentRandom, targetedVariant: .unmarkOpponentTargeted),
     ]
 
     @State private var showHelp = false
@@ -29,12 +29,13 @@ struct PowerUpStripView: View {
             if isVertical {
                 VStack(spacing: 9) { buttons; helpButton; balanceBadge }
             } else {
-                HStack(spacing: 9) { buttons; helpButton; balanceBadge }
+                HStack(spacing: 9) { buttons; helpButton; Spacer(); balanceBadge }
             }
         }
         .padding(12)
-        .background(Color.white.opacity(0.07))
+        .background(AmericanaTheme.green)
         .cornerRadius(12)
+        .shadow(color: AmericanaTheme.shadow, radius: 8, x: 0, y: 4)
         .sheet(isPresented: $showHelp) { PowerUpHelpView() }
     }
 
@@ -42,19 +43,29 @@ struct PowerUpStripView: View {
         ForEach(items.indices, id: \.self) { i in
             let item = items[i]
             let canAfford = tokenBalance >= item.displayCost
-            VStack(spacing: 3) {
-                Text(item.emoji).font(.system(size: 33))
-                Text(item.label)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.7))
+            VStack(spacing: 4) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 7)
+                        .fill(Color.white)
+                        .frame(width: 44, height: 44)
+                    if let img = AmericanaTheme.icon(named: item.iconName) {
+                        img.resizable().scaledToFit().padding(4)
+                            .frame(width: 44, height: 44)
+                    }
+                }
+                Text(item.label.uppercased())
+                    .font(AmericanaTheme.barlowBold(9))
+                    .foregroundColor(.white.opacity(0.75))
                     .lineLimit(1)
-                Text("\(item.displayCost)🪙")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.white.opacity(0.8))
+                HStack(spacing: 2) {
+                    if let img = AmericanaTheme.icon(named: "token") {
+                        img.resizable().scaledToFit().frame(width: 14, height: 14)
+                    }
+                    Text("\(item.displayCost)")
+                        .font(AmericanaTheme.barlowBold(12))
+                        .foregroundColor(AmericanaTheme.yellow)
+                }
             }
-            .padding(.vertical, 9).padding(.horizontal, 12)
-            .background(Color.white.opacity(canAfford ? 0.12 : 0.04))
-            .cornerRadius(8)
             .opacity(canAfford ? 1.0 : 0.4)
             .onTapGesture {
                 guard canAfford else { return }
@@ -72,22 +83,29 @@ struct PowerUpStripView: View {
     }
 
     private var balanceBadge: some View {
-        Text("🪙\(tokenBalance)")
-            .font(.system(size: 20, weight: .bold, design: .rounded))
-            .padding(.horizontal, 15).padding(.vertical, 9)
-            .background(Color.yellow)
-            .foregroundColor(.black)
-            .cornerRadius(8)
+        HStack(spacing: 4) {
+            if let img = AmericanaTheme.icon(named: "token") {
+                img.resizable().scaledToFit().frame(width: 26, height: 26)
+            }
+            Text("\(tokenBalance)")
+                .font(AmericanaTheme.barlowBold(22))
+                .foregroundColor(AmericanaTheme.ink)
+        }
+        .padding(.horizontal, 14).padding(.vertical, 8)
+        .background(AmericanaTheme.yellow)
+        .cornerRadius(8)
     }
 
     private var helpButton: some View {
-        Text("?")
-            .font(.system(size: 23, weight: .bold))
-            .foregroundColor(.white.opacity(0.7))
-            .padding(.vertical, 9).padding(.horizontal, 12)
-            .background(Color.white.opacity(0.12))
-            .cornerRadius(8)
-            .accessibilityLabel("Power-up help")
-            .onTapGesture { showHelp = true }
+        ZStack {
+            RoundedRectangle(cornerRadius: 7)
+                .fill(Color.white.opacity(0.15))
+                .frame(width: 36, height: 44)
+            Text("?")
+                .font(AmericanaTheme.barlowBold(18))
+                .foregroundColor(.white.opacity(0.75))
+        }
+        .accessibilityLabel("Power-up help")
+        .onTapGesture { showHelp = true }
     }
 }

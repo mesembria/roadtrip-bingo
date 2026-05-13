@@ -9,7 +9,7 @@ struct GameView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 0.05, green: 0.07, blue: 0.13).ignoresSafeArea()
+            AmericanaTheme.gridBackground().ignoresSafeArea()
 
             if let board = appState.localBoard {
                 GeometryReader { geo in
@@ -118,11 +118,13 @@ struct GameView: View {
     @ViewBuilder private var bingoButton: some View {
         if appState.completedLine != nil {
             Button(action: appState.callBingo) {
-                Text("🎉 BINGO!")
-                    .font(.system(size: 28, weight: .black, design: .rounded))
-                    .padding(.horizontal, 48).padding(.vertical, 16)
-                    .background(Color.yellow).foregroundColor(.black)
-                    .cornerRadius(20).shadow(color: .yellow.opacity(0.6), radius: 16)
+                Text("BINGO!")
+                    .font(AmericanaTheme.rye(22))
+                    .padding(.horizontal, 48).padding(.vertical, 14)
+                    .background(AmericanaTheme.yellow)
+                    .foregroundColor(AmericanaTheme.ink)
+                    .cornerRadius(8)
+                    .shadow(color: AmericanaTheme.yellow.opacity(0.8), radius: 0, x: 0, y: 3)
             }
             .transition(.scale.combined(with: .opacity))
         }
