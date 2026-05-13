@@ -7,27 +7,52 @@ struct WinView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 0.05, green: 0.07, blue: 0.13).ignoresSafeArea()
+            AmericanaTheme.gridBackground().ignoresSafeArea()
             if isLocalWin { ConfettiView() }
             VStack(spacing: 32) {
                 Text(isLocalWin ? "🏆" : "🎯").font(.system(size: 96))
                 Text(isLocalWin ? "YOU GOT BINGO!" : "\(winnerName) got BINGO!")
-                    .font(.system(size: 42, weight: .black, design: .rounded))
-                    .foregroundColor(isLocalWin ? .yellow : .white).multilineTextAlignment(.center)
+                    .font(AmericanaTheme.rye(38))
+                    .foregroundColor(isLocalWin ? AmericanaTheme.yellow : AmericanaTheme.ink)
+                    .multilineTextAlignment(.center)
                 if let line = appState.completedLine, isLocalWin, let board = appState.localBoard {
                     HStack(spacing: 8) {
                         ForEach(line, id: \.self) { pos in
-                            Text(board.squares[pos].emoji).font(.title)
-                                .padding(8).background(Color.yellow.opacity(0.25)).cornerRadius(8)
+                            winningTileCard(board.squares[pos])
                         }
                     }
                 }
                 Button(action: { appState.screen = .playAgain }) {
                     Text("Continue →")
-                        .font(.title3.bold()).padding(.horizontal, 48).padding(.vertical, 16)
-                        .background(Color.white.opacity(0.15)).foregroundColor(.white).cornerRadius(14)
+                        .font(AmericanaTheme.barlowBold(17))
+                        .padding(.horizontal, 48).padding(.vertical, 16)
+                        .background(AmericanaTheme.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(14)
                 }
             }.padding(48)
         }
+    }
+
+    private func winningTileCard(_ square: BingoSquare) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.white)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(AmericanaTheme.ink.opacity(0.10), lineWidth: 1)
+                )
+                .shadow(color: AmericanaTheme.shadow, radius: 4, x: 0, y: 2)
+            Group {
+                if let img = AmericanaTheme.tileImage(for: square) {
+                    img.resizable().scaledToFit()
+                } else {
+                    Text(square.emoji).font(.title)
+                }
+            }
+            .padding(6)
+            .frame(width: 48, height: 48)
+        }
+        .frame(width: 60, height: 60)
     }
 }
