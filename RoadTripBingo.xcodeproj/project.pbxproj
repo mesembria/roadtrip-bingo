@@ -41,6 +41,11 @@
 		F4E182EC5AF674AA80E50C98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */; };
 		AA11BB22CC33DD44EE55FF66 /* AmericanaTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF67 /* AmericanaTheme.swift */; };
 		F5111507C220551AF21A652F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EB052E3667A4113B417DE3 /* AppState.swift */; };
+		05507A8435754EAFA548B52D /* TileImages in Resources */ = {isa = PBXBuildFile; fileRef = 785D19E34ECB4F3D90728775 /* TileImages */; };
+		8464799FC04149E0B01DB059 /* Icons in Resources */ = {isa = PBXBuildFile; fileRef = D7840F3D26D0457A8603804B /* Icons */; };
+		F1C04E8A88ED473FA300B30D /* Rye-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 196998CDAACC43F6B8E66AA9 /* Rye-Regular.ttf */; };
+		F98F0D168A9C45DBACD68A5A /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CE2A25DC5F54E12AB23447F /* BarlowCondensed-SemiBold.ttf */; };
+		316237F3D87E4AAABF04A18F /* BarlowCondensed-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 860B63B11B3E47CD82263BF8 /* BarlowCondensed-Bold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +103,11 @@
 		F149B6878223BB2C3678B549 /* TokenToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenToastView.swift; sourceTree = "<group>"; };
 		F2C3DF2FD55D24FDE3C8DDB8 /* BingoBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoBoard.swift; sourceTree = "<group>"; };
 		F575318E432FD2D90841DB00 /* PowerUpStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerUpStripView.swift; sourceTree = "<group>"; };
+		785D19E34ECB4F3D90728775 /* TileImages */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TileImages; sourceTree = "<group>"; };
+		D7840F3D26D0457A8603804B /* Icons */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Icons; sourceTree = "<group>"; };
+		196998CDAACC43F6B8E66AA9 /* Rye-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/Rye-Regular.ttf; sourceTree = "<group>"; };
+		4CE2A25DC5F54E12AB23447F /* BarlowCondensed-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/BarlowCondensed-SemiBold.ttf; sourceTree = "<group>"; };
+		860B63B11B3E47CD82263BF8 /* BarlowCondensed-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/BarlowCondensed-Bold.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -106,6 +116,11 @@
 			children = (
 				41AADAA0C173D2D47BEFABFA /* .gitkeep */,
 				731548D4671F0ACB06D7FB47 /* squares.json */,
+				785D19E34ECB4F3D90728775 /* TileImages */,
+				D7840F3D26D0457A8603804B /* Icons */,
+				196998CDAACC43F6B8E66AA9 /* Rye-Regular.ttf */,
+				4CE2A25DC5F54E12AB23447F /* BarlowCondensed-SemiBold.ttf */,
+				860B63B11B3E47CD82263BF8 /* BarlowCondensed-Bold.ttf */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -297,6 +312,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				312E1E01EF66D434A2BF17E8 /* squares.json in Resources */,
+				05507A8435754EAFA548B52D /* TileImages in Resources */,
+				8464799FC04149E0B01DB059 /* Icons in Resources */,
+				F1C04E8A88ED473FA300B30D /* Rye-Regular.ttf in Resources */,
+				F98F0D168A9C45DBACD68A5A /* BarlowCondensed-SemiBold.ttf in Resources */,
+				316237F3D87E4AAABF04A18F /* BarlowCondensed-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
