@@ -32,5 +32,11 @@
     </array>
     <key>UILaunchScreen</key>
     <dict/>
+    <key>UIAppFonts</key>
+    <array>
+        <string>Rye-Regular.ttf</string>
+        <string>BarlowCondensed-SemiBold.ttf</string>
+        <string>BarlowCondensed-Bold.ttf</string>
+    </array>
 </dict>
 </plist>
