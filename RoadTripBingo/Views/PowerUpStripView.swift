@@ -47,6 +47,8 @@ struct PowerUpStripView: View {
                 Text(item.label)
                     .font(.system(size: 8, weight: .semibold))
                     .foregroundColor(.white.opacity(0.7))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
                 Text("\(item.displayCost)🪙")
                     .font(.system(size: 9, weight: .medium))
                     .foregroundColor(.white.opacity(0.8))
