@@ -14,9 +14,23 @@ struct TargetingOverlayView: View {
                 .onTapGesture { onCancel() }
 
             VStack(spacing: 20) {
-                Text("\(powerUp.emoji)  Select target  ·  \(powerUp.cost)🪙")
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
+                HStack(spacing: 8) {
+                    if let img = AmericanaTheme.icon(named: "powerup-\(powerUp.iconSlug)") {
+                        img.resizable().scaledToFit().frame(width: 20, height: 20)
+                    }
+                    Text("Select target")
+                        .font(AmericanaTheme.rye(17))
+                        .foregroundColor(.white)
+                    HStack(spacing: 3) {
+                        Text("·")
+                        if let img = AmericanaTheme.icon(named: "token") {
+                            img.resizable().scaledToFit().frame(width: 16, height: 16)
+                        }
+                        Text("\(powerUp.cost)")
+                            .font(AmericanaTheme.barlowBold(15))
+                    }
+                    .foregroundColor(AmericanaTheme.yellow)
+                }
 
                 if powerUp.affectsOpponent {
                     opponentGrid
@@ -25,12 +39,12 @@ struct TargetingOverlayView: View {
                 }
 
                 Button("Cancel") { onCancel() }
-                    .font(.system(size: 15, weight: .medium))
+                    .font(AmericanaTheme.barlowSemiBold(15))
                     .foregroundColor(.white.opacity(0.5))
             }
             .frame(maxHeight: UIScreen.main.bounds.height * 0.8)
             .padding(24)
-            .background(Color(red: 0.10, green: 0.14, blue: 0.22))
+            .background(AmericanaTheme.ink)
             .cornerRadius(20)
             .padding(20)
         }
@@ -66,7 +80,7 @@ struct TargetingOverlayView: View {
                     let marked = opponentMarked[oppName] ?? []
                     VStack(spacing: 8) {
                         Text(oppName)
-                            .font(.system(size: 14, weight: .semibold, design: .rounded))
+                            .font(AmericanaTheme.barlowSemiBold(14))
                             .foregroundColor(.white.opacity(0.65))
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 5), spacing: 4) {
                             ForEach(0..<min(oppBoard.count, 25), id: \.self) { idx in
@@ -99,9 +113,17 @@ private struct TargetTileView: View {
 
     var body: some View {
         VStack(spacing: 2) {
-            Text(square.emoji).font(.system(size: 14))
+            Group {
+                if let img = AmericanaTheme.tileImage(for: square) {
+                    img.resizable().scaledToFit()
+                } else {
+                    Text(square.emoji).font(.system(size: 14))
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
             Text(square.text)
-                .font(.system(size: 7, weight: .medium))
+                .font(AmericanaTheme.barlowSemiBold(7))
                 .lineLimit(2)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.white.opacity(0.8))
@@ -109,17 +131,29 @@ private struct TargetTileView: View {
         .frame(maxWidth: .infinity)
         .padding(4)
         .background(
-            isMarked     ? Color.blue.opacity(0.35) :
+            isMarked     ? AmericanaTheme.green.opacity(0.4) :
             isSelectable ? Color.white.opacity(0.12) :
                            Color.white.opacity(0.03)
         )
         .cornerRadius(6)
         .overlay(
             isSelectable
-                ? RoundedRectangle(cornerRadius: 6).stroke(Color.yellow.opacity(0.6), lineWidth: 1)
+                ? RoundedRectangle(cornerRadius: 6)
+                    .stroke(AmericanaTheme.yellow.opacity(0.8), lineWidth: 1.5)
                 : nil
         )
         .opacity(isSelectable ? 1.0 : 0.35)
         .onTapGesture { onTap() }
+    }
+}
+
+private extension PowerUpType {
+    var iconSlug: String {
+        switch self {
+        case .upgradeTileRandom, .upgradeTileTargeted:        return "upgrade"
+        case .downgradeTileRandom, .downgradeTileTargeted:   return "sabotage"
+        case .freeMark:                                       return "freemark"
+        case .unmarkOpponentRandom, .unmarkOpponentTargeted: return "erase"
+        }
     }
 }
