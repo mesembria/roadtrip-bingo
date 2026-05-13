@@ -86,6 +86,49 @@ final class AppStateTests: XCTestCase {
         XCTAssertNil(state.pendingToast)
     }
 
+    func test_activatePowerUp_upgrade_random_postsToastWithOldTileName() {
+        let state = AppState()
+        state.playerName = "Zoe"
+        state.tokenBalance = 10
+
+        // Make index 3 the hardest tile so highestRarityIndex picks it
+        var squares: [BingoSquare] = (0..<25).map { i in
+            i == 12 ? BingoSquare.free
+                    : BingoSquare(id: UUID(), text: "Tile \(i)", emoji: "🐄",
+                                  category: .nature, rarity: .veryCommon)
+        }
+        squares[3] = BingoSquare(id: UUID(), text: "Super Hard Thing", emoji: "🔥",
+                                  category: .nature, rarity: .veryRare)
+        state.localBoard = BingoBoard(squares: squares)
+        state.reserveSquares = [BingoSquare(id: UUID(), text: "Easy", emoji: "🌱",
+                                             category: .nature, rarity: .veryCommon)]
+
+        state.activatePowerUp(.upgradeTileRandom)
+
+        XCTAssertEqual(state.pendingToast?.message, "🔀 Upgraded 'Super Hard Thing'")
+        XCTAssertEqual(state.pendingToast?.style, .earn)
+    }
+
+    func test_activatePowerUp_freeMark_postsToastWithTileName() {
+        let state = AppState()
+        state.playerName = "Zoe"
+        state.tokenBalance = 10
+
+        var squares: [BingoSquare] = (0..<25).map { i in
+            i == 12 ? BingoSquare.free
+                    : BingoSquare(id: UUID(), text: "Tile \(i)", emoji: "🐄",
+                                  category: .nature, rarity: .veryCommon)
+        }
+        squares[5] = BingoSquare(id: UUID(), text: "Scenic Overlook", emoji: "🏔️",
+                                  category: .landmarks, rarity: .rare)
+        state.localBoard = BingoBoard(squares: squares)
+
+        state.activatePowerUp(.freeMark, targetIndex: 5)
+
+        XCTAssertEqual(state.pendingToast?.message, "✅ Marked 'Scenic Overlook'")
+        XCTAssertEqual(state.pendingToast?.style, .earn)
+    }
+
     func test_powerUpUsed_unmark_random_postsThreatsToast() {
         let state = AppState()
         state.playerName = "Zoe"

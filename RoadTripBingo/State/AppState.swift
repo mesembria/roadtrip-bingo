@@ -257,6 +257,19 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             replacementSquare = reserveSquares.removeFirst()
         }
 
+        // Capture tile name before the board is mutated (upgrade replaces the tile)
+        var selfActionMessage: String? = nil
+        if let idx = resolvedTargetIndex, let board = localBoard, idx < board.squares.count {
+            switch powerUp {
+            case .upgradeTileRandom, .upgradeTileTargeted:
+                selfActionMessage = "🔀 Upgraded '\(board.squares[idx].text)'"
+            case .freeMark:
+                selfActionMessage = "✅ Marked '\(board.squares[idx].text)'"
+            default:
+                break
+            }
+        }
+
         tokenBalance -= powerUp.cost
         multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
 
@@ -274,6 +287,11 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         if powerUp == .freeMark, let board = localBoard {
             completedLine = GameEngine.winningLine(for: board)
             checkBonuses(for: board)
+        }
+
+        // Show which tile was affected (posted last so it appears above any earn toasts)
+        if let msg = selfActionMessage {
+            pendingToast = ToastEvent(message: msg, style: .earn)
         }
     }
 
