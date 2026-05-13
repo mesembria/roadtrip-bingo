@@ -39,6 +39,7 @@
 		DB30D839E435F5EE576BD79C /* BingoGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8C0599EECB353352C2464 /* BingoGridView.swift */; };
 		ED0A27E6447052ED0FDA3AD9 /* BingoSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6FA963025C170363180C6E8 /* BingoSquare.swift */; };
 		F4E182EC5AF674AA80E50C98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */; };
+		AA11BB22CC33DD44EE55FF66 /* AmericanaTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF67 /* AmericanaTheme.swift */; };
 		F5111507C220551AF21A652F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EB052E3667A4113B417DE3 /* AppState.swift */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 		7D16366F1525405AB2B03711 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
 		976D46307EA94F37A0304C16 /* TargetingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetingOverlayView.swift; sourceTree = "<group>"; };
 		A6FA963025C170363180C6E8 /* BingoSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoSquare.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF67 /* AmericanaTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmericanaTheme.swift; sourceTree = "<group>"; };
 		A758A06BC27257832CE90F20 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		A986750ED27B1F71AAA70A01 /* RoadTripBingo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RoadTripBingo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEF7153575DA260B1AB6678B /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				27FE15FDD36D024BA300BFBD /* .gitkeep */,
+				AA11BB22CC33DD44EE55FF67 /* AmericanaTheme.swift */,
 				76A8C0599EECB353352C2464 /* BingoGridView.swift */,
 				2753B43B839BD0EEA8B4201B /* BingoSquareView.swift */,
 				26CA225771BADF1C45329F34 /* ConfettiView.swift */,
@@ -323,6 +326,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA11BB22CC33DD44EE55FF66 /* AmericanaTheme.swift in Sources */,
 				F5111507C220551AF21A652F /* AppState.swift in Sources */,
 				CC8A31998772D2D2461D94B4 /* BingoBoard.swift in Sources */,
 				DB30D839E435F5EE576BD79C /* BingoGridView.swift in Sources */,
