@@ -27,3 +27,6 @@ build/
 
 # Superpowers brainstorm files (not for source control)
 .superpowers/
+
+# Git worktrees
+.worktrees/
