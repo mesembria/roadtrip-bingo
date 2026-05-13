@@ -27,12 +27,12 @@ struct PowerUpStripView: View {
     var body: some View {
         Group {
             if isVertical {
-                VStack(spacing: 6) { buttons; helpButton; balanceBadge }
+                VStack(spacing: 9) { buttons; helpButton; balanceBadge }
             } else {
-                HStack(spacing: 6) { buttons; helpButton; balanceBadge }
+                HStack(spacing: 9) { buttons; helpButton; balanceBadge }
             }
         }
-        .padding(8)
+        .padding(12)
         .background(Color.white.opacity(0.07))
         .cornerRadius(12)
         .sheet(isPresented: $showHelp) { PowerUpHelpView() }
@@ -42,17 +42,17 @@ struct PowerUpStripView: View {
         ForEach(items.indices, id: \.self) { i in
             let item = items[i]
             let canAfford = tokenBalance >= item.displayCost
-            VStack(spacing: 2) {
-                Text(item.emoji).font(.system(size: 22))
+            VStack(spacing: 3) {
+                Text(item.emoji).font(.system(size: 33))
                 Text(item.label)
-                    .font(.system(size: 8, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(.white.opacity(0.7))
                     .lineLimit(1)
                 Text("\(item.displayCost)🪙")
-                    .font(.system(size: 9, weight: .medium))
+                    .font(.system(size: 14, weight: .medium))
                     .foregroundColor(.white.opacity(0.8))
             }
-            .padding(.vertical, 6).padding(.horizontal, 8)
+            .padding(.vertical, 9).padding(.horizontal, 12)
             .background(Color.white.opacity(canAfford ? 0.12 : 0.04))
             .cornerRadius(8)
             .opacity(canAfford ? 1.0 : 0.4)
@@ -73,8 +73,8 @@ struct PowerUpStripView: View {
 
     private var balanceBadge: some View {
         Text("🪙\(tokenBalance)")
-            .font(.system(size: 13, weight: .bold, design: .rounded))
-            .padding(.horizontal, 10).padding(.vertical, 6)
+            .font(.system(size: 20, weight: .bold, design: .rounded))
+            .padding(.horizontal, 15).padding(.vertical, 9)
             .background(Color.yellow)
             .foregroundColor(.black)
             .cornerRadius(8)
@@ -82,9 +82,9 @@ struct PowerUpStripView: View {
 
     private var helpButton: some View {
         Text("?")
-            .font(.system(size: 15, weight: .bold))
+            .font(.system(size: 23, weight: .bold))
             .foregroundColor(.white.opacity(0.7))
-            .padding(.vertical, 6).padding(.horizontal, 8)
+            .padding(.vertical, 9).padding(.horizontal, 12)
             .background(Color.white.opacity(0.12))
             .cornerRadius(8)
             .accessibilityLabel("Power-up help")

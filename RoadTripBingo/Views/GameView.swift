@@ -98,7 +98,7 @@ struct GameView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 powerUpStrip(isVertical: true)
-                    .frame(width: 84)
+                    .frame(width: 126)
             }
             bingoButton
         }
