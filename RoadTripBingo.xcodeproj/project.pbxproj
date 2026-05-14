@@ -50,6 +50,8 @@
 		F98F0D168A9C45DBACD68A5A /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CE2A25DC5F54E12AB23447F /* BarlowCondensed-SemiBold.ttf */; };
 		316237F3D87E4AAABF04A18F /* BarlowCondensed-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 860B63B11B3E47CD82263BF8 /* BarlowCondensed-Bold.ttf */; };
 		A1B2C3D4E5F60002A1B2C302 /* RecentMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */; };
+		A1B2C3D4E5F60004A1B2C304 /* RecentMarkCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60003A1B2C303 /* RecentMarkCard.swift */; };
+		A1B2C3D4E5F60006A1B2C306 /* OpponentMarkFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60005A1B2C305 /* OpponentMarkFeedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,6 +118,8 @@
 		4CE2A25DC5F54E12AB23447F /* BarlowCondensed-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/BarlowCondensed-SemiBold.ttf; sourceTree = "<group>"; };
 		860B63B11B3E47CD82263BF8 /* BarlowCondensed-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/BarlowCondensed-Bold.ttf; sourceTree = "<group>"; };
 		A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMark.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60003A1B2C303 /* RecentMarkCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMarkCard.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60005A1B2C305 /* OpponentMarkFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentMarkFeedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -146,6 +150,8 @@
 				2ED2A797358229A5D3E6811F /* HomeView.swift */,
 				C67A9EA37EF3D8484426DF49 /* LobbyView.swift */,
 				6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */,
+				A1B2C3D4E5F60003A1B2C303 /* RecentMarkCard.swift */,
+				A1B2C3D4E5F60005A1B2C305 /* OpponentMarkFeedView.swift */,
 				31D0F5ED86EDDC60416BD6A6 /* PlayAgainView.swift */,
 				0866C20E2EAE79BED09E5072 /* PowerUpHelpView.swift */,
 				F575318E432FD2D90841DB00 /* PowerUpStripView.swift */,
@@ -372,6 +378,8 @@
 				9825D61245605C593D8BC7C7 /* MultipeerMessage.swift in Sources */,
 				C8EE6560303C250D0F3288BA /* MultipeerSession.swift in Sources */,
 				2E8B64CFB6574C864BB4D4B2 /* OpponentStripView.swift in Sources */,
+				A1B2C3D4E5F60004A1B2C304 /* RecentMarkCard.swift in Sources */,
+				A1B2C3D4E5F60006A1B2C306 /* OpponentMarkFeedView.swift in Sources */,
 				CCEC755BB280931555EACB11 /* PlayAgainView.swift in Sources */,
 				BCC67A47075A730C41975925 /* PowerUpHelpView.swift in Sources */,
 				361B5DFCB064D6B926002432 /* PowerUpStripView.swift in Sources */,
