@@ -32,6 +32,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     @Published var opponentMarked: [String: Set<Int>] = [:]
     @Published var opponentBoards: [String: [BingoSquare]] = [:]
     var reserveSquares: [BingoSquare] = []
+    @Published var recentOpponentMarks: [RecentMark] = []
+    private let maxRecentMarks = 3
+    private var pruningTask: Task<Void, Never>?
 
     // MARK: - Tokens
     @Published var tokenBalance: Int = 0
@@ -94,6 +97,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         localBoard = nil
         completedLine = nil
         opponentMarked = [:]
+        recentOpponentMarks = []
+        pruningTask?.cancel()
+        pruningTask = nil
         opponentBoards = [:]
         reserveSquares = []
         isHost = false
@@ -170,6 +176,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         }
         opponentBoards = [:]
         opponentMarked = [:]
+        recentOpponentMarks = []
+        pruningTask?.cancel()
+        pruningTask = nil
         for name in connectedPlayerNames {
             opponentBoards[name] = boards[name]
             opponentMarked[name] = [12]
@@ -387,6 +396,28 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         return best.map { ($0.name, $0.idx) }
     }
 
+    private func appendRecentMark(_ mark: RecentMark) {
+        if recentOpponentMarks.count >= maxRecentMarks {
+            recentOpponentMarks.removeFirst()
+        }
+        recentOpponentMarks.append(mark)
+        startPruningIfNeeded()
+    }
+
+    private func startPruningIfNeeded() {
+        guard pruningTask == nil else { return }
+        pruningTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            while !self.recentOpponentMarks.isEmpty {
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                if Task.isCancelled { return }
+                let cutoff = Date().addingTimeInterval(-10)
+                self.recentOpponentMarks.removeAll { $0.timestamp < cutoff }
+            }
+            self.pruningTask = nil
+        }
+    }
+
     // MARK: - MultipeerSessionDelegate
 
     func multipeerSession(_ session: MultipeerSession, didReceive message: MultipeerMessage, from peerName: String) {
@@ -397,6 +428,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             }
             opponentBoards = [:]
             opponentMarked = [:]
+            recentOpponentMarks = []
+            pruningTask?.cancel()
+            pruningTask = nil
             for (name, squares) in boards where name != playerName {
                 opponentBoards[name] = squares
                 opponentMarked[name] = [12]
@@ -411,6 +445,10 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             var current = opponentMarked[peerName] ?? []
             if isMarked { current.insert(position) } else { current.remove(position) }
             opponentMarked[peerName] = current
+            if isMarked, let square = opponentBoards[peerName]?[position] {
+                appendRecentMark(RecentMark(opponentName: peerName,
+                                            square: square, timestamp: Date()))
+            }
 
         case .bingoAnnounced(let byName):
             winHistory[byName, default: 0] += 1
@@ -422,6 +460,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             }
             opponentBoards = [:]
             opponentMarked = [:]
+            recentOpponentMarks = []
+            pruningTask?.cancel()
+            pruningTask = nil
             for (name, squares) in boards where name != playerName {
                 opponentBoards[name] = squares
                 opponentMarked[name] = [12]

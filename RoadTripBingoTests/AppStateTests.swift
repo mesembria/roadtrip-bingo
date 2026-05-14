@@ -143,4 +143,88 @@ final class AppStateTests: XCTestCase {
         XCTAssertEqual(state.pendingToast?.message, "💥 Liam erased 'Scenic Overlook'")
         XCTAssertEqual(state.pendingToast?.style, .threat)
     }
+
+    func test_squareToggled_isMarked_appendsRecentMark() {
+        let state = AppState()
+        let targetSquare = BingoSquare(id: UUID(), text: "Red Car", emoji: "x",
+                                       category: .vehicles, rarity: .common)
+        state.opponentBoards["Emma"] = (0..<25).map { i in
+            if i == 5  { return targetSquare }
+            if i == 12 { return BingoSquare.free }
+            return BingoSquare(id: UUID(), text: "Tile \(i)", emoji: "x",
+                               category: .nature, rarity: .veryCommon)
+        }
+        state.opponentMarked["Emma"] = [12]
+
+        state.multipeerSession(makeSession(),
+            didReceive: .squareToggled(position: 5, isMarked: true),
+            from: "Emma")
+
+        XCTAssertEqual(state.recentOpponentMarks.count, 1)
+        XCTAssertEqual(state.recentOpponentMarks[0].opponentName, "Emma")
+        XCTAssertEqual(state.recentOpponentMarks[0].square.text, "Red Car")
+    }
+
+    func test_squareToggled_notMarked_doesNotAppendRecentMark() {
+        let state = AppState()
+        let targetSquare = BingoSquare(id: UUID(), text: "Red Car", emoji: "x",
+                                       category: .vehicles, rarity: .common)
+        state.opponentBoards["Emma"] = (0..<25).map { i in
+            if i == 5  { return targetSquare }
+            if i == 12 { return BingoSquare.free }
+            return BingoSquare(id: UUID(), text: "Tile \(i)", emoji: "x",
+                               category: .nature, rarity: .veryCommon)
+        }
+        state.opponentMarked["Emma"] = [5, 12]
+
+        state.multipeerSession(makeSession(),
+            didReceive: .squareToggled(position: 5, isMarked: false),
+            from: "Emma")
+
+        XCTAssertTrue(state.recentOpponentMarks.isEmpty)
+    }
+
+    func test_recentMarks_capped_at_three_drops_oldest() {
+        let state = AppState()
+        let squares: [BingoSquare] = (0..<25).map { i in
+            i == 12 ? BingoSquare.free
+                    : BingoSquare(id: UUID(), text: "Tile \(i)", emoji: "x",
+                                  category: .nature, rarity: .veryCommon)
+        }
+        state.opponentBoards["Emma"] = squares
+        state.opponentMarked["Emma"] = [12]
+
+        for pos in [0, 1, 2, 3] {
+            state.multipeerSession(makeSession(),
+                didReceive: .squareToggled(position: pos, isMarked: true),
+                from: "Emma")
+        }
+
+        XCTAssertEqual(state.recentOpponentMarks.count, 3)
+        XCTAssertEqual(state.recentOpponentMarks[0].square.text, "Tile 1")
+        XCTAssertEqual(state.recentOpponentMarks[2].square.text, "Tile 3")
+    }
+
+    func test_gameStarted_clearsRecentMarks() {
+        let state = AppState()
+        state.playerName = "Zoe"
+        let stub = BingoSquare(id: UUID(), text: "Stub", emoji: "x",
+                               category: .nature, rarity: .veryCommon)
+        state.recentOpponentMarks = [RecentMark(opponentName: "Emma",
+                                                 square: stub, timestamp: Date())]
+
+        var boards: [String: [BingoSquare]] = [:]
+        for name in ["Zoe", "Emma"] {
+            boards[name] = (0..<25).map { i in
+                i == 12 ? BingoSquare.free
+                        : BingoSquare(id: UUID(), text: "\(name) \(i)", emoji: "x",
+                                      category: .nature, rarity: .veryCommon)
+            }
+        }
+        state.multipeerSession(makeSession(),
+            didReceive: .gameStarted(boards: boards),
+            from: "host")
+
+        XCTAssertTrue(state.recentOpponentMarks.isEmpty)
+    }
 }
