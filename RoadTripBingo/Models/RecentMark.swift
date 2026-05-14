@@ -1,8 +1,7 @@
-// RoadTripBingo/Models/RecentMark.swift
 import Foundation
 
-struct RecentMark: Identifiable {
-    let id: UUID
+struct RecentMark: Identifiable, Equatable, Sendable {
+    let id: UUID = UUID()
     let opponentName: String
     let square: BingoSquare
     let timestamp: Date
