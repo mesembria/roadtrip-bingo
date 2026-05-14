@@ -12,6 +12,8 @@
 		183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D16366F1525405AB2B03711 /* GameEngine.swift */; };
 		2E8B64CFB6574C864BB4D4B2 /* OpponentStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */; };
 		312E1E01EF66D434A2BF17E8 /* squares.json in Resources */ = {isa = PBXBuildFile; fileRef = 731548D4671F0ACB06D7FB47 /* squares.json */; };
+		A3F2C81D9B7E4D05BC164E72 /* BingoSplash.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C9D4A02E5F1B4C83A71E0F36 /* BingoSplash.jpg */; };
+		7D4B2F9E1A3C50E8B7620459 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E8A3F1C2D7B54E90A6251834 /* Assets.xcassets */; };
 		361B5DFCB064D6B926002432 /* PowerUpStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F575318E432FD2D90841DB00 /* PowerUpStripView.swift */; };
 		37E192F91D44E4C8B112DD40 /* ToastEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9693B97F5B0E3B8D989A90 /* ToastEvent.swift */; };
 		45DE5727C9CAA0C3D8E56CD1 /* BingoBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C8339E3F7AED215C031136 /* BingoBoardTests.swift */; };
@@ -27,6 +29,7 @@
 		9E4054EE031302195F3AC49F /* PowerUpType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B185FB25828686F54F6EFC9 /* PowerUpType.swift */; };
 		A0860CB6E7BE9B69EE4C4EF2 /* MultipeerMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */; };
 		A3CC74A7D457A84CD876EFE1 /* TokenToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F149B6878223BB2C3678B549 /* TokenToastView.swift */; };
+		B1E7D3F24A90C58E61234F07 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C8A01F3B72E49F05167C83 /* SplashView.swift */; };
 		B0DC156F866FE2A177773370 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A758A06BC27257832CE90F20 /* GameView.swift */; };
 		B7D9C83BCFBE2834F3BD892D /* SquarePoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B46A1ED1B1B26F8D1865E /* SquarePoolTests.swift */; };
 		BCC67A47075A730C41975925 /* PowerUpHelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0866C20E2EAE79BED09E5072 /* PowerUpHelpView.swift */; };
@@ -46,6 +49,7 @@
 		F1C04E8A88ED473FA300B30D /* Rye-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 196998CDAACC43F6B8E66AA9 /* Rye-Regular.ttf */; };
 		F98F0D168A9C45DBACD68A5A /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CE2A25DC5F54E12AB23447F /* BarlowCondensed-SemiBold.ttf */; };
 		316237F3D87E4AAABF04A18F /* BarlowCondensed-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 860B63B11B3E47CD82263BF8 /* BarlowCondensed-Bold.ttf */; };
+		A1B2C3D4E5F60002A1B2C302 /* RecentMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +86,8 @@
 		50BC137311D249C3539DE524 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentStripView.swift; sourceTree = "<group>"; };
 		731548D4671F0ACB06D7FB47 /* squares.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = squares.json; sourceTree = "<group>"; };
+		C9D4A02E5F1B4C83A71E0F36 /* BingoSplash.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = BingoSplash.jpg; sourceTree = "<group>"; };
+		E8A3F1C2D7B54E90A6251834 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		74EB052E3667A4113B417DE3 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		76A8C0599EECB353352C2464 /* BingoGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoGridView.swift; sourceTree = "<group>"; };
 		7D16366F1525405AB2B03711 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
@@ -101,6 +107,7 @@
 		EA3B46A1ED1B1B26F8D1865E /* SquarePoolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquarePoolTests.swift; sourceTree = "<group>"; };
 		EE6D110F4EABD34F22BFDA52 /* GameEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngineTests.swift; sourceTree = "<group>"; };
 		F149B6878223BB2C3678B549 /* TokenToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenToastView.swift; sourceTree = "<group>"; };
+		D6C8A01F3B72E49F05167C83 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		F2C3DF2FD55D24FDE3C8DDB8 /* BingoBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoBoard.swift; sourceTree = "<group>"; };
 		F575318E432FD2D90841DB00 /* PowerUpStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerUpStripView.swift; sourceTree = "<group>"; };
 		785D19E34ECB4F3D90728775 /* TileImages */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TileImages; sourceTree = "<group>"; };
@@ -108,6 +115,7 @@
 		196998CDAACC43F6B8E66AA9 /* Rye-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/Rye-Regular.ttf; sourceTree = "<group>"; };
 		4CE2A25DC5F54E12AB23447F /* BarlowCondensed-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/BarlowCondensed-SemiBold.ttf; sourceTree = "<group>"; };
 		860B63B11B3E47CD82263BF8 /* BarlowCondensed-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/BarlowCondensed-Bold.ttf; sourceTree = "<group>"; };
+		A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMark.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -116,6 +124,7 @@
 			children = (
 				41AADAA0C173D2D47BEFABFA /* .gitkeep */,
 				731548D4671F0ACB06D7FB47 /* squares.json */,
+				C9D4A02E5F1B4C83A71E0F36 /* BingoSplash.jpg */,
 				785D19E34ECB4F3D90728775 /* TileImages */,
 				D7840F3D26D0457A8603804B /* Icons */,
 				196998CDAACC43F6B8E66AA9 /* Rye-Regular.ttf */,
@@ -142,6 +151,7 @@
 				F575318E432FD2D90841DB00 /* PowerUpStripView.swift */,
 				976D46307EA94F37A0304C16 /* TargetingOverlayView.swift */,
 				F149B6878223BB2C3678B549 /* TokenToastView.swift */,
+				D6C8A01F3B72E49F05167C83 /* SplashView.swift */,
 				10D7079330D5309CC9B40FCD /* WinView.swift */,
 			);
 			path = Views;
@@ -190,6 +200,7 @@
 				1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */,
 				1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */,
 				1B185FB25828686F54F6EFC9 /* PowerUpType.swift */,
+				A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */,
 				0D9693B97F5B0E3B8D989A90 /* ToastEvent.swift */,
 			);
 			path = Models;
@@ -210,6 +221,7 @@
 				485BFC0B93B5D0CCBCD9A9F8 /* ContentView.swift */,
 				028F3F38843730F1A67E72D5 /* Info.plist */,
 				C259798FF46BAE52D20FB5AC /* RoadTripBingoApp.swift */,
+				E8A3F1C2D7B54E90A6251834 /* Assets.xcassets */,
 				5729BA7758400481F7EBC412 /* Game */,
 				6DD0FC3F37D45333EFDF804D /* Models */,
 				C2DCF0C47E778C357CEA95E2 /* Network */,
@@ -312,6 +324,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				312E1E01EF66D434A2BF17E8 /* squares.json in Resources */,
+				A3F2C81D9B7E4D05BC164E72 /* BingoSplash.jpg in Resources */,
+				7D4B2F9E1A3C50E8B7620459 /* Assets.xcassets in Resources */,
 				05507A8435754EAFA548B52D /* TileImages in Resources */,
 				8464799FC04149E0B01DB059 /* Icons in Resources */,
 				F1C04E8A88ED473FA300B30D /* Rye-Regular.ttf in Resources */,
@@ -353,6 +367,7 @@
 				183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */,
 				B0DC156F866FE2A177773370 /* GameView.swift in Sources */,
 				7A6139AB5EA84B50F9B9E4F5 /* HomeView.swift in Sources */,
+				B1E7D3F24A90C58E61234F07 /* SplashView.swift in Sources */,
 				556352E19419BFFBD6B22566 /* LobbyView.swift in Sources */,
 				9825D61245605C593D8BC7C7 /* MultipeerMessage.swift in Sources */,
 				C8EE6560303C250D0F3288BA /* MultipeerSession.swift in Sources */,
@@ -361,6 +376,7 @@
 				BCC67A47075A730C41975925 /* PowerUpHelpView.swift in Sources */,
 				361B5DFCB064D6B926002432 /* PowerUpStripView.swift in Sources */,
 				9E4054EE031302195F3AC49F /* PowerUpType.swift in Sources */,
+				A1B2C3D4E5F60002A1B2C302 /* RecentMark.swift in Sources */,
 				D9D750B1F831A92C75001561 /* RoadTripBingoApp.swift in Sources */,
 				4BA5BDA24B68E3B57192949A /* SquarePool.swift in Sources */,
 				933CB7A0DF5265AD0584F2CA /* TargetingOverlayView.swift in Sources */,
