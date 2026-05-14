@@ -80,6 +80,7 @@ struct GameView: View {
             bingoButton
             OpponentMarkFeedView(marks: appState.recentOpponentMarks, isLandscape: false)
                 .padding(.horizontal, 16)
+                .frame(height: 90)
             powerUpStrip(isVertical: false)
         }
         .padding(.vertical, 8)
@@ -96,9 +97,7 @@ struct GameView: View {
                         isVertical: true
                     )
                 }
-                if !appState.recentOpponentMarks.isEmpty {
-                    OpponentMarkFeedView(marks: appState.recentOpponentMarks, isLandscape: true)
-                }
+                OpponentMarkFeedView(marks: appState.recentOpponentMarks, isLandscape: true)
                 Spacer()
                 bingoButton
             }
