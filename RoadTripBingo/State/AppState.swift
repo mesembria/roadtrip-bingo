@@ -9,6 +9,8 @@ enum AppScreen: Equatable {
     case playAgain
 }
 
+// All mutation of AppState must occur on the main actor.
+// MultipeerSession dispatches all delegate callbacks via DispatchQueue.main.async.
 final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     // MARK: - Navigation
@@ -407,14 +409,16 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     private func startPruningIfNeeded() {
         guard pruningTask == nil else { return }
         pruningTask = Task { @MainActor [weak self] in
-            guard let self else { return }
-            while !self.recentOpponentMarks.isEmpty {
-                try? await Task.sleep(nanoseconds: 1_000_000_000)
-                if Task.isCancelled { return }
-                let cutoff = Date().addingTimeInterval(-10)
-                self.recentOpponentMarks.removeAll { $0.timestamp < cutoff }
+            defer { self?.pruningTask = nil }
+            do {
+                while let self, !self.recentOpponentMarks.isEmpty {
+                    try await Task.sleep(nanoseconds: 1_000_000_000)
+                    let cutoff = Date().addingTimeInterval(-10)
+                    self.recentOpponentMarks.removeAll { $0.timestamp < cutoff }
+                }
+            } catch {
+                // Cancelled — exit cleanly
             }
-            self.pruningTask = nil
         }
     }
 
