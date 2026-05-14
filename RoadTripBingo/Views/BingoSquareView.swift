@@ -77,10 +77,11 @@ struct BingoSquareView: View {
                             .frame(height: 1)
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                         Text(square.text.uppercased())
-                            .font(AmericanaTheme.barlowSemiBold(8.5))
+                            .font(AmericanaTheme.barlowSemiBold(10))
                             .foregroundColor(AmericanaTheme.ink)
                             .multilineTextAlignment(.center)
                             .lineLimit(2)
+                            .minimumScaleFactor(0.7)
                             .padding(.horizontal, 2)
                     }
                     .frame(height: geo.size.height * 0.25)

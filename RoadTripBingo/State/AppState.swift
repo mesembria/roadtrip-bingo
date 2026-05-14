@@ -259,15 +259,19 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
         // Capture tile name before the board is mutated (upgrade replaces the tile)
         var selfActionMessage: String? = nil
-        if let idx = resolvedTargetIndex, let board = localBoard, idx < board.squares.count {
-            switch powerUp {
-            case .upgradeTileRandom, .upgradeTileTargeted:
+        switch powerUp {
+        case .upgradeTileRandom, .upgradeTileTargeted:
+            if let idx = resolvedTargetIndex, let board = localBoard, idx < board.squares.count {
                 selfActionMessage = "🔀 Upgraded '\(board.squares[idx].text)'"
-            case .freeMark:
-                selfActionMessage = "✅ Marked '\(board.squares[idx].text)'"
-            default:
-                break
             }
+        case .freeMark:
+            if let idx = resolvedTargetIndex, let board = localBoard, idx < board.squares.count {
+                selfActionMessage = "✅ Marked '\(board.squares[idx].text)'"
+            }
+        case .downgradeTileRandom, .downgradeTileTargeted:
+            selfActionMessage = "💣 Sabotaged \(resolvedTargetPlayer ?? "opponent")"
+        case .unmarkOpponentRandom, .unmarkOpponentTargeted:
+            selfActionMessage = "💥 Erased \(resolvedTargetPlayer ?? "opponent")'s mark"
         }
 
         tokenBalance -= powerUp.cost

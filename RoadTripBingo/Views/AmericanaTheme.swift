@@ -51,8 +51,31 @@ struct AmericanaTheme {
             ofType: "png",
             inDirectory: "Icons"
         ), let uiImage = UIImage(contentsOfFile: path) else { return nil }
-        iconCache.setObject(uiImage, forKey: key)
-        return Image(uiImage: uiImage)
+        let processed = name == "token" ? transparentBackground(from: uiImage) : uiImage
+        iconCache.setObject(processed, forKey: key)
+        return Image(uiImage: processed)
+    }
+
+    // Strips near-white pixels from a PNG so the icon works on any background color.
+    private static func transparentBackground(from image: UIImage, threshold: UInt8 = 240) -> UIImage {
+        guard let cgImage = image.cgImage else { return image }
+        let w = cgImage.width, h = cgImage.height
+        let bytesPerRow = w * 4
+        var pixels = [UInt8](repeating: 0, count: h * bytesPerRow)
+        guard let ctx = CGContext(
+            data: &pixels, width: w, height: h,
+            bitsPerComponent: 8, bytesPerRow: bytesPerRow,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else { return image }
+        ctx.draw(cgImage, in: CGRect(x: 0, y: 0, width: w, height: h))
+        for i in stride(from: 0, to: pixels.count, by: 4) {
+            if pixels[i] >= threshold && pixels[i+1] >= threshold && pixels[i+2] >= threshold {
+                pixels[i+3] = 0
+            }
+        }
+        guard let out = ctx.makeImage() else { return image }
+        return UIImage(cgImage: out, scale: image.scale, orientation: image.imageOrientation)
     }
 
     // Call from a background Task before the board is shown to avoid first-render stall
