@@ -194,8 +194,9 @@ final class AppStateTests: XCTestCase {
         state.opponentBoards["Emma"] = squares
         state.opponentMarked["Emma"] = [12]
 
+        let session = makeSession()
         for pos in [0, 1, 2, 3] {
-            state.multipeerSession(makeSession(),
+            state.multipeerSession(session,
                 didReceive: .squareToggled(position: pos, isMarked: true),
                 from: "Emma")
         }

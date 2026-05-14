@@ -15,6 +15,8 @@ struct RecentMarkCard: View {
             if isLandscape { landscapePill } else { portraitSquare }
         }
         .opacity(opacity)
+        // onAppear re-fires on rotation (isLandscape flip creates a new view); elapsedFraction
+        // resumes the fade from where it left off rather than restarting from full opacity.
         .onAppear {
             let remaining = max(0, 10 - Date().timeIntervalSince(mark.timestamp))
             guard remaining > 0 else { opacity = 0; return }

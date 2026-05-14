@@ -527,6 +527,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         opponentMarked.removeValue(forKey: peerName)
         opponentBoards.removeValue(forKey: peerName)
         tokenBalances.removeValue(forKey: peerName)
+        recentOpponentMarks.removeAll { $0.opponentName == peerName }
     }
 
     func multipeerSession(_ session: MultipeerSession, foundPeer peerName: String) {

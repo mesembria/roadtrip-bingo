@@ -19,7 +19,6 @@ struct OpponentMarkFeedView: View {
                     RecentMarkCard(mark: mark, isLandscape: false)
                 }
             }
-            .frame(height: marks.isEmpty ? 0 : 90)
             .clipped()
             .animation(.spring(response: 0.25), value: marks)
         }
