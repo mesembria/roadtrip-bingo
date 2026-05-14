@@ -6,13 +6,20 @@ struct RecentMarkCard: View {
     let isLandscape: Bool
     @State private var opacity: Double = 1.0
 
+    private var elapsedFraction: Double {
+        min(Date().timeIntervalSince(mark.timestamp) / 10.0, 1.0)
+    }
+
     var body: some View {
         Group {
             if isLandscape { landscapePill } else { portraitSquare }
         }
         .opacity(opacity)
         .onAppear {
-            withAnimation(.linear(duration: 10)) { opacity = 0 }
+            let remaining = max(0, 10 - Date().timeIntervalSince(mark.timestamp))
+            guard remaining > 0 else { opacity = 0; return }
+            opacity = 1 - elapsedFraction
+            withAnimation(.linear(duration: remaining)) { opacity = 0 }
         }
         .transition(.opacity.combined(with: .scale(scale: 0.8)))
     }
@@ -38,9 +45,9 @@ struct RecentMarkCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AmericanaTheme.parchment)
+        .clipShape(RoundedRectangle(cornerRadius: 6))
         .overlay(RoundedRectangle(cornerRadius: 6)
-            .stroke(Color(red: 0.545, green: 0.412, blue: 0.078), lineWidth: 2))
-        .cornerRadius(6)
+            .strokeBorder(AmericanaTheme.brown, lineWidth: 2))
         .shadow(color: AmericanaTheme.shadow, radius: 2, x: 1, y: 1)
     }
 
@@ -54,7 +61,7 @@ struct RecentMarkCard: View {
                 .frame(maxWidth: .infinity)
                 .background(AmericanaTheme.green)
             tileImage
-                .frame(width: 68, height: 54)
+                .frame(width: 68, height: 50)
                 .clipped()
             Text(mark.square.text)
                 .font(AmericanaTheme.barlowBold(9))
@@ -63,11 +70,11 @@ struct RecentMarkCard: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 3).padding(.vertical, 2)
         }
-        .frame(width: 72)
+        .frame(width: 72, height: 88)
         .background(AmericanaTheme.parchment)
+        .clipShape(RoundedRectangle(cornerRadius: 6))
         .overlay(RoundedRectangle(cornerRadius: 6)
-            .stroke(Color(red: 0.545, green: 0.412, blue: 0.078), lineWidth: 2))
-        .cornerRadius(6)
+            .strokeBorder(AmericanaTheme.brown, lineWidth: 2))
         .shadow(color: AmericanaTheme.shadow, radius: 2, x: 1, y: 1)
     }
 

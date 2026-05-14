@@ -8,6 +8,7 @@ struct AmericanaTheme {
     static let greenLight = Color(red: 0.176, green: 0.478, blue: 0.243)
     static let yellow     = Color(red: 0.961, green: 0.784, blue: 0.000)
     static let red        = Color(red: 0.753, green: 0.224, blue: 0.169)
+    static let brown      = Color(red: 0.545, green: 0.412, blue: 0.078)
     static let shadow     = Color(red: 0.110, green: 0.071, blue: 0.035).opacity(0.18)
 
     static func rye(_ size: CGFloat) -> Font {
@@ -22,6 +23,12 @@ struct AmericanaTheme {
 
     static func gridBackground() -> some View {
         AmericanaGridBackground()
+    }
+
+    static func splashBackground() -> Image? {
+        guard let path = Bundle.main.path(forResource: "BingoSplash", ofType: "jpg"),
+              let uiImage = UIImage(contentsOfFile: path) else { return nil }
+        return Image(uiImage: uiImage)
     }
 
     private static let tileImageCache = NSCache<NSString, UIImage>()

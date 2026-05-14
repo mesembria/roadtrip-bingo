@@ -12,7 +12,7 @@ struct OpponentMarkFeedView: View {
                     RecentMarkCard(mark: mark, isLandscape: true)
                 }
             }
-            .animation(.spring(response: 0.25), value: marks.count)
+            .animation(.spring(response: 0.25), value: marks)
         } else {
             HStack(spacing: 8) {
                 ForEach(marks) { mark in
@@ -21,7 +21,7 @@ struct OpponentMarkFeedView: View {
             }
             .frame(height: marks.isEmpty ? 0 : 90)
             .clipped()
-            .animation(.spring(response: 0.25), value: marks.count)
+            .animation(.spring(response: 0.25), value: marks)
         }
     }
 }
