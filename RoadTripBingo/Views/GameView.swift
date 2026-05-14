@@ -78,6 +78,8 @@ struct GameView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             bingoButton
+            OpponentMarkFeedView(marks: appState.recentOpponentMarks, isLandscape: false)
+                .padding(.horizontal, 16)
             powerUpStrip(isVertical: false)
         }
         .padding(.vertical, 8)
@@ -94,20 +96,26 @@ struct GameView: View {
                         isVertical: true
                     )
                 }
+                if !appState.recentOpponentMarks.isEmpty {
+                    OpponentMarkFeedView(marks: appState.recentOpponentMarks, isLandscape: true)
+                }
                 Spacer()
                 bingoButton
             }
             .frame(width: 130)
 
             // Center: main grid
+            // BingoGridView = 44pt header + square grid area, so constrain width to
+            // (available height - 44) so the whole view fits without overflowing.
             GeometryReader { geo in
-                let gridSize = min(geo.size.width, geo.size.height)
+                let headerHeight: CGFloat = 44
+                let gridWidth = min(geo.size.width, geo.size.height - headerHeight)
                 BingoGridView(
                     board: board,
                     highlightedPositions: Set(appState.completedLine ?? []),
                     onTap: appState.toggleSquare(at:)
                 )
-                .frame(width: gridSize, height: gridSize)
+                .frame(width: gridWidth)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
 
@@ -133,7 +141,10 @@ struct GameView: View {
             Button(action: appState.callBingo) {
                 Text("BINGO!")
                     .font(AmericanaTheme.rye(22))
-                    .padding(.horizontal, 48).padding(.vertical, 14)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                    .padding(.horizontal, 12).padding(.vertical, 14)
+                    .frame(maxWidth: .infinity)
                     .background(AmericanaTheme.yellow)
                     .foregroundColor(AmericanaTheme.ink)
                     .cornerRadius(8)
