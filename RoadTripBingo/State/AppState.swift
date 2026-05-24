@@ -75,6 +75,10 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     var dailyState: DailyState = DailyState.load()
 
+    var activeChallenges: [DailyChallenge] {
+        dailyState.challengeTypes.map { DailyChallenge(type: $0) }
+    }
+
     // MARK: - Network
     private(set) var multipeerSession: MultipeerSession?
 
@@ -85,9 +89,17 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func rollDailyChallengesIfNeeded() {
         if dailyState.date != DailyState.today() {
-            dailyState = DailyState.fresh()
+            dailyState = DailyState(
+                date: DailyState.today(),
+                challengeTypes: DailyState.roll(),
+                completedIDs: [],
+                winsToday: 0,
+                roundsPlayedToday: 0
+            )
+        } else if dailyState.challengeTypes.isEmpty {
+            dailyState.challengeTypes = DailyState.roll()
         }
-        // Challenge rolling wired in Task 11
+        dailyState.save()
     }
 
     // MARK: - Home actions
@@ -168,6 +180,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
         fogOfWarHiddenPositions.remove(position)
 
+        let isVeryFirstMark = !firstMarkClaimedThisRound &&
+                              opponentMarkCountsThisRound.values.allSatisfy { $0 == 0 }
+
         guard let board = localBoard else { return }
 
         if isNowMarked && !wasMarked {
@@ -179,6 +194,14 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             earnTokens(1, reason: "First mark")
         }
 
+        if isNowMarked && !wasMarked {
+            evaluateChallenges(event: .tileMarked(
+                tileID: board.squares[position].id,
+                byPlayer: playerName,
+                isFirstInGame: isVeryFirstMark
+            ))
+        }
+
         updateCompletedLine(for: board)
         checkBonuses(for: board)
     }
@@ -188,6 +211,18 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         earnTokens(5, reason: "BINGO!")   // win bonus
         multipeerSession?.send(.bingoAnnounced(byName: playerName))
         winHistory[playerName, default: 0] += 1
+        dailyState.winsToday += 1
+        dailyState.roundsPlayedToday += 1
+        dailyState.save()
+        evaluateChallenges(event: .roundWon(byPlayer: playerName))
+        let endCtx = ChallengeEvaluationContext(
+            playerName: playerName, marksThisRound: marksThisRound,
+            opponentMarkCounts: opponentMarkCountsThisRound, winsToday: dailyState.winsToday,
+            attacksUsedThisRound: attacksUsedThisRound, tokensAtEndOfRound: tokenBalance,
+            tokensSpentThisRound: tokensSpentThisRound, roundsPlayedToday: dailyState.roundsPlayedToday,
+            localBoard: localBoard
+        )
+        evaluateChallenges(event: .roundEnded(context: endCtx))
         screen = .win(winnerName: playerName)
     }
 
@@ -290,6 +325,29 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         let replacement = reserveSquares.removeFirst()
         board.replaceSquare(at: targetIdx, with: replacement)
         localBoard = board
+    }
+
+    private func evaluateChallenges(event: ChallengeEvent) {
+        let context = ChallengeEvaluationContext(
+            playerName: playerName,
+            marksThisRound: marksThisRound,
+            opponentMarkCounts: opponentMarkCountsThisRound,
+            winsToday: dailyState.winsToday,
+            attacksUsedThisRound: attacksUsedThisRound,
+            tokensAtEndOfRound: tokenBalance,
+            tokensSpentThisRound: tokensSpentThisRound,
+            roundsPlayedToday: dailyState.roundsPlayedToday,
+            localBoard: localBoard
+        )
+
+        for challenge in activeChallenges {
+            guard !dailyState.completedIDs.contains(challenge.id) else { continue }
+            if challenge.evaluate(event: event, context: context) {
+                dailyState.completedIDs.insert(challenge.id)
+                dailyState.save()
+                earnTokens(challenge.tokenReward, reason: "\(challenge.emoji) \(challenge.title)!")
+            }
+        }
     }
 
     private func earnTokens(_ amount: Int, reason: String) {
@@ -400,6 +458,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         tokensSpentThisRound += effectiveCost
         if powerUp.affectsOpponent {
             attacksUsedThisRound += 1
+            evaluateChallenges(event: .attackUsed(byPlayer: playerName))
         }
         multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
 
@@ -584,6 +643,16 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         case .bingoAnnounced(let byName):
             winHistory[byName, default: 0] += 1
             screen = .win(winnerName: byName)
+            dailyState.roundsPlayedToday += 1
+            dailyState.save()
+            let endCtx = ChallengeEvaluationContext(
+                playerName: playerName, marksThisRound: marksThisRound,
+                opponentMarkCounts: opponentMarkCountsThisRound, winsToday: dailyState.winsToday,
+                attacksUsedThisRound: attacksUsedThisRound, tokensAtEndOfRound: tokenBalance,
+                tokensSpentThisRound: tokensSpentThisRound, roundsPlayedToday: dailyState.roundsPlayedToday,
+                localBoard: localBoard
+            )
+            evaluateChallenges(event: .roundEnded(context: endCtx))
 
         case .playAgain(let boards):
             if let mySquares = boards[playerName] {
