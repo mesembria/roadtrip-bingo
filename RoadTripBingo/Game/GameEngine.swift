@@ -1,6 +1,7 @@
 import Foundation
 
 enum GameEngine {
+    // MARK: - Win Lines and Detection
     static let winLines: [[Int]] = {
         var lines = [[Int]]()
         for row in 0..<5 { lines.append((0..<5).map { row * 5 + $0 }) }
@@ -22,5 +23,18 @@ enum GameEngine {
 
     static func completedLines(for board: BingoBoard) -> [[Int]] {
         winLines.filter { $0.allSatisfy { board.isMarked(at: $0) } }
+    }
+
+    // MARK: - Modifier Win Conditions
+
+    static func hotStreakLine(for board: BingoBoard) -> [Int]? {
+        winLines.first { line in
+            line.filter { board.isMarked(at: $0) }.count >= 3
+        }
+    }
+
+    static func patternLine(for board: BingoBoard, shape: PatternShape) -> [Int]? {
+        let positions = shape.positions
+        return positions.allSatisfy { board.isMarked(at: $0) } ? positions : nil
     }
 }
