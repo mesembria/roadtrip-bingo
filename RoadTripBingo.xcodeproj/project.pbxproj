@@ -53,6 +53,8 @@
 		9060FFD02B4A412FB57D93AD /* DailyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C971C1B3ED694B708CC8F541 /* DailyState.swift */; };
 		A1B2C3D4E5F60004A1B2C304 /* RecentMarkCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60003A1B2C303 /* RecentMarkCard.swift */; };
 		A1B2C3D4E5F60006A1B2C306 /* OpponentMarkFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60005A1B2C305 /* OpponentMarkFeedView.swift */; };
+		4535FF97367F47079E8D0138 /* RoundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C00CCDD8E1441658DABF1DF /* RoundModifier.swift */; };
+		659ABF80FD9E4F79963A569D /* RoundModifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AC5382E7EA4F9FB71B6B2C /* RoundModifierTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +124,8 @@
 		C971C1B3ED694B708CC8F541 /* DailyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyState.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60003A1B2C303 /* RecentMarkCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMarkCard.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60005A1B2C305 /* OpponentMarkFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentMarkFeedView.swift; sourceTree = "<group>"; };
+		3C00CCDD8E1441658DABF1DF /* RoundModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundModifier.swift; sourceTree = "<group>"; };
+		75AC5382E7EA4F9FB71B6B2C /* RoundModifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundModifierTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -174,6 +178,7 @@
 				EE6D110F4EABD34F22BFDA52 /* GameEngineTests.swift */,
 				0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */,
 				4BEF6DA2FE4E1927881F43B3 /* PowerUpTypeTests.swift */,
+				75AC5382E7EA4F9FB71B6B2C /* RoundModifierTests.swift */,
 				EA3B46A1ED1B1B26F8D1865E /* SquarePoolTests.swift */,
 				48B20B738F1B24C9FB357A58 /* ToastTests.swift */,
 			);
@@ -211,6 +216,7 @@
 				A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */,
 				C971C1B3ED694B708CC8F541 /* DailyState.swift */,
 				0D9693B97F5B0E3B8D989A90 /* ToastEvent.swift */,
+				3C00CCDD8E1441658DABF1DF /* RoundModifier.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -357,6 +363,7 @@
 				4B92C5F3E5B72793E019B939 /* PowerUpTypeTests.swift in Sources */,
 				B7D9C83BCFBE2834F3BD892D /* SquarePoolTests.swift in Sources */,
 				D9E9995D90F0564E151AE267 /* ToastTests.swift in Sources */,
+				659ABF80FD9E4F79963A569D /* RoundModifierTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +402,7 @@
 				37E192F91D44E4C8B112DD40 /* ToastEvent.swift in Sources */,
 				A3CC74A7D457A84CD876EFE1 /* TokenToastView.swift in Sources */,
 				93C17D72CA88102C970BA6F9 /* WinView.swift in Sources */,
+				4535FF97367F47079E8D0138 /* RoundModifier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

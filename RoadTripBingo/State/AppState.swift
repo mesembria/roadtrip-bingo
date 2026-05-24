@@ -540,6 +540,12 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             if let msg = threatMessage {
                 pendingToast = ToastEvent(message: msg, style: .threat)
             }
+
+        case .roundModifier:
+            break
+
+        case .boardShuffled:
+            break
         }
     }
 

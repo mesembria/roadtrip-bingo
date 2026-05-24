@@ -10,16 +10,20 @@ enum MultipeerMessage: Codable {
     case powerUpUsed(byName: String, powerUp: PowerUpType, targetPlayer: String?,
                      targetIndex: Int?, replacementSquare: BingoSquare?)
     case reserveDealt(toName: String, squares: [BingoSquare])
+    case roundModifier(RoundModifier)
+    case boardShuffled(byName: String, squares: [BingoSquare])
 
     private enum CodingKeys: String, CodingKey {
         case type, boards, position, isMarked, byName, difficulty
         case newBalance, powerUp, targetPlayer, targetIndex, replacementSquare
         case toName, squares
+        case modifier, shuffledSquares, shuffledByName
     }
 
     private enum MessageType: String, Codable {
         case gameStarted, squareToggled, bingoAnnounced, playAgain, difficultyChosen
         case tokenEarned, powerUpUsed, reserveDealt
+        case roundModifier, boardShuffled
     }
 
     func encode(to encoder: Encoder) throws {
@@ -57,6 +61,13 @@ enum MultipeerMessage: Codable {
             try c.encode(MessageType.reserveDealt, forKey: .type)
             try c.encode(toName, forKey: .toName)
             try c.encode(squares, forKey: .squares)
+        case .roundModifier(let modifier):
+            try c.encode(MessageType.roundModifier, forKey: .type)
+            try c.encode(modifier, forKey: .modifier)
+        case .boardShuffled(let byName, let squares):
+            try c.encode(MessageType.boardShuffled, forKey: .type)
+            try c.encode(byName, forKey: .shuffledByName)
+            try c.encode(squares, forKey: .shuffledSquares)
         }
     }
 
@@ -97,6 +108,13 @@ enum MultipeerMessage: Codable {
             self = .reserveDealt(
                 toName: try c.decode(String.self, forKey: .toName),
                 squares: try c.decode([BingoSquare].self, forKey: .squares)
+            )
+        case .roundModifier:
+            self = .roundModifier(try c.decode(RoundModifier.self, forKey: .modifier))
+        case .boardShuffled:
+            self = .boardShuffled(
+                byName: try c.decode(String.self, forKey: .shuffledByName),
+                squares: try c.decode([BingoSquare].self, forKey: .shuffledSquares)
             )
         }
     }
