@@ -344,7 +344,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
                 localBoard?.mark(at: idx)
             } else {
                 if let board = opponentBoards[byName], idx < board.count {
-                    opponentMarked[byName]?.insert(board[idx].id)
+                    opponentMarked[byName, default: []].insert(board[idx].id)
                 }
             }
 
@@ -452,7 +452,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         case .squareToggled(let position, let isMarked):
             if let board = opponentBoards[peerName], position < board.count {
                 let tileID = board[position].id
-                if isMarked { opponentMarked[peerName]?.insert(tileID) }
+                if isMarked { opponentMarked[peerName, default: []].insert(tileID) }
                 else { opponentMarked[peerName]?.remove(tileID) }
             }
             if isMarked, let square = opponentBoards[peerName]?[position] {
