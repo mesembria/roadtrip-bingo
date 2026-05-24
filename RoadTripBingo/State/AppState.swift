@@ -271,6 +271,21 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         fogOfWarHiddenPositions = pickFogPositions(hiddenCount: hiddenCount, board: board)
     }
 
+    private func shiftTileIfNeeded() {
+        guard activeModifier == .shiftingTiles,
+              var board = localBoard,
+              !reserveSquares.isEmpty else { return }
+
+        let unmarkedIndices = (0..<25).filter {
+            $0 != 12 && !board.isMarked(at: $0)
+        }
+        guard let targetIdx = unmarkedIndices.randomElement() else { return }
+
+        let replacement = reserveSquares.removeFirst()
+        board.replaceSquare(at: targetIdx, with: replacement)
+        localBoard = board
+    }
+
     private func earnTokens(_ amount: Int, reason: String) {
         let effective = (activeModifier == .doubleDown) ? amount * 2 : amount
         tokenBalance += effective
@@ -552,6 +567,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             if isMarked {
                 opponentMarkCountsThisRound[peerName, default: 0] += 1
                 shiftFogIfNeeded()
+                shiftTileIfNeeded()
             }
             if isMarked, let square = opponentBoards[peerName]?[position] {
                 appendRecentMark(RecentMark(opponentName: peerName,
