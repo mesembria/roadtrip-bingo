@@ -72,6 +72,7 @@ struct GameView: View {
                 BingoGridView(
                     board: board,
                     highlightedPositions: Set(appState.completedLine ?? []),
+                    hiddenPositions: appState.fogOfWarHiddenPositions,
                     onTap: appState.toggleSquare(at:)
                 )
                 .frame(width: gridSize, height: gridSize)
@@ -113,6 +114,7 @@ struct GameView: View {
                 BingoGridView(
                     board: board,
                     highlightedPositions: Set(appState.completedLine ?? []),
+                    hiddenPositions: appState.fogOfWarHiddenPositions,
                     onTap: appState.toggleSquare(at:)
                 )
                 .frame(width: gridWidth)

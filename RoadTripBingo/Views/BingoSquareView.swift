@@ -4,19 +4,39 @@ struct BingoSquareView: View {
     let square: BingoSquare
     let isMarked: Bool
     let isHighlighted: Bool
+    var isHidden: Bool = false
     let onTap: () -> Void
 
     var body: some View {
-        Button(action: { withAnimation(.spring(response: 0.2)) { onTap() } }) {
-            Group {
-                if square.id == BingoSquare.freeSquareID {
-                    freeCell
-                } else {
-                    regularCell
+        if isHidden {
+            hiddenTileView
+        } else {
+            Button(action: { withAnimation(.spring(response: 0.2)) { onTap() } }) {
+                Group {
+                    if square.id == BingoSquare.freeSquareID {
+                        freeCell
+                    } else {
+                        regularCell
+                    }
                 }
             }
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
+    }
+
+    private var hiddenTileView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(AmericanaTheme.brown.opacity(0.3))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(AmericanaTheme.ink.opacity(0.15), lineWidth: 1)
+                )
+            Text("?")
+                .font(AmericanaTheme.rye(20))
+                .foregroundColor(AmericanaTheme.ink.opacity(0.3))
+        }
+        // No onTap — hidden tiles are untappable
     }
 
     private var freeCell: some View {

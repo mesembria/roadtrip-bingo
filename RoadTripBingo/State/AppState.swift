@@ -50,6 +50,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     // MARK: - Round modifier
     @Published var activeModifier: RoundModifier? = nil
+    @Published var fogOfWarHiddenPositions: Set<Int> = []
+    private var fogShiftCount = 0
 
     // Round-scoped tracking for challenge evaluation (added to by Task 11)
     private var marksThisRound = 0
@@ -164,6 +166,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         let isNowMarked = localBoard?.isMarked(at: position) ?? false
         multipeerSession?.send(.squareToggled(position: position, isMarked: isNowMarked))
 
+        fogOfWarHiddenPositions.remove(position)
+
         guard let board = localBoard else { return }
 
         if isNowMarked && !wasMarked {
@@ -250,8 +254,21 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     }
 
     private func initializeModifier(_ modifier: RoundModifier) {
-        // Fog of War initialization handled in Task 6
-        _ = modifier
+        guard modifier == .fogOfWar, let board = localBoard else { return }
+        fogShiftCount = 0
+        fogOfWarHiddenPositions = pickFogPositions(hiddenCount: 10, board: board)
+    }
+
+    private func pickFogPositions(hiddenCount: Int, board: BingoBoard) -> Set<Int> {
+        let candidates = (0..<25).filter { $0 != 12 && !board.isMarked(at: $0) }
+        return Set(candidates.shuffled().prefix(min(hiddenCount, candidates.count)))
+    }
+
+    private func shiftFogIfNeeded() {
+        guard activeModifier == .fogOfWar, let board = localBoard else { return }
+        fogShiftCount += 1
+        let hiddenCount = max(3, 10 - (fogShiftCount / 3))
+        fogOfWarHiddenPositions = pickFogPositions(hiddenCount: hiddenCount, board: board)
     }
 
     private func earnTokens(_ amount: Int, reason: String) {
@@ -270,7 +287,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         attacksUsedThisRound = 0
         tokensSpentThisRound = 0
         opponentMarkCountsThisRound = [:]
-        // Note: fogOfWarHiddenPositions and fogShiftCount added in Task 6
+        fogOfWarHiddenPositions = []
+        fogShiftCount = 0
     }
 
     private func checkBonuses(for board: BingoBoard) {
@@ -533,6 +551,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             }
             if isMarked {
                 opponentMarkCountsThisRound[peerName, default: 0] += 1
+                shiftFogIfNeeded()
             }
             if isMarked, let square = opponentBoards[peerName]?[position] {
                 appendRecentMark(RecentMark(opponentName: peerName,
