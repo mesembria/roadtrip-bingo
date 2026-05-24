@@ -31,14 +31,13 @@ A future **Phase C** covers unlockable game modes and themed tile packs (airport
 - The active modifier is shown as a small persistent badge in the game screen header
 - Modifiers are independent each round — repeats are allowed
 
-### The Modifier Pool (9 modifiers)
+### The Modifier Pool (8 modifiers)
 
 | Modifier | Rule | Network impact |
 |---|---|---|
 | 🔥 Hot Streak | First to have 3 or more tiles marked in any single win line wins instantly (3 out of 5 in any order) | Local win check |
 | 💰 Double Down | All token earnings doubled this round | Local token math |
 | 🚫 No Powers | Power-ups disabled for the round | Local gate |
-| 👑 Last Laugh | Player with fewest total wins gets a free power-up at round start | Needs persisted win history |
 | 🎯 Sniper | Attack power-ups (downgrade, unmark) cost 1 token less | Local token math |
 | 🗺️ Pattern Win | Must complete a specific shape — X, Four Corners, or Plus (sub-pattern revealed with modifier) | Local win check |
 | 🌫️ Fog of War | 10 tiles start hidden (face-down, untappable). Each opponent mark shifts the fog to a new random set of non-marked tiles. Every 3rd shift, one fewer tile is hidden (minimum floor: 3 hidden). | Local — derived from incoming `squareToggled` events |
@@ -74,7 +73,7 @@ enum RoundModifier: Codable, Equatable {
 
     // Used for random selection — patternWin picks a random shape
     static func random() -> RoundModifier {
-        let base: [RoundModifier] = [.hotStreak, .doubleDown, .noPowers, .lastLaugh,
+        let base: [RoundModifier] = [.hotStreak, .doubleDown, .noPowers,
                                      .sniper, .fogOfWar, .shiftingTiles, .shuffleBoard]
         let withPattern: [RoundModifier] = base + [.patternWin(PatternShape.allCases.randomElement()!)]
         return withPattern.randomElement()!
@@ -196,8 +195,13 @@ Stored in `UserDefaults` under key `"dailyState"`. Loaded on `AppState.init`, re
 
 ---
 
-## 4. Out of Scope (Phase C — Future)
+## 4. UI Design Notes
 
+All new visual elements — modifier reveal banner, active modifier badge, daily challenges panel — must be designed using the `frontend-design` skill before implementation. These elements must follow the existing Americana theme (`AmericanaTheme.swift`: parchment, ink, Rye font, Barlow font).
+
+## 5. Out of Scope (Phase C — Future)
+
+- Handicap system (e.g. Last Laugh — trailing player gets a bonus power-up at round start)
 - Unlockable game modes via win history (Blackout, X-Pattern, Sprint)
 - Themed tile packs (airport, farm, beach, mountains) — unlocked after N sessions
 - Metadata-based challenges (requires `TileCategory` field on `BingoSquare`)
