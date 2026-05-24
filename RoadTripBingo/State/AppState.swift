@@ -48,6 +48,15 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     private var patternsAwardedThisRound: Set<String> = []
     private var closeCallsAwardedThisRound: Set<String> = []
 
+    // MARK: - Round modifier
+    @Published var activeModifier: RoundModifier? = nil
+
+    // Round-scoped tracking for challenge evaluation (added to by Task 11)
+    private var marksThisRound = 0
+    private var attacksUsedThisRound = 0
+    private var tokensSpentThisRound = 0
+    private var opponentMarkCountsThisRound: [String: Int] = [:]
+
     // MARK: - Post-game
     @Published var winHistory: [String: Int] = {
         guard let data = UserDefaults.standard.data(forKey: "winHistory"),
@@ -157,12 +166,16 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
         guard let board = localBoard else { return }
 
+        if isNowMarked && !wasMarked {
+            marksThisRound += 1
+        }
+
         if isNowMarked && !wasMarked && !firstMarkClaimedThisRound {
             firstMarkClaimedThisRound = true
             earnTokens(1, reason: "First mark")
         }
 
-        completedLine = GameEngine.winningLine(for: board)
+        updateCompletedLine(for: board)
         checkBonuses(for: board)
     }
 
@@ -216,11 +229,35 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         }
         earnTokens(2, reason: "Round start")
         screen = .game
+
+        if isHost {
+            let modifier = RoundModifier.random()
+            activeModifier = modifier
+            multipeerSession?.send(.roundModifier(modifier))
+            initializeModifier(modifier)
+        }
+    }
+
+    private func updateCompletedLine(for board: BingoBoard) {
+        switch activeModifier {
+        case .hotStreak:
+            completedLine = GameEngine.hotStreakLine(for: board)
+        case .patternWin(let shape):
+            completedLine = GameEngine.patternLine(for: board, shape: shape)
+        default:
+            completedLine = GameEngine.winningLine(for: board)
+        }
+    }
+
+    private func initializeModifier(_ modifier: RoundModifier) {
+        // Fog of War initialization handled in Task 6
+        _ = modifier
     }
 
     private func earnTokens(_ amount: Int, reason: String) {
-        tokenBalance += amount
-        pendingToast = ToastEvent(message: "+\(amount)🟡 \(reason)", style: .earn)
+        let effective = (activeModifier == .doubleDown) ? amount * 2 : amount
+        tokenBalance += effective
+        pendingToast = ToastEvent(message: "+\(effective)🟡 \(reason)", style: .earn)
         multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
     }
 
@@ -228,6 +265,12 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         firstMarkClaimedThisRound = false
         patternsAwardedThisRound = []
         closeCallsAwardedThisRound = []
+        activeModifier = nil
+        marksThisRound = 0
+        attacksUsedThisRound = 0
+        tokensSpentThisRound = 0
+        opponentMarkCountsThisRound = [:]
+        // Note: fogOfWarHiddenPositions and fogShiftCount added in Task 6
     }
 
     private func checkBonuses(for board: BingoBoard) {
@@ -250,7 +293,15 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     // MARK: - Power-up activation
 
     func activatePowerUp(_ powerUp: PowerUpType, targetPlayer: String? = nil, targetIndex: Int? = nil) {
-        guard tokenBalance >= powerUp.cost, localBoard != nil else { return }
+        if activeModifier == .noPowers { return }
+
+        let effectiveCost: Int = {
+            if activeModifier == .sniper && powerUp.affectsOpponent {
+                return max(0, powerUp.cost - 1)
+            }
+            return powerUp.cost
+        }()
+        guard tokenBalance >= effectiveCost, localBoard != nil else { return }
 
         var resolvedTargetPlayer = targetPlayer
         var resolvedTargetIndex = targetIndex
@@ -306,7 +357,11 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             selfActionMessage = "💥 Erased \(resolvedTargetPlayer ?? "opponent")'s mark"
         }
 
-        tokenBalance -= powerUp.cost
+        tokenBalance -= effectiveCost
+        tokensSpentThisRound += effectiveCost
+        if powerUp.affectsOpponent {
+            attacksUsedThisRound += 1
+        }
         multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
 
         applyPowerUpEffect(powerUp, byName: playerName,
@@ -321,7 +376,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
         // Re-check win and bonus conditions after free mark
         if powerUp == .freeMark, let board = localBoard {
-            completedLine = GameEngine.winningLine(for: board)
+            updateCompletedLine(for: board)
             checkBonuses(for: board)
         }
 
@@ -476,6 +531,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
                 if isMarked { opponentMarked[peerName, default: []].insert(tileID) }
                 else { opponentMarked[peerName]?.remove(tileID) }
             }
+            if isMarked {
+                opponentMarkCountsThisRound[peerName, default: 0] += 1
+            }
             if isMarked, let square = opponentBoards[peerName]?[position] {
                 appendRecentMark(RecentMark(opponentName: peerName,
                                             square: square, timestamp: Date()))
@@ -535,14 +593,15 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
                                targetIndex: targetIndex,
                                replacementSquare: replacementSquare)
             if let board = localBoard {
-                completedLine = GameEngine.winningLine(for: board)
+                updateCompletedLine(for: board)
             }
             if let msg = threatMessage {
                 pendingToast = ToastEvent(message: msg, style: .threat)
             }
 
-        case .roundModifier:
-            break
+        case .roundModifier(let modifier):
+            activeModifier = modifier
+            initializeModifier(modifier)
 
         case .boardShuffled:
             break
