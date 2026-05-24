@@ -57,6 +57,7 @@
 		659ABF80FD9E4F79963A569D /* RoundModifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AC5382E7EA4F9FB71B6B2C /* RoundModifierTests.swift */; };
 		D467E96760BF4989B807551B /* ModifierRevealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65324DDE498F4FCB8CBA56ED /* ModifierRevealView.swift */; };
 		4CCB779528CD4724BCB60FF7 /* ModifierBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B327C9A89D39424AB98C435B /* ModifierBadgeView.swift */; };
+		F24F2245A055491E96A2C37E /* DailyChallengesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DC7407896F4B0896AF1ECC /* DailyChallengesView.swift */; };
 		979DEE133AB14817956EF661 /* DailyChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639BF68A74E44DCF82DD0F46 /* DailyChallenge.swift */; };
 		2E44512547BF4FDE95754775 /* DailyChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C665004862594F8EBE583F25 /* DailyChallengeTests.swift */; };
 /* End PBXBuildFile section */
@@ -132,6 +133,7 @@
 		75AC5382E7EA4F9FB71B6B2C /* RoundModifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundModifierTests.swift; sourceTree = "<group>"; };
 		65324DDE498F4FCB8CBA56ED /* ModifierRevealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifierRevealView.swift; sourceTree = "<group>"; };
 		B327C9A89D39424AB98C435B /* ModifierBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifierBadgeView.swift; sourceTree = "<group>"; };
+		00DC7407896F4B0896AF1ECC /* DailyChallengesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallengesView.swift; sourceTree = "<group>"; };
 		639BF68A74E44DCF82DD0F46 /* DailyChallenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallenge.swift; sourceTree = "<group>"; };
 		C665004862594F8EBE583F25 /* DailyChallengeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallengeTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -175,6 +177,7 @@
 				10D7079330D5309CC9B40FCD /* WinView.swift */,
 				65324DDE498F4FCB8CBA56ED /* ModifierRevealView.swift */,
 				B327C9A89D39424AB98C435B /* ModifierBadgeView.swift */,
+				00DC7407896F4B0896AF1ECC /* DailyChallengesView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -419,6 +422,7 @@
 				4535FF97367F47079E8D0138 /* RoundModifier.swift in Sources */,
 				D467E96760BF4989B807551B /* ModifierRevealView.swift in Sources */,
 				4CCB779528CD4724BCB60FF7 /* ModifierBadgeView.swift in Sources */,
+				F24F2245A055491E96A2C37E /* DailyChallengesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
