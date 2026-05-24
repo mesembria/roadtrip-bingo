@@ -50,8 +50,16 @@
 		F98F0D168A9C45DBACD68A5A /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CE2A25DC5F54E12AB23447F /* BarlowCondensed-SemiBold.ttf */; };
 		316237F3D87E4AAABF04A18F /* BarlowCondensed-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 860B63B11B3E47CD82263BF8 /* BarlowCondensed-Bold.ttf */; };
 		A1B2C3D4E5F60002A1B2C302 /* RecentMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */; };
+		9060FFD02B4A412FB57D93AD /* DailyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C971C1B3ED694B708CC8F541 /* DailyState.swift */; };
 		A1B2C3D4E5F60004A1B2C304 /* RecentMarkCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60003A1B2C303 /* RecentMarkCard.swift */; };
 		A1B2C3D4E5F60006A1B2C306 /* OpponentMarkFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60005A1B2C305 /* OpponentMarkFeedView.swift */; };
+		4535FF97367F47079E8D0138 /* RoundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C00CCDD8E1441658DABF1DF /* RoundModifier.swift */; };
+		659ABF80FD9E4F79963A569D /* RoundModifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AC5382E7EA4F9FB71B6B2C /* RoundModifierTests.swift */; };
+		D467E96760BF4989B807551B /* ModifierRevealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65324DDE498F4FCB8CBA56ED /* ModifierRevealView.swift */; };
+		4CCB779528CD4724BCB60FF7 /* ModifierBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B327C9A89D39424AB98C435B /* ModifierBadgeView.swift */; };
+		F24F2245A055491E96A2C37E /* DailyChallengesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DC7407896F4B0896AF1ECC /* DailyChallengesView.swift */; };
+		979DEE133AB14817956EF661 /* DailyChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639BF68A74E44DCF82DD0F46 /* DailyChallenge.swift */; };
+		2E44512547BF4FDE95754775 /* DailyChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C665004862594F8EBE583F25 /* DailyChallengeTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,8 +126,16 @@
 		4CE2A25DC5F54E12AB23447F /* BarlowCondensed-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/BarlowCondensed-SemiBold.ttf; sourceTree = "<group>"; };
 		860B63B11B3E47CD82263BF8 /* BarlowCondensed-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/BarlowCondensed-Bold.ttf; sourceTree = "<group>"; };
 		A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMark.swift; sourceTree = "<group>"; };
+		C971C1B3ED694B708CC8F541 /* DailyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyState.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60003A1B2C303 /* RecentMarkCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMarkCard.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60005A1B2C305 /* OpponentMarkFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentMarkFeedView.swift; sourceTree = "<group>"; };
+		3C00CCDD8E1441658DABF1DF /* RoundModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundModifier.swift; sourceTree = "<group>"; };
+		75AC5382E7EA4F9FB71B6B2C /* RoundModifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundModifierTests.swift; sourceTree = "<group>"; };
+		65324DDE498F4FCB8CBA56ED /* ModifierRevealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifierRevealView.swift; sourceTree = "<group>"; };
+		B327C9A89D39424AB98C435B /* ModifierBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifierBadgeView.swift; sourceTree = "<group>"; };
+		00DC7407896F4B0896AF1ECC /* DailyChallengesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallengesView.swift; sourceTree = "<group>"; };
+		639BF68A74E44DCF82DD0F46 /* DailyChallenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallenge.swift; sourceTree = "<group>"; };
+		C665004862594F8EBE583F25 /* DailyChallengeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallengeTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -159,6 +175,9 @@
 				F149B6878223BB2C3678B549 /* TokenToastView.swift */,
 				D6C8A01F3B72E49F05167C83 /* SplashView.swift */,
 				10D7079330D5309CC9B40FCD /* WinView.swift */,
+				65324DDE498F4FCB8CBA56ED /* ModifierRevealView.swift */,
+				B327C9A89D39424AB98C435B /* ModifierBadgeView.swift */,
+				00DC7407896F4B0896AF1ECC /* DailyChallengesView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -172,8 +191,10 @@
 				EE6D110F4EABD34F22BFDA52 /* GameEngineTests.swift */,
 				0562017F1400D3C393371B51 /* MultipeerMessageTests.swift */,
 				4BEF6DA2FE4E1927881F43B3 /* PowerUpTypeTests.swift */,
+				75AC5382E7EA4F9FB71B6B2C /* RoundModifierTests.swift */,
 				EA3B46A1ED1B1B26F8D1865E /* SquarePoolTests.swift */,
 				48B20B738F1B24C9FB357A58 /* ToastTests.swift */,
+				C665004862594F8EBE583F25 /* DailyChallengeTests.swift */,
 			);
 			path = RoadTripBingoTests;
 			sourceTree = "<group>";
@@ -207,7 +228,10 @@
 				1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */,
 				1B185FB25828686F54F6EFC9 /* PowerUpType.swift */,
 				A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */,
+				C971C1B3ED694B708CC8F541 /* DailyState.swift */,
+				639BF68A74E44DCF82DD0F46 /* DailyChallenge.swift */,
 				0D9693B97F5B0E3B8D989A90 /* ToastEvent.swift */,
+				3C00CCDD8E1441658DABF1DF /* RoundModifier.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -354,6 +378,8 @@
 				4B92C5F3E5B72793E019B939 /* PowerUpTypeTests.swift in Sources */,
 				B7D9C83BCFBE2834F3BD892D /* SquarePoolTests.swift in Sources */,
 				D9E9995D90F0564E151AE267 /* ToastTests.swift in Sources */,
+				659ABF80FD9E4F79963A569D /* RoundModifierTests.swift in Sources */,
+				2E44512547BF4FDE95754775 /* DailyChallengeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,12 +411,18 @@
 				361B5DFCB064D6B926002432 /* PowerUpStripView.swift in Sources */,
 				9E4054EE031302195F3AC49F /* PowerUpType.swift in Sources */,
 				A1B2C3D4E5F60002A1B2C302 /* RecentMark.swift in Sources */,
+				9060FFD02B4A412FB57D93AD /* DailyState.swift in Sources */,
+				979DEE133AB14817956EF661 /* DailyChallenge.swift in Sources */,
 				D9D750B1F831A92C75001561 /* RoadTripBingoApp.swift in Sources */,
 				4BA5BDA24B68E3B57192949A /* SquarePool.swift in Sources */,
 				933CB7A0DF5265AD0584F2CA /* TargetingOverlayView.swift in Sources */,
 				37E192F91D44E4C8B112DD40 /* ToastEvent.swift in Sources */,
 				A3CC74A7D457A84CD876EFE1 /* TokenToastView.swift in Sources */,
 				93C17D72CA88102C970BA6F9 /* WinView.swift in Sources */,
+				4535FF97367F47079E8D0138 /* RoundModifier.swift in Sources */,
+				D467E96760BF4989B807551B /* ModifierRevealView.swift in Sources */,
+				4CCB779528CD4724BCB60FF7 /* ModifierBadgeView.swift in Sources */,
+				F24F2245A055491E96A2C37E /* DailyChallengesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

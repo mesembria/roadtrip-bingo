@@ -4,7 +4,7 @@ struct TargetingOverlayView: View {
     let powerUp: PowerUpType
     let localBoard: BingoBoard?
     let opponentBoards: [String: [BingoSquare]]
-    let opponentMarked: [String: Set<Int>]
+    let opponentMarked: [String: Set<UUID>]
     let onSelect: (_ targetPlayer: String?, _ targetIndex: Int) -> Void
     let onCancel: () -> Void
 
@@ -86,7 +86,7 @@ struct TargetingOverlayView: View {
                             ForEach(0..<min(oppBoard.count, 25), id: \.self) { idx in
                                 let square = oppBoard[idx]
                                 let isFree = square.id == BingoSquare.freeSquareID
-                                let isMarked = marked.contains(idx)
+                                let isMarked = marked.contains(square.id)
                                 let selectable: Bool = {
                                     guard !isFree else { return false }
                                     if powerUp == .downgradeTileTargeted { return !isMarked }

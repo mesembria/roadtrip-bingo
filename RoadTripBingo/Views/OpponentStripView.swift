@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct OpponentStripView: View {
-    let opponentMarked: [String: Set<Int>]
+    let opponentBoards: [String: [BingoSquare]]
+    let opponentMarked: [String: Set<UUID>]
     let tokenBalances: [String: Int]
     var isVertical: Bool = false
 
@@ -33,7 +34,11 @@ struct OpponentStripView: View {
     }
 
     private func opponentCard(name: String) -> some View {
-        let marked = opponentMarked[name] ?? []
+        let markedIDs = opponentMarked[name] ?? []
+        let board = opponentBoards[name] ?? []
+        let markedPositions: Set<Int> = Set(board.enumerated().compactMap { idx, sq in
+            markedIDs.contains(sq.id) ? idx : nil
+        })
         let coins = tokenBalances[name]
         return VStack(spacing: 6) {
             HStack(spacing: 4) {
@@ -52,8 +57,8 @@ struct OpponentStripView: View {
                     }
                 }
             }
-            MiniGridView(markedPositions: marked)
-            Text("\(marked.count) ✓")
+            MiniGridView(markedPositions: markedPositions)
+            Text("\(markedPositions.count) ✓")
                 .font(AmericanaTheme.barlowSemiBold(10))
                 .foregroundColor(AmericanaTheme.ink.opacity(0.6))
         }

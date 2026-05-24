@@ -47,4 +47,12 @@ struct BingoBoard {
     func isMarked(at position: Int) -> Bool {
         marked.contains(squares[position].id)
     }
+
+    mutating func shuffleUnmarkedPositions() {
+        let unmarkedIndices = (0..<25).filter { $0 != 12 && !isMarked(at: $0) }
+        let shuffledTiles = unmarkedIndices.map { squares[$0] }.shuffled()
+        for (i, idx) in unmarkedIndices.enumerated() {
+            squares[idx] = shuffledTiles[i]
+        }
+    }
 }

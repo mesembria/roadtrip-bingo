@@ -6,6 +6,8 @@ struct GameView: View {
     @State private var toastMessage: String? = nil
     @State private var activeToastID: UUID? = nil
     @State private var toastStyle: ToastStyle = .earn
+    @State private var showModifierReveal = false
+    @State private var showChallenges = false
 
     var body: some View {
         ZStack {
@@ -49,6 +51,31 @@ struct GameView: View {
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
+
+            if showModifierReveal, let modifier = appState.activeModifier {
+                ModifierRevealView(modifier: modifier) {
+                    showModifierReveal = false
+                }
+                .transition(.opacity)
+                .zIndex(10)
+            }
+        }
+        .sheet(isPresented: $showChallenges) {
+            DailyChallengesView(
+                challenges: appState.activeChallenges,
+                completedIDs: appState.dailyState.completedIDs
+            )
+            .presentationDetents([.medium, .large])
+        }
+        .onChange(of: appState.screen) { _ in
+            if appState.screen == .game && appState.activeModifier != nil {
+                showModifierReveal = true
+            }
+        }
+        .onChange(of: appState.activeModifier) { _ in
+            if appState.activeModifier != nil && appState.screen == .game {
+                showModifierReveal = true
+            }
         }
         .onChange(of: appState.pendingToast) { toast in
             guard let toast else { return }
@@ -72,6 +99,7 @@ struct GameView: View {
                 BingoGridView(
                     board: board,
                     highlightedPositions: Set(appState.completedLine ?? []),
+                    hiddenPositions: appState.fogOfWarHiddenPositions,
                     onTap: appState.toggleSquare(at:)
                 )
                 .frame(width: gridSize, height: gridSize)
@@ -90,8 +118,30 @@ struct GameView: View {
         HStack(spacing: 8) {
             // Left sidebar: opponents stacked vertically + BINGO button at bottom
             VStack(spacing: 12) {
+                if let modifier = appState.activeModifier {
+                    ModifierBadgeView(modifier: modifier)
+                }
+                let incompleteLandscape = appState.activeChallenges.filter {
+                    !appState.dailyState.completedIDs.contains($0.id)
+                }.count
+                if incompleteLandscape > 0 {
+                    Button {
+                        showChallenges = true
+                    } label: {
+                        Text("🎯 \(incompleteLandscape)")
+                            .font(AmericanaTheme.barlowBold(13))
+                            .foregroundColor(AmericanaTheme.ink)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(
+                                Capsule().fill(AmericanaTheme.yellow.opacity(0.8))
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
                 if !appState.opponentMarked.isEmpty {
                     OpponentStripView(
+                        opponentBoards: appState.opponentBoards,
                         opponentMarked: appState.opponentMarked,
                         tokenBalances: appState.tokenBalances,
                         isVertical: true
@@ -112,6 +162,7 @@ struct GameView: View {
                 BingoGridView(
                     board: board,
                     highlightedPositions: Set(appState.completedLine ?? []),
+                    hiddenPositions: appState.fogOfWarHiddenPositions,
                     onTap: appState.toggleSquare(at:)
                 )
                 .frame(width: gridWidth)
@@ -126,8 +177,34 @@ struct GameView: View {
     }
 
     @ViewBuilder private var opponentHUD: some View {
+        let incompletePortrait = appState.activeChallenges.filter {
+            !appState.dailyState.completedIDs.contains($0.id)
+        }.count
+        HStack {
+            if let modifier = appState.activeModifier {
+                ModifierBadgeView(modifier: modifier)
+            }
+            Spacer()
+            if incompletePortrait > 0 {
+                Button {
+                    showChallenges = true
+                } label: {
+                    Text("🎯 \(incompletePortrait)")
+                        .font(AmericanaTheme.barlowBold(13))
+                        .foregroundColor(AmericanaTheme.ink)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            Capsule().fill(AmericanaTheme.yellow.opacity(0.8))
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 16)
         if !appState.opponentMarked.isEmpty {
             OpponentStripView(
+                opponentBoards: appState.opponentBoards,
                 opponentMarked: appState.opponentMarked,
                 tokenBalances: appState.tokenBalances
             )

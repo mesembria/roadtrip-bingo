@@ -95,4 +95,56 @@ final class GameEngineTests: XCTestCase {
         let lines = GameEngine.completedLines(for: board)
         XCTAssertEqual(lines.count, 2)
     }
+
+    // MARK: - hotStreakLine
+
+    func test_hotStreakLine_freshBoardReturnsNil() {
+        XCTAssertNil(GameEngine.hotStreakLine(for: makeBoard()))
+    }
+
+    func test_hotStreakLine_two_markedReturnsNil() {
+        XCTAssertNil(GameEngine.hotStreakLine(for: makeBoard(marking: [0, 1])))
+    }
+
+    func test_hotStreakLine_three_inRow_returnsLine() {
+        let line = GameEngine.hotStreakLine(for: makeBoard(marking: [0, 1, 2]))
+        XCTAssertEqual(line, [0, 1, 2, 3, 4])
+    }
+
+    func test_hotStreakLine_three_inCol_returnsLine() {
+        let line = GameEngine.hotStreakLine(for: makeBoard(marking: [0, 5, 10]))
+        XCTAssertEqual(line, [0, 5, 10, 15, 20])
+    }
+
+    func test_hotStreakLine_three_inDiagonal_withFree_returnsLine() {
+        // Main diagonal [0,6,12,18,24]: 12 is FREE (pre-marked). Mark 2 more → 3 total.
+        let line = GameEngine.hotStreakLine(for: makeBoard(marking: [0, 6]))
+        XCTAssertEqual(line, [0, 6, 12, 18, 24])
+    }
+
+    // MARK: - patternLine
+
+    func test_patternLine_fourCorners_allMarked_returnsPositions() {
+        let board = makeBoard(marking: [0, 4, 20, 24])
+        let line = GameEngine.patternLine(for: board, shape: .fourCorners)
+        XCTAssertEqual(line?.sorted(), [0, 4, 20, 24])
+    }
+
+    func test_patternLine_fourCorners_threeMarked_returnsNil() {
+        XCTAssertNil(GameEngine.patternLine(for: makeBoard(marking: [0, 4, 20]), shape: .fourCorners))
+    }
+
+    func test_patternLine_x_allMarked_returnsPositions() {
+        // X = [0,4,6,8,12,16,18,20,24]. 12 is FREE. Mark remaining 8.
+        let board = makeBoard(marking: [0, 4, 6, 8, 16, 18, 20, 24])
+        let line = GameEngine.patternLine(for: board, shape: .x)
+        XCTAssertEqual(line?.sorted(), [0, 4, 6, 8, 12, 16, 18, 20, 24])
+    }
+
+    func test_patternLine_plus_allMarked_returnsPositions() {
+        // Plus = [2,7,10,11,12,13,14,17,22]. 12 is FREE. Mark remaining 8.
+        let board = makeBoard(marking: [2, 7, 10, 11, 13, 14, 17, 22])
+        let line = GameEngine.patternLine(for: board, shape: .plus)
+        XCTAssertEqual(line?.sorted(), [2, 7, 10, 11, 12, 13, 14, 17, 22])
+    }
 }

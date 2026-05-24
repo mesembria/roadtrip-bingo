@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
+    @State private var showChallenges = false
 
     var body: some View {
         GeometryReader { geo in
@@ -207,6 +208,35 @@ struct HomeView: View {
                         .cornerRadius(11)
                     }
                     .disabled(appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty)
+
+                    Button {
+                        showChallenges = true
+                    } label: {
+                        HStack(spacing: 8) {
+                            Text("🎯")
+                            Text("Today's Challenges")
+                                .font(AmericanaTheme.barlowBold(15))
+                        }
+                        .foregroundColor(AmericanaTheme.ink)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(AmericanaTheme.yellow.opacity(0.8))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .strokeBorder(AmericanaTheme.ink.opacity(0.2), lineWidth: 1)
+                                )
+                        )
+                    }
+                    .frame(maxWidth: 360)
+                    .sheet(isPresented: $showChallenges) {
+                        DailyChallengesView(
+                            challenges: appState.activeChallenges,
+                            completedIDs: appState.dailyState.completedIDs
+                        )
+                        .presentationDetents([.medium, .large])
+                    }
                 }
 
                 Spacer()

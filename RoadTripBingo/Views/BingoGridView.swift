@@ -3,6 +3,7 @@ import SwiftUI
 struct BingoGridView: View {
     let board: BingoBoard
     let highlightedPositions: Set<Int>
+    var hiddenPositions: Set<Int> = []
     let onTap: (Int) -> Void
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 5)
@@ -67,6 +68,7 @@ struct BingoGridView: View {
                     square: board.squares[position],
                     isMarked: board.isMarked(at: position),
                     isHighlighted: highlightedPositions.contains(position),
+                    isHidden: hiddenPositions.contains(position),
                     onTap: { onTap(position) }
                 ).aspectRatio(1, contentMode: .fit)
             }
