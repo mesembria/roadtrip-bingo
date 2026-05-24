@@ -100,4 +100,37 @@ final class BingoBoardTests: XCTestCase {
         board.replaceSquare(at: 12, with: newSquare)
         XCTAssertEqual(board.squares[12].id, oldID)
     }
+
+    // MARK: - shuffleUnmarkedPositions
+
+    func test_shuffleUnmarkedPositions_preservesMarkedTileIDs() {
+        var board = BingoBoard(squares: (0..<25).map { i in
+            i == 12 ? .free : BingoSquare(id: UUID(), text: "Tile \(i)", emoji: "x",
+                                           category: .nature, rarity: .common)
+        })
+        board.toggle(at: 0)
+        board.toggle(at: 1)
+        let markedBefore = board.marked
+
+        board.shuffleUnmarkedPositions()
+
+        XCTAssertEqual(board.marked, markedBefore, "Marked UUID set must be unchanged after shuffle")
+        XCTAssertEqual(board.squares.count, 25)
+        XCTAssertEqual(board.squares[12].id, BingoSquare.freeSquareID)
+    }
+
+    func test_shuffleUnmarkedPositions_keepsMarkedTilesAtOriginalPositions() {
+        let tile0 = BingoSquare(id: UUID(), text: "Tile 0", emoji: "x", category: .nature, rarity: .common)
+        let squares: [BingoSquare] = (0..<25).map { i in
+            i == 0  ? tile0 :
+            i == 12 ? .free :
+            BingoSquare(id: UUID(), text: "Tile \(i)", emoji: "x", category: .nature, rarity: .common)
+        }
+        var board = BingoBoard(squares: squares)
+        board.toggle(at: 0)  // mark tile at position 0
+
+        board.shuffleUnmarkedPositions()
+
+        XCTAssertEqual(board.squares[0].id, tile0.id, "Marked tile must stay at its position")
+    }
 }

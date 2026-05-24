@@ -271,6 +271,12 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         fogOfWarHiddenPositions = pickFogPositions(hiddenCount: hiddenCount, board: board)
     }
 
+    private func shuffleBoardIfNeeded() {
+        guard activeModifier == .shuffleBoard, localBoard != nil else { return }
+        localBoard!.shuffleUnmarkedPositions()
+        multipeerSession?.send(.boardShuffled(byName: playerName, squares: localBoard!.squares))
+    }
+
     private func shiftTileIfNeeded() {
         guard activeModifier == .shiftingTiles,
               var board = localBoard,
@@ -568,6 +574,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
                 opponentMarkCountsThisRound[peerName, default: 0] += 1
                 shiftFogIfNeeded()
                 shiftTileIfNeeded()
+                shuffleBoardIfNeeded()
             }
             if isMarked, let square = opponentBoards[peerName]?[position] {
                 appendRecentMark(RecentMark(opponentName: peerName,
@@ -638,8 +645,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             activeModifier = modifier
             initializeModifier(modifier)
 
-        case .boardShuffled:
-            break
+        case .boardShuffled(let byName, let squares):
+            opponentBoards[byName] = squares
+            // opponentMarked[byName] UUID set remains valid — only tile positions moved
         }
     }
 
