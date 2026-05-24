@@ -49,13 +49,34 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     private var closeCallsAwardedThisRound: Set<String> = []
 
     // MARK: - Post-game
-    @Published var winHistory: [String: Int] = [:]
+    @Published var winHistory: [String: Int] = {
+        guard let data = UserDefaults.standard.data(forKey: "winHistory"),
+              let dict = try? JSONDecoder().decode([String: Int].self, from: data)
+        else { return [:] }
+        return dict
+    }() {
+        didSet {
+            if let data = try? JSONEncoder().encode(winHistory) {
+                UserDefaults.standard.set(data, forKey: "winHistory")
+            }
+        }
+    }
+
+    var dailyState: DailyState = DailyState.load()
 
     // MARK: - Network
     private(set) var multipeerSession: MultipeerSession?
 
     init() {
         self.playerName = UserDefaults.standard.string(forKey: "playerName") ?? ""
+        rollDailyChallengesIfNeeded()
+    }
+
+    func rollDailyChallengesIfNeeded() {
+        if dailyState.date != DailyState.today() {
+            dailyState = DailyState.fresh()
+        }
+        // Challenge rolling wired in Task 11
     }
 
     // MARK: - Home actions
