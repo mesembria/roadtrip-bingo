@@ -116,4 +116,36 @@ final class MultipeerMessageTests: XCTestCase {
         XCTAssertEqual(name, "Liam")
         XCTAssertEqual(squares.first?.text, "Barn")
     }
+
+    func test_encode_decode_roundModifier() throws {
+        let modifiers: [RoundModifier] = [
+            .hotStreak, .doubleDown, .noPowers, .sniper,
+            .fogOfWar, .shiftingTiles, .shuffleBoard,
+            .patternWin(.x), .patternWin(.fourCorners), .patternWin(.plus)
+        ]
+        for modifier in modifiers {
+            let message = MultipeerMessage.roundModifier(modifier)
+            let data = try JSONEncoder().encode(message)
+            let decoded = try JSONDecoder().decode(MultipeerMessage.self, from: data)
+            guard case .roundModifier(let decodedModifier) = decoded else {
+                XCTFail("Expected roundModifier, got \(decoded)")
+                return
+            }
+            XCTAssertEqual(decodedModifier, modifier)
+        }
+    }
+
+    func test_encode_decode_boardShuffled() throws {
+        let squares: [BingoSquare] = [.free]
+        let message = MultipeerMessage.boardShuffled(byName: "Emma", squares: squares)
+        let data = try JSONEncoder().encode(message)
+        let decoded = try JSONDecoder().decode(MultipeerMessage.self, from: data)
+        guard case .boardShuffled(let byName, let decodedSquares) = decoded else {
+            XCTFail("Expected boardShuffled, got \(decoded)")
+            return
+        }
+        XCTAssertEqual(byName, "Emma")
+        XCTAssertEqual(decodedSquares.count, 1)
+        XCTAssertEqual(decodedSquares[0].id, BingoSquare.freeSquareID)
+    }
 }

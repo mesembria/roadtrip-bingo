@@ -73,7 +73,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         }
     }
 
-    var dailyState: DailyState = DailyState.load()
+    @Published var dailyState: DailyState = DailyState.load()
 
     var activeChallenges: [DailyChallenge] {
         dailyState.challengeTypes.map { DailyChallenge(type: $0) }
@@ -236,6 +236,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     // MARK: - Token helpers
 
     private func dealAndLaunchRound(sendBoardsMessage: @escaping ([String: [BingoSquare]]) -> Void) {
+        rollDailyChallengesIfNeeded()
         let pool = SquarePool.load()
         let allNames = [playerName] + connectedPlayerNames
         let players = allNames.map { name -> (name: String, difficulty: BoardDifficulty) in
@@ -307,9 +308,10 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     }
 
     private func shuffleBoardIfNeeded() {
-        guard activeModifier == .shuffleBoard, localBoard != nil else { return }
-        localBoard!.shuffleUnmarkedPositions()
-        multipeerSession?.send(.boardShuffled(byName: playerName, squares: localBoard!.squares))
+        guard activeModifier == .shuffleBoard, var board = localBoard else { return }
+        board.shuffleUnmarkedPositions()
+        localBoard = board
+        multipeerSession?.send(.boardShuffled(byName: playerName, squares: board.squares))
     }
 
     private func shiftTileIfNeeded() {
@@ -605,6 +607,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     func multipeerSession(_ session: MultipeerSession, didReceive message: MultipeerMessage, from peerName: String) {
         switch message {
         case .gameStarted(let boards):
+            rollDailyChallengesIfNeeded()
             if let mySquares = boards[playerName] {
                 localBoard = BingoBoard(squares: mySquares)
             }
@@ -655,6 +658,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             evaluateChallenges(event: .roundEnded(context: endCtx))
 
         case .playAgain(let boards):
+            rollDailyChallengesIfNeeded()
             if let mySquares = boards[playerName] {
                 localBoard = BingoBoard(squares: mySquares)
             }

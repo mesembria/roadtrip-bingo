@@ -72,6 +72,11 @@ struct GameView: View {
                 showModifierReveal = true
             }
         }
+        .onChange(of: appState.activeModifier) { _ in
+            if appState.activeModifier != nil && appState.screen == .game {
+                showModifierReveal = true
+            }
+        }
         .onChange(of: appState.pendingToast) { toast in
             guard let toast else { return }
             toastStyle = toast.style
