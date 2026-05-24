@@ -6,6 +6,7 @@ struct GameView: View {
     @State private var toastMessage: String? = nil
     @State private var activeToastID: UUID? = nil
     @State private var toastStyle: ToastStyle = .earn
+    @State private var showModifierReveal = false
 
     var body: some View {
         ZStack {
@@ -49,6 +50,19 @@ struct GameView: View {
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
+
+            if showModifierReveal, let modifier = appState.activeModifier {
+                ModifierRevealView(modifier: modifier) {
+                    showModifierReveal = false
+                }
+                .transition(.opacity)
+                .zIndex(10)
+            }
+        }
+        .onChange(of: appState.screen) { _ in
+            if appState.screen == .game && appState.activeModifier != nil {
+                showModifierReveal = true
+            }
         }
         .onChange(of: appState.pendingToast) { toast in
             guard let toast else { return }
@@ -91,6 +105,9 @@ struct GameView: View {
         HStack(spacing: 8) {
             // Left sidebar: opponents stacked vertically + BINGO button at bottom
             VStack(spacing: 12) {
+                if let modifier = appState.activeModifier {
+                    ModifierBadgeView(modifier: modifier)
+                }
                 if !appState.opponentMarked.isEmpty {
                     OpponentStripView(
                         opponentBoards: appState.opponentBoards,
@@ -129,6 +146,13 @@ struct GameView: View {
     }
 
     @ViewBuilder private var opponentHUD: some View {
+        if let modifier = appState.activeModifier {
+            HStack {
+                ModifierBadgeView(modifier: modifier)
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+        }
         if !appState.opponentMarked.isEmpty {
             OpponentStripView(
                 opponentBoards: appState.opponentBoards,
