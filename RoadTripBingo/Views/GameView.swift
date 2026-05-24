@@ -92,6 +92,7 @@ struct GameView: View {
             VStack(spacing: 12) {
                 if !appState.opponentMarked.isEmpty {
                     OpponentStripView(
+                        opponentBoards: appState.opponentBoards,
                         opponentMarked: appState.opponentMarked,
                         tokenBalances: appState.tokenBalances,
                         isVertical: true
@@ -128,6 +129,7 @@ struct GameView: View {
     @ViewBuilder private var opponentHUD: some View {
         if !appState.opponentMarked.isEmpty {
             OpponentStripView(
+                opponentBoards: appState.opponentBoards,
                 opponentMarked: appState.opponentMarked,
                 tokenBalances: appState.tokenBalances
             )

@@ -31,7 +31,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     // MARK: - Game
     @Published var localBoard: BingoBoard?
     @Published var completedLine: [Int]?
-    @Published var opponentMarked: [String: Set<Int>] = [:]
+    @Published var opponentMarked: [String: Set<UUID>] = [:]
     @Published var opponentBoards: [String: [BingoSquare]] = [:]
     var reserveSquares: [BingoSquare] = []
     @Published var recentOpponentMarks: [RecentMark] = []
@@ -183,7 +183,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         pruningTask = nil
         for name in connectedPlayerNames {
             opponentBoards[name] = boards[name]
-            opponentMarked[name] = [12]
+            opponentMarked[name] = [BingoSquare.freeSquareID]
         }
         reserveSquares = reserve[playerName] ?? []
         completedLine = nil
@@ -332,8 +332,10 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             if target == playerName {
                 localBoard?.replaceSquare(at: idx, with: newSquare)
             } else {
+                if let board = opponentBoards[target], idx < board.count {
+                    opponentMarked[target]?.remove(board[idx].id)
+                }
                 opponentBoards[target]?[idx] = newSquare
-                opponentMarked[target]?.remove(idx)
             }
 
         case .freeMark:
@@ -341,7 +343,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             if byName == playerName {
                 localBoard?.mark(at: idx)
             } else {
-                opponentMarked[byName]?.insert(idx)
+                if let board = opponentBoards[byName], idx < board.count {
+                    opponentMarked[byName]?.insert(board[idx].id)
+                }
             }
 
         case .unmarkOpponentRandom, .unmarkOpponentTargeted:
@@ -349,7 +353,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             if target == playerName {
                 localBoard?.unmark(at: idx)
             } else {
-                opponentMarked[target]?.remove(idx)
+                if let board = opponentBoards[target], idx < board.count {
+                    opponentMarked[target]?.remove(board[idx].id)
+                }
             }
         }
     }
@@ -372,14 +378,12 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         let rarityOrder: [SquareRarity] = [.veryCommon, .common, .uncommon, .rare, .veryRare]
         var best: (name: String, idx: Int, rank: Int)? = nil
         for (oppName, oppBoard) in opponentBoards {
-            let marked = opponentMarked[oppName] ?? []
-            for idx in 0..<oppBoard.count {
-                guard oppBoard[idx].id != BingoSquare.freeSquareID,
-                      !marked.contains(idx) else { continue }
-                let rank = rarityOrder.firstIndex(of: oppBoard[idx].rarity) ?? 99
-                if best == nil || rank < best!.rank {
-                    best = (oppName, idx, rank)
-                }
+            let markedIDs = opponentMarked[oppName] ?? []
+            for (idx, square) in oppBoard.enumerated() {
+                guard square.id != BingoSquare.freeSquareID,
+                      !markedIDs.contains(square.id) else { continue }
+                let rank = rarityOrder.firstIndex(of: square.rarity) ?? 99
+                if best == nil || rank < best!.rank { best = (oppName, idx, rank) }
             }
         }
         return best.map { ($0.name, $0.idx) }
@@ -387,12 +391,12 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     private func markedOpponentTile() -> (String, Int)? {
         var best: (name: String, idx: Int)? = nil
-        for oppName in opponentMarked.keys {
-            let marked = opponentMarked[oppName] ?? []
-            if let idx = marked.filter({ $0 != 12 }).max() {
-                if best == nil || idx > best!.idx {
-                    best = (oppName, idx)
-                }
+        for (oppName, markedIDs) in opponentMarked {
+            guard let board = opponentBoards[oppName] else { continue }
+            for (idx, square) in board.enumerated() {
+                guard square.id != BingoSquare.freeSquareID,
+                      markedIDs.contains(square.id) else { continue }
+                if best == nil || idx > best!.idx { best = (oppName, idx) }
             }
         }
         return best.map { ($0.name, $0.idx) }
@@ -437,7 +441,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             pruningTask = nil
             for (name, squares) in boards where name != playerName {
                 opponentBoards[name] = squares
-                opponentMarked[name] = [12]
+                opponentMarked[name] = [BingoSquare.freeSquareID]
             }
             completedLine = nil
             resetRound()
@@ -446,9 +450,11 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             screen = .game
 
         case .squareToggled(let position, let isMarked):
-            var current = opponentMarked[peerName] ?? []
-            if isMarked { current.insert(position) } else { current.remove(position) }
-            opponentMarked[peerName] = current
+            if let board = opponentBoards[peerName], position < board.count {
+                let tileID = board[position].id
+                if isMarked { opponentMarked[peerName]?.insert(tileID) }
+                else { opponentMarked[peerName]?.remove(tileID) }
+            }
             if isMarked, let square = opponentBoards[peerName]?[position] {
                 appendRecentMark(RecentMark(opponentName: peerName,
                                             square: square, timestamp: Date()))
@@ -469,7 +475,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             pruningTask = nil
             for (name, squares) in boards where name != playerName {
                 opponentBoards[name] = squares
-                opponentMarked[name] = [12]
+                opponentMarked[name] = [BingoSquare.freeSquareID]
             }
             completedLine = nil
             resetRound()

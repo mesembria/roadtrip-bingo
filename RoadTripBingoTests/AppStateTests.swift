@@ -154,7 +154,7 @@ final class AppStateTests: XCTestCase {
             return BingoSquare(id: UUID(), text: "Tile \(i)", emoji: "x",
                                category: .nature, rarity: .veryCommon)
         }
-        state.opponentMarked["Emma"] = [12]
+        state.opponentMarked["Emma"] = [BingoSquare.freeSquareID]
 
         state.multipeerSession(makeSession(),
             didReceive: .squareToggled(position: 5, isMarked: true),
@@ -175,7 +175,7 @@ final class AppStateTests: XCTestCase {
             return BingoSquare(id: UUID(), text: "Tile \(i)", emoji: "x",
                                category: .nature, rarity: .veryCommon)
         }
-        state.opponentMarked["Emma"] = [5, 12]
+        state.opponentMarked["Emma"] = [targetSquare.id, BingoSquare.freeSquareID]
 
         state.multipeerSession(makeSession(),
             didReceive: .squareToggled(position: 5, isMarked: false),
@@ -192,7 +192,7 @@ final class AppStateTests: XCTestCase {
                                   category: .nature, rarity: .veryCommon)
         }
         state.opponentBoards["Emma"] = squares
-        state.opponentMarked["Emma"] = [12]
+        state.opponentMarked["Emma"] = [BingoSquare.freeSquareID]
 
         let session = makeSession()
         for pos in [0, 1, 2, 3] {
