@@ -67,6 +67,7 @@ struct BingoGridView: View {
                 BingoSquareView(
                     square: board.squares[position],
                     isMarked: board.isMarked(at: position),
+                    isFreeMarked: board.freeMarked.contains(board.squares[position].id),
                     isHighlighted: highlightedPositions.contains(position),
                     isHidden: hiddenPositions.contains(position),
                     onTap: { onTap(position) }

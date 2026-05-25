@@ -3,6 +3,7 @@ import SwiftUI
 struct BingoSquareView: View {
     let square: BingoSquare
     let isMarked: Bool
+    let isFreeMarked: Bool
     let isHighlighted: Bool
     var isHidden: Bool = false
     let onTap: () -> Void
