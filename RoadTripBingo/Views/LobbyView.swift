@@ -61,6 +61,11 @@ struct LobbyView: View {
                         Text("Looking for nearby games…")
                             .font(AmericanaTheme.barlowSemiBold(14))
                             .foregroundColor(AmericanaTheme.ink.opacity(0.6))
+                    } else if let connecting = appState.connectingToGame {
+                        ProgressView().tint(AmericanaTheme.green)
+                        Text("Connecting to \(connecting)…")
+                            .font(AmericanaTheme.barlowSemiBold(14))
+                            .foregroundColor(AmericanaTheme.ink.opacity(0.6))
                     } else {
                         Text("Games nearby:")
                             .font(AmericanaTheme.barlowSemiBold(14))

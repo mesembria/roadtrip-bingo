@@ -208,6 +208,7 @@ struct HomeView: View {
                         .cornerRadius(11)
                     }
                     .disabled(appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .padding(.bottom, 20)
 
                     Button {
                         showChallenges = true
@@ -235,7 +236,7 @@ struct HomeView: View {
                             challenges: appState.activeChallenges,
                             completedIDs: appState.dailyState.completedIDs
                         )
-                        .presentationDetents([.medium, .large])
+                        .presentationDetents([.large])
                     }
                 }
 

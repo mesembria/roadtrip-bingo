@@ -605,7 +605,7 @@
     "category": "landmarks",
     "emoji": "🏛️",
     "id": "A567E170-5E12-459A-B3E7-A552CB7D7388",
-    "rarity": "uncommon",
+    "rarity": "rare",
     "text": "State Capitol"
   },
   {
@@ -773,21 +773,21 @@
     "category": "weather",
     "emoji": "🏜️",
     "id": "944B6E26-F677-455F-B087-9D883297CF5B",
-    "rarity": "rare",
+    "rarity": "veryRare",
     "text": "Mirage"
   },
   {
     "category": "weather",
     "emoji": "🌅",
     "id": "5B2CADFC-84CF-437F-99AA-A0F270C804B3",
-    "rarity": "common",
+    "rarity": "uncommon",
     "text": "Dramatic Sunset"
   },
   {
     "category": "weather",
     "emoji": "🌕",
     "id": "9EE07CB2-390A-4CA2-90E3-0A49ECEBC1BF",
-    "rarity": "uncommon",
+    "rarity": "rare",
     "text": "Low-Hanging Moon"
   },
   {
@@ -829,7 +829,7 @@
     "category": "weather",
     "emoji": "🌊",
     "id": "ED587D67-BC0F-449F-AF9B-0F95BDC99975",
-    "rarity": "rare",
+    "rarity": "uncommon",
     "text": "Flash Flood Sign"
   },
   {

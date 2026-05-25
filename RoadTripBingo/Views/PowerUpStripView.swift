@@ -3,6 +3,7 @@ import SwiftUI
 struct PowerUpStripView: View {
     let tokenBalance: Int
     let isVertical: Bool
+    let activeModifier: RoundModifier?
     let onActivateRandom: (PowerUpType) -> Void
     let onRequestTargeted: (PowerUpType) -> Void
 
@@ -12,8 +13,26 @@ struct PowerUpStripView: View {
         let randomVariant: PowerUpType?
         let targetedVariant: PowerUpType
 
-        var displayCost: Int { randomVariant?.cost ?? targetedVariant.cost }
+        var baseCost: Int { randomVariant?.cost ?? targetedVariant.cost }
     }
+
+    private func effectiveCost(for item: StripItem) -> Int {
+        let base = item.baseCost
+        if activeModifier == .sniper && item.targetedVariant.affectsOpponent {
+            return max(1, base - 1)
+        }
+        return base
+    }
+
+    private func effectiveCostTargeted(for item: StripItem) -> Int {
+        let base = item.targetedVariant.cost
+        if activeModifier == .sniper && item.targetedVariant.affectsOpponent {
+            return max(1, base - 1)
+        }
+        return base
+    }
+
+    private var noPowersActive: Bool { activeModifier == .noPowers }
 
     private let items: [StripItem] = [
         StripItem(iconName: "powerup-upgrade",  label: "Upgrade",   randomVariant: .upgradeTileRandom,    targetedVariant: .upgradeTileTargeted),
@@ -25,24 +44,47 @@ struct PowerUpStripView: View {
     @State private var showHelp = false
 
     var body: some View {
-        Group {
-            if isVertical {
-                VStack(spacing: 9) { buttons; helpButton; balanceBadge }
-            } else {
-                HStack(spacing: 9) { buttons; helpButton; Spacer(); balanceBadge }
+        ZStack {
+            Group {
+                if isVertical {
+                    VStack(spacing: 9) { buttons; helpButton; balanceBadge }
+                } else {
+                    HStack(spacing: 9) { buttons; helpButton; Spacer(); balanceBadge }
+                }
+            }
+            .padding(12)
+            .opacity(noPowersActive ? 0.35 : 1.0)
+
+            if noPowersActive {
+                noPowersBanner
             }
         }
-        .padding(12)
         .background(AmericanaTheme.green)
         .cornerRadius(12)
         .shadow(color: AmericanaTheme.shadow, radius: 8, x: 0, y: 4)
         .sheet(isPresented: $showHelp) { PowerUpHelpView() }
     }
 
+    private var noPowersBanner: some View {
+        VStack(spacing: 4) {
+            Text("🚫")
+                .font(.system(size: isVertical ? 22 : 18))
+            Text("NO POWERS")
+                .font(AmericanaTheme.barlowBold(isVertical ? 11 : 10))
+                .foregroundColor(.white)
+                .kerning(1)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color.black.opacity(0.55))
+        .cornerRadius(8)
+    }
+
     @ViewBuilder private var buttons: some View {
         ForEach(items.indices, id: \.self) { i in
             let item = items[i]
-            let canAfford = tokenBalance >= item.displayCost
+            let cost = effectiveCost(for: item)
+            let canAfford = tokenBalance >= cost
             VStack(spacing: 4) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 7)
@@ -61,14 +103,14 @@ struct PowerUpStripView: View {
                     if let img = AmericanaTheme.icon(named: "token") {
                         img.resizable().scaledToFit().frame(width: 14, height: 14)
                     }
-                    Text("\(item.displayCost)")
+                    Text("\(cost)")
                         .font(AmericanaTheme.barlowBold(12))
                         .foregroundColor(AmericanaTheme.yellow)
                 }
             }
             .opacity(canAfford ? 1.0 : 0.4)
             .onTapGesture {
-                guard canAfford else { return }
+                guard canAfford, !noPowersActive else { return }
                 if let random = item.randomVariant {
                     onActivateRandom(random)
                 } else {
@@ -76,7 +118,8 @@ struct PowerUpStripView: View {
                 }
             }
             .onLongPressGesture(minimumDuration: 0.4) {
-                guard tokenBalance >= item.targetedVariant.cost else { return }
+                let targetedCost = effectiveCostTargeted(for: item)
+                guard tokenBalance >= targetedCost, !noPowersActive else { return }
                 onRequestTargeted(item.targetedVariant)
             }
         }

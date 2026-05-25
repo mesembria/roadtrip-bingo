@@ -25,6 +25,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     @Published var isHost = false
     @Published var connectedPlayerNames: [String] = []
     @Published var foundGameNames: [String] = []
+    @Published var connectingToGame: String? = nil   // set while MC handshake is in flight
     @Published var playerDifficulty: BoardDifficulty = .backseat
     @Published var playerDifficulties: [String: BoardDifficulty] = [:]
 
@@ -125,6 +126,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     }
 
     func inviteGame(named name: String) {
+        connectingToGame = name
         multipeerSession?.invitePeer(named: name)
     }
 
@@ -140,6 +142,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         multipeerSession = nil
         connectedPlayerNames = []
         foundGameNames = []
+        connectingToGame = nil
         localBoard = nil
         completedLine = nil
         opponentMarked = [:]
@@ -303,7 +306,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     private func shiftFogIfNeeded() {
         guard activeModifier == .fogOfWar, let board = localBoard else { return }
         fogShiftCount += 1
-        let hiddenCount = max(3, 10 - (fogShiftCount / 3))
+        let hiddenCount = max(3, 10 - fogShiftCount)
         fogOfWarHiddenPositions = pickFogPositions(hiddenCount: hiddenCount, board: board)
     }
 
@@ -725,12 +728,14 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     }
 
     func multipeerSession(_ session: MultipeerSession, peerDidConnect peerName: String) {
+        connectingToGame = nil
         if !connectedPlayerNames.contains(peerName) {
             connectedPlayerNames.append(peerName)
         }
     }
 
     func multipeerSession(_ session: MultipeerSession, peerDidDisconnect peerName: String) {
+        if connectingToGame == peerName { connectingToGame = nil }
         connectedPlayerNames.removeAll { $0 == peerName }
         opponentMarked.removeValue(forKey: peerName)
         opponentBoards.removeValue(forKey: peerName)

@@ -363,6 +363,7 @@ let selectedId = null;
 let isAddMode = false;
 let pendingImageB64 = null;
 let deleteConfirming = false;
+let lastUsedPrompt = null;  // preserved across discard so user can iterate on a custom prompt
 
 // ── Prompt building (mirrors server-side logic) ──────────────────────────────────────
 const CATEGORY_HINTS_JS = {
@@ -448,6 +449,7 @@ function selectTile(id) {
   selectedId = id;
   isAddMode = false;
   pendingImageB64 = null;
+  lastUsedPrompt = null;
   resetDeleteConfirm();
   renderTable();
   showPanel(tile);
@@ -482,6 +484,7 @@ function startAddMode() {
   selectedId = null;
   isAddMode = true;
   pendingImageB64 = null;
+  lastUsedPrompt = null;
   resetDeleteConfirm();
   document.getElementById('panel-title').textContent = 'New Tile';
   document.getElementById('panel-id').textContent = '(new)';
@@ -508,9 +511,14 @@ function resetGenerationUI() {
 }
 
 function showPromptEditor() {
-  const name = document.getElementById('field-name').value.trim() || 'a tile';
-  const cat  = document.getElementById('field-category').value;
-  document.getElementById('prompt-textarea').value = buildPrompt(name, cat);
+  // Re-use the last prompt the user ran (or typed) so they can iterate on it.
+  // Fall back to the auto-built prompt only on first open for this tile.
+  if (!lastUsedPrompt) {
+    const name = document.getElementById('field-name').value.trim() || 'a tile';
+    const cat  = document.getElementById('field-category').value;
+    lastUsedPrompt = buildPrompt(name, cat);
+  }
+  document.getElementById('prompt-textarea').value = lastUsedPrompt;
   document.getElementById('prompt-editor').classList.add('visible');
   document.getElementById('btn-generate').style.display = 'none';
   document.getElementById('gen-result').classList.remove('visible');
@@ -524,6 +532,7 @@ function hidePromptEditor() {
 async function runGeneration() {
   const prompt = document.getElementById('prompt-textarea').value.trim();
   if (!prompt) { alert('Enter a prompt before running generation.'); return; }
+  lastUsedPrompt = prompt;  // remember for next attempt
   document.getElementById('prompt-editor').classList.remove('visible');
   document.getElementById('gen-loading').classList.add('visible');
   try {
