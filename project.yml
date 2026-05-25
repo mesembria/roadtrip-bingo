@@ -3,7 +3,7 @@ name: RoadTripBingo
 options:
   bundleIdPrefix: com.roadtripbingo
   deploymentTarget:
-    iOS: "16.0"
+    iOS: "17.0"
   createIntermediateGroups: true
 targets:
   RoadTripBingo:
