@@ -61,5 +61,8 @@ def build_prompt(text: str, category: str) -> str:
     """Build the Gemini image generation prompt for a tile."""
     subject = OVERRIDES.get(text, f"a {text.lower()}")
     hint = CATEGORY_HINTS.get(category, "")
-    parts = [f"{subject.capitalize()}.", hint, STYLE]
+    # Strip trailing period and capitalize only the first character
+    subject_clean = subject.rstrip(".")
+    subject_cap = subject_clean[0].upper() + subject_clean[1:]
+    parts = [f"{subject_cap}.", hint, STYLE]
     return " ".join(p for p in parts if p).strip()

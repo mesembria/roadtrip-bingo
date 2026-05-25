@@ -36,6 +36,7 @@ def test_build_prompt_uses_override():
     try:
         result = tm.build_prompt("Widget", "vehicles")
         assert "very specific widget" in result
+        assert "Flat vector illustration" in result  # style still applied
     finally:
         tm.OVERRIDES.clear()
         tm.OVERRIDES.update(original)
