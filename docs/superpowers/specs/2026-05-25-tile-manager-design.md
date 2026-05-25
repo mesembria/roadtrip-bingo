@@ -84,7 +84,7 @@ Two-column layout, full viewport height.
    - `✓ Use This Image` — saves to disk, updates current image display.
    - `✕ Discard · Keep Original` — discards, restores original.
 
-5. **Metadata fields**: Name (text input) · Emoji (text input) · Category (select) · Rarity (select).
+5. **Metadata fields**: Name (text input) · Emoji (text input) · Category (select) · Rarity (select, options: `veryCommon`, `common`, `uncommon`, `rare`, `veryRare`).
 
 **Footer**: `🗑 Delete Tile` (left) · `Cancel` · `Save Changes` (right).
 
@@ -95,7 +95,22 @@ Two-column layout, full viewport height.
 Matches the existing `generate_tiles.py` logic exactly:
 
 ```python
-OVERRIDES = { ... }   # per-tile subject overrides (copied from existing script)
+# ── To add a new category: add it to BOTH constants below ───────────────────
+
+CATEGORIES = [
+    "vehicles", "nature", "food", "landmarks", "weather", "signs",
+    # Add new categories here — they'll appear in the UI dropdowns automatically
+]
+
+CATEGORY_HINTS = {
+    # Add a hint for each new category — this shapes the image generation prompt
+    "vehicles":  "Side view, full vehicle visible.",
+    "nature":    "Full subject visible, centered.",
+    "signs":     "The physical sign or object itself, not just a flat sign graphic.",
+    "landmarks": "Full structure visible.",
+    "food":      "Storefront or roadside view.",
+    "weather":   "Dramatic sky scene.",
+}
 
 STYLE = (
     "Flat vector illustration, clean thin outlines, bright colors. "
@@ -104,14 +119,7 @@ STYLE = (
     "no outline around the image edge. Square composition. No text, no labels, no letters."
 )
 
-CATEGORY_HINTS = {
-    "vehicles":  "Side view, full vehicle visible.",
-    "nature":    "Full subject visible, centered.",
-    "signs":     "The physical sign or object itself, not just a flat sign graphic.",
-    "landmarks": "Full structure visible.",
-    "food":      "Storefront or roadside view.",
-    "weather":   "Dramatic sky scene.",
-}
+OVERRIDES = { ... }   # per-tile subject overrides (copied from existing script)
 
 def build_prompt(text, category):
     subject = OVERRIDES.get(text, f"a {text.lower()}")
@@ -154,7 +162,7 @@ Uses the game's own fonts (loaded from Google Fonts: `Rye`, `Barlow Condensed`, 
 - Accent: `#E8A830` (amber / road-sign yellow)
 - Danger: `#C84040` (stop-sign red)
 - Success: `#4A9060` (forest green)
-- Rarity badges: colour-coded (veryCommon → green, common → blue, uncommon → amber, rare → red)
+- Rarity badges: colour-coded (veryCommon → green, common → blue, uncommon → amber, rare → red, veryRare → purple)
 - Subtle grain overlay via SVG noise filter
 
 ---
