@@ -78,7 +78,9 @@ enum SquarePool {
             w[.common, default: 0] += delta
         }
 
-        // Renormalise to guard against floating-point drift.
+        // Renormalise: corrects sum drift when the uncommon cascade bucket is
+        // exhausted before absorbing the full deficit (leaving sum > 1.0),
+        // and guards against floating-point accumulation over iterations.
         let total = w.values.reduce(0, +)
         if total > 0 {
             for rarity in SquareRarity.allCases {
