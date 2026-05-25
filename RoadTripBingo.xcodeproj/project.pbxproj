@@ -63,6 +63,8 @@
 		2E44512547BF4FDE95754775 /* DailyChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C665004862594F8EBE583F25 /* DailyChallengeTests.swift */; };
 		205502691C6A41D3A44F0670 /* TilePack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60753EFF5A7D438EB6070F52 /* TilePack.swift */; };
 		75379BAEA2154490AD288F40 /* TilePackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD30B338815432DBCC24E19 /* TilePackTests.swift */; };
+		4DB4F5482E6347A0B875CDAF /* PackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCA9C6FC5DE42A59FA8A410 /* PackManager.swift */; };
+		17DC606F455147F0A20C4EB7 /* PackManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8B3C528DD44CE5ACDFAE27 /* PackManagerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -142,6 +144,8 @@
 		C665004862594F8EBE583F25 /* DailyChallengeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallengeTests.swift; sourceTree = "<group>"; };
 		60753EFF5A7D438EB6070F52 /* TilePack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilePack.swift; sourceTree = "<group>"; };
 		5AD30B338815432DBCC24E19 /* TilePackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilePackTests.swift; sourceTree = "<group>"; };
+		5CCA9C6FC5DE42A59FA8A410 /* PackManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackManager.swift; sourceTree = "<group>"; };
+		ED8B3C528DD44CE5ACDFAE27 /* PackManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackManagerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -203,6 +207,7 @@
 				48B20B738F1B24C9FB357A58 /* ToastTests.swift */,
 				C665004862594F8EBE583F25 /* DailyChallengeTests.swift */,
 				5AD30B338815432DBCC24E19 /* TilePackTests.swift */,
+				ED8B3C528DD44CE5ACDFAE27 /* PackManagerTests.swift */,
 			);
 			path = RoadTripBingoTests;
 			sourceTree = "<group>";
@@ -222,6 +227,7 @@
 				D133CAE4C15AE8E031D8FA73 /* .gitkeep */,
 				7D16366F1525405AB2B03711 /* GameEngine.swift */,
 				E4C3D480C0DA2C83DE9B7934 /* SquarePool.swift */,
+				5CCA9C6FC5DE42A59FA8A410 /* PackManager.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -391,6 +397,7 @@
 				659ABF80FD9E4F79963A569D /* RoundModifierTests.swift in Sources */,
 				2E44512547BF4FDE95754775 /* DailyChallengeTests.swift in Sources */,
 				75379BAEA2154490AD288F40 /* TilePackTests.swift in Sources */,
+				17DC606F455147F0A20C4EB7 /* PackManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -435,6 +442,7 @@
 				4CCB779528CD4724BCB60FF7 /* ModifierBadgeView.swift in Sources */,
 				F24F2245A055491E96A2C37E /* DailyChallengesView.swift in Sources */,
 				205502691C6A41D3A44F0670 /* TilePack.swift in Sources */,
+				4DB4F5482E6347A0B875CDAF /* PackManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
