@@ -520,7 +520,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         case .freeMark:
             guard let idx = targetIndex else { return }
             if byName == playerName {
-                localBoard?.mark(at: idx)
+                localBoard?.markFree(at: idx)
             } else {
                 if let board = opponentBoards[byName], idx < board.count {
                     opponentMarked[byName, default: []].insert(board[idx].id)
