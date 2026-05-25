@@ -4,6 +4,7 @@ struct WinView: View {
     let winnerName: String
     @EnvironmentObject var appState: AppState
     private var isLocalWin: Bool { winnerName == appState.playerName }
+    @State private var didAppear = false
 
     var body: some View {
         ZStack {
@@ -32,6 +33,8 @@ struct WinView: View {
                 }
             }.padding(48)
         }
+        .sensoryFeedback(.impact(.heavy), trigger: didAppear)
+        .onAppear { if isLocalWin { didAppear = true } }
     }
 
     private func winningTileCard(_ square: BingoSquare) -> some View {
@@ -46,8 +49,8 @@ struct WinView: View {
             Group {
                 if let img = AmericanaTheme.tileImage(for: square) {
                     img.resizable().scaledToFit()
-                } else {
-                    Text(square.emoji).font(.title)
+                } else if let emoji = square.emoji {
+                    Text(emoji).font(.title)
                 }
             }
             .padding(6)
