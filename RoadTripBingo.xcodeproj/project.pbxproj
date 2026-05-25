@@ -71,6 +71,7 @@
 		3DE42D22EACE40998A5D0027 /* pack-mountains.json in Resources */ = {isa = PBXBuildFile; fileRef = F7435F2C02764EBFBC989AD8 /* pack-mountains.json */; };
 		2194A8C806B94EFB8924FB62 /* pack-beach-coast.json in Resources */ = {isa = PBXBuildFile; fileRef = 157DCF28288D46F4A6E595EC /* pack-beach-coast.json */; };
 		D6A274CFF01243079B46F993 /* pack-desert-southwest.json in Resources */ = {isa = PBXBuildFile; fileRef = FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */; };
+		BB059CE4617C4E16B9757E14 /* TilePacksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868DF6E1D0F948B889A024AF /* TilePacksView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -158,6 +159,7 @@
 		F7435F2C02764EBFBC989AD8 /* pack-mountains.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-mountains.json; sourceTree = "<group>"; };
 		157DCF28288D46F4A6E595EC /* pack-beach-coast.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-beach-coast.json; sourceTree = "<group>"; };
 		FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-desert-southwest.json; sourceTree = "<group>"; };
+		868DF6E1D0F948B889A024AF /* TilePacksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilePacksView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -206,6 +208,7 @@
 				65324DDE498F4FCB8CBA56ED /* ModifierRevealView.swift */,
 				B327C9A89D39424AB98C435B /* ModifierBadgeView.swift */,
 				00DC7407896F4B0896AF1ECC /* DailyChallengesView.swift */,
+				868DF6E1D0F948B889A024AF /* TilePacksView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -467,6 +470,7 @@
 				F24F2245A055491E96A2C37E /* DailyChallengesView.swift in Sources */,
 				205502691C6A41D3A44F0670 /* TilePack.swift in Sources */,
 				4DB4F5482E6347A0B875CDAF /* PackManager.swift in Sources */,
+				BB059CE4617C4E16B9757E14 /* TilePacksView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
