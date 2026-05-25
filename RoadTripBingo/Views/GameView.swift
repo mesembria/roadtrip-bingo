@@ -8,6 +8,8 @@ struct GameView: View {
     @State private var toastStyle: ToastStyle = .earn
     @State private var showModifierReveal = false
     @State private var showChallenges = false
+    @State private var powerUpTrigger: UUID? = nil
+    @State private var threatCount: Int = 0
 
     var body: some View {
         ZStack {
@@ -36,6 +38,7 @@ struct GameView: View {
                     opponentMarked: appState.opponentMarked,
                     onSelect: { targetPlayer, targetIndex in
                         appState.activatePowerUp(powerUp, targetPlayer: targetPlayer, targetIndex: targetIndex)
+                        powerUpTrigger = UUID()
                         withAnimation(.easeInOut(duration: 0.2)) { targetingPowerUp = nil }
                     },
                     onCancel: { withAnimation(.easeInOut(duration: 0.2)) { targetingPowerUp = nil } }
@@ -85,6 +88,7 @@ struct GameView: View {
         .onChange(of: appState.pendingToast) { toast in
             guard let toast else { return }
             toastStyle = toast.style
+            if toast.style == .threat { threatCount += 1 }
             withAnimation(.spring()) { toastMessage = toast.message }
             activeToastID = toast.id
             appState.pendingToast = nil
@@ -94,6 +98,9 @@ struct GameView: View {
                 withAnimation { toastMessage = nil }
             }
         }
+        .sensoryFeedback(.success, trigger: appState.completedLine != nil)
+        .sensoryFeedback(.impact(.medium), trigger: powerUpTrigger)
+        .sensoryFeedback(.warning, trigger: threatCount)
     }
 
     private func portraitLayout(board: BingoBoard) -> some View {
@@ -242,6 +249,7 @@ struct GameView: View {
             activeModifier: appState.activeModifier,
             onActivateRandom: { powerUp in
                 appState.activatePowerUp(powerUp)
+                powerUpTrigger = UUID()
             },
             onRequestTargeted: { powerUp in
                 withAnimation(.easeInOut(duration: 0.2)) { targetingPowerUp = powerUp }
