@@ -40,3 +40,60 @@ def test_build_prompt_uses_override():
     finally:
         tm.OVERRIDES.clear()
         tm.OVERRIDES.update(original)
+
+
+import base64, json, tempfile
+from unittest.mock import patch
+
+
+def test_load_tiles(tmp_path):
+    data = [{"id": "AAA", "text": "Cow", "emoji": "🐄",
+             "category": "nature", "rarity": "veryCommon"}]
+    squares = tmp_path / "squares.json"
+    squares.write_text(json.dumps(data))
+    with patch.object(tm, "SQUARES_JSON", squares):
+        result = tm.load_tiles()
+    assert len(result) == 1
+    assert result[0]["text"] == "Cow"
+
+
+def test_save_tiles_round_trips(tmp_path):
+    squares = tmp_path / "squares.json"
+    data = [{"id": "BBB", "text": "Horse", "emoji": "🐎",
+             "category": "nature", "rarity": "common"}]
+    with patch.object(tm, "SQUARES_JSON", squares):
+        tm.save_tiles(data)
+        loaded = tm.load_tiles()
+    assert loaded[0]["id"] == "BBB"
+    assert loaded[0]["rarity"] == "common"
+
+
+def test_save_tiles_preserves_insertion_order(tmp_path):
+    squares = tmp_path / "squares.json"
+    data = [
+        {"id": "1", "text": "Zebra",  "emoji": "🦓", "category": "nature", "rarity": "rare"},
+        {"id": "2", "text": "Antler", "emoji": "🦌", "category": "nature", "rarity": "common"},
+    ]
+    with patch.object(tm, "SQUARES_JSON", squares):
+        tm.save_tiles(data)
+        loaded = tm.load_tiles()
+    assert loaded[0]["id"] == "1"   # order preserved
+    assert loaded[1]["id"] == "2"
+
+
+def test_image_path(tmp_path):
+    with patch.object(tm, "TILE_IMAGES", tmp_path):
+        p = tm.image_path("MY-UUID")
+    assert p == tmp_path / "MY-UUID.png"
+
+
+def test_save_image(tmp_path):
+    # 1×1 transparent PNG, base64-encoded
+    png_b64 = (
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk"
+        "+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+    )
+    with patch.object(tm, "TILE_IMAGES", tmp_path):
+        tm.save_image("TEST-ID", png_b64)
+        saved = (tmp_path / "TEST-ID.png").read_bytes()
+    assert saved == base64.b64decode(png_b64)

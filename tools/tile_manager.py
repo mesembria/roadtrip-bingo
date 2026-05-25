@@ -66,3 +66,29 @@ def build_prompt(text: str, category: str) -> str:
     subject_cap = subject_clean[0].upper() + subject_clean[1:]
     parts = [f"{subject_cap}.", hint, STYLE]
     return " ".join(p for p in parts if p).strip()
+
+
+# ── File I/O ─────────────────────────────────────────────────────────────────
+
+def load_tiles() -> list[dict]:
+    """Load all tiles from squares.json."""
+    with open(SQUARES_JSON, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_tiles(tiles: list[dict]) -> None:
+    """Write tiles back to squares.json, preserving insertion order."""
+    with open(SQUARES_JSON, "w", encoding="utf-8") as f:
+        json.dump(tiles, f, indent=2, sort_keys=True, ensure_ascii=False)
+        f.write("\n")
+
+
+def image_path(tile_id: str) -> Path:
+    """Return the Path for a tile's PNG image."""
+    return TILE_IMAGES / f"{tile_id}.png"
+
+
+def save_image(tile_id: str, image_b64: str) -> None:
+    """Decode base64 and write the image to TileImages/."""
+    data = base64.b64decode(image_b64)
+    image_path(tile_id).write_bytes(data)
