@@ -29,15 +29,15 @@ struct RecentMarkCard: View {
     private var landscapePill: some View {
         HStack(spacing: 0) {
             tileImage
-                .frame(width: 44, height: 44)
+                .frame(width: 50, height: 50)
                 .clipped()
             VStack(alignment: .leading, spacing: 2) {
                 Text(mark.opponentName.uppercased())
-                    .font(AmericanaTheme.barlowSemiBold(9))
+                    .font(AmericanaTheme.barlowSemiBold(12))
                     .foregroundColor(AmericanaTheme.greenLight)
                     .lineLimit(1)
                 Text(mark.square.text)
-                    .font(AmericanaTheme.barlowBold(10))
+                    .font(AmericanaTheme.barlowBold(14))
                     .foregroundColor(AmericanaTheme.ink)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
