@@ -42,7 +42,7 @@ def test_build_prompt_uses_override():
         tm.OVERRIDES.update(original)
 
 
-import base64, json, tempfile
+import base64, json
 from unittest.mock import patch
 
 

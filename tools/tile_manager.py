@@ -77,7 +77,11 @@ def load_tiles() -> list[dict]:
 
 
 def save_tiles(tiles: list[dict]) -> None:
-    """Write tiles back to squares.json, preserving insertion order."""
+    """Write tiles back to squares.json.
+
+    Tile array order is preserved as-is. Keys within each tile object
+    are sorted alphabetically for stable diffs.
+    """
     with open(SQUARES_JSON, "w", encoding="utf-8") as f:
         json.dump(tiles, f, indent=2, sort_keys=True, ensure_ascii=False)
         f.write("\n")
@@ -91,4 +95,6 @@ def image_path(tile_id: str) -> Path:
 def save_image(tile_id: str, image_b64: str) -> None:
     """Decode base64 and write the image to TileImages/."""
     data = base64.b64decode(image_b64)
-    image_path(tile_id).write_bytes(data)
+    p = image_path(tile_id)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_bytes(data)
