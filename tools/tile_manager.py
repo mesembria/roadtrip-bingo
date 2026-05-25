@@ -174,19 +174,17 @@ body::before {
 .cat-select { background: var(--bg); border: 1px solid var(--border2); border-radius: 4px; padding: 6px 8px; font-family: var(--font-ui); font-size: 13px; color: var(--text2); outline: none; cursor: pointer; }
 .btn-add { background: var(--amber); border: none; border-radius: 4px; padding: 6px 12px; font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: var(--bg); cursor: pointer; white-space: nowrap; letter-spacing: 0.3px; transition: opacity 0.15s; }
 .btn-add:hover { opacity: 0.85; }
-.col-head { flex-shrink: 0; display: grid; grid-template-columns: 44px 1fr 38px 96px 82px; padding: 5px 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.col-head { flex-shrink: 0; display: grid; grid-template-columns: 44px 1fr 96px 82px; padding: 5px 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
 .col-head span { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); font-weight: 600; }
 .table-body { flex: 1; overflow-y: auto; }
 .table-body::-webkit-scrollbar { width: 4px; }
 .table-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-.row { display: grid; grid-template-columns: 44px 1fr 38px 96px 82px; padding: 6px 12px; align-items: center; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; border-left: 2px solid transparent; }
+.row { display: grid; grid-template-columns: 44px 1fr 96px 82px; padding: 6px 12px; align-items: center; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; border-left: 2px solid transparent; }
 .row:hover { background: var(--surface2); }
 .row.selected { background: var(--surface2); border-left-color: var(--amber); }
 .row-thumb { width: 30px; height: 30px; background: var(--surface3); border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 .row-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.row-emoji-fb { font-size: 17px; }
 .row-name { font-size: 13px; color: var(--text); padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
-.row-emoji { font-size: 16px; }
 .row-cat { font-size: 11px; color: var(--text2); font-weight: 500; }
 .rarity { font-size: 10px; font-family: var(--font-mono); font-weight: 500; padding: 2px 6px; border-radius: 3px; width: fit-content; }
 .rarity.vc  { color: #4A9060; background: rgba(74,144,96,0.12); }
@@ -245,7 +243,6 @@ body::before {
 .field-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text3); font-weight: 600; }
 .field-input { background: var(--surface2); border: 1px solid var(--border2); border-radius: 5px; padding: 8px 11px; font-family: var(--font-ui); font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; width: 100%; }
 .field-input:focus { border-color: var(--amber-dim); }
-.field-emoji { width: 64px; font-size: 20px; text-align: center; }
 .fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .panel-footer { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid var(--border); background: var(--surface); }
 .btn-delete { background: transparent; border: 1px solid var(--red-dim); border-radius: 4px; padding: 7px 14px; font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--red); cursor: pointer; letter-spacing: 0.3px; transition: all 0.15s; }
@@ -277,7 +274,7 @@ body::before {
         <button class="btn-add" onclick="startAddMode()">+ Add Tile</button>
       </div>
       <div class="col-head">
-        <span></span><span>Name</span><span></span><span>Category</span><span>Rarity</span>
+        <span></span><span>Name</span><span>Category</span><span>Rarity</span>
       </div>
       <div class="table-body" id="table-body"></div>
       <div class="table-footer" id="table-footer">Loading…</div>
@@ -335,7 +332,6 @@ body::before {
             <div class="section-label">Metadata</div>
             <div style="display:flex;flex-direction:column;gap:12px">
               <div class="field"><label class="field-label">Name</label><input class="field-input" id="field-name" type="text"></div>
-              <div class="field"><label class="field-label">Emoji</label><input class="field-input field-emoji" id="field-emoji" type="text"></div>
               <div class="fields-row">
                 <div class="field"><label class="field-label">Category</label><select class="field-input" id="field-category" style="cursor:pointer"></select></div>
                 <div class="field"><label class="field-label">Rarity</label><select class="field-input" id="field-rarity" style="cursor:pointer"></select></div>
@@ -429,7 +425,6 @@ function renderTable() {
     return '<div class="row' + sel + '" onclick="selectTile(\\'' + t.id + '\\')">' +
       '<div class="row-thumb"><img src="/api/image/' + t.id + '" alt="" onerror="this.style.display=\\'none\\'"></div>' +
       '<div class="row-name">' + esc(t.text) + '</div>' +
-      '<div class="row-emoji">' + esc(t.emoji) + '</div>' +
       '<div class="row-cat">' + esc(t.category) + '</div>' +
       '<div class="rarity ' + (RARITY_CLS[t.rarity] || '') + '">' + esc(t.rarity) + '</div>' +
       '</div>';
@@ -458,9 +453,8 @@ function selectTile(id) {
 function showPanel(tile) {
   document.getElementById('panel-title').textContent = tile.text;
   document.getElementById('panel-id').textContent = tile.id.substring(0, 8) + '…';
-  setCurrentImage('/api/image/' + tile.id + '?t=' + Date.now(), tile.emoji);
+  setCurrentImage('/api/image/' + tile.id + '?t=' + Date.now());
   document.getElementById('field-name').value = tile.text;
-  document.getElementById('field-emoji').value = tile.emoji;
   document.getElementById('field-category').value = tile.category;
   document.getElementById('field-rarity').value = tile.rarity;
   document.getElementById('btn-delete').style.display = '';
@@ -469,12 +463,11 @@ function showPanel(tile) {
   document.getElementById('panel-content').style.display = 'flex';
 }
 
-function setCurrentImage(src, fallbackEmoji) {
+function setCurrentImage(src) {
   const img = document.getElementById('image-current');
   const ph  = document.getElementById('img-placeholder');
   img.src = src;
   img.style.display = 'block';
-  ph.textContent = fallbackEmoji;
   ph.style.display = 'none';
   img.onerror = () => { img.style.display = 'none'; ph.style.display = ''; };
 }
@@ -489,10 +482,8 @@ function startAddMode() {
   document.getElementById('panel-title').textContent = 'New Tile';
   document.getElementById('panel-id').textContent = '(new)';
   document.getElementById('image-current').style.display = 'none';
-  document.getElementById('img-placeholder').textContent = '🎴';
   document.getElementById('img-placeholder').style.display = '';
   document.getElementById('field-name').value = '';
-  document.getElementById('field-emoji').value = '';
   document.getElementById('field-category').value = CATEGORIES[0] || '';
   document.getElementById('field-rarity').value = RARITIES[0] || 'veryCommon';
   document.getElementById('btn-delete').style.display = 'none';
@@ -565,7 +556,7 @@ async function approveImage() {
     // Image is now on disk; clear pending so stale data can't leak into future flows
     pendingImageB64 = null;
   }
-  setCurrentImage('data:image/png;base64,' + b64, document.getElementById('field-emoji').value);
+  setCurrentImage('data:image/png;base64,' + b64);
   document.getElementById('gen-result').classList.remove('visible');
   document.getElementById('btn-generate').style.display = '';
 }
@@ -579,13 +570,12 @@ function discardImage() {
 // ── Save ──────────────────────────────────────────────────────────────────────────────────
 async function saveTile() {
   const name     = document.getElementById('field-name').value.trim();
-  const emoji    = document.getElementById('field-emoji').value.trim();
   const category = document.getElementById('field-category').value;
   const rarity   = document.getElementById('field-rarity').value;
-  if (!name || !emoji) { alert('Name and emoji are required'); return; }
+  if (!name) { alert('Name is required'); return; }
 
   if (isAddMode) {
-    const body = {text: name, emoji, category, rarity};
+    const body = {text: name, category, rarity};
     if (pendingImageB64) body.image_b64 = pendingImageB64;
     const r = await fetch('/api/tiles', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -600,7 +590,7 @@ async function saveTile() {
   } else {
     const r = await fetch('/api/tiles/' + selectedId, {
       method: 'PUT', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({text: name, emoji, category, rarity}),
+      body: JSON.stringify({text: name, category, rarity}),
     });
     if (!r.ok) { alert('Failed to update tile'); return; }
     const updated = await r.json();
@@ -782,7 +772,7 @@ class TileManagerHandler(BaseHTTPRequestHandler):
 
     def _handle_add_tile(self):
         body = self.read_json_body()
-        required = {"text", "emoji", "category", "rarity"}
+        required = {"text", "category", "rarity"}
         missing = required - body.keys()
         if missing:
             self.send_error_json(400, f"Missing fields: {', '.join(sorted(missing))}")
@@ -791,7 +781,6 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         tile = {
             "id":       new_id,
             "text":     body["text"],
-            "emoji":    body["emoji"],
             "category": body["category"],
             "rarity":   body["rarity"],
         }
@@ -807,7 +796,7 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         tiles = load_tiles()
         for tile in tiles:
             if tile["id"] == tile_id:
-                allowed = {"text", "emoji", "category", "rarity"}
+                allowed = {"text", "category", "rarity"}
                 tile.update({k: v for k, v in body.items() if k in allowed})
                 save_tiles(tiles)
                 self.send_json(tile)
