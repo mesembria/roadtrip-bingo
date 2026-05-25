@@ -81,7 +81,7 @@ Add two thin `@State` counters for events that don't map to a single boolean fli
 **`onChange` additions:**
 
 ```swift
-.onChange(of: appState.pendingToast) { toast in
+.onChange(of: appState.pendingToast) { _, toast in
     if toast?.style == .threat { threatCount += 1 }
 }
 ```
