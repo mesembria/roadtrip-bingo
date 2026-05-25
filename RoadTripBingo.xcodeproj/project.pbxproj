@@ -61,6 +61,8 @@
 		F24F2245A055491E96A2C37E /* DailyChallengesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DC7407896F4B0896AF1ECC /* DailyChallengesView.swift */; };
 		979DEE133AB14817956EF661 /* DailyChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639BF68A74E44DCF82DD0F46 /* DailyChallenge.swift */; };
 		2E44512547BF4FDE95754775 /* DailyChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C665004862594F8EBE583F25 /* DailyChallengeTests.swift */; };
+		205502691C6A41D3A44F0670 /* TilePack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60753EFF5A7D438EB6070F52 /* TilePack.swift */; };
+		75379BAEA2154490AD288F40 /* TilePackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD30B338815432DBCC24E19 /* TilePackTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,6 +140,8 @@
 		00DC7407896F4B0896AF1ECC /* DailyChallengesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallengesView.swift; sourceTree = "<group>"; };
 		639BF68A74E44DCF82DD0F46 /* DailyChallenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallenge.swift; sourceTree = "<group>"; };
 		C665004862594F8EBE583F25 /* DailyChallengeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallengeTests.swift; sourceTree = "<group>"; };
+		60753EFF5A7D438EB6070F52 /* TilePack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilePack.swift; sourceTree = "<group>"; };
+		5AD30B338815432DBCC24E19 /* TilePackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilePackTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -198,6 +202,7 @@
 				EA3B46A1ED1B1B26F8D1865E /* SquarePoolTests.swift */,
 				48B20B738F1B24C9FB357A58 /* ToastTests.swift */,
 				C665004862594F8EBE583F25 /* DailyChallengeTests.swift */,
+				5AD30B338815432DBCC24E19 /* TilePackTests.swift */,
 			);
 			path = RoadTripBingoTests;
 			sourceTree = "<group>";
@@ -235,6 +240,7 @@
 				639BF68A74E44DCF82DD0F46 /* DailyChallenge.swift */,
 				0D9693B97F5B0E3B8D989A90 /* ToastEvent.swift */,
 				3C00CCDD8E1441658DABF1DF /* RoundModifier.swift */,
+				60753EFF5A7D438EB6070F52 /* TilePack.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -384,6 +390,7 @@
 				D9E9995D90F0564E151AE267 /* ToastTests.swift in Sources */,
 				659ABF80FD9E4F79963A569D /* RoundModifierTests.swift in Sources */,
 				2E44512547BF4FDE95754775 /* DailyChallengeTests.swift in Sources */,
+				75379BAEA2154490AD288F40 /* TilePackTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,6 +434,7 @@
 				D467E96760BF4989B807551B /* ModifierRevealView.swift in Sources */,
 				4CCB779528CD4724BCB60FF7 /* ModifierBadgeView.swift in Sources */,
 				F24F2245A055491E96A2C37E /* DailyChallengesView.swift in Sources */,
+				205502691C6A41D3A44F0670 /* TilePack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
