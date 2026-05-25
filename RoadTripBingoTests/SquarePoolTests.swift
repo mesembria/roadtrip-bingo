@@ -169,5 +169,11 @@ final class SquarePoolTests: XCTestCase {
                                            from: pool)
         XCTAssertEqual(boards["A"]?.count, 25, "Handicapped board must still have 25 squares")
         XCTAssertEqual(boards["A"]?[12].id, BingoSquare.freeSquareID, "FREE must be at index 12")
+        // Verify handicap actually shifts the distribution: level-3 navigator should have
+        // fewer rare+veryRare tiles than an un-handicapped navigator (which gets at least 8).
+        let nonFree = boards["A"]!.filter { $0.id != BingoSquare.freeSquareID }
+        let hardCount = nonFree.filter { $0.rarity == .rare || $0.rarity == .veryRare }.count
+        XCTAssertLessThanOrEqual(hardCount, 7,
+            "Level-3 handicap on Navigator should reduce rare+veryRare below the un-handicapped minimum of 8")
     }
 }

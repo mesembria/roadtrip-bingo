@@ -141,10 +141,6 @@ enum SquarePool {
         return drawn
     }
 
-    private static func targetCounts(for difficulty: BoardDifficulty, total: Int = 24) -> [SquareRarity: Int] {
-        targetCounts(weights: difficulty.weights, total: total)
-    }
-
     private static func targetCounts(weights: [SquareRarity: Double], total: Int = 24) -> [SquareRarity: Int] {
         let tiers = SquareRarity.allCases
         var counts: [SquareRarity: Int] = [:]
