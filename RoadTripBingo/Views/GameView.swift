@@ -67,6 +67,11 @@ struct GameView: View {
             )
             .presentationDetents([.medium, .large])
         }
+        .onAppear {
+            if appState.activeModifier != nil {
+                showModifierReveal = true
+            }
+        }
         .onChange(of: appState.screen) { _ in
             if appState.screen == .game && appState.activeModifier != nil {
                 showModifierReveal = true
@@ -151,7 +156,7 @@ struct GameView: View {
                 Spacer()
                 bingoButton
             }
-            .frame(width: 130)
+            .frame(width: 180)
 
             // Center: main grid
             // BingoGridView = 44pt header + square grid area, so constrain width to
@@ -234,6 +239,7 @@ struct GameView: View {
         PowerUpStripView(
             tokenBalance: appState.tokenBalance,
             isVertical: isVertical,
+            activeModifier: appState.activeModifier,
             onActivateRandom: { powerUp in
                 appState.activatePowerUp(powerUp)
             },
