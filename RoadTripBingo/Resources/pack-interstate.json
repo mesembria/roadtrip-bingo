@@ -1,0 +1,20 @@
+{
+  "id": "interstate",
+  "name": "Interstate",
+  "description": "Highways, rest stops, weigh stations, and the endless white line.",
+  "imageName": "pack-interstate",
+  "tiles": [],
+  "rarityOverrides": {
+    "95F10877-1BC5-4F38-A6B1-5C8469946794": "veryCommon",
+    "B15573AB-373C-4093-957F-87EAAD1FF91D": "veryCommon",
+    "69822FBE-A091-40B0-BE4A-9BE98A51293A": "veryCommon",
+    "01B2195F-8A68-431D-BE3F-19E2C2457C03": "veryCommon",
+    "96794F0E-2FF3-49BB-A03A-FE760A8B728A": "common",
+    "0ED19DD6-E519-44AD-A531-66A65D01C3F6": "veryCommon",
+    "8031441A-0A40-43A1-9A1D-908CF7CD08BE": "veryCommon",
+    "BDF48176-EA53-4AE5-9BBD-57A4C1BF35AA": "veryCommon",
+    "B2DEEFBA-A491-4019-B51D-82C346B9B175": "common",
+    "6452E9FD-291D-4DDE-8CA4-6FFDEB73A24F": "common"
+  },
+  "excludedTileIDs": []
+}

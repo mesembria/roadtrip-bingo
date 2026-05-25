@@ -1,0 +1,26 @@
+{
+  "id": "city",
+  "name": "City",
+  "description": "Traffic, towers, crosswalks, and the organized chaos of the American city.",
+  "imageName": "pack-city",
+  "tiles": [],
+  "rarityOverrides": {
+    "170DDCD4-5B1C-4A27-AF08-3EFE0F723A94": "veryCommon",
+    "537CBB6C-15E0-49AE-A2C9-7F4E5D0804F2": "veryCommon",
+    "F50FE702-488F-44D8-9173-D2BFDA251793": "common",
+    "686F9B09-BB0F-4890-A32D-1EAE02656756": "common",
+    "6296D382-C8DD-406B-92FA-D53A490DCCB2": "veryCommon",
+    "D598618B-F39A-4D8D-B456-58F75264ECE9": "common",
+    "A4817B0E-0016-49C9-B685-4A1B0F29EA81": "veryCommon",
+    "3DE3F367-3105-4F8B-A89D-2F134E21D01D": "veryCommon"
+  },
+  "excludedTileIDs": [
+    "4A495FE0-B728-477D-8863-FD00E9140BB6",
+    "FA75C56E-321A-4958-9F9A-050CA316AB90",
+    "A14147C1-EDE5-4762-9302-0D4EEE5E9E2D",
+    "CB998D77-472F-4201-8025-9790FE1B3C82",
+    "725B6E6E-33F5-413E-831B-1B0A79B00A99",
+    "1532CC43-DDA7-400A-BFD0-0ADD8874D565",
+    "3055B218-5E2B-4574-A83B-9EDD80E79E8F"
+  ]
+}

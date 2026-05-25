@@ -65,6 +65,12 @@
 		75379BAEA2154490AD288F40 /* TilePackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD30B338815432DBCC24E19 /* TilePackTests.swift */; };
 		4DB4F5482E6347A0B875CDAF /* PackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCA9C6FC5DE42A59FA8A410 /* PackManager.swift */; };
 		17DC606F455147F0A20C4EB7 /* PackManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8B3C528DD44CE5ACDFAE27 /* PackManagerTests.swift */; };
+		D7CCEEB3A3DD4F1DAAA95463 /* pack-interstate.json in Resources */ = {isa = PBXBuildFile; fileRef = 7D4DE437C1344A9584767C05 /* pack-interstate.json */; };
+		EB3A534A16CB47A4BEE7C8C6 /* pack-city.json in Resources */ = {isa = PBXBuildFile; fileRef = 476113A6FA3B40BBAA64E3B6 /* pack-city.json */; };
+		86D4F433F6874B2EBCEE3526 /* pack-farm-country.json in Resources */ = {isa = PBXBuildFile; fileRef = F3FDE246F3C34739AC3AD50B /* pack-farm-country.json */; };
+		3DE42D22EACE40998A5D0027 /* pack-mountains.json in Resources */ = {isa = PBXBuildFile; fileRef = F7435F2C02764EBFBC989AD8 /* pack-mountains.json */; };
+		2194A8C806B94EFB8924FB62 /* pack-beach-coast.json in Resources */ = {isa = PBXBuildFile; fileRef = 157DCF28288D46F4A6E595EC /* pack-beach-coast.json */; };
+		D6A274CFF01243079B46F993 /* pack-desert-southwest.json in Resources */ = {isa = PBXBuildFile; fileRef = FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -146,6 +152,12 @@
 		5AD30B338815432DBCC24E19 /* TilePackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilePackTests.swift; sourceTree = "<group>"; };
 		5CCA9C6FC5DE42A59FA8A410 /* PackManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackManager.swift; sourceTree = "<group>"; };
 		ED8B3C528DD44CE5ACDFAE27 /* PackManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackManagerTests.swift; sourceTree = "<group>"; };
+		7D4DE437C1344A9584767C05 /* pack-interstate.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-interstate.json; sourceTree = "<group>"; };
+		476113A6FA3B40BBAA64E3B6 /* pack-city.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-city.json; sourceTree = "<group>"; };
+		F3FDE246F3C34739AC3AD50B /* pack-farm-country.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-farm-country.json; sourceTree = "<group>"; };
+		F7435F2C02764EBFBC989AD8 /* pack-mountains.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-mountains.json; sourceTree = "<group>"; };
+		157DCF28288D46F4A6E595EC /* pack-beach-coast.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-beach-coast.json; sourceTree = "<group>"; };
+		FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-desert-southwest.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -160,6 +172,12 @@
 				196998CDAACC43F6B8E66AA9 /* Rye-Regular.ttf */,
 				4CE2A25DC5F54E12AB23447F /* BarlowCondensed-SemiBold.ttf */,
 				860B63B11B3E47CD82263BF8 /* BarlowCondensed-Bold.ttf */,
+				7D4DE437C1344A9584767C05 /* pack-interstate.json */,
+				476113A6FA3B40BBAA64E3B6 /* pack-city.json */,
+				F3FDE246F3C34739AC3AD50B /* pack-farm-country.json */,
+				F7435F2C02764EBFBC989AD8 /* pack-mountains.json */,
+				157DCF28288D46F4A6E595EC /* pack-beach-coast.json */,
+				FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -376,6 +394,12 @@
 				F1C04E8A88ED473FA300B30D /* Rye-Regular.ttf in Resources */,
 				F98F0D168A9C45DBACD68A5A /* BarlowCondensed-SemiBold.ttf in Resources */,
 				316237F3D87E4AAABF04A18F /* BarlowCondensed-Bold.ttf in Resources */,
+				D7CCEEB3A3DD4F1DAAA95463 /* pack-interstate.json in Resources */,
+				EB3A534A16CB47A4BEE7C8C6 /* pack-city.json in Resources */,
+				86D4F433F6874B2EBCEE3526 /* pack-farm-country.json in Resources */,
+				3DE42D22EACE40998A5D0027 /* pack-mountains.json in Resources */,
+				2194A8C806B94EFB8924FB62 /* pack-beach-coast.json in Resources */,
+				D6A274CFF01243079B46F993 /* pack-desert-southwest.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

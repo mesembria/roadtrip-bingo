@@ -1,0 +1,40 @@
+{
+  "id": "mountains",
+  "name": "Mountains",
+  "description": "Snow caps, switchbacks, pine forests, and the thin air of elevation.",
+  "imageName": "pack-mountains",
+  "tiles": [
+    {
+      "id": "F1A00001-0000-0000-0000-000000000010",
+      "text": "Switchback Road",
+      "emoji": "🛣️",
+      "category": "landmarks",
+      "rarity": "common"
+    },
+    {
+      "id": "F1A00001-0000-0000-0000-000000000011",
+      "text": "Mountain Stream",
+      "emoji": "💧",
+      "category": "nature",
+      "rarity": "common"
+    }
+  ],
+  "rarityOverrides": {
+    "1CA02B04-B431-467D-A705-D64A1CA3D9F7": "veryCommon",
+    "3123E8B9-FD3E-4DC4-A370-4E1E13F95F40": "veryCommon",
+    "60F03332-B413-4CBF-83C8-A65B266C65D0": "common",
+    "6452E9FD-291D-4DDE-8CA4-6FFDEB73A24F": "common",
+    "87D08710-197C-4864-BE1A-C03FA82435E6": "common",
+    "05150C84-9A42-4F02-9FA8-685C4881A307": "rare",
+    "75077334-D3F1-40CA-B3C2-E8481BE4EAB6": "uncommon",
+    "321FA7B9-C0A4-42FD-8AB8-F0A3CB768041": "common",
+    "B492D74A-9B0D-4149-AD42-C6C720808A22": "common",
+    "80067278-3DC2-425E-BD95-DCD19E535633": "common"
+  },
+  "excludedTileIDs": [
+    "3DE3F367-3105-4F8B-A89D-2F134E21D01D",
+    "1532CC43-DDA7-400A-BFD0-0ADD8874D565",
+    "3055B218-5E2B-4574-A83B-9EDD80E79E8F",
+    "A14147C1-EDE5-4762-9302-0D4EEE5E9E2D"
+  ]
+}
