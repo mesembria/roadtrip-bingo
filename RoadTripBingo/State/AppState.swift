@@ -29,6 +29,15 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     @Published var playerDifficulty: BoardDifficulty = .backseat
     @Published var playerDifficulties: [String: BoardDifficulty] = [:]
 
+    // MARK: - Tile packs (host only — persisted and broadcast at game start)
+    @Published var activePackIDs: [String] = {
+        UserDefaults.standard.stringArray(forKey: "activePackIDs") ?? []
+    }() {
+        didSet {
+            UserDefaults.standard.set(activePackIDs, forKey: "activePackIDs")
+        }
+    }
+
     // MARK: - Game
     @Published var localBoard: BingoBoard?
     @Published var completedLine: [Int]?
@@ -138,6 +147,14 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         playerDifficulty = difficulty
         if !isHost {
             multipeerSession?.send(.difficultyChosen(byName: playerName, difficulty: difficulty))
+        }
+    }
+
+    func togglePack(_ packID: String) {
+        if activePackIDs.contains(packID) {
+            activePackIDs.removeAll { $0 == packID }
+        } else {
+            activePackIDs.append(packID)
         }
     }
 
@@ -258,7 +275,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     private func dealAndLaunchRound(sendBoardsMessage: @escaping ([String: [BingoSquare]]) -> Void) {
         rollDailyChallengesIfNeeded()
-        let pool = SquarePool.load()
+        let baseTiles = SquarePool.load()
+        let activePacks = PackManager.packs(forIDs: activePackIDs)
+        let pool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks)
         let allNames = [playerName] + connectedPlayerNames
         let players = allNames.map { name -> (name: String, difficulty: BoardDifficulty) in
             let diff = name == playerName ? playerDifficulty : (playerDifficulties[name] ?? .backseat)
