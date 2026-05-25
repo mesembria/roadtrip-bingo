@@ -1,1276 +1,1276 @@
 [
   {
-    "category" : "vehicles",
-    "emoji" : "🚛",
-    "id" : "95F10877-1BC5-4F38-A6B1-5C8469946794",
-    "rarity" : "veryCommon",
-    "text" : "Semi Truck"
+    "category": "vehicles",
+    "emoji": "🚛",
+    "id": "95F10877-1BC5-4F38-A6B1-5C8469946794",
+    "rarity": "veryCommon",
+    "text": "Semi Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚐",
-    "id" : "C06E05E6-15F9-4867-B8A5-47A82727CD13",
-    "rarity" : "uncommon",
-    "text" : "RV"
+    "category": "vehicles",
+    "emoji": "🚐",
+    "id": "C06E05E6-15F9-4867-B8A5-47A82727CD13",
+    "rarity": "uncommon",
+    "text": "RV"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🏍️",
-    "id" : "80067278-3DC2-425E-BD95-DCD19E535633",
-    "rarity" : "veryCommon",
-    "text" : "Motorcycle"
+    "category": "vehicles",
+    "emoji": "🏍️",
+    "id": "80067278-3DC2-425E-BD95-DCD19E535633",
+    "rarity": "veryCommon",
+    "text": "Motorcycle"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚌",
-    "id" : "537CBB6C-15E0-49AE-A2C9-7F4E5D0804F2",
-    "rarity" : "common",
-    "text" : "School Bus"
+    "category": "vehicles",
+    "emoji": "🚌",
+    "id": "537CBB6C-15E0-49AE-A2C9-7F4E5D0804F2",
+    "rarity": "common",
+    "text": "School Bus"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚜",
-    "id" : "4A495FE0-B728-477D-8863-FD00E9140BB6",
-    "rarity" : "uncommon",
-    "text" : "Tractor"
+    "category": "vehicles",
+    "emoji": "🚜",
+    "id": "4A495FE0-B728-477D-8863-FD00E9140BB6",
+    "rarity": "uncommon",
+    "text": "Tractor"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🛻",
-    "id" : "E044FC0C-DE73-4F07-9812-45FE6AA69E63",
-    "rarity" : "veryCommon",
-    "text" : "Pickup Truck"
+    "category": "vehicles",
+    "emoji": "🛻",
+    "id": "E044FC0C-DE73-4F07-9812-45FE6AA69E63",
+    "rarity": "veryCommon",
+    "text": "Pickup Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚔",
-    "id" : "170DDCD4-5B1C-4A27-AF08-3EFE0F723A94",
-    "rarity" : "common",
-    "text" : "Police Car"
+    "category": "vehicles",
+    "emoji": "🚔",
+    "id": "170DDCD4-5B1C-4A27-AF08-3EFE0F723A94",
+    "rarity": "common",
+    "text": "Police Car"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚒",
-    "id" : "686F9B09-BB0F-4890-A32D-1EAE02656756",
-    "rarity" : "uncommon",
-    "text" : "Fire Truck"
+    "category": "vehicles",
+    "emoji": "🚒",
+    "id": "686F9B09-BB0F-4890-A32D-1EAE02656756",
+    "rarity": "uncommon",
+    "text": "Fire Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚁",
-    "id" : "50A60D8C-A164-4EAF-82AF-45F1B67D504E",
-    "rarity" : "rare",
-    "text" : "Helicopter"
+    "category": "vehicles",
+    "emoji": "🚁",
+    "id": "50A60D8C-A164-4EAF-82AF-45F1B67D504E",
+    "rarity": "rare",
+    "text": "Helicopter"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "✈️",
-    "id" : "076A09D6-9AF6-4197-A891-7DEC99856119",
-    "rarity" : "rare",
-    "text" : "Small Plane"
+    "category": "vehicles",
+    "emoji": "✈️",
+    "id": "076A09D6-9AF6-4197-A891-7DEC99856119",
+    "rarity": "rare",
+    "text": "Small Plane"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🐴",
-    "id" : "2AB6C54B-DEAD-401A-BCE8-B5E4F50AE481",
-    "rarity" : "rare",
-    "text" : "Horse Trailer"
+    "category": "vehicles",
+    "emoji": "🐴",
+    "id": "2AB6C54B-DEAD-401A-BCE8-B5E4F50AE481",
+    "rarity": "rare",
+    "text": "Horse Trailer"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚚",
-    "id" : "B15573AB-373C-4093-957F-87EAAD1FF91D",
-    "rarity" : "common",
-    "text" : "Flatbed Truck"
+    "category": "vehicles",
+    "emoji": "🚚",
+    "id": "B15573AB-373C-4093-957F-87EAAD1FF91D",
+    "rarity": "common",
+    "text": "Flatbed Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚧",
-    "id" : "69822FBE-A091-40B0-BE4A-9BE98A51293A",
-    "rarity" : "common",
-    "text" : "Dump Truck"
+    "category": "vehicles",
+    "emoji": "🚧",
+    "id": "69822FBE-A091-40B0-BE4A-9BE98A51293A",
+    "rarity": "common",
+    "text": "Dump Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚑",
-    "id" : "F50FE702-488F-44D8-9173-D2BFDA251793",
-    "rarity" : "uncommon",
-    "text" : "Ambulance"
+    "category": "vehicles",
+    "emoji": "🚑",
+    "id": "F50FE702-488F-44D8-9173-D2BFDA251793",
+    "rarity": "uncommon",
+    "text": "Ambulance"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚗",
-    "id" : "D598618B-F39A-4D8D-B456-58F75264ECE9",
-    "rarity" : "uncommon",
-    "text" : "Convertible"
+    "category": "vehicles",
+    "emoji": "🚗",
+    "id": "D598618B-F39A-4D8D-B456-58F75264ECE9",
+    "rarity": "uncommon",
+    "text": "Convertible"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🌮",
-    "id" : "6296D382-C8DD-406B-92FA-D53A490DCCB2",
-    "rarity" : "uncommon",
-    "text" : "Food Truck"
+    "category": "vehicles",
+    "emoji": "🌮",
+    "id": "6296D382-C8DD-406B-92FA-D53A490DCCB2",
+    "rarity": "uncommon",
+    "text": "Food Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "📦",
-    "id" : "64A7AE8D-C86E-43AC-930D-EA6E2C8D5E87",
-    "rarity" : "uncommon",
-    "text" : "Mail Truck"
+    "category": "vehicles",
+    "emoji": "📦",
+    "id": "64A7AE8D-C86E-43AC-930D-EA6E2C8D5E87",
+    "rarity": "uncommon",
+    "text": "Mail Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "⛵",
-    "id" : "1A3BCA03-F619-49E8-893F-353E58496588",
-    "rarity" : "uncommon",
-    "text" : "Boat on Trailer"
+    "category": "vehicles",
+    "emoji": "⛵",
+    "id": "1A3BCA03-F619-49E8-893F-353E58496588",
+    "rarity": "uncommon",
+    "text": "Boat on Trailer"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🏗️",
-    "id" : "108DE4C2-9050-49B7-8BEA-66C963B12791",
-    "rarity" : "common",
-    "text" : "Construction Vehicle"
+    "category": "vehicles",
+    "emoji": "🏗️",
+    "id": "108DE4C2-9050-49B7-8BEA-66C963B12791",
+    "rarity": "common",
+    "text": "Construction Vehicle"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🔧",
-    "id" : "E2FA93F7-DC08-46ED-8FFC-39A4CC83A1D1",
-    "rarity" : "common",
-    "text" : "Tow Truck"
+    "category": "vehicles",
+    "emoji": "🔧",
+    "id": "E2FA93F7-DC08-46ED-8FFC-39A4CC83A1D1",
+    "rarity": "common",
+    "text": "Tow Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚌",
-    "id" : "F8E12E7A-4A96-4990-8719-90423D457EE6",
-    "rarity" : "rare",
-    "text" : "Double-Decker Bus"
+    "category": "vehicles",
+    "emoji": "🚌",
+    "id": "F8E12E7A-4A96-4990-8719-90423D457EE6",
+    "rarity": "rare",
+    "text": "Double-Decker Bus"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚐",
-    "id" : "50D51761-D440-4F2B-AC49-2EF57DAEC0A6",
-    "rarity" : "veryCommon",
-    "text" : "Minivan"
+    "category": "vehicles",
+    "emoji": "🚐",
+    "id": "50D51761-D440-4F2B-AC49-2EF57DAEC0A6",
+    "rarity": "veryCommon",
+    "text": "Minivan"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🏎️",
-    "id" : "F37B5C2A-C56A-491E-9507-1006FD1AEF5D",
-    "rarity" : "common",
-    "text" : "Sports Car"
+    "category": "vehicles",
+    "emoji": "🏎️",
+    "id": "F37B5C2A-C56A-491E-9507-1006FD1AEF5D",
+    "rarity": "common",
+    "text": "Sports Car"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🍦",
-    "id" : "F448BB29-CAB1-4CCD-8C42-D3DD6B76292C",
-    "rarity" : "rare",
-    "text" : "Ice Cream Truck"
+    "category": "vehicles",
+    "emoji": "🍦",
+    "id": "F448BB29-CAB1-4CCD-8C42-D3DD6B76292C",
+    "rarity": "rare",
+    "text": "Ice Cream Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🛢️",
-    "id" : "83F9D56A-0D16-4626-B2D0-E476EA773BA9",
-    "rarity" : "rare",
-    "text" : "Tank Truck"
+    "category": "vehicles",
+    "emoji": "🛢️",
+    "id": "83F9D56A-0D16-4626-B2D0-E476EA773BA9",
+    "rarity": "rare",
+    "text": "Tank Truck"
   },
   {
-    "category" : "nature",
-    "emoji" : "🐄",
-    "id" : "D9C027FB-CDD5-4E3D-9055-CB19C600136A",
-    "rarity" : "veryCommon",
-    "text" : "Cow"
+    "category": "nature",
+    "emoji": "🐄",
+    "id": "D9C027FB-CDD5-4E3D-9055-CB19C600136A",
+    "rarity": "veryCommon",
+    "text": "Cow"
   },
   {
-    "category" : "nature",
-    "emoji" : "🐎",
-    "id" : "6DA38EF8-1586-4C66-A554-EC4E49CBE8F1",
-    "rarity" : "common",
-    "text" : "Horse"
+    "category": "nature",
+    "emoji": "🐎",
+    "id": "6DA38EF8-1586-4C66-A554-EC4E49CBE8F1",
+    "rarity": "common",
+    "text": "Horse"
   },
   {
-    "category" : "nature",
-    "emoji" : "🦌",
-    "id" : "B23F16C4-D19A-4D6C-A61A-3D6A65E86DE1",
-    "rarity" : "uncommon",
-    "text" : "Deer"
+    "category": "nature",
+    "emoji": "🦌",
+    "id": "B23F16C4-D19A-4D6C-A61A-3D6A65E86DE1",
+    "rarity": "uncommon",
+    "text": "Deer"
   },
   {
-    "category" : "nature",
-    "emoji" : "🏚️",
-    "id" : "621A699E-7B91-46C8-AB53-BBFB2E21BE77",
-    "rarity" : "veryCommon",
-    "text" : "Red Barn"
+    "category": "nature",
+    "emoji": "🏚️",
+    "id": "621A699E-7B91-46C8-AB53-BBFB2E21BE77",
+    "rarity": "veryCommon",
+    "text": "Red Barn"
   },
   {
-    "category" : "nature",
-    "emoji" : "🌻",
-    "id" : "814EBF76-AD02-4C8D-9943-DC94892B3B1D",
-    "rarity" : "uncommon",
-    "text" : "Sunflower Field"
+    "category": "nature",
+    "emoji": "🌻",
+    "id": "814EBF76-AD02-4C8D-9943-DC94892B3B1D",
+    "rarity": "uncommon",
+    "text": "Sunflower Field"
   },
   {
-    "category" : "nature",
-    "emoji" : "🌾",
-    "id" : "FA75C56E-321A-4958-9F9A-050CA316AB90",
-    "rarity" : "veryCommon",
-    "text" : "Hay Bale"
+    "category": "nature",
+    "emoji": "🌾",
+    "id": "FA75C56E-321A-4958-9F9A-050CA316AB90",
+    "rarity": "veryCommon",
+    "text": "Hay Bale"
   },
   {
-    "category" : "nature",
-    "emoji" : "💨",
-    "id" : "0C4928A8-0141-4F56-B187-7D4F7F659AA7",
-    "rarity" : "uncommon",
-    "text" : "Wind Turbine"
+    "category": "nature",
+    "emoji": "💨",
+    "id": "0C4928A8-0141-4F56-B187-7D4F7F659AA7",
+    "rarity": "uncommon",
+    "text": "Wind Turbine"
   },
   {
-    "category" : "nature",
-    "emoji" : "🏔️",
-    "id" : "3123E8B9-FD3E-4DC4-A370-4E1E13F95F40",
-    "rarity" : "uncommon",
-    "text" : "Mountain"
+    "category": "nature",
+    "emoji": "🏔️",
+    "id": "3123E8B9-FD3E-4DC4-A370-4E1E13F95F40",
+    "rarity": "uncommon",
+    "text": "Mountain"
   },
   {
-    "category" : "nature",
-    "emoji" : "🌊",
-    "id" : "CE3A8924-5C4F-499C-BA33-322CCAF2593B",
-    "rarity" : "common",
-    "text" : "River"
+    "category": "nature",
+    "emoji": "🌊",
+    "id": "CE3A8924-5C4F-499C-BA33-322CCAF2593B",
+    "rarity": "common",
+    "text": "River"
   },
   {
-    "category" : "nature",
-    "emoji" : "🏞️",
-    "id" : "3EC043CB-6069-4CFB-9F1E-73068068A53C",
-    "rarity" : "common",
-    "text" : "Lake"
+    "category": "nature",
+    "emoji": "🏞️",
+    "id": "3EC043CB-6069-4CFB-9F1E-73068068A53C",
+    "rarity": "common",
+    "text": "Lake"
   },
   {
-    "category" : "nature",
-    "emoji" : "🌈",
-    "id" : "5700EA4F-7F21-45B2-8E93-40F7A151A255",
-    "rarity" : "rare",
-    "text" : "Rainbow"
+    "category": "nature",
+    "emoji": "🌈",
+    "id": "5700EA4F-7F21-45B2-8E93-40F7A151A255",
+    "rarity": "rare",
+    "text": "Rainbow"
   },
   {
-    "category" : "nature",
-    "emoji" : "🌈",
-    "id" : "1078E2A1-D30B-4E9A-AE32-894D0C9CA56F",
-    "rarity" : "veryRare",
-    "text" : "Double Rainbow"
+    "category": "nature",
+    "emoji": "🌈",
+    "id": "1078E2A1-D30B-4E9A-AE32-894D0C9CA56F",
+    "rarity": "veryRare",
+    "text": "Double Rainbow"
   },
   {
-    "category" : "nature",
-    "emoji" : "🌵",
-    "id" : "65FAFD7F-384F-43B2-B90A-300A844F79D0",
-    "rarity" : "uncommon",
-    "text" : "Cactus"
+    "category": "nature",
+    "emoji": "🌵",
+    "id": "65FAFD7F-384F-43B2-B90A-300A844F79D0",
+    "rarity": "uncommon",
+    "text": "Cactus"
   },
   {
-    "category" : "nature",
-    "emoji" : "🌽",
-    "id" : "3055B218-5E2B-4574-A83B-9EDD80E79E8F",
-    "rarity" : "veryCommon",
-    "text" : "Cornfield"
+    "category": "nature",
+    "emoji": "🌽",
+    "id": "3055B218-5E2B-4574-A83B-9EDD80E79E8F",
+    "rarity": "veryCommon",
+    "text": "Cornfield"
   },
   {
-    "category" : "nature",
-    "emoji" : "🍎",
-    "id" : "629A958E-0BE6-421B-B7C0-2AB112751A8C",
-    "rarity" : "uncommon",
-    "text" : "Orchard"
+    "category": "nature",
+    "emoji": "🍎",
+    "id": "629A958E-0BE6-421B-B7C0-2AB112751A8C",
+    "rarity": "uncommon",
+    "text": "Orchard"
   },
   {
-    "category" : "nature",
-    "emoji" : "🐦",
-    "id" : "D05964A8-D3FF-4E15-AEC3-54831936B903",
-    "rarity" : "veryCommon",
-    "text" : "Flock of Birds"
+    "category": "nature",
+    "emoji": "🐦",
+    "id": "D05964A8-D3FF-4E15-AEC3-54831936B903",
+    "rarity": "veryCommon",
+    "text": "Flock of Birds"
   },
   {
-    "category" : "nature",
-    "emoji" : "🐐",
-    "id" : "BF9F37F8-B798-41D5-9669-9B55BC69A4F1",
-    "rarity" : "common",
-    "text" : "Goat"
+    "category": "nature",
+    "emoji": "🐐",
+    "id": "BF9F37F8-B798-41D5-9669-9B55BC69A4F1",
+    "rarity": "common",
+    "text": "Goat"
   },
   {
-    "category" : "nature",
-    "emoji" : "🐑",
-    "id" : "E17D0F7E-2FC8-489F-84F5-4CE627C31BE0",
-    "rarity" : "common",
-    "text" : "Sheep"
+    "category": "nature",
+    "emoji": "🐑",
+    "id": "E17D0F7E-2FC8-489F-84F5-4CE627C31BE0",
+    "rarity": "common",
+    "text": "Sheep"
   },
   {
-    "category" : "nature",
-    "emoji" : "🐷",
-    "id" : "E7AA2D29-1891-4662-9FA3-8E021212A14A",
-    "rarity" : "common",
-    "text" : "Pig"
+    "category": "nature",
+    "emoji": "🐷",
+    "id": "E7AA2D29-1891-4662-9FA3-8E021212A14A",
+    "rarity": "common",
+    "text": "Pig"
   },
   {
-    "category" : "nature",
-    "emoji" : "🐶",
-    "id" : "EA3330C4-D621-407C-A610-A244A969D17D",
-    "rarity" : "common",
-    "text" : "Dog in Car Window"
+    "category": "nature",
+    "emoji": "🐶",
+    "id": "EA3330C4-D621-407C-A610-A244A969D17D",
+    "rarity": "common",
+    "text": "Dog in Car Window"
   },
   {
-    "category" : "nature",
-    "emoji" : "💐",
-    "id" : "D4A00F7A-EB24-4C92-ACFD-74A442C8F74E",
-    "rarity" : "common",
-    "text" : "Wildflowers"
+    "category": "nature",
+    "emoji": "💐",
+    "id": "D4A00F7A-EB24-4C92-ACFD-74A442C8F74E",
+    "rarity": "common",
+    "text": "Wildflowers"
   },
   {
-    "category" : "nature",
-    "emoji" : "💦",
-    "id" : "0699DCDE-E093-4EFA-9EB6-7EA71DA6C220",
-    "rarity" : "uncommon",
-    "text" : "Waterfall"
+    "category": "nature",
+    "emoji": "💦",
+    "id": "0699DCDE-E093-4EFA-9EB6-7EA71DA6C220",
+    "rarity": "uncommon",
+    "text": "Waterfall"
   },
   {
-    "category" : "nature",
-    "emoji" : "🍇",
-    "id" : "589E9C4B-436E-4FBE-B190-069481BBA35A",
-    "rarity" : "uncommon",
-    "text" : "Vineyard"
+    "category": "nature",
+    "emoji": "🍇",
+    "id": "589E9C4B-436E-4FBE-B190-069481BBA35A",
+    "rarity": "uncommon",
+    "text": "Vineyard"
   },
   {
-    "category" : "nature",
-    "emoji" : "🦬",
-    "id" : "75077334-D3F1-40CA-B3C2-E8481BE4EAB6",
-    "rarity" : "rare",
-    "text" : "Buffalo"
+    "category": "nature",
+    "emoji": "🦬",
+    "id": "75077334-D3F1-40CA-B3C2-E8481BE4EAB6",
+    "rarity": "rare",
+    "text": "Buffalo"
   },
   {
-    "category" : "nature",
-    "emoji" : "🦅",
-    "id" : "0ED91A0C-812D-4474-818C-C23CAC7D29BA",
-    "rarity" : "uncommon",
-    "text" : "Hawk"
+    "category": "nature",
+    "emoji": "🦅",
+    "id": "0ED91A0C-812D-4474-818C-C23CAC7D29BA",
+    "rarity": "uncommon",
+    "text": "Hawk"
   },
   {
-    "category" : "food",
-    "emoji" : "🍟",
-    "id" : "64F9FE5B-D850-474F-B08E-3D26744CC1A1",
-    "rarity" : "veryCommon",
-    "text" : "McDonald's"
+    "category": "food",
+    "emoji": "🍟",
+    "id": "64F9FE5B-D850-474F-B08E-3D26744CC1A1",
+    "rarity": "veryCommon",
+    "text": "McDonald's"
   },
   {
-    "category" : "food",
-    "emoji" : "☕",
-    "id" : "5A18A63A-BDB4-4232-817B-D31AACE731E4",
-    "rarity" : "common",
-    "text" : "Starbucks"
+    "category": "food",
+    "emoji": "☕",
+    "id": "5A18A63A-BDB4-4232-817B-D31AACE731E4",
+    "rarity": "common",
+    "text": "Starbucks"
   },
   {
-    "category" : "food",
-    "emoji" : "🥖",
-    "id" : "3DE3F367-3105-4F8B-A89D-2F134E21D01D",
-    "rarity" : "veryCommon",
-    "text" : "Subway"
+    "category": "food",
+    "emoji": "🥖",
+    "id": "3DE3F367-3105-4F8B-A89D-2F134E21D01D",
+    "rarity": "veryCommon",
+    "text": "Subway"
   },
   {
-    "category" : "food",
-    "emoji" : "⛽",
-    "id" : "FC3885BA-C6C8-495C-A4D1-792FC4393D20",
-    "rarity" : "veryCommon",
-    "text" : "Gas Station"
+    "category": "food",
+    "emoji": "⛽",
+    "id": "FC3885BA-C6C8-495C-A4D1-792FC4393D20",
+    "rarity": "veryCommon",
+    "text": "Gas Station"
   },
   {
-    "category" : "food",
-    "emoji" : "🅿️",
-    "id" : "FD790CF8-9C74-489F-9B5D-61EA067469DD",
-    "rarity" : "veryCommon",
-    "text" : "Rest Stop"
+    "category": "food",
+    "emoji": "🅿️",
+    "id": "FD790CF8-9C74-489F-9B5D-61EA067469DD",
+    "rarity": "veryCommon",
+    "text": "Rest Stop"
   },
   {
-    "category" : "food",
-    "emoji" : "🚗",
-    "id" : "AA2E08D4-5E1C-4EE8-A690-4BEC6459231A",
-    "rarity" : "common",
-    "text" : "Drive-Through"
+    "category": "food",
+    "emoji": "🚗",
+    "id": "AA2E08D4-5E1C-4EE8-A690-4BEC6459231A",
+    "rarity": "common",
+    "text": "Drive-Through"
   },
   {
-    "category" : "food",
-    "emoji" : "📢",
-    "id" : "6BA6FFCC-5BC1-4A77-AD4C-E80BC54241EE",
-    "rarity" : "veryCommon",
-    "text" : "Billboard"
+    "category": "food",
+    "emoji": "📢",
+    "id": "6BA6FFCC-5BC1-4A77-AD4C-E80BC54241EE",
+    "rarity": "veryCommon",
+    "text": "Billboard"
   },
   {
-    "category" : "food",
-    "emoji" : "🍽️",
-    "id" : "C02110DF-B97E-4804-BC87-61F59D43E880",
-    "rarity" : "uncommon",
-    "text" : "Roadside Diner"
+    "category": "food",
+    "emoji": "🍽️",
+    "id": "C02110DF-B97E-4804-BC87-61F59D43E880",
+    "rarity": "uncommon",
+    "text": "Roadside Diner"
   },
   {
-    "category" : "food",
-    "emoji" : "🍑",
-    "id" : "0EE0FA48-441D-4BD1-8160-5D46F171DE27",
-    "rarity" : "rare",
-    "text" : "Fruit Stand"
+    "category": "food",
+    "emoji": "🍑",
+    "id": "0EE0FA48-441D-4BD1-8160-5D46F171DE27",
+    "rarity": "rare",
+    "text": "Fruit Stand"
   },
   {
-    "category" : "food",
-    "emoji" : "🍦",
-    "id" : "4B422869-2A7E-4FFF-B250-2B1265FDE0B4",
-    "rarity" : "rare",
-    "text" : "Ice Cream Stand"
+    "category": "food",
+    "emoji": "🍦",
+    "id": "4B422869-2A7E-4FFF-B250-2B1265FDE0B4",
+    "rarity": "rare",
+    "text": "Ice Cream Stand"
   },
   {
-    "category" : "food",
-    "emoji" : "🍔",
-    "id" : "32FF3538-17B5-4FBD-B158-3292916652A1",
-    "rarity" : "common",
-    "text" : "Wendy's"
+    "category": "food",
+    "emoji": "🍔",
+    "id": "32FF3538-17B5-4FBD-B158-3292916652A1",
+    "rarity": "common",
+    "text": "Wendy's"
   },
   {
-    "category" : "food",
-    "emoji" : "🌮",
-    "id" : "9F6669D7-64CD-4779-AD14-AB599EAC8CC4",
-    "rarity" : "common",
-    "text" : "Taco Bell"
+    "category": "food",
+    "emoji": "🌮",
+    "id": "9F6669D7-64CD-4779-AD14-AB599EAC8CC4",
+    "rarity": "common",
+    "text": "Taco Bell"
   },
   {
-    "category" : "food",
-    "emoji" : "🐔",
-    "id" : "4868253E-FED2-44A0-B0BC-22DE1A0D8286",
-    "rarity" : "common",
-    "text" : "Chick-fil-A"
+    "category": "food",
+    "emoji": "🐔",
+    "id": "4868253E-FED2-44A0-B0BC-22DE1A0D8286",
+    "rarity": "common",
+    "text": "Chick-fil-A"
   },
   {
-    "category" : "food",
-    "emoji" : "🍦",
-    "id" : "9A2BF58F-B9EE-453B-B920-48089FFDCA9C",
-    "rarity" : "uncommon",
-    "text" : "Dairy Queen"
+    "category": "food",
+    "emoji": "🍦",
+    "id": "9A2BF58F-B9EE-453B-B920-48089FFDCA9C",
+    "rarity": "uncommon",
+    "text": "Dairy Queen"
   },
   {
-    "category" : "food",
-    "emoji" : "🪑",
-    "id" : "0A1EC644-9E8D-495B-83C4-082FB99CE2A8",
-    "rarity" : "uncommon",
-    "text" : "Cracker Barrel"
+    "category": "food",
+    "emoji": "🪑",
+    "id": "0A1EC644-9E8D-495B-83C4-082FB99CE2A8",
+    "rarity": "uncommon",
+    "text": "Cracker Barrel"
   },
   {
-    "category" : "food",
-    "emoji" : "🧇",
-    "id" : "7823EA54-5434-4B0F-80D1-A44D212DBE2E",
-    "rarity" : "uncommon",
-    "text" : "Waffle House"
+    "category": "food",
+    "emoji": "🧇",
+    "id": "7823EA54-5434-4B0F-80D1-A44D212DBE2E",
+    "rarity": "uncommon",
+    "text": "Waffle House"
   },
   {
-    "category" : "food",
-    "emoji" : "🚛",
-    "id" : "0ED19DD6-E519-44AD-A531-66A65D01C3F6",
-    "rarity" : "common",
-    "text" : "Truck Stop"
+    "category": "food",
+    "emoji": "🚛",
+    "id": "0ED19DD6-E519-44AD-A531-66A65D01C3F6",
+    "rarity": "common",
+    "text": "Truck Stop"
   },
   {
-    "category" : "food",
-    "emoji" : "🚿",
-    "id" : "54125617-DEA9-4FFF-B967-ACEEBF3E60A5",
-    "rarity" : "uncommon",
-    "text" : "Car Wash"
+    "category": "food",
+    "emoji": "🚿",
+    "id": "54125617-DEA9-4FFF-B967-ACEEBF3E60A5",
+    "rarity": "uncommon",
+    "text": "Car Wash"
   },
   {
-    "category" : "food",
-    "emoji" : "🏨",
-    "id" : "C337DE62-D57C-4F6D-A056-F8D793A4608F",
-    "rarity" : "common",
-    "text" : "Motel Sign"
+    "category": "food",
+    "emoji": "🏨",
+    "id": "C337DE62-D57C-4F6D-A056-F8D793A4608F",
+    "rarity": "common",
+    "text": "Motel Sign"
   },
   {
-    "category" : "food",
-    "emoji" : "⛺",
-    "id" : "BD1E25BE-13F3-4CA7-9996-9F021507BD0A",
-    "rarity" : "uncommon",
-    "text" : "Campground Sign"
+    "category": "food",
+    "emoji": "⛺",
+    "id": "BD1E25BE-13F3-4CA7-9996-9F021507BD0A",
+    "rarity": "uncommon",
+    "text": "Campground Sign"
   },
   {
-    "category" : "food",
-    "emoji" : "💵",
-    "id" : "ACE3CB99-BC1E-4874-AFB7-E4B5D5D8FAD1",
-    "rarity" : "veryCommon",
-    "text" : "Dollar General"
+    "category": "food",
+    "emoji": "💵",
+    "id": "ACE3CB99-BC1E-4874-AFB7-E4B5D5D8FAD1",
+    "rarity": "veryCommon",
+    "text": "Dollar General"
   },
   {
-    "category" : "food",
-    "emoji" : "🎆",
-    "id" : "61743806-12C6-4D96-B910-C9B9597AA55C",
-    "rarity" : "rare",
-    "text" : "Fireworks Stand"
+    "category": "food",
+    "emoji": "🎆",
+    "id": "61743806-12C6-4D96-B910-C9B9597AA55C",
+    "rarity": "rare",
+    "text": "Fireworks Stand"
   },
   {
-    "category" : "food",
-    "emoji" : "🍖",
-    "id" : "C4DE0574-D323-4137-9C68-75545A83FEA1",
-    "rarity" : "rare",
-    "text" : "Roadside BBQ"
+    "category": "food",
+    "emoji": "🍖",
+    "id": "C4DE0574-D323-4137-9C68-75545A83FEA1",
+    "rarity": "rare",
+    "text": "Roadside BBQ"
   },
   {
-    "category" : "food",
-    "emoji" : "🏕️",
-    "id" : "452898E6-22F3-45D1-81E7-21D9D2F55823",
-    "rarity" : "uncommon",
-    "text" : "RV Park"
+    "category": "food",
+    "emoji": "🏕️",
+    "id": "452898E6-22F3-45D1-81E7-21D9D2F55823",
+    "rarity": "uncommon",
+    "text": "RV Park"
   },
   {
-    "category" : "food",
-    "emoji" : "🛍️",
-    "id" : "5EE47430-2936-4E95-87FA-AAEB70B725AF",
-    "rarity" : "uncommon",
-    "text" : "Outlet Mall"
+    "category": "food",
+    "emoji": "🛍️",
+    "id": "5EE47430-2936-4E95-87FA-AAEB70B725AF",
+    "rarity": "uncommon",
+    "text": "Outlet Mall"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🌉",
-    "id" : "749BEDC0-5C82-43EA-8A2A-80C246CF1CED",
-    "rarity" : "veryCommon",
-    "text" : "Bridge"
+    "category": "landmarks",
+    "emoji": "🌉",
+    "id": "749BEDC0-5C82-43EA-8A2A-80C246CF1CED",
+    "rarity": "veryCommon",
+    "text": "Bridge"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🛣️",
-    "id" : "DEEB0A9E-7E27-4127-92DA-AFBC203520C7",
-    "rarity" : "veryCommon",
-    "text" : "Overpass"
+    "category": "landmarks",
+    "emoji": "🛣️",
+    "id": "DEEB0A9E-7E27-4127-92DA-AFBC203520C7",
+    "rarity": "veryCommon",
+    "text": "Overpass"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🚂",
-    "id" : "00212E99-DEE3-4353-BCB4-7EE08B582E39",
-    "rarity" : "common",
-    "text" : "Railroad Crossing"
+    "category": "landmarks",
+    "emoji": "🚂",
+    "id": "00212E99-DEE3-4353-BCB4-7EE08B582E39",
+    "rarity": "common",
+    "text": "Railroad Crossing"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🪧",
-    "id" : "14EDE11E-57C9-4FA5-8B49-F044F4798347",
-    "rarity" : "uncommon",
-    "text" : "State Border Sign"
+    "category": "landmarks",
+    "emoji": "🪧",
+    "id": "14EDE11E-57C9-4FA5-8B49-F044F4798347",
+    "rarity": "uncommon",
+    "text": "State Border Sign"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "💰",
-    "id" : "B2DEEFBA-A491-4019-B51D-82C346B9B175",
-    "rarity" : "uncommon",
-    "text" : "Toll Booth"
+    "category": "landmarks",
+    "emoji": "💰",
+    "id": "B2DEEFBA-A491-4019-B51D-82C346B9B175",
+    "rarity": "uncommon",
+    "text": "Toll Booth"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "👋",
-    "id" : "F417EFC2-7FCB-419E-B20D-369A7C900C98",
-    "rarity" : "uncommon",
-    "text" : "Welcome Sign"
+    "category": "landmarks",
+    "emoji": "👋",
+    "id": "F417EFC2-7FCB-419E-B20D-369A7C900C98",
+    "rarity": "uncommon",
+    "text": "Welcome Sign"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🏗️",
-    "id" : "37812093-076D-42A2-BE1E-2CB47D0C87D2",
-    "rarity" : "common",
-    "text" : "Water Tower"
+    "category": "landmarks",
+    "emoji": "🏗️",
+    "id": "37812093-076D-42A2-BE1E-2CB47D0C87D2",
+    "rarity": "common",
+    "text": "Water Tower"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "⛪",
-    "id" : "F34801F3-3E5B-4338-8E7F-9FB753A618E5",
-    "rarity" : "common",
-    "text" : "Church Steeple"
+    "category": "landmarks",
+    "emoji": "⛪",
+    "id": "F34801F3-3E5B-4338-8E7F-9FB753A618E5",
+    "rarity": "common",
+    "text": "Church Steeple"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🏠",
-    "id" : "A14147C1-EDE5-4762-9302-0D4EEE5E9E2D",
-    "rarity" : "common",
-    "text" : "Grain Silo"
+    "category": "landmarks",
+    "emoji": "🏠",
+    "id": "A14147C1-EDE5-4762-9302-0D4EEE5E9E2D",
+    "rarity": "common",
+    "text": "Grain Silo"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🏟️",
-    "id" : "35468309-B9C7-4780-905E-47C27F63E12C",
-    "rarity" : "uncommon",
-    "text" : "Sports Stadium"
+    "category": "landmarks",
+    "emoji": "🏟️",
+    "id": "35468309-B9C7-4780-905E-47C27F63E12C",
+    "rarity": "uncommon",
+    "text": "Sports Stadium"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🎡",
-    "id" : "019ACCAD-2097-4BC8-B923-3F314FFC236F",
-    "rarity" : "uncommon",
-    "text" : "Fairground"
+    "category": "landmarks",
+    "emoji": "🎡",
+    "id": "019ACCAD-2097-4BC8-B923-3F314FFC236F",
+    "rarity": "uncommon",
+    "text": "Fairground"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🏛️",
-    "id" : "A567E170-5E12-459A-B3E7-A552CB7D7388",
-    "rarity" : "uncommon",
-    "text" : "State Capitol"
+    "category": "landmarks",
+    "emoji": "🏛️",
+    "id": "A567E170-5E12-459A-B3E7-A552CB7D7388",
+    "rarity": "uncommon",
+    "text": "State Capitol"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🌬️",
-    "id" : "2CC48DD8-1D89-4F17-9E5C-9ABB1571082A",
-    "rarity" : "uncommon",
-    "text" : "Wind Farm"
+    "category": "landmarks",
+    "emoji": "🌬️",
+    "id": "2CC48DD8-1D89-4F17-9E5C-9ABB1571082A",
+    "rarity": "uncommon",
+    "text": "Wind Farm"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "☀️",
-    "id" : "931D476C-1FF5-4214-B20F-CEBF7B299C86",
-    "rarity" : "uncommon",
-    "text" : "Solar Farm"
+    "category": "landmarks",
+    "emoji": "☀️",
+    "id": "931D476C-1FF5-4214-B20F-CEBF7B299C86",
+    "rarity": "uncommon",
+    "text": "Solar Farm"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "✈️",
-    "id" : "A4817B0E-0016-49C9-B685-4A1B0F29EA81",
-    "rarity" : "uncommon",
-    "text" : "Airport"
+    "category": "landmarks",
+    "emoji": "✈️",
+    "id": "A4817B0E-0016-49C9-B685-4A1B0F29EA81",
+    "rarity": "uncommon",
+    "text": "Airport"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "📡",
-    "id" : "9E41D599-9E13-4D05-99F0-A6C23EEAB953",
-    "rarity" : "common",
-    "text" : "Radio Tower"
+    "category": "landmarks",
+    "emoji": "📡",
+    "id": "9E41D599-9E13-4D05-99F0-A6C23EEAB953",
+    "rarity": "common",
+    "text": "Radio Tower"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🎬",
-    "id" : "041124CE-0C8A-4ED2-88B4-738F176EB383",
-    "rarity" : "rare",
-    "text" : "Drive-In Theater"
+    "category": "landmarks",
+    "emoji": "🎬",
+    "id": "041124CE-0C8A-4ED2-88B4-738F176EB383",
+    "rarity": "rare",
+    "text": "Drive-In Theater"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🌉",
-    "id" : "3F4CEAFE-E45F-4D18-846A-4F5FE6EF9E59",
-    "rarity" : "rare",
-    "text" : "Covered Bridge"
+    "category": "landmarks",
+    "emoji": "🌉",
+    "id": "3F4CEAFE-E45F-4D18-846A-4F5FE6EF9E59",
+    "rarity": "rare",
+    "text": "Covered Bridge"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🗼",
-    "id" : "1FA254CD-692C-47EC-9716-44C1712F42F3",
-    "rarity" : "rare",
-    "text" : "Lighthouse"
+    "category": "landmarks",
+    "emoji": "🗼",
+    "id": "1FA254CD-692C-47EC-9716-44C1712F42F3",
+    "rarity": "rare",
+    "text": "Lighthouse"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🌲",
-    "id" : "0FD97E95-BAD3-4CCB-B1F4-FFBF24F49698",
-    "rarity" : "rare",
-    "text" : "National Park Sign"
+    "category": "landmarks",
+    "emoji": "🌲",
+    "id": "0FD97E95-BAD3-4CCB-B1F4-FFBF24F49698",
+    "rarity": "rare",
+    "text": "National Park Sign"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🗿",
-    "id" : "56532FC1-1F41-47F3-8FFE-DB587B548225",
-    "rarity" : "rare",
-    "text" : "Monument"
+    "category": "landmarks",
+    "emoji": "🗿",
+    "id": "56532FC1-1F41-47F3-8FFE-DB587B548225",
+    "rarity": "rare",
+    "text": "Monument"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🌊",
-    "id" : "A4636DA8-1049-4F64-81E4-6DFBED0AD14E",
-    "rarity" : "rare",
-    "text" : "Dam"
+    "category": "landmarks",
+    "emoji": "🌊",
+    "id": "A4636DA8-1049-4F64-81E4-6DFBED0AD14E",
+    "rarity": "rare",
+    "text": "Dam"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "👻",
-    "id" : "7CBDA785-2C75-4C5A-8599-F992A1A8FDAF",
-    "rarity" : "veryRare",
-    "text" : "Ghost Town"
+    "category": "landmarks",
+    "emoji": "👻",
+    "id": "7CBDA785-2C75-4C5A-8599-F992A1A8FDAF",
+    "rarity": "veryRare",
+    "text": "Ghost Town"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "⭐",
-    "id" : "4D572B60-AD21-4F40-BA9A-A3D4F2A3A491",
-    "rarity" : "rare",
-    "text" : "Roadside Attraction"
+    "category": "landmarks",
+    "emoji": "⭐",
+    "id": "4D572B60-AD21-4F40-BA9A-A3D4F2A3A491",
+    "rarity": "rare",
+    "text": "Roadside Attraction"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "⛏️",
-    "id" : "E8A0F6BE-2AB6-49EA-A199-F43D7A1FBFA0",
-    "rarity" : "rare",
-    "text" : "Mining Facility"
+    "category": "landmarks",
+    "emoji": "⛏️",
+    "id": "E8A0F6BE-2AB6-49EA-A199-F43D7A1FBFA0",
+    "rarity": "rare",
+    "text": "Mining Facility"
   },
   {
-    "category" : "weather",
-    "emoji" : "☁️",
-    "id" : "73DAA30D-094F-4819-836E-EDCAAA0CA01D",
-    "rarity" : "veryCommon",
-    "text" : "Dark Clouds"
+    "category": "weather",
+    "emoji": "☁️",
+    "id": "73DAA30D-094F-4819-836E-EDCAAA0CA01D",
+    "rarity": "veryCommon",
+    "text": "Dark Clouds"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌫️",
-    "id" : "05676D29-AF0F-4268-8CED-39F7FC95655D",
-    "rarity" : "common",
-    "text" : "Fog"
+    "category": "weather",
+    "emoji": "🌫️",
+    "id": "05676D29-AF0F-4268-8CED-39F7FC95655D",
+    "rarity": "common",
+    "text": "Fog"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌪️",
-    "id" : "EFDF3832-1699-449C-A7B5-124E44366CE9",
-    "rarity" : "veryRare",
-    "text" : "Dust Storm"
+    "category": "weather",
+    "emoji": "🌪️",
+    "id": "EFDF3832-1699-449C-A7B5-124E44366CE9",
+    "rarity": "veryRare",
+    "text": "Dust Storm"
   },
   {
-    "category" : "weather",
-    "emoji" : "❄️",
-    "id" : "1CA02B04-B431-467D-A705-D64A1CA3D9F7",
-    "rarity" : "uncommon",
-    "text" : "Snow on Mountains"
+    "category": "weather",
+    "emoji": "❄️",
+    "id": "1CA02B04-B431-467D-A705-D64A1CA3D9F7",
+    "rarity": "uncommon",
+    "text": "Snow on Mountains"
   },
   {
-    "category" : "weather",
-    "emoji" : "💧",
-    "id" : "9816A354-3056-4D18-B50D-2A18354A814C",
-    "rarity" : "common",
-    "text" : "Puddles"
+    "category": "weather",
+    "emoji": "💧",
+    "id": "9816A354-3056-4D18-B50D-2A18354A814C",
+    "rarity": "common",
+    "text": "Puddles"
   },
   {
-    "category" : "weather",
-    "emoji" : "☀️",
-    "id" : "EC7E56DD-CFB6-4502-BEC4-08B0D03E468F",
-    "rarity" : "veryCommon",
-    "text" : "Sun Glare"
+    "category": "weather",
+    "emoji": "☀️",
+    "id": "EC7E56DD-CFB6-4502-BEC4-08B0D03E468F",
+    "rarity": "veryCommon",
+    "text": "Sun Glare"
   },
   {
-    "category" : "weather",
-    "emoji" : "⛈️",
-    "id" : "B7AFCA1F-A005-4F0D-9F71-F40BEF9A3847",
-    "rarity" : "uncommon",
-    "text" : "Thunderstorm"
+    "category": "weather",
+    "emoji": "⛈️",
+    "id": "B7AFCA1F-A005-4F0D-9F71-F40BEF9A3847",
+    "rarity": "uncommon",
+    "text": "Thunderstorm"
   },
   {
-    "category" : "weather",
-    "emoji" : "⚡",
-    "id" : "778FA937-C5B2-4C47-91C6-80E73F443B29",
-    "rarity" : "uncommon",
-    "text" : "Lightning"
+    "category": "weather",
+    "emoji": "⚡",
+    "id": "778FA937-C5B2-4C47-91C6-80E73F443B29",
+    "rarity": "uncommon",
+    "text": "Lightning"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌨️",
-    "id" : "C0A4CB35-D900-4AE6-90D5-75C70518348F",
-    "rarity" : "rare",
-    "text" : "Hail"
+    "category": "weather",
+    "emoji": "🌨️",
+    "id": "C0A4CB35-D900-4AE6-90D5-75C70518348F",
+    "rarity": "rare",
+    "text": "Hail"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌪️",
-    "id" : "27E19173-E4B8-4A1D-872F-D96114B9A7F0",
-    "rarity" : "veryRare",
-    "text" : "Tornado Warning Sign"
+    "category": "weather",
+    "emoji": "🌪️",
+    "id": "27E19173-E4B8-4A1D-872F-D96114B9A7F0",
+    "rarity": "veryRare",
+    "text": "Tornado Warning Sign"
   },
   {
-    "category" : "weather",
-    "emoji" : "🏜️",
-    "id" : "944B6E26-F677-455F-B087-9D883297CF5B",
-    "rarity" : "rare",
-    "text" : "Mirage"
+    "category": "weather",
+    "emoji": "🏜️",
+    "id": "944B6E26-F677-455F-B087-9D883297CF5B",
+    "rarity": "rare",
+    "text": "Mirage"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌅",
-    "id" : "5B2CADFC-84CF-437F-99AA-A0F270C804B3",
-    "rarity" : "common",
-    "text" : "Dramatic Sunset"
+    "category": "weather",
+    "emoji": "🌅",
+    "id": "5B2CADFC-84CF-437F-99AA-A0F270C804B3",
+    "rarity": "common",
+    "text": "Dramatic Sunset"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌕",
-    "id" : "9EE07CB2-390A-4CA2-90E3-0A49ECEBC1BF",
-    "rarity" : "uncommon",
-    "text" : "Low-Hanging Moon"
+    "category": "weather",
+    "emoji": "🌕",
+    "id": "9EE07CB2-390A-4CA2-90E3-0A49ECEBC1BF",
+    "rarity": "uncommon",
+    "text": "Low-Hanging Moon"
   },
   {
-    "category" : "weather",
-    "emoji" : "⭐",
-    "id" : "97861B7C-F490-4D4B-82F3-2D6E23F3DA89",
-    "rarity" : "uncommon",
-    "text" : "Stars Visible"
+    "category": "weather",
+    "emoji": "⭐",
+    "id": "97861B7C-F490-4D4B-82F3-2D6E23F3DA89",
+    "rarity": "uncommon",
+    "text": "Stars Visible"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌡️",
-    "id" : "BA705AAF-0D8B-43EE-8DA9-476B3E5A97D0",
-    "rarity" : "uncommon",
-    "text" : "Hot Haze Shimmer"
+    "category": "weather",
+    "emoji": "🌡️",
+    "id": "BA705AAF-0D8B-43EE-8DA9-476B3E5A97D0",
+    "rarity": "uncommon",
+    "text": "Hot Haze Shimmer"
   },
   {
-    "category" : "weather",
-    "emoji" : "🔥",
-    "id" : "377ADB1F-1F22-4D07-9069-EB6A08DBC0A1",
-    "rarity" : "rare",
-    "text" : "Wildfire Smoke"
+    "category": "weather",
+    "emoji": "🔥",
+    "id": "377ADB1F-1F22-4D07-9069-EB6A08DBC0A1",
+    "rarity": "rare",
+    "text": "Wildfire Smoke"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌀",
-    "id" : "B957584E-97A2-4DBB-B421-A80D1832D7C5",
-    "rarity" : "rare",
-    "text" : "Dust Devil"
+    "category": "weather",
+    "emoji": "🌀",
+    "id": "B957584E-97A2-4DBB-B421-A80D1832D7C5",
+    "rarity": "rare",
+    "text": "Dust Devil"
   },
   {
-    "category" : "weather",
-    "emoji" : "🧊",
-    "id" : "321FA7B9-C0A4-42FD-8AB8-F0A3CB768041",
-    "rarity" : "rare",
-    "text" : "Ice on Road Sign"
+    "category": "weather",
+    "emoji": "🧊",
+    "id": "321FA7B9-C0A4-42FD-8AB8-F0A3CB768041",
+    "rarity": "rare",
+    "text": "Ice on Road Sign"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌊",
-    "id" : "ED587D67-BC0F-449F-AF9B-0F95BDC99975",
-    "rarity" : "rare",
-    "text" : "Flash Flood Sign"
+    "category": "weather",
+    "emoji": "🌊",
+    "id": "ED587D67-BC0F-449F-AF9B-0F95BDC99975",
+    "rarity": "rare",
+    "text": "Flash Flood Sign"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌥️",
-    "id" : "C01928E2-84A3-42F4-B6AB-AD43E6D0F250",
-    "rarity" : "veryCommon",
-    "text" : "Overcast Sky"
+    "category": "weather",
+    "emoji": "🌥️",
+    "id": "C01928E2-84A3-42F4-B6AB-AD43E6D0F250",
+    "rarity": "veryCommon",
+    "text": "Overcast Sky"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌦️",
-    "id" : "751DEA69-CD45-42A5-B380-6746C804F491",
-    "rarity" : "common",
-    "text" : "Sprinkles"
+    "category": "weather",
+    "emoji": "🌦️",
+    "id": "751DEA69-CD45-42A5-B380-6746C804F491",
+    "rarity": "common",
+    "text": "Sprinkles"
   },
   {
-    "category" : "weather",
-    "emoji" : "🚩",
-    "id" : "AD928E00-26F6-464F-8A34-33E0DF1E598D",
-    "rarity" : "common",
-    "text" : "Windy Flags"
+    "category": "weather",
+    "emoji": "🚩",
+    "id": "AD928E00-26F6-464F-8A34-33E0DF1E598D",
+    "rarity": "common",
+    "text": "Windy Flags"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌨️",
-    "id" : "B492D74A-9B0D-4149-AD42-C6C720808A22",
-    "rarity" : "rare",
-    "text" : "Frost on Windows"
+    "category": "weather",
+    "emoji": "🌨️",
+    "id": "B492D74A-9B0D-4149-AD42-C6C720808A22",
+    "rarity": "rare",
+    "text": "Frost on Windows"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌁",
-    "id" : "9CBFBFF7-F5AC-4DA1-837B-39F8AA1FC0D4",
-    "rarity" : "uncommon",
-    "text" : "Morning Mist"
+    "category": "weather",
+    "emoji": "🌁",
+    "id": "9CBFBFF7-F5AC-4DA1-837B-39F8AA1FC0D4",
+    "rarity": "uncommon",
+    "text": "Morning Mist"
   },
   {
-    "category" : "weather",
-    "emoji" : "🌤️",
-    "id" : "5B9CF2B0-DD20-4CC7-B133-15C58562B36A",
-    "rarity" : "common",
-    "text" : "Dramatic Clouds"
+    "category": "weather",
+    "emoji": "🌤️",
+    "id": "5B9CF2B0-DD20-4CC7-B133-15C58562B36A",
+    "rarity": "common",
+    "text": "Dramatic Clouds"
   },
   {
-    "category" : "signs",
-    "emoji" : "🛑",
-    "id" : "0BF88129-859B-49B8-A85D-14C54449B4C6",
-    "rarity" : "veryCommon",
-    "text" : "Speed Limit 75+"
+    "category": "signs",
+    "emoji": "🛑",
+    "id": "0BF88129-859B-49B8-A85D-14C54449B4C6",
+    "rarity": "veryCommon",
+    "text": "Speed Limit 75+"
   },
   {
-    "category" : "signs",
-    "emoji" : "🚧",
-    "id" : "BA7780E8-DDC9-47BC-820E-75FE9837F559",
-    "rarity" : "veryCommon",
-    "text" : "Construction Zone"
+    "category": "signs",
+    "emoji": "🚧",
+    "id": "BA7780E8-DDC9-47BC-820E-75FE9837F559",
+    "rarity": "veryCommon",
+    "text": "Construction Zone"
   },
   {
-    "category" : "signs",
-    "emoji" : "↩️",
-    "id" : "CE8F28EC-A149-4B14-98CC-4081F3CD3120",
-    "rarity" : "uncommon",
-    "text" : "Detour Sign"
+    "category": "signs",
+    "emoji": "↩️",
+    "id": "CE8F28EC-A149-4B14-98CC-4081F3CD3120",
+    "rarity": "uncommon",
+    "text": "Detour Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "⛔",
-    "id" : "47403EBA-0F94-4761-A284-1F5E6B626D40",
-    "rarity" : "common",
-    "text" : "No Passing Zone"
+    "category": "signs",
+    "emoji": "⛔",
+    "id": "47403EBA-0F94-4761-A284-1F5E6B626D40",
+    "rarity": "common",
+    "text": "No Passing Zone"
   },
   {
-    "category" : "signs",
-    "emoji" : "⚖️",
-    "id" : "96794F0E-2FF3-49BB-A03A-FE760A8B728A",
-    "rarity" : "uncommon",
-    "text" : "Weigh Station"
+    "category": "signs",
+    "emoji": "⚖️",
+    "id": "96794F0E-2FF3-49BB-A03A-FE760A8B728A",
+    "rarity": "uncommon",
+    "text": "Weigh Station"
   },
   {
-    "category" : "signs",
-    "emoji" : "🔢",
-    "id" : "8031441A-0A40-43A1-9A1D-908CF7CD08BE",
-    "rarity" : "common",
-    "text" : "Mile Marker ×0"
+    "category": "signs",
+    "emoji": "🔢",
+    "id": "8031441A-0A40-43A1-9A1D-908CF7CD08BE",
+    "rarity": "common",
+    "text": "Mile Marker ×0"
   },
   {
-    "category" : "signs",
-    "emoji" : "🔄",
-    "id" : "BDF48176-EA53-4AE5-9BBD-57A4C1BF35AA",
-    "rarity" : "common",
-    "text" : "Highway Interchange"
+    "category": "signs",
+    "emoji": "🔄",
+    "id": "BDF48176-EA53-4AE5-9BBD-57A4C1BF35AA",
+    "rarity": "common",
+    "text": "Highway Interchange"
   },
   {
-    "category" : "signs",
-    "emoji" : "🛏️",
-    "id" : "01B2195F-8A68-431D-BE3F-19E2C2457C03",
-    "rarity" : "common",
-    "text" : "Rest Area Sign"
+    "category": "signs",
+    "emoji": "🛏️",
+    "id": "01B2195F-8A68-431D-BE3F-19E2C2457C03",
+    "rarity": "common",
+    "text": "Rest Area Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "🚛",
-    "id" : "6452E9FD-291D-4DDE-8CA4-6FFDEB73A24F",
-    "rarity" : "rare",
-    "text" : "Runaway Truck Ramp"
+    "category": "signs",
+    "emoji": "🚛",
+    "id": "6452E9FD-291D-4DDE-8CA4-6FFDEB73A24F",
+    "rarity": "rare",
+    "text": "Runaway Truck Ramp"
   },
   {
-    "category" : "signs",
-    "emoji" : "🦌",
-    "id" : "7300A8FD-19F6-4524-99E8-E87FDFA04005",
-    "rarity" : "common",
-    "text" : "Deer Crossing Sign"
+    "category": "signs",
+    "emoji": "🦌",
+    "id": "7300A8FD-19F6-4524-99E8-E87FDFA04005",
+    "rarity": "common",
+    "text": "Deer Crossing Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "🪨",
-    "id" : "EC9590A3-0F87-40F7-87FF-EB328EAE47D8",
-    "rarity" : "rare",
-    "text" : "Falling Rock Sign"
+    "category": "signs",
+    "emoji": "🪨",
+    "id": "EC9590A3-0F87-40F7-87FF-EB328EAE47D8",
+    "rarity": "rare",
+    "text": "Falling Rock Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "⛓️",
-    "id" : "F070E239-C059-456B-B908-11CB3902D05D",
-    "rarity" : "rare",
-    "text" : "Chain Control Sign"
+    "category": "signs",
+    "emoji": "⛓️",
+    "id": "F070E239-C059-456B-B908-11CB3902D05D",
+    "rarity": "rare",
+    "text": "Chain Control Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "⬇️",
-    "id" : "A29C5C51-C484-4FEF-92CA-EE7B260CDBE2",
-    "rarity" : "uncommon",
-    "text" : "Low Clearance Sign"
+    "category": "signs",
+    "emoji": "⬇️",
+    "id": "A29C5C51-C484-4FEF-92CA-EE7B260CDBE2",
+    "rarity": "uncommon",
+    "text": "Low Clearance Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "🚫",
-    "id" : "86A6E3FF-563B-476A-AA96-22B9B743DBA6",
-    "rarity" : "uncommon",
-    "text" : "Wrong Way Sign"
+    "category": "signs",
+    "emoji": "🚫",
+    "id": "86A6E3FF-563B-476A-AA96-22B9B743DBA6",
+    "rarity": "uncommon",
+    "text": "Wrong Way Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "↔️",
-    "id" : "DB7A9E10-0002-494E-930C-FBD94F7A2024",
-    "rarity" : "uncommon",
-    "text" : "Divided Highway Sign"
+    "category": "signs",
+    "emoji": "↔️",
+    "id": "DB7A9E10-0002-494E-930C-FBD94F7A2024",
+    "rarity": "uncommon",
+    "text": "Divided Highway Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "🏞️",
-    "id" : "C8E31186-5C16-4743-BFE0-A5810E7BC674",
-    "rarity" : "uncommon",
-    "text" : "Scenic Overlook Sign"
+    "category": "signs",
+    "emoji": "🏞️",
+    "id": "C8E31186-5C16-4743-BFE0-A5810E7BC674",
+    "rarity": "uncommon",
+    "text": "Scenic Overlook Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "📜",
-    "id" : "AD3E993C-DA2C-4665-ADEC-757CFCEC6E72",
-    "rarity" : "uncommon",
-    "text" : "Historical Marker"
+    "category": "signs",
+    "emoji": "📜",
+    "id": "AD3E993C-DA2C-4665-ADEC-757CFCEC6E72",
+    "rarity": "uncommon",
+    "text": "Historical Marker"
   },
   {
-    "category" : "signs",
-    "emoji" : "♻️",
-    "id" : "2704C435-B1EA-4799-B614-EE114AD0CDAC",
-    "rarity" : "common",
-    "text" : "Adopt-a-Highway Sign"
+    "category": "signs",
+    "emoji": "♻️",
+    "id": "2704C435-B1EA-4799-B614-EE114AD0CDAC",
+    "rarity": "common",
+    "text": "Adopt-a-Highway Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "➡️",
-    "id" : "7A06EE27-53A7-49B4-9D16-6F37675C4E80",
-    "rarity" : "uncommon",
-    "text" : "Road Narrows Sign"
+    "category": "signs",
+    "emoji": "➡️",
+    "id": "7A06EE27-53A7-49B4-9D16-6F37675C4E80",
+    "rarity": "uncommon",
+    "text": "Road Narrows Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "🌉",
-    "id" : "64DB0AFD-5495-4958-9487-CD1DCDA5E966",
-    "rarity" : "uncommon",
-    "text" : "Bridge Ices Sign"
+    "category": "signs",
+    "emoji": "🌉",
+    "id": "64DB0AFD-5495-4958-9487-CD1DCDA5E966",
+    "rarity": "uncommon",
+    "text": "Bridge Ices Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "💧",
-    "id" : "697664F0-F373-47BE-8FFA-A53E43F55C0C",
-    "rarity" : "uncommon",
-    "text" : "Slippery When Wet"
+    "category": "signs",
+    "emoji": "💧",
+    "id": "697664F0-F373-47BE-8FFA-A53E43F55C0C",
+    "rarity": "uncommon",
+    "text": "Slippery When Wet"
   },
   {
-    "category" : "signs",
-    "emoji" : "🔃",
-    "id" : "442558F2-2C64-4E3F-833E-209869CDEFF5",
-    "rarity" : "uncommon",
-    "text" : "No U-Turn Sign"
+    "category": "signs",
+    "emoji": "🔃",
+    "id": "442558F2-2C64-4E3F-833E-209869CDEFF5",
+    "rarity": "uncommon",
+    "text": "No U-Turn Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "🔀",
-    "id" : "AB6933FB-F468-407E-881D-DE57BE1E593E",
-    "rarity" : "common",
-    "text" : "Merging Traffic Sign"
+    "category": "signs",
+    "emoji": "🔀",
+    "id": "AB6933FB-F468-407E-881D-DE57BE1E593E",
+    "rarity": "common",
+    "text": "Merging Traffic Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "✅",
-    "id" : "CCA0E6AF-2ACF-43F5-BEDC-4043267F37BA",
-    "rarity" : "uncommon",
-    "text" : "End Construction Sign"
+    "category": "signs",
+    "emoji": "✅",
+    "id": "CCA0E6AF-2ACF-43F5-BEDC-4043267F37BA",
+    "rarity": "uncommon",
+    "text": "End Construction Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "🛣️",
-    "id" : "E63D9E68-57EA-4EB7-8AC4-A30215EAE5E1",
-    "rarity" : "common",
-    "text" : "State Highway Sign"
+    "category": "signs",
+    "emoji": "🛣️",
+    "id": "E63D9E68-57EA-4EB7-8AC4-A30215EAE5E1",
+    "rarity": "common",
+    "text": "State Highway Sign"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🚘",
-    "id" : "0BCFCD83-6C35-4830-9C1C-A8FB9BF8671B",
-    "rarity" : "common",
-    "text" : "Car Carrier"
+    "category": "vehicles",
+    "emoji": "🚘",
+    "id": "0BCFCD83-6C35-4830-9C1C-A8FB9BF8671B",
+    "rarity": "common",
+    "text": "Car Carrier"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🐄",
-    "id" : "744CE9F9-887F-460D-B022-262622D6BAB1",
-    "rarity" : "common",
-    "text" : "Livestock Trailer"
+    "category": "vehicles",
+    "emoji": "🐄",
+    "id": "744CE9F9-887F-460D-B022-262622D6BAB1",
+    "rarity": "common",
+    "text": "Livestock Trailer"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🪵",
-    "id" : "A4E493A3-C320-49CF-B905-BEDB2362844C",
-    "rarity" : "uncommon",
-    "text" : "Logging Truck"
+    "category": "vehicles",
+    "emoji": "🪵",
+    "id": "A4E493A3-C320-49CF-B905-BEDB2362844C",
+    "rarity": "uncommon",
+    "text": "Logging Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "⛏️",
-    "id" : "C44588F4-72FF-4691-8AB7-8B9C6DB664D9",
-    "rarity" : "uncommon",
-    "text" : "Coal Truck"
+    "category": "vehicles",
+    "emoji": "⛏️",
+    "id": "C44588F4-72FF-4691-8AB7-8B9C6DB664D9",
+    "rarity": "uncommon",
+    "text": "Coal Truck"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🛩️",
-    "id" : "14FF5A74-56CF-478F-BE68-46F280437D8C",
-    "rarity" : "uncommon",
-    "text" : "Crop Duster"
+    "category": "vehicles",
+    "emoji": "🛩️",
+    "id": "14FF5A74-56CF-478F-BE68-46F280437D8C",
+    "rarity": "uncommon",
+    "text": "Crop Duster"
   },
   {
-    "category" : "vehicles",
-    "emoji" : "🐴",
-    "id" : "507FA95C-5CEB-40D3-B4E2-EEC40DDE2135",
-    "rarity" : "rare",
-    "text" : "Amish Buggy"
+    "category": "vehicles",
+    "emoji": "🐴",
+    "id": "507FA95C-5CEB-40D3-B4E2-EEC40DDE2135",
+    "rarity": "rare",
+    "text": "Amish Buggy"
   },
   {
-    "category" : "nature",
-    "emoji" : "🦃",
-    "id" : "E7A4CC7D-0154-4E54-8087-27370DC12F6A",
-    "rarity" : "uncommon",
-    "text" : "Wild Turkey"
+    "category": "nature",
+    "emoji": "🦃",
+    "id": "E7A4CC7D-0154-4E54-8087-27370DC12F6A",
+    "rarity": "uncommon",
+    "text": "Wild Turkey"
   },
   {
-    "category" : "nature",
-    "emoji" : "🦌",
-    "id" : "05150C84-9A42-4F02-9FA8-685C4881A307",
-    "rarity" : "rare",
-    "text" : "Elk"
+    "category": "nature",
+    "emoji": "🦌",
+    "id": "05150C84-9A42-4F02-9FA8-685C4881A307",
+    "rarity": "rare",
+    "text": "Elk"
   },
   {
-    "category" : "nature",
-    "emoji" : "🦌",
-    "id" : "C2738543-1B62-4D94-A914-3ECF040D81D0",
-    "rarity" : "rare",
-    "text" : "Pronghorn Antelope"
+    "category": "nature",
+    "emoji": "🦌",
+    "id": "C2738543-1B62-4D94-A914-3ECF040D81D0",
+    "rarity": "rare",
+    "text": "Pronghorn Antelope"
   },
   {
-    "category" : "nature",
-    "emoji" : "🦅",
-    "id" : "8C5057CC-7613-4CDD-B659-9ACBC78487FD",
-    "rarity" : "rare",
-    "text" : "Bald Eagle"
+    "category": "nature",
+    "emoji": "🦅",
+    "id": "8C5057CC-7613-4CDD-B659-9ACBC78487FD",
+    "rarity": "rare",
+    "text": "Bald Eagle"
   },
   {
-    "category" : "nature",
-    "emoji" : "🐿️",
-    "id" : "D02A26D6-AE5F-4402-A3C7-8E39E20082B1",
-    "rarity" : "uncommon",
-    "text" : "Prairie Dogs"
+    "category": "nature",
+    "emoji": "🐿️",
+    "id": "D02A26D6-AE5F-4402-A3C7-8E39E20082B1",
+    "rarity": "uncommon",
+    "text": "Prairie Dogs"
   },
   {
-    "category" : "nature",
-    "emoji" : "🦙",
-    "id" : "E04D2A5D-C985-42DD-82E9-8C1234E9F839",
-    "rarity" : "uncommon",
-    "text" : "Llama Farm"
+    "category": "nature",
+    "emoji": "🦙",
+    "id": "E04D2A5D-C985-42DD-82E9-8C1234E9F839",
+    "rarity": "uncommon",
+    "text": "Llama Farm"
   },
   {
-    "category" : "nature",
-    "emoji" : "🌾",
-    "id" : "1532CC43-DDA7-400A-BFD0-0ADD8874D565",
-    "rarity" : "veryCommon",
-    "text" : "Wheat Field"
+    "category": "nature",
+    "emoji": "🌾",
+    "id": "1532CC43-DDA7-400A-BFD0-0ADD8874D565",
+    "rarity": "veryCommon",
+    "text": "Wheat Field"
   },
   {
-    "category" : "nature",
-    "emoji" : "🪨",
-    "id" : "B7ED7D37-B022-45D6-8FFE-B8FA780B6684",
-    "rarity" : "common",
-    "text" : "Red Rock Cliffs"
+    "category": "nature",
+    "emoji": "🪨",
+    "id": "B7ED7D37-B022-45D6-8FFE-B8FA780B6684",
+    "rarity": "common",
+    "text": "Red Rock Cliffs"
   },
   {
-    "category" : "nature",
-    "emoji" : "🌊",
-    "id" : "60185DC6-14A2-4F24-A214-F724D068B1C7",
-    "rarity" : "uncommon",
-    "text" : "River Rapids"
+    "category": "nature",
+    "emoji": "🌊",
+    "id": "60185DC6-14A2-4F24-A214-F724D068B1C7",
+    "rarity": "uncommon",
+    "text": "River Rapids"
   },
   {
-    "category" : "nature",
-    "emoji" : "🏚️",
-    "id" : "7912F43E-141F-40A4-B209-125709247146",
-    "rarity" : "uncommon",
-    "text" : "Tobacco Barn"
+    "category": "nature",
+    "emoji": "🏚️",
+    "id": "7912F43E-141F-40A4-B209-125709247146",
+    "rarity": "uncommon",
+    "text": "Tobacco Barn"
   },
   {
-    "category" : "nature",
-    "emoji" : "🎄",
-    "id" : "94D79C63-C9A1-4A13-8157-835C11343E6C",
-    "rarity" : "uncommon",
-    "text" : "Christmas Tree Farm"
+    "category": "nature",
+    "emoji": "🎄",
+    "id": "94D79C63-C9A1-4A13-8157-835C11343E6C",
+    "rarity": "uncommon",
+    "text": "Christmas Tree Farm"
   },
   {
-    "category" : "nature",
-    "emoji" : "🦆",
-    "id" : "D9C87165-5006-4079-89A8-BFCAFA874174",
-    "rarity" : "veryCommon",
-    "text" : "Farm Pond"
+    "category": "nature",
+    "emoji": "🦆",
+    "id": "D9C87165-5006-4079-89A8-BFCAFA874174",
+    "rarity": "veryCommon",
+    "text": "Farm Pond"
   },
   {
-    "category" : "nature",
-    "emoji" : "⛰️",
-    "id" : "9ECF0037-9500-4C09-A8A7-F8DD573C4EAC",
-    "rarity" : "uncommon",
-    "text" : "Limestone Cliffs"
+    "category": "nature",
+    "emoji": "⛰️",
+    "id": "9ECF0037-9500-4C09-A8A7-F8DD573C4EAC",
+    "rarity": "uncommon",
+    "text": "Limestone Cliffs"
   },
   {
-    "category" : "nature",
-    "emoji" : "🐎",
-    "id" : "725B6E6E-33F5-413E-831B-1B0A79B00A99",
-    "rarity" : "common",
-    "text" : "White Fence Horse Farm"
+    "category": "nature",
+    "emoji": "🐎",
+    "id": "725B6E6E-33F5-413E-831B-1B0A79B00A99",
+    "rarity": "common",
+    "text": "White Fence Horse Farm"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🏗️",
-    "id" : "CB998D77-472F-4201-8025-9790FE1B3C82",
-    "rarity" : "common",
-    "text" : "Grain Elevator"
+    "category": "landmarks",
+    "emoji": "🏗️",
+    "id": "CB998D77-472F-4201-8025-9790FE1B3C82",
+    "rarity": "common",
+    "text": "Grain Elevator"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🛢️",
-    "id" : "AA9D965C-F49D-4B42-9B01-9D0976761427",
-    "rarity" : "common",
-    "text" : "Oil Pump Jack"
+    "category": "landmarks",
+    "emoji": "🛢️",
+    "id": "AA9D965C-F49D-4B42-9B01-9D0976761427",
+    "rarity": "common",
+    "text": "Oil Pump Jack"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "⛷️",
-    "id" : "60F03332-B413-4CBF-83C8-A65B266C65D0",
-    "rarity" : "uncommon",
-    "text" : "Ski Lift"
+    "category": "landmarks",
+    "emoji": "⛷️",
+    "id": "60F03332-B413-4CBF-83C8-A65B266C65D0",
+    "rarity": "uncommon",
+    "text": "Ski Lift"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🎈",
-    "id" : "0D71D1E3-D56E-4584-B7DB-FD9EFA88B060",
-    "rarity" : "rare",
-    "text" : "Hot Air Balloon"
+    "category": "landmarks",
+    "emoji": "🎈",
+    "id": "0D71D1E3-D56E-4584-B7DB-FD9EFA88B060",
+    "rarity": "rare",
+    "text": "Hot Air Balloon"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🏛️",
-    "id" : "61F546BA-61C6-4A2A-A616-CFCF2866F011",
-    "rarity" : "uncommon",
-    "text" : "County Courthouse"
+    "category": "landmarks",
+    "emoji": "🏛️",
+    "id": "61F546BA-61C6-4A2A-A616-CFCF2866F011",
+    "rarity": "uncommon",
+    "text": "County Courthouse"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🎣",
-    "id" : "1BEDAAAB-90B2-4CC4-A8BD-237E1D48C8DD",
-    "rarity" : "uncommon",
-    "text" : "Fisherman by Water"
+    "category": "landmarks",
+    "emoji": "🎣",
+    "id": "1BEDAAAB-90B2-4CC4-A8BD-237E1D48C8DD",
+    "rarity": "uncommon",
+    "text": "Fisherman by Water"
   },
   {
-    "category" : "landmarks",
-    "emoji" : "🚣",
-    "id" : "3BD198B9-87C0-47FD-84B6-589A6B23738F",
-    "rarity" : "uncommon",
-    "text" : "Kayaker or Rafter"
+    "category": "landmarks",
+    "emoji": "🚣",
+    "id": "3BD198B9-87C0-47FD-84B6-589A6B23738F",
+    "rarity": "uncommon",
+    "text": "Kayaker or Rafter"
   },
   {
-    "category" : "signs",
-    "emoji" : "🛣️",
-    "id" : "3220B1AF-B3AE-493C-8313-180D7C3D3E69",
-    "rarity" : "uncommon",
-    "text" : "Route 66 Sign"
+    "category": "signs",
+    "emoji": "🛣️",
+    "id": "3220B1AF-B3AE-493C-8313-180D7C3D3E69",
+    "rarity": "uncommon",
+    "text": "Route 66 Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "🦌",
-    "id" : "87D08710-197C-4864-BE1A-C03FA82435E6",
-    "rarity" : "uncommon",
-    "text" : "Elk Crossing Sign"
+    "category": "signs",
+    "emoji": "🦌",
+    "id": "87D08710-197C-4864-BE1A-C03FA82435E6",
+    "rarity": "uncommon",
+    "text": "Elk Crossing Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "🥾",
-    "id" : "4C15F891-AAD8-4653-A52A-E7DD059D3013",
-    "rarity" : "rare",
-    "text" : "Appalachian Trail Sign"
+    "category": "signs",
+    "emoji": "🥾",
+    "id": "4C15F891-AAD8-4653-A52A-E7DD059D3013",
+    "rarity": "rare",
+    "text": "Appalachian Trail Sign"
   },
   {
-    "category" : "signs",
-    "emoji" : "🚨",
-    "id" : "FB9D41AD-3615-480A-9499-B2ACDA6185A8",
-    "rarity" : "common",
-    "text" : "Tornado Siren"
+    "category": "signs",
+    "emoji": "🚨",
+    "id": "FB9D41AD-3615-480A-9499-B2ACDA6185A8",
+    "rarity": "common",
+    "text": "Tornado Siren"
   },
   {
-    "category" : "signs",
-    "emoji" : "🏷️",
-    "id" : "A6F7CA63-1204-4831-8F57-F7BBF95BED53",
-    "rarity" : "uncommon",
-    "text" : "Yard Sale"
+    "category": "signs",
+    "emoji": "🏷️",
+    "id": "A6F7CA63-1204-4831-8F57-F7BBF95BED53",
+    "rarity": "uncommon",
+    "text": "Yard Sale"
   }
 ]
