@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
     @State private var showChallenges = false
+    @State private var showPacks = false
 
     var body: some View {
         GeometryReader { geo in
@@ -237,6 +238,33 @@ struct HomeView: View {
                             completedIDs: appState.dailyState.completedIDs
                         )
                         .presentationDetents([.large])
+                    }
+
+                    Button {
+                        showPacks = true
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "map")
+                                .font(.system(size: 13))
+                            Text("Tile Packs")
+                                .font(AmericanaTheme.barlowBold(15))
+                        }
+                        .foregroundColor(AmericanaTheme.ink)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(AmericanaTheme.parchment)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .strokeBorder(AmericanaTheme.brown.opacity(0.5), lineWidth: 1.5)
+                                )
+                        )
+                    }
+                    .frame(maxWidth: 360)
+                    .sheet(isPresented: $showPacks) {
+                        TilePacksView()
+                            .presentationDetents([.large])
                     }
                 }
 
