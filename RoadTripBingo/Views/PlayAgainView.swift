@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PlayAgainView: View {
     @EnvironmentObject var appState: AppState
+    @State private var showPacks = false
 
     var body: some View {
         ZStack {
@@ -44,6 +45,33 @@ struct PlayAgainView: View {
                                 .background(AmericanaTheme.green)
                                 .foregroundColor(.white)
                                 .cornerRadius(14)
+                        }
+
+                        Button {
+                            showPacks = true
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "map")
+                                    .font(.system(size: 13))
+                                Text("Change Packs")
+                                    .font(AmericanaTheme.barlowBold(15))
+                            }
+                            .foregroundColor(AmericanaTheme.ink)
+                            .frame(maxWidth: 360)
+                            .padding(.vertical, 12)
+                            .padding(.horizontal)
+                            .background(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .fill(AmericanaTheme.parchment)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 14)
+                                            .strokeBorder(AmericanaTheme.brown.opacity(0.5), lineWidth: 1.5)
+                                    )
+                            )
+                        }
+                        .sheet(isPresented: $showPacks) {
+                            TilePacksView()
+                                .presentationDetents([.large])
                         }
                     } else {
                         Text("Waiting for host to start a new game…")
