@@ -112,8 +112,11 @@ struct BingoSquareView: View {
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
-                // SPOTTED! overlay
-                if isMarked {
+                // Mark overlay — FREE PICK! takes priority over SPOTTED!
+                if isFreeMarked {
+                    freePickOverlay
+                        .transition(.scale(scale: 0, anchor: .center).combined(with: .opacity))
+                } else if isMarked {
                     spottedOverlay
                         .transition(.scale(scale: 0, anchor: .center).combined(with: .opacity))
                 }
@@ -132,6 +135,22 @@ struct BingoSquareView: View {
                 Text("SPOTTED!")
                     .font(AmericanaTheme.rye(13))
                     .foregroundColor(AmericanaTheme.red)
+            }
+            .padding(8)
+            .rotationEffect(.degrees(-12))
+        }
+    }
+
+    private var freePickOverlay: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.white.opacity(0.55))
+            ZStack {
+                RoundedRectangle(cornerRadius: 6)
+                    .strokeBorder(AmericanaTheme.green, lineWidth: 2)
+                Text("FREE PICK!")
+                    .font(AmericanaTheme.rye(13))
+                    .foregroundColor(AmericanaTheme.green)
             }
             .padding(8)
             .rotationEffect(.degrees(-12))
