@@ -60,6 +60,10 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     private var tokensSpentThisRound = 0
     private var opponentMarkCountsThisRound: [String: Int] = [:]
 
+    // MARK: - Handicap (host only)
+    private var lastRoundWinner: String? = nil
+    private var consecutiveLosses: [String: Int] = [:]
+
     // MARK: - Post-game
     @Published var winHistory: [String: Int] = {
         guard let data = UserDefaults.standard.data(forKey: "winHistory"),
@@ -152,6 +156,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         opponentBoards = [:]
         reserveSquares = []
         isHost = false
+        lastRoundWinner = nil
+        consecutiveLosses = [:]
         playerDifficulty = .backseat
         playerDifficulties = [:]
         tokenBalance = 0
@@ -226,11 +232,23 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             localBoard: localBoard
         )
         evaluateChallenges(event: .roundEnded(context: endCtx))
+        lastRoundWinner = playerName
         screen = .win(winnerName: playerName)
     }
 
     func requestPlayAgain() {
         guard isHost else { return }
+        // Update consecutive-loss streaks based on last winner.
+        if let winner = lastRoundWinner {
+            let allNames = [playerName] + connectedPlayerNames
+            for name in allNames {
+                if name == winner {
+                    consecutiveLosses[name] = 0
+                } else {
+                    consecutiveLosses[name, default: 0] += 1
+                }
+            }
+        }
         dealAndLaunchRound { [weak self] boards in
             self?.multipeerSession?.send(.playAgain(boards: boards))
         }
@@ -246,7 +264,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             let diff = name == playerName ? playerDifficulty : (playerDifficulties[name] ?? .backseat)
             return (name: name, difficulty: diff)
         }
-        let boards = SquarePool.dealBoards(for: players, from: pool)
+        let boards = SquarePool.dealBoards(for: players,
+                                           handicapLevels: consecutiveLosses,
+                                           from: pool)
         let usedIDs = Set(boards.values.flatMap { $0 }.map(\.id))
         let reserve = SquarePool.dealReserve(for: players, count: 6, excluding: usedIDs, from: pool)
 
@@ -271,6 +291,25 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             multipeerSession?.send(.reserveDealt(toName: name, squares: reserve[name] ?? []))
         }
         earnTokens(2, reason: "Round start")
+
+        // Silently deliver handicap token bonuses (host only, no toast).
+        if isHost {
+            for name in connectedPlayerNames {
+                let level = min(consecutiveLosses[name, default: 0], 3)
+                let bonus = AppState.handicapBonusTokens(forLevel: level)
+                if bonus > 0 {
+                    multipeerSession?.send(.handicapBonus(toPlayer: name, tokens: bonus))
+                }
+            }
+            // Apply host's own bonus directly — no toast.
+            let localLevel = min(consecutiveLosses[playerName, default: 0], 3)
+            let localBonus = AppState.handicapBonusTokens(forLevel: localLevel)
+            if localBonus > 0 {
+                tokenBalance += localBonus
+                multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
+            }
+        }
+
         screen = .game
 
         if isHost {
@@ -360,6 +399,16 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         tokenBalance += effective
         pendingToast = ToastEvent(message: "+\(effective)🟡 \(reason)", style: .earn)
         multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
+    }
+
+    // Returns the silent token bonus for a player at the given consecutive-loss level.
+    static func handicapBonusTokens(forLevel level: Int) -> Int {
+        switch min(level, 3) {
+        case 1: return 3
+        case 2: return 5
+        case 3: return 7
+        default: return 0
+        }
     }
 
     private func resetRound() {
@@ -648,6 +697,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
         case .bingoAnnounced(let byName):
             winHistory[byName, default: 0] += 1
+            lastRoundWinner = byName
             screen = .win(winnerName: byName)
             dailyState.roundsPlayedToday += 1
             dailyState.save()
@@ -724,6 +774,12 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         case .boardShuffled(let byName, let squares):
             opponentBoards[byName] = squares
             // opponentMarked[byName] UUID set remains valid — only tile positions moved
+
+        case .handicapBonus(let toPlayer, let tokens):
+            // Silently credit tokens — no toast, no earnTokens call.
+            guard toPlayer == playerName, tokens > 0 else { return }
+            tokenBalance += tokens
+            multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
         }
     }
 

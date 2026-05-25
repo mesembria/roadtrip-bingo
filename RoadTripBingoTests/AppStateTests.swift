@@ -228,4 +228,24 @@ final class AppStateTests: XCTestCase {
 
         XCTAssertTrue(state.recentOpponentMarks.isEmpty)
     }
+
+    func test_handicapBonusTokens_level0_returnsZero() {
+        XCTAssertEqual(AppState.handicapBonusTokens(forLevel: 0), 0)
+    }
+
+    func test_handicapBonusTokens_level1_returns3() {
+        XCTAssertEqual(AppState.handicapBonusTokens(forLevel: 1), 3)
+    }
+
+    func test_handicapBonusTokens_level2_returns5() {
+        XCTAssertEqual(AppState.handicapBonusTokens(forLevel: 2), 5)
+    }
+
+    func test_handicapBonusTokens_level3_returns7() {
+        XCTAssertEqual(AppState.handicapBonusTokens(forLevel: 3), 7)
+    }
+
+    func test_handicapBonusTokens_levelAbove3_returns7() {
+        XCTAssertEqual(AppState.handicapBonusTokens(forLevel: 99), 7)
+    }
 }
