@@ -43,6 +43,51 @@ enum SquarePool {
         return result
     }
 
+    // Returns the rarity weight distribution for a player at the given handicap level.
+    // Each level shifts 4% weight from rare/veryRare toward veryCommon/common.
+    // When a source bucket is depleted the deficit cascades to the next-hardest bucket.
+    // Level is clamped to 3; weights always sum to 1.0.
+    static func adjustedWeights(for difficulty: BoardDifficulty,
+                                handicapLevel: Int) -> [SquareRarity: Double] {
+        let level = min(handicapLevel, 3)
+        guard level > 0 else { return difficulty.weights }
+
+        var w = difficulty.weights
+        let delta = 0.04
+
+        for _ in 0..<level {
+            // Reduce rare; cascade deficit to uncommon if rare is depleted.
+            let rareTaken = min(delta, w[.rare, default: 0])
+            w[.rare, default: 0] -= rareTaken
+            let rareDeficit = delta - rareTaken
+            if rareDeficit > 0 {
+                let uncommonTaken = min(rareDeficit, w[.uncommon, default: 0])
+                w[.uncommon, default: 0] -= uncommonTaken
+            }
+
+            // Reduce veryRare; cascade deficit to uncommon if veryRare is depleted.
+            let veryRareTaken = min(delta, w[.veryRare, default: 0])
+            w[.veryRare, default: 0] -= veryRareTaken
+            let veryRareDeficit = delta - veryRareTaken
+            if veryRareDeficit > 0 {
+                let uncommonTaken = min(veryRareDeficit, w[.uncommon, default: 0])
+                w[.uncommon, default: 0] -= uncommonTaken
+            }
+
+            w[.veryCommon, default: 0] += delta
+            w[.common, default: 0] += delta
+        }
+
+        // Renormalise to guard against floating-point drift.
+        let total = w.values.reduce(0, +)
+        if total > 0 {
+            for rarity in SquareRarity.allCases {
+                w[rarity, default: 0] /= total
+            }
+        }
+        return w
+    }
+
     // MARK: - Private helpers
 
     private static func makeQueues(from pool: [BingoSquare]) -> [SquareRarity: [BingoSquare]] {

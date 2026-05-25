@@ -100,4 +100,64 @@ final class SquarePoolTests: XCTestCase {
         let bIDs = Set(reserve["B"]!.map(\.id))
         XCTAssertTrue(aIDs.isDisjoint(with: bIDs))
     }
+
+    // MARK: - adjustedWeights
+
+    func test_adjustedWeights_level0_returnsBaseDifficultyWeights() {
+        let w = SquarePool.adjustedWeights(for: .navigator, handicapLevel: 0)
+        for rarity in SquareRarity.allCases {
+            XCTAssertEqual(w[rarity, default: 0],
+                           BoardDifficulty.navigator.weights[rarity, default: 0],
+                           accuracy: 0.001)
+        }
+    }
+
+    func test_adjustedWeights_level1_navigatorShiftsRareAndVeryRareDown() {
+        let w = SquarePool.adjustedWeights(for: .navigator, handicapLevel: 1)
+        // rare: 0.35 − 0.04 = 0.31; veryRare: 0.15 − 0.04 = 0.11
+        XCTAssertEqual(w[.rare, default: 0], 0.31, accuracy: 0.001)
+        XCTAssertEqual(w[.veryRare, default: 0], 0.11, accuracy: 0.001)
+        XCTAssertEqual(w[.veryCommon, default: 0], 0.09, accuracy: 0.001)
+        XCTAssertEqual(w[.common, default: 0], 0.19, accuracy: 0.001)
+        XCTAssertEqual(w[.uncommon, default: 0], 0.30, accuracy: 0.001)
+    }
+
+    func test_adjustedWeights_level2_navigatorContinuesShift() {
+        let w = SquarePool.adjustedWeights(for: .navigator, handicapLevel: 2)
+        XCTAssertEqual(w[.rare, default: 0], 0.27, accuracy: 0.001)
+        XCTAssertEqual(w[.veryRare, default: 0], 0.07, accuracy: 0.001)
+        XCTAssertEqual(w[.veryCommon, default: 0], 0.13, accuracy: 0.001)
+        XCTAssertEqual(w[.common, default: 0], 0.23, accuracy: 0.001)
+    }
+
+    func test_adjustedWeights_sumAlwaysEqualsOne() {
+        for difficulty in BoardDifficulty.allCases {
+            for level in 0...4 {
+                let w = SquarePool.adjustedWeights(for: difficulty, handicapLevel: level)
+                let sum = w.values.reduce(0, +)
+                XCTAssertEqual(sum, 1.0, accuracy: 0.001,
+                    "Weights for \(difficulty) at level \(level) must sum to 1.0")
+            }
+        }
+    }
+
+    func test_adjustedWeights_backseat_cascadesIntoUncommonWhenRareExhausted() {
+        // Backseat starts with rare=0.05, veryRare=0.00.
+        // After level 2: rare and veryRare should both be 0.
+        let w = SquarePool.adjustedWeights(for: .backseat, handicapLevel: 2)
+        XCTAssertEqual(w[.rare, default: 0], 0.0, accuracy: 0.001)
+        XCTAssertEqual(w[.veryRare, default: 0], 0.0, accuracy: 0.001)
+        // Uncommon should have shrunk to absorb the cascade deficit
+        XCTAssertLessThan(w[.uncommon, default: 0],
+                          BoardDifficulty.backseat.weights[.uncommon, default: 0])
+    }
+
+    func test_adjustedWeights_cappedAt3() {
+        let w3 = SquarePool.adjustedWeights(for: .navigator, handicapLevel: 3)
+        let w5 = SquarePool.adjustedWeights(for: .navigator, handicapLevel: 5)
+        for rarity in SquareRarity.allCases {
+            XCTAssertEqual(w3[rarity, default: 0], w5[rarity, default: 0], accuracy: 0.001,
+                "Level >3 should produce same weights as level 3")
+        }
+    }
 }
