@@ -63,7 +63,7 @@ Tokens are earned automatically by `AppState` on game events (first mark: 1, clo
 ### Layout Notes
 
 - The app targets **iPad only** in landscape. `GameView` detects orientation via `GeometryReader` and switches between `portraitLayout` and `landscapeLayout`.
-- Landscape layout: 130pt left sidebar (opponents + opponent mark feed + BINGO button) | flexible center grid | 126pt right sidebar (power-ups).
+- Landscape layout: 180pt left sidebar (opponents + opponent mark feed + BINGO button) | flexible center grid | 126pt right sidebar (power-ups).
 - Portrait layout (top to bottom): opponent HUD | grid (GeometryReader) | BINGO button | opponent mark feed (reserved 90pt slot) | power-ups.
 - `BingoGridView` has a fixed 44pt header bar. When sizing the grid in landscape, constrain **width** to `min(available_width, available_height - 44)` so the header + grid area fit without overflowing.
 - `HomeView` uses a `GeometryReader`-driven split: left panel (image background + badge) gets `total_width - 400pt`, right panel (controls) gets a fixed `400pt`.
