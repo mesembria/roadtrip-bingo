@@ -22,6 +22,9 @@ struct BingoSquareView: View {
                 }
             }
             .buttonStyle(.plain)
+            .sensoryFeedback(trigger: isMarked) { _, new in
+                new ? .impact(.light) : .selection
+            }
         }
     }
 
@@ -82,8 +85,8 @@ struct BingoSquareView: View {
                             img
                                 .resizable()
                                 .scaledToFit()
-                        } else {
-                            Text(square.emoji)
+                        } else if let emoji = square.emoji {
+                            Text(emoji)
                                 .font(.system(size: geo.size.width * 0.38))
                         }
                     }
