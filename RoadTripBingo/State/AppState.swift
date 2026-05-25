@@ -191,7 +191,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         guard isHost else { return }
         dealAndLaunchRound { [weak self] boards in
             self?.multipeerSession?.stopAdvertising()
-            self?.multipeerSession?.send(.gameStarted(boards: boards))
+            self?.multipeerSession?.send(.gameStarted(boards: boards, activePackIDs: self?.activePackIDs ?? []))
         }
     }
 
@@ -267,7 +267,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             }
         }
         dealAndLaunchRound { [weak self] boards in
-            self?.multipeerSession?.send(.playAgain(boards: boards))
+            self?.multipeerSession?.send(.playAgain(boards: boards, activePackIDs: self?.activePackIDs ?? []))
         }
     }
 
@@ -677,7 +677,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func multipeerSession(_ session: MultipeerSession, didReceive message: MultipeerMessage, from peerName: String) {
         switch message {
-        case .gameStarted(let boards):
+        case .gameStarted(let boards, let activePackIDs):
+            self.activePackIDs = activePackIDs
             rollDailyChallengesIfNeeded()
             if let mySquares = boards[playerName] {
                 localBoard = BingoBoard(squares: mySquares)
@@ -729,7 +730,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             )
             evaluateChallenges(event: .roundEnded(context: endCtx))
 
-        case .playAgain(let boards):
+        case .playAgain(let boards, let activePackIDs):
+            self.activePackIDs = activePackIDs
             rollDailyChallengesIfNeeded()
             if let mySquares = boards[playerName] {
                 localBoard = BingoBoard(squares: mySquares)

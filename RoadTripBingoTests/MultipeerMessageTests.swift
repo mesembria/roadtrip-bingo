@@ -11,12 +11,13 @@ final class MultipeerMessageTests: XCTestCase {
     func test_gameStarted_roundtrip() throws {
         let square = BingoSquare(id: UUID(), text: "Cow", emoji: "🐄", category: .nature, rarity: .veryCommon)
         let boards: [String: [BingoSquare]] = ["Emma": [square]]
-        let msg = MultipeerMessage.gameStarted(boards: boards)
+        let msg = MultipeerMessage.gameStarted(boards: boards, activePackIDs: ["farm-country"])
         let decoded = try roundtrip(msg)
-        guard case .gameStarted(let decodedBoards) = decoded else {
+        guard case .gameStarted(let decodedBoards, let packIDs) = decoded else {
             return XCTFail("Wrong case decoded")
         }
         XCTAssertEqual(decodedBoards["Emma"]?.first?.text, "Cow")
+        XCTAssertEqual(packIDs, ["farm-country"])
     }
 
     func test_squareToggled_roundtrip() throws {
@@ -41,12 +42,13 @@ final class MultipeerMessageTests: XCTestCase {
     func test_playAgain_roundtrip() throws {
         let square = BingoSquare(id: UUID(), text: "Barn", emoji: "🏚️", category: .nature, rarity: .veryCommon)
         let boards: [String: [BingoSquare]] = ["Zoe": [square]]
-        let msg = MultipeerMessage.playAgain(boards: boards)
+        let msg = MultipeerMessage.playAgain(boards: boards, activePackIDs: [])
         let decoded = try roundtrip(msg)
-        guard case .playAgain(let decodedBoards) = decoded else {
+        guard case .playAgain(let decodedBoards, let packIDs) = decoded else {
             return XCTFail("Wrong case decoded")
         }
         XCTAssertEqual(decodedBoards["Zoe"]?.first?.text, "Barn")
+        XCTAssertTrue(packIDs.isEmpty)
     }
 
     func test_difficultyChosen_roundtrip() throws {
@@ -157,5 +159,20 @@ final class MultipeerMessageTests: XCTestCase {
         }
         XCTAssertEqual(toPlayer, "Theo")
         XCTAssertEqual(tokens, 5)
+    }
+
+    func test_gameStarted_backwardCompat_missingActivePackIDsDecodesAsEmpty() throws {
+        // Simulate a message from an older client that doesn't send activePackIDs
+        let json = """
+        {
+          "type": "gameStarted",
+          "boards": {}
+        }
+        """
+        let decoded = try JSONDecoder().decode(MultipeerMessage.self, from: Data(json.utf8))
+        guard case .gameStarted(_, let packIDs) = decoded else {
+            return XCTFail("Wrong case")
+        }
+        XCTAssertTrue(packIDs.isEmpty, "Missing activePackIDs should decode as empty array")
     }
 }
