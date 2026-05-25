@@ -70,7 +70,7 @@ struct TilePacksView: View {
     }
 
     private var activePool: [BingoSquare] {
-        let packs = PackManager.packs(forIDs: appState.activePackIDs)
+        let packs = allPacks.filter { appState.activePackIDs.contains($0.id) }
         return SquarePool.buildPool(base: basePool, activePacks: packs)
     }
 

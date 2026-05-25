@@ -151,6 +151,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     }
 
     func togglePack(_ packID: String) {
+        guard isHost else { return }
         if activePackIDs.contains(packID) {
             activePackIDs.removeAll { $0 == packID }
         } else {

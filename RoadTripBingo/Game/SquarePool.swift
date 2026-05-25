@@ -133,8 +133,9 @@ enum SquarePool {
                                    category: square.category, rarity: newRarity)
             }
 
-        // 4. Append exclusive tiles from all active packs
-        let exclusiveTiles = activePacks.flatMap { $0.tiles }
+        // 4. Append exclusive tiles from all active packs (deduplicated by UUID)
+        var seenIDs = Set(filteredBase.map(\.id))
+        let exclusiveTiles = activePacks.flatMap { $0.tiles }.filter { seenIDs.insert($0.id).inserted }
 
         return filteredBase + exclusiveTiles
     }

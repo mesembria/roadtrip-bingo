@@ -175,4 +175,19 @@ final class MultipeerMessageTests: XCTestCase {
         }
         XCTAssertTrue(packIDs.isEmpty, "Missing activePackIDs should decode as empty array")
     }
+
+    func test_playAgain_backwardCompat_missingActivePackIDsDecodesAsEmpty() throws {
+        // Simulate a message from an older client that doesn't send activePackIDs
+        let json = """
+        {
+          "type": "playAgain",
+          "boards": {}
+        }
+        """
+        let decoded = try JSONDecoder().decode(MultipeerMessage.self, from: Data(json.utf8))
+        guard case .playAgain(_, let packIDs) = decoded else {
+            return XCTFail("Wrong case")
+        }
+        XCTAssertTrue(packIDs.isEmpty, "Missing activePackIDs should decode as empty array")
+    }
 }
