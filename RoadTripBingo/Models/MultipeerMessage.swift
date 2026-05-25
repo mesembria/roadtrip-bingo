@@ -12,18 +12,20 @@ enum MultipeerMessage: Codable {
     case reserveDealt(toName: String, squares: [BingoSquare])
     case roundModifier(RoundModifier)
     case boardShuffled(byName: String, squares: [BingoSquare])
+    case handicapBonus(toPlayer: String, tokens: Int)
 
     private enum CodingKeys: String, CodingKey {
         case type, boards, position, isMarked, byName, difficulty
         case newBalance, powerUp, targetPlayer, targetIndex, replacementSquare
         case toName, squares
         case modifier, shuffledSquares, shuffledByName
+        case handicapToPlayer, handicapTokens
     }
 
     private enum MessageType: String, Codable {
         case gameStarted, squareToggled, bingoAnnounced, playAgain, difficultyChosen
         case tokenEarned, powerUpUsed, reserveDealt
-        case roundModifier, boardShuffled
+        case roundModifier, boardShuffled, handicapBonus
     }
 
     func encode(to encoder: Encoder) throws {
@@ -68,6 +70,10 @@ enum MultipeerMessage: Codable {
             try c.encode(MessageType.boardShuffled, forKey: .type)
             try c.encode(byName, forKey: .shuffledByName)
             try c.encode(squares, forKey: .shuffledSquares)
+        case .handicapBonus(let toPlayer, let tokens):
+            try c.encode(MessageType.handicapBonus, forKey: .type)
+            try c.encode(toPlayer, forKey: .handicapToPlayer)
+            try c.encode(tokens, forKey: .handicapTokens)
         }
     }
 
@@ -115,6 +121,11 @@ enum MultipeerMessage: Codable {
             self = .boardShuffled(
                 byName: try c.decode(String.self, forKey: .shuffledByName),
                 squares: try c.decode([BingoSquare].self, forKey: .shuffledSquares)
+            )
+        case .handicapBonus:
+            self = .handicapBonus(
+                toPlayer: try c.decode(String.self, forKey: .handicapToPlayer),
+                tokens: try c.decode(Int.self, forKey: .handicapTokens)
             )
         }
     }

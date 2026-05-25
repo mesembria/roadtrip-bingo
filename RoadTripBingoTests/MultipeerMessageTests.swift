@@ -148,4 +148,14 @@ final class MultipeerMessageTests: XCTestCase {
         XCTAssertEqual(decodedSquares.count, 1)
         XCTAssertEqual(decodedSquares[0].id, BingoSquare.freeSquareID)
     }
+
+    func test_handicapBonus_roundtrip() throws {
+        let msg = MultipeerMessage.handicapBonus(toPlayer: "Theo", tokens: 5)
+        let decoded = try roundtrip(msg)
+        guard case .handicapBonus(let toPlayer, let tokens) = decoded else {
+            return XCTFail("Wrong case decoded")
+        }
+        XCTAssertEqual(toPlayer, "Theo")
+        XCTAssertEqual(tokens, 5)
+    }
 }
