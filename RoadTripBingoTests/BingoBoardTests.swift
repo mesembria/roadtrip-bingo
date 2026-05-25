@@ -133,4 +133,38 @@ final class BingoBoardTests: XCTestCase {
 
         XCTAssertEqual(board.squares[0].id, tile0.id, "Marked tile must stay at its position")
     }
+
+    // MARK: - markFree / freeMarked
+
+    func test_markFree_addsToBothMarkedAndFreeMarked() {
+        var board = makeBoard()
+        board.markFree(at: 0)
+        XCTAssertTrue(board.isMarked(at: 0))
+        XCTAssertTrue(board.freeMarked.contains(board.squares[0].id))
+    }
+
+    func test_mark_doesNotAddToFreeMarked() {
+        var board = makeBoard()
+        board.mark(at: 0)
+        XCTAssertTrue(board.isMarked(at: 0))
+        XCTAssertFalse(board.freeMarked.contains(board.squares[0].id))
+    }
+
+    func test_unmark_removesFromFreeMarked() {
+        var board = makeBoard()
+        board.markFree(at: 0)
+        board.unmark(at: 0)
+        XCTAssertFalse(board.isMarked(at: 0))
+        XCTAssertFalse(board.freeMarked.contains(board.squares[0].id))
+    }
+
+    func test_replaceSquare_removesOldIDFromFreeMarked() {
+        var board = makeBoard()
+        board.markFree(at: 0)
+        let newSquare = BingoSquare(id: UUID(), text: "New", emoji: "⭐", category: .vehicles, rarity: .rare)
+        board.replaceSquare(at: 0, with: newSquare)
+        XCTAssertFalse(board.isMarked(at: 0))
+        // freeMarked must not contain either the old or new ID
+        XCTAssertTrue(board.freeMarked.isEmpty)
+    }
 }
