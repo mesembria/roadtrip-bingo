@@ -167,4 +167,12 @@ final class BingoBoardTests: XCTestCase {
         // freeMarked must not contain either the old or new ID
         XCTAssertTrue(board.freeMarked.isEmpty)
     }
+
+    func test_toggle_unmark_removesFromFreeMarked() {
+        var board = makeBoard()
+        board.markFree(at: 0)
+        board.toggle(at: 0)   // unmark
+        XCTAssertFalse(board.isMarked(at: 0))
+        XCTAssertFalse(board.freeMarked.contains(board.squares[0].id))
+    }
 }

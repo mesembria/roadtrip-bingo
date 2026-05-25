@@ -18,7 +18,12 @@ struct BingoBoard {
         guard (0..<25).contains(position) else { return }
         let id = squares[position].id
         guard id != BingoSquare.freeSquareID else { return }
-        if marked.contains(id) { marked.remove(id) } else { marked.insert(id) }
+        if marked.contains(id) {
+            marked.remove(id)
+            freeMarked.remove(id)   // keep sets consistent on unmark
+        } else {
+            marked.insert(id)
+        }
     }
 
     // Force-marks a square without toggling. No-op on the FREE square.
