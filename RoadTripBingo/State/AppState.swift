@@ -777,6 +777,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
         case .handicapBonus(let toPlayer, let tokens):
             // Silently credit tokens — no toast, no earnTokens call.
+            // tokens > 0 is a defensive guard; the host already filters before sending.
             guard toPlayer == playerName, tokens > 0 else { return }
             tokenBalance += tokens
             multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
@@ -796,6 +797,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         opponentMarked.removeValue(forKey: peerName)
         opponentBoards.removeValue(forKey: peerName)
         tokenBalances.removeValue(forKey: peerName)
+        consecutiveLosses.removeValue(forKey: peerName)
         recentOpponentMarks.removeAll { $0.opponentName == peerName }
     }
 
