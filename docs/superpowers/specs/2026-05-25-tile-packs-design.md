@@ -98,7 +98,9 @@ The selection UI is presented as a sheet containing a **2-column grid** of pack 
 
 Multiple packs can be selected simultaneously. Tapping a selected pack deselects it. No minimum or maximum selection enforced in the data layer (though the pool size warning handles the empty-pool edge case).
 
-**Pool size indicator:** A line below the grid shows the estimated tile count for the current selection. If the count would fall below the minimum needed for the current player count, a warning is shown inline (e.g., "Not enough tiles for 3 players — add another pack or deselect players").
+**Rarity distribution bar:** Below the grid, a segmented horizontal bar shows the rarity breakdown of the combined active pool. Five color-coded segments represent the five rarity tiers (dark green → mid green → amber → red → deep red, from veryCommon to veryRare). A legend row beneath the bar shows the tile count per tier. The bar updates live as packs are toggled. This gives players an at-a-glance read on how easy or hard their current pool skews.
+
+**Pool size indicator:** A line below the rarity bar shows the estimated tile count for the current selection. If the count would fall below the minimum needed for the current player count, a warning is shown inline (e.g., "Not enough tiles for 3 players — add another pack or deselect players").
 
 ### Multiplayer
 
