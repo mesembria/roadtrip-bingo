@@ -60,6 +60,18 @@ Tile images live in `Resources/TileImages/` named by square UUID. Icons live in 
 
 Tokens are earned automatically by `AppState` on game events (first mark: 1, close call: 3, completed line: 2, BINGO: 5, round start: 2) and spent on power-ups (3–7 tokens depending on type). Toast notifications use `ToastEvent` and surface via `pendingToast` → `TokenToastView`. Messages containing the 🟡 emoji have it replaced inline with the token PNG icon.
 
+### iPad-Only Platform Constraints
+
+**This app runs exclusively on iPad** (`TARGETED_DEVICE_FAMILY: "2"`). Before implementing any feature, verify it works on iPad. If the iPad does not support something, **do not implement it** — not even as a best-effort attempt that silently fails.
+
+Known iPad hardware and API limitations to be aware of:
+
+- **No haptic feedback.** iPads have no vibration motor. All haptic APIs — `UIFeedbackGenerator` (and its subclasses), SwiftUI's `.sensoryFeedback()`, and `CHHapticEngine` — do nothing on iPad. Do not add haptic feedback to this app.
+- **No 3D Touch / Force Touch.** iPad does not support pressure-sensitive touch.
+- **No iPhone-specific sensors.** Barometer, proximity sensor, and other iPhone-only hardware are absent on most iPad models.
+
+When evaluating a feature: check `UIDevice` capabilities or Apple's documentation for the specific API. If it is documented as unsupported on iPad, skip it entirely or find an iPad-native alternative (e.g. audio or visual feedback instead of haptics).
+
 ### Layout Notes
 
 - The app targets **iPad only** in landscape. `GameView` detects orientation via `GeometryReader` and switches between `portraitLayout` and `landscapeLayout`.
