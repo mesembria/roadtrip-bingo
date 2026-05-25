@@ -13,13 +13,17 @@ enum SquarePool {
     // Non-overlap between players is best-effort; overlaps may occur when a rarity bucket runs thin.
     static func dealBoards(
         for players: [(name: String, difficulty: BoardDifficulty)],
+        handicapLevels: [String: Int] = [:],
         from pool: [BingoSquare]
     ) -> [String: [BingoSquare]] {
         precondition(pool.count >= players.count * 24)
         var queues = makeQueues(from: pool)
         var result: [String: [BingoSquare]] = [:]
         for player in players {
-            result[player.name] = drawBoard(for: player.difficulty, from: &queues)
+            let level = handicapLevels[player.name, default: 0]
+            result[player.name] = drawBoard(for: player.difficulty,
+                                            handicapLevel: level,
+                                            from: &queues)
         }
         return result
     }
@@ -102,10 +106,12 @@ enum SquarePool {
 
     private static func drawBoard(
         for difficulty: BoardDifficulty,
+        handicapLevel: Int = 0,
         from queues: inout [SquareRarity: [BingoSquare]],
         total: Int = 24
     ) -> [BingoSquare] {
-        let targets = targetCounts(for: difficulty, total: total)
+        let w = adjustedWeights(for: difficulty, handicapLevel: handicapLevel)
+        let targets = targetCounts(weights: w, total: total)
         var squares: [BingoSquare] = []
         for rarity in SquareRarity.allCases {
             squares += draw(targets[rarity, default: 0], from: &queues[rarity]!)
@@ -136,6 +142,10 @@ enum SquarePool {
     }
 
     private static func targetCounts(for difficulty: BoardDifficulty, total: Int = 24) -> [SquareRarity: Int] {
+        targetCounts(weights: difficulty.weights, total: total)
+    }
+
+    private static func targetCounts(weights: [SquareRarity: Double], total: Int = 24) -> [SquareRarity: Int] {
         let tiers = SquareRarity.allCases
         var counts: [SquareRarity: Int] = [:]
         var running = 0
@@ -144,7 +154,7 @@ enum SquarePool {
                 counts[rarity] = max(0, total - running)
                 break
             }
-            let n = Int((Double(total) * difficulty.weights[rarity, default: 0]).rounded())
+            let n = Int((Double(total) * weights[rarity, default: 0]).rounded())
             counts[rarity] = n
             running += n
         }

@@ -160,4 +160,14 @@ final class SquarePoolTests: XCTestCase {
                 "Level >3 should produce same weights as level 3")
         }
     }
+
+    func test_dealBoards_withHandicapLevel_stillProducesValidBoard() {
+        let pool = SquarePool.load()
+        let players = [(name: "A", difficulty: BoardDifficulty.navigator)]
+        let boards = SquarePool.dealBoards(for: players,
+                                           handicapLevels: ["A": 3],
+                                           from: pool)
+        XCTAssertEqual(boards["A"]?.count, 25, "Handicapped board must still have 25 squares")
+        XCTAssertEqual(boards["A"]?[12].id, BingoSquare.freeSquareID, "FREE must be at index 12")
+    }
 }
