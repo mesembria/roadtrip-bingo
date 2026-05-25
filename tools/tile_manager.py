@@ -5,11 +5,14 @@ Usage: GEMINI_API_KEY=your_key python3 tools/tile_manager.py
 Opens a browser UI for managing tiles in squares.json and TileImages/.
 """
 
-import base64, json, os, sys, uuid, webbrowser
+import base64, json, os, uuid, webbrowser
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 
-import requests
+try:
+    import requests
+except ImportError:
+    raise SystemExit("requests is required: pip install requests")
 
 # ── Paths (resolved relative to this script) ────────────────────────────────
 SCRIPT_DIR   = Path(__file__).parent
@@ -260,7 +263,6 @@ body::before {
     <div class="header-logo">Road Trip Bingo <span>/ Tile Manager</span></div>
     <div class="header-stats">
       <div class="stat"><span class="stat-val" id="stat-tiles">—</span><span class="stat-lbl">Tiles</span></div>
-      <div class="stat"><span class="stat-val" id="stat-images">—</span><span class="stat-lbl">Images</span></div>
       <div class="stat"><span class="stat-val" id="stat-cats">—</span><span class="stat-lbl">Categories</span></div>
     </div>
   </header>
@@ -390,7 +392,6 @@ async function init() {
 
 function updateStats() {
   document.getElementById('stat-tiles').textContent = tiles.length;
-  document.getElementById('stat-images').textContent = tiles.length;
   document.getElementById('stat-cats').textContent = CATEGORIES.length;
 }
 
@@ -427,7 +428,7 @@ function renderTable() {
     return '<div class="row' + sel + '" onclick="selectTile(\\'' + t.id + '\\')">' +
       '<div class="row-thumb"><img src="/api/image/' + t.id + '" alt="" onerror="this.style.display=\\'none\\'"></div>' +
       '<div class="row-name">' + esc(t.text) + '</div>' +
-      '<div class="row-emoji">' + t.emoji + '</div>' +
+      '<div class="row-emoji">' + esc(t.emoji) + '</div>' +
       '<div class="row-cat">' + esc(t.category) + '</div>' +
       '<div class="rarity ' + (RARITY_CLS[t.rarity] || '') + '">' + esc(t.rarity) + '</div>' +
       '</div>';
@@ -522,6 +523,7 @@ function hidePromptEditor() {
 
 async function runGeneration() {
   const prompt = document.getElementById('prompt-textarea').value.trim();
+  if (!prompt) { alert('Enter a prompt before running generation.'); return; }
   document.getElementById('prompt-editor').classList.remove('visible');
   document.getElementById('gen-loading').classList.add('visible');
   try {
@@ -544,14 +546,17 @@ async function runGeneration() {
 
 async function approveImage() {
   if (!pendingImageB64) return;
+  const b64 = pendingImageB64;  // capture before any async/null
   if (!isAddMode && selectedId) {
     const r = await fetch('/api/tiles/' + selectedId + '/image', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({image_b64: pendingImageB64}),
+      body: JSON.stringify({image_b64: b64}),
     });
     if (!r.ok) { alert('Failed to save image'); return; }
+    // Image is now on disk; clear pending so stale data can't leak into future flows
+    pendingImageB64 = null;
   }
-  setCurrentImage('data:image/png;base64,' + pendingImageB64, document.getElementById('field-emoji').value);
+  setCurrentImage('data:image/png;base64,' + b64, document.getElementById('field-emoji').value);
   document.getElementById('gen-result').classList.remove('visible');
   document.getElementById('btn-generate').style.display = '';
 }
@@ -694,26 +699,29 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             self.send_error_json(404, "Not found")
 
     def do_POST(self):
-        if self.path == "/api/generate":
+        path = self.path.split("?")[0]
+        if path == "/api/generate":
             self._handle_generate()
-        elif self.path == "/api/tiles":
+        elif path == "/api/tiles":
             self._handle_add_tile()
-        elif self.path.startswith("/api/tiles/") and self.path.endswith("/image"):
-            tile_id = self.path[len("/api/tiles/"):-len("/image")]
+        elif path.startswith("/api/tiles/") and path.endswith("/image"):
+            tile_id = path[len("/api/tiles/"):-len("/image")]
             self._handle_save_image(tile_id)
         else:
             self.send_error_json(404, "Not found")
 
     def do_PUT(self):
-        if self.path.startswith("/api/tiles/"):
-            tile_id = self.path[len("/api/tiles/"):]
+        path = self.path.split("?")[0]
+        if path.startswith("/api/tiles/"):
+            tile_id = path[len("/api/tiles/"):]
             self._handle_update_tile(tile_id)
         else:
             self.send_error_json(404, "Not found")
 
     def do_DELETE(self):
-        if self.path.startswith("/api/tiles/"):
-            tile_id = self.path[len("/api/tiles/"):]
+        path = self.path.split("?")[0]
+        if path.startswith("/api/tiles/"):
+            tile_id = path[len("/api/tiles/"):]
             self._handle_delete_tile(tile_id)
         else:
             self.send_error_json(404, "Not found")
@@ -810,6 +818,10 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         self.send_json({"deleted": tile_id})
 
     def _handle_save_image(self, tile_id: str):
+        tiles = load_tiles()
+        if not any(t["id"] == tile_id for t in tiles):
+            self.send_error_json(404, f"Tile {tile_id} not found")
+            return
         body = self.read_json_body()
         image_b64 = body.get("image_b64", "")
         if not image_b64:
