@@ -102,6 +102,52 @@ enum SquarePool {
         return w
     }
 
+    /// Combines the base pool with active packs:
+    /// 1. Removes base tiles excluded by any active pack (union of all exclusions).
+    /// 2. Applies rarity overrides with most-common-wins when packs conflict.
+    /// 3. Appends pack-exclusive tiles from all active packs.
+    ///
+    /// When `activePacks` is empty, returns `base` unmodified.
+    static func buildPool(base: [BingoSquare], activePacks: [TilePack]) -> [BingoSquare] {
+        guard !activePacks.isEmpty else { return base }
+
+        // 1. Build exclusion set from all active packs
+        let excludedIDs = Set(activePacks.flatMap { $0.excludedTileIDs }
+                                         .compactMap { UUID(uuidString: $0) })
+
+        // 2. Build override map: UUID → most-common rarity across all active packs
+        var overrideMap: [UUID: SquareRarity] = [:]
+        for pack in activePacks {
+            for (idString, rarity) in pack.rarityOverrides {
+                guard let id = UUID(uuidString: idString) else { continue }
+                overrideMap[id] = overrideMap[id].map { mostCommon($0, rarity) } ?? rarity
+            }
+        }
+
+        // 3. Filter exclusions and apply overrides to base tiles
+        let filteredBase: [BingoSquare] = base
+            .filter { !excludedIDs.contains($0.id) }
+            .map { square in
+                guard let newRarity = overrideMap[square.id] else { return square }
+                return BingoSquare(id: square.id, text: square.text, emoji: square.emoji,
+                                   category: square.category, rarity: newRarity)
+            }
+
+        // 4. Append exclusive tiles from all active packs
+        let exclusiveTiles = activePacks.flatMap { $0.tiles }
+
+        return filteredBase + exclusiveTiles
+    }
+
+    /// Returns the rarity that is further toward veryCommon.
+    /// `allCases` order is [veryCommon, common, uncommon, rare, veryRare] so lower index = more common.
+    private static func mostCommon(_ a: SquareRarity, _ b: SquareRarity) -> SquareRarity {
+        let order = SquareRarity.allCases
+        let ia = order.firstIndex(of: a) ?? order.count
+        let ib = order.firstIndex(of: b) ?? order.count
+        return ia <= ib ? a : b
+    }
+
     // MARK: - Private helpers
 
     private static func makeQueues(from pool: [BingoSquare]) -> [SquareRarity: [BingoSquare]] {

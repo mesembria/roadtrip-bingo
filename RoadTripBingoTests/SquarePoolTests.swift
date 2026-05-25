@@ -176,4 +176,88 @@ final class SquarePoolTests: XCTestCase {
         XCTAssertLessThanOrEqual(hardCount, 7,
             "Level-3 handicap on Navigator should reduce rare+veryRare below the un-handicapped baseline of ~12")
     }
+
+    // MARK: - buildPool
+
+    // Helper: make a minimal BingoSquare for tests
+    private func square(_ id: String, rarity: SquareRarity, text: String = "Test") -> BingoSquare {
+        BingoSquare(id: UUID(uuidString: id)!, text: text, emoji: nil,
+                    category: .vehicles, rarity: rarity)
+    }
+
+    // Helper: make a TilePack with explicit overrides, exclusions, and exclusive tiles
+    private func pack(id: String = "test", overrides: [String: SquareRarity] = [:],
+                      excluded: [String] = [], tiles: [BingoSquare] = []) -> TilePack {
+        TilePack(id: id, name: id, description: "", imageName: "",
+                 tiles: tiles, rarityOverrides: overrides, excludedTileIDs: excluded)
+    }
+
+    func test_buildPool_emptyPacksReturnsBaseUnchanged() {
+        let base = [square("00000000-0000-0000-0000-000000000001", rarity: .common)]
+        let result = SquarePool.buildPool(base: base, activePacks: [])
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].rarity, .common)
+    }
+
+    func test_buildPool_appliesRarityOverride() {
+        let tractorID = "4A495FE0-B728-477D-8863-FD00E9140BB6"
+        let base = [square(tractorID, rarity: .uncommon, text: "Tractor")]
+        let farmPack = pack(overrides: [tractorID: .veryCommon])
+        let result = SquarePool.buildPool(base: base, activePacks: [farmPack])
+        XCTAssertEqual(result.first?.rarity, .veryCommon)
+    }
+
+    func test_buildPool_mostCommonWinsWhenTwoPacksOverrideSameTile() {
+        let id = "4A495FE0-B728-471D-8863-FD00E9140BB6"
+        let base = [square(id, rarity: .uncommon)]
+        let pack1 = pack(id: "a", overrides: [id: .common])
+        let pack2 = pack(id: "b", overrides: [id: .veryCommon])
+        let result = SquarePool.buildPool(base: base, activePacks: [pack1, pack2])
+        XCTAssertEqual(result.first?.rarity, .veryCommon,
+                       "veryCommon should beat common under most-common-wins")
+    }
+
+    func test_buildPool_excludesTileFromAnyActivePack() {
+        let excludedID = "3DE3F367-3105-4F8B-A89D-2F134E21D01D"
+        let base = [
+            square(excludedID, rarity: .veryCommon, text: "Subway"),
+            square("11111111-1111-1111-1111-111111111111", rarity: .common, text: "Other")
+        ]
+        let p = pack(excluded: [excludedID])
+        let result = SquarePool.buildPool(base: base, activePacks: [p])
+        XCTAssertFalse(result.contains { $0.id.uuidString == excludedID })
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].text, "Other")
+    }
+
+    func test_buildPool_appendsExclusiveTiles() {
+        let base = [square("11111111-1111-1111-1111-111111111111", rarity: .common)]
+        let exclusive = BingoSquare(id: UUID(), text: "Combine Harvester", emoji: nil,
+                                    category: .vehicles, rarity: .veryCommon)
+        let p = pack(tiles: [exclusive])
+        let result = SquarePool.buildPool(base: base, activePacks: [p])
+        XCTAssertEqual(result.count, 2)
+        XCTAssertTrue(result.contains { $0.text == "Combine Harvester" })
+    }
+
+    func test_buildPool_exclusionAndOverrideAreCombined() {
+        let excludedID = "3DE3F367-3105-4F8B-A89D-2F134E21D01D"
+        let overriddenID = "4A495FE0-B728-471D-8863-FD00E9140BB6"
+        let base = [
+            square(excludedID, rarity: .veryCommon, text: "Subway"),
+            square(overriddenID, rarity: .uncommon, text: "Tractor")
+        ]
+        let p = pack(overrides: [overriddenID: .veryCommon], excluded: [excludedID])
+        let result = SquarePool.buildPool(base: base, activePacks: [p])
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].text, "Tractor")
+        XCTAssertEqual(result[0].rarity, .veryCommon)
+    }
+
+    func test_buildPool_withRealBasePool_doesNotShrinkBelowUsableSize() {
+        let base = SquarePool.load()
+        // With no packs: pool should be unchanged
+        let result = SquarePool.buildPool(base: base, activePacks: [])
+        XCTAssertEqual(result.count, base.count)
+    }
 }
