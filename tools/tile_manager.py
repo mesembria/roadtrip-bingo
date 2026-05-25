@@ -98,3 +98,25 @@ def save_image(tile_id: str, image_b64: str) -> None:
     p = image_path(tile_id)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_bytes(data)
+
+
+# ── Gemini API ────────────────────────────────────────────────────────────────
+
+def generate_image(prompt: str, api_key: str) -> str:
+    """Call Gemini to generate an image. Returns base64-encoded PNG. Raises on error."""
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"responseModalities": ["IMAGE"]},
+    }
+    resp = requests.post(
+        f"{GEMINI_URL}?key={api_key}",
+        json=payload,
+        timeout=90,
+    )
+    resp.raise_for_status()
+    data = resp.json()
+    parts = data["candidates"][0]["content"]["parts"]
+    for part in parts:
+        if "inlineData" in part:
+            return part["inlineData"]["data"]
+    raise ValueError("No image in Gemini response")

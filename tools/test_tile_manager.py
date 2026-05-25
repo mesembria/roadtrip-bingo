@@ -43,7 +43,7 @@ def test_build_prompt_uses_override():
 
 
 import base64, json
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 
 def test_load_tiles(tmp_path):
@@ -97,3 +97,47 @@ def test_save_image(tmp_path):
         tm.save_image("TEST-ID", png_b64)
         saved = (tmp_path / "TEST-ID.png").read_bytes()
     assert saved == base64.b64decode(png_b64)
+
+
+def test_generate_image_extracts_base64():
+    mock_resp = MagicMock()
+    mock_resp.json.return_value = {
+        "candidates": [{
+            "content": {
+                "parts": [{"inlineData": {"data": "abc123base64=="}}]
+            }
+        }]
+    }
+    mock_resp.raise_for_status = MagicMock()
+
+    with patch("tile_manager.requests.post", return_value=mock_resp):
+        result = tm.generate_image("A cow.", "fake-key")
+
+    assert result == "abc123base64=="
+
+
+def test_generate_image_raises_when_no_image_part():
+    mock_resp = MagicMock()
+    mock_resp.json.return_value = {
+        "candidates": [{"content": {"parts": [{"text": "no image here"}]}}]
+    }
+    mock_resp.raise_for_status = MagicMock()
+
+    import pytest
+    with patch("tile_manager.requests.post", return_value=mock_resp):
+        with pytest.raises(ValueError, match="No image"):
+            tm.generate_image("A cow.", "fake-key")
+
+
+def test_generate_image_passes_api_key_in_url():
+    mock_resp = MagicMock()
+    mock_resp.json.return_value = {
+        "candidates": [{"content": {"parts": [{"inlineData": {"data": "x"}}]}}]
+    }
+    mock_resp.raise_for_status = MagicMock()
+
+    with patch("tile_manager.requests.post", return_value=mock_resp) as mock_post:
+        tm.generate_image("prompt", "my-secret-key")
+
+    called_url = mock_post.call_args[0][0]
+    assert "my-secret-key" in called_url
