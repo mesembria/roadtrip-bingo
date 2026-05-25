@@ -176,6 +176,9 @@ body::before {
 .btn-add:hover { opacity: 0.85; }
 .col-head { flex-shrink: 0; display: grid; grid-template-columns: 44px 1fr 96px 82px; padding: 5px 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
 .col-head span { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); font-weight: 600; }
+.col-head span.sortable { cursor: pointer; user-select: none; }
+.col-head span.sortable:hover { color: var(--text2); }
+.col-head span.sort-active { color: var(--amber); }
 .table-body { flex: 1; overflow-y: auto; }
 .table-body::-webkit-scrollbar { width: 4px; }
 .table-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
@@ -274,7 +277,7 @@ body::before {
         <button class="btn-add" onclick="startAddMode()">+ Add Tile</button>
       </div>
       <div class="col-head">
-        <span></span><span>Name</span><span>Category</span><span>Rarity</span>
+        <span></span><span id="sort-name" class="sortable" onclick="toggleSort('name')">Name</span><span>Category</span><span id="sort-rarity" class="sortable" onclick="toggleSort('rarity')">Rarity</span>
       </div>
       <div class="table-body" id="table-body"></div>
       <div class="table-footer" id="table-footer">Loading…</div>
@@ -360,6 +363,8 @@ let isAddMode = false;
 let pendingImageB64 = null;
 let deleteConfirming = false;
 let lastUsedPrompt = null;  // preserved across discard so user can iterate on a custom prompt
+let sortKey = null;   // 'name' | 'rarity' | null
+let sortAsc = true;
 
 // ── Prompt building (mirrors server-side logic) ──────────────────────────────────────
 const CATEGORY_HINTS_JS = {
@@ -407,18 +412,41 @@ function populateRarityDropdowns() {
 }
 
 // ── Table ──────────────────────────────────────────────────────────────────────────────
-const RARITY_CLS = { veryCommon:'vc', common:'c', uncommon:'u', rare:'r', veryRare:'vr' };
+const RARITY_CLS   = { veryCommon:'vc', common:'c', uncommon:'u', rare:'r', veryRare:'vr' };
+const RARITY_ORDER = { veryCommon:0, common:1, uncommon:2, rare:3, veryRare:4 };
+
+function toggleSort(key) {
+  if (sortKey === key) { sortAsc = !sortAsc; } else { sortKey = key; sortAsc = true; }
+  renderTable();
+}
 
 function getFiltered() {
   const q = document.getElementById('search').value.toLowerCase();
   const cat = document.getElementById('filter-cat').value;
-  return tiles.filter(t =>
+  const result = tiles.filter(t =>
     (!q || t.text.toLowerCase().includes(q) || t.category.includes(q)) &&
     (!cat || t.category === cat)
   );
+  if (sortKey === 'name') {
+    result.sort((a, b) => sortAsc ? a.text.localeCompare(b.text) : b.text.localeCompare(a.text));
+  } else if (sortKey === 'rarity') {
+    result.sort((a, b) => sortAsc
+      ? (RARITY_ORDER[a.rarity] ?? 99) - (RARITY_ORDER[b.rarity] ?? 99)
+      : (RARITY_ORDER[b.rarity] ?? 99) - (RARITY_ORDER[a.rarity] ?? 99));
+  }
+  return result;
 }
 
 function renderTable() {
+  // Update sort header indicators
+  ['name', 'rarity'].forEach(k => {
+    const el = document.getElementById('sort-' + k);
+    const label = k === 'name' ? 'Name' : 'Rarity';
+    const isActive = sortKey === k;
+    el.textContent = isActive ? label + ' ' + (sortAsc ? '▲' : '▼') : label;
+    el.classList.toggle('sort-active', isActive);
+  });
+
   const filtered = getFiltered();
   document.getElementById('table-body').innerHTML = filtered.map(t => {
     const sel = t.id === selectedId ? ' selected' : '';
