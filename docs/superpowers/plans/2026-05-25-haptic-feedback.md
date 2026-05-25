@@ -16,7 +16,7 @@
 - Modify: `project.yml`
 - Modify: `RoadTripBingo.xcodeproj/project.pbxproj` (lines 489 and 587)
 
-- [ ] **Step 1: Update project.yml**
+- [x] **Step 1: Update project.yml**
 
 In `project.yml`, change line 6:
 
@@ -30,7 +30,7 @@ to:
     iOS: "17.0"
 ```
 
-- [ ] **Step 2: Update project.pbxproj**
+- [x] **Step 2: Update project.pbxproj**
 
 In `RoadTripBingo.xcodeproj/project.pbxproj`, change both occurrences of:
 
@@ -46,7 +46,7 @@ IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 
 Both are at lines 489 and 587.
 
-- [ ] **Step 3: Build to verify no regressions**
+- [x] **Step 3: Build to verify no regressions**
 
 ```bash
 xcodebuild -project RoadTripBingo.xcodeproj -scheme RoadTripBingo \
@@ -56,7 +56,7 @@ xcodebuild -project RoadTripBingo.xcodeproj -scheme RoadTripBingo \
 
 Expected: `BUILD SUCCEEDED`
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add project.yml RoadTripBingo.xcodeproj/project.pbxproj
@@ -72,7 +72,7 @@ git commit -m "chore: bump deployment target to iOS 17 for sensoryFeedback"
 
 The `.sensoryFeedback(trigger:feedback:)` callback overload fires whenever `isMarked` changes and returns `.impact(.light)` for marking or `.selection` for unmarking. It is attached to the `Button` (not the hidden tile branch) so it only fires for tappable tiles.
 
-- [ ] **Step 1: Add the modifier to the Button in `body`**
+- [x] **Step 1: Add the modifier to the Button in `body`**
 
 Locate the `Button` in `body`:
 
@@ -107,7 +107,7 @@ Button(action: { withAnimation(.spring(response: 0.2)) { onTap() } }) {
 }
 ```
 
-- [ ] **Step 2: Build to verify**
+- [x] **Step 2: Build to verify**
 
 ```bash
 xcodebuild -project RoadTripBingo.xcodeproj -scheme RoadTripBingo \
@@ -117,7 +117,7 @@ xcodebuild -project RoadTripBingo.xcodeproj -scheme RoadTripBingo \
 
 Expected: `BUILD SUCCEEDED`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add RoadTripBingo/Views/BingoSquareView.swift
@@ -136,7 +136,7 @@ Three haptic moments live in `GameView`:
 2. **Power-up used:** `.impact(.medium)` driven by a `UUID?` state counter that is set every time the local player fires a power-up.
 3. **Attack received:** `.warning` driven by an `Int` counter incremented inside the existing `pendingToast` observer when the toast style is `.threat`.
 
-- [ ] **Step 1: Add the two new `@State` variables**
+- [x] **Step 1: Add the two new `@State` variables**
 
 Find the existing `@State` block at the top of `GameView`:
 
@@ -162,7 +162,7 @@ Replace it with:
 @State private var threatCount: Int = 0
 ```
 
-- [ ] **Step 2: Fire power-up haptic for random activations**
+- [x] **Step 2: Fire power-up haptic for random activations**
 
 Find the `onActivateRandom` closure inside `powerUpStrip(isVertical:)`:
 
@@ -181,7 +181,7 @@ onActivateRandom: { powerUp in
 },
 ```
 
-- [ ] **Step 3: Fire power-up haptic for targeted activations**
+- [x] **Step 3: Fire power-up haptic for targeted activations**
 
 Find the `onSelect` closure inside the `TargetingOverlayView` block in `body`:
 
@@ -202,7 +202,7 @@ onSelect: { targetPlayer, targetIndex in
 },
 ```
 
-- [ ] **Step 4: Increment threat counter inside the existing pendingToast observer**
+- [x] **Step 4: Increment threat counter inside the existing pendingToast observer**
 
 Find the existing `.onChange(of: appState.pendingToast)` block:
 
@@ -223,7 +223,7 @@ Replace those first four lines with:
     withAnimation(.spring()) { toastMessage = toast.message }
 ```
 
-- [ ] **Step 5: Add the three `.sensoryFeedback` modifiers**
+- [x] **Step 5: Add the three `.sensoryFeedback` modifiers**
 
 Find the closing of the last `.onChange` block (end of `body`):
 
@@ -266,7 +266,7 @@ Replace the closing `}` of `body` to append three modifiers:
     }
 ```
 
-- [ ] **Step 6: Build to verify**
+- [x] **Step 6: Build to verify**
 
 ```bash
 xcodebuild -project RoadTripBingo.xcodeproj -scheme RoadTripBingo \
@@ -276,7 +276,7 @@ xcodebuild -project RoadTripBingo.xcodeproj -scheme RoadTripBingo \
 
 Expected: `BUILD SUCCEEDED`
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add RoadTripBingo/Views/GameView.swift
@@ -292,7 +292,7 @@ git commit -m "feat: haptic feedback for power-up, attack received, and BINGO li
 
 A `@State var didAppear` flips to `true` on `.onAppear` only for local wins. The `.sensoryFeedback` modifier fires once on that flip, delivering `.impact(.heavy)` — a solid thump distinct from the earlier `.success` pulse that fired when the line completed.
 
-- [ ] **Step 1: Add the `didAppear` state variable**
+- [x] **Step 1: Add the `didAppear` state variable**
 
 Find the top of `WinView`:
 
@@ -313,7 +313,7 @@ struct WinView: View {
     @State private var didAppear = false
 ```
 
-- [ ] **Step 2: Add the modifier and onAppear to the outermost ZStack**
+- [x] **Step 2: Add the modifier and onAppear to the outermost ZStack**
 
 Find the closing of `body`:
 
@@ -393,7 +393,7 @@ Replace the closing `}` of the `ZStack` with:
     }
 ```
 
-- [ ] **Step 3: Build to verify**
+- [x] **Step 3: Build to verify**
 
 ```bash
 xcodebuild -project RoadTripBingo.xcodeproj -scheme RoadTripBingo \
@@ -413,7 +413,7 @@ xcodebuild -project RoadTripBingo.xcodeproj -scheme RoadTripBingoTests \
 
 Expected: all tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add RoadTripBingo/Views/WinView.swift
