@@ -139,5 +139,5 @@ def test_generate_image_passes_api_key_in_url():
     with patch("tile_manager.requests.post", return_value=mock_resp) as mock_post:
         tm.generate_image("prompt", "my-secret-key")
 
-    called_url = mock_post.call_args[0][0]
+    called_url = mock_post.call_args.args[0]
     assert "my-secret-key" in called_url

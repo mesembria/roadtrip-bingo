@@ -119,4 +119,4 @@ def generate_image(prompt: str, api_key: str) -> str:
     for part in parts:
         if "inlineData" in part:
             return part["inlineData"]["data"]
-    raise ValueError("No image in Gemini response")
+    raise ValueError(f"No image in Gemini response; parts received: {parts!r}")
