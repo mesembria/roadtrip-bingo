@@ -248,4 +248,29 @@ final class AppStateTests: XCTestCase {
     func test_handicapBonusTokens_levelAbove3_returns7() {
         XCTAssertEqual(AppState.handicapBonusTokens(forLevel: 99), 7)
     }
+
+    func test_handicapBonus_message_creditsTokensSilently() {
+        let state = AppState()
+        state.playerName = "Theo"
+        let session = MultipeerSession(displayName: "test-helper")
+
+        state.multipeerSession(session,
+            didReceive: .handicapBonus(toPlayer: "Theo", tokens: 5),
+            from: "host")
+
+        XCTAssertEqual(state.tokenBalance, 5, "Handicap bonus should credit tokens")
+        XCTAssertNil(state.pendingToast, "Handicap bonus must not trigger a toast")
+    }
+
+    func test_handicapBonus_message_ignoredForOtherPlayer() {
+        let state = AppState()
+        state.playerName = "Theo"
+        let session = MultipeerSession(displayName: "test-helper")
+
+        state.multipeerSession(session,
+            didReceive: .handicapBonus(toPlayer: "AnotherPlayer", tokens: 5),
+            from: "host")
+
+        XCTAssertEqual(state.tokenBalance, 0, "Bonus for another player must not credit local balance")
+    }
 }

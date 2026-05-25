@@ -60,22 +60,30 @@ enum SquarePool {
         let delta = 0.04
 
         for _ in 0..<level {
-            // Reduce rare; cascade deficit to uncommon if rare is depleted.
+            // Reduce rare; cascade deficit to uncommon then common if depleted.
             let rareTaken = min(delta, w[.rare, default: 0])
             w[.rare, default: 0] -= rareTaken
             let rareDeficit = delta - rareTaken
             if rareDeficit > 0 {
                 let uncommonTaken = min(rareDeficit, w[.uncommon, default: 0])
                 w[.uncommon, default: 0] -= uncommonTaken
+                let rareRemainder = rareDeficit - uncommonTaken
+                if rareRemainder > 0 {
+                    w[.common, default: 0] -= min(rareRemainder, w[.common, default: 0])
+                }
             }
 
-            // Reduce veryRare; cascade deficit to uncommon if veryRare is depleted.
+            // Reduce veryRare; cascade deficit to uncommon then common if depleted.
             let veryRareTaken = min(delta, w[.veryRare, default: 0])
             w[.veryRare, default: 0] -= veryRareTaken
             let veryRareDeficit = delta - veryRareTaken
             if veryRareDeficit > 0 {
                 let uncommonTaken = min(veryRareDeficit, w[.uncommon, default: 0])
                 w[.uncommon, default: 0] -= uncommonTaken
+                let veryRareRemainder = veryRareDeficit - uncommonTaken
+                if veryRareRemainder > 0 {
+                    w[.common, default: 0] -= min(veryRareRemainder, w[.common, default: 0])
+                }
             }
 
             w[.veryCommon, default: 0] += delta

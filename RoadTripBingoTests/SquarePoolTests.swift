@@ -174,6 +174,6 @@ final class SquarePoolTests: XCTestCase {
         let nonFree = boards["A"]!.filter { $0.id != BingoSquare.freeSquareID }
         let hardCount = nonFree.filter { $0.rarity == .rare || $0.rarity == .veryRare }.count
         XCTAssertLessThanOrEqual(hardCount, 7,
-            "Level-3 handicap on Navigator should reduce rare+veryRare below the un-handicapped minimum of 8")
+            "Level-3 handicap on Navigator should reduce rare+veryRare below the un-handicapped baseline of ~12")
     }
 }
