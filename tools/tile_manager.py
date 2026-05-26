@@ -1241,6 +1241,10 @@ async function confirmMoveFromBase(uuid) {
   const baseTile = tiles.find(t => t.id === uuid);
   if (!baseTile) { alert('Tile not found'); return; }
 
+  // Disable the picker immediately to prevent double-clicks during async ops
+  const pickerList = document.getElementById('tile-picker-list');
+  if (pickerList) pickerList.style.pointerEvents = 'none';
+
   // Read the image before deleting
   let imageB64 = null;
   try {
@@ -1268,7 +1272,7 @@ async function confirmMoveFromBase(uuid) {
   const addResp = await fetch('/api/packs/' + currentPackId + '/tiles', {
     method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
   });
-  if (!addResp.ok) { alert('Tile deleted from base but failed to add to pack — check pack JSON manually'); return; }
+  if (!addResp.ok) { alert('Tile deleted from base but failed to add to pack — check pack JSON manually'); resetPackRightPanel(); return; }
   const newTile = await addResp.json();
   packData.tiles = packData.tiles || [];
   packData.tiles.push(newTile);
