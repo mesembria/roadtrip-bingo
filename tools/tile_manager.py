@@ -793,10 +793,335 @@ function renderPackRightPanel() {
   if (type === 'excluded')  { showExcludedEditor(id); return; }
 }
 
-// Placeholder stubs for functions implemented in Tasks 4–6
-function showExclusiveEditor(tile) {}
-function showOverrideEditor(uuid) {}
-function showExcludedEditor(uuid) {}
+// ── Right panel: exclusive tile editor ───────────────────────────────────────
+function showExclusiveEditor(tile) {
+  const rightEl = document.getElementById('pack-right-' + currentPackId);
+  if (!rightEl) return;
+  const isNew = !tile.id;
+  rightEl.innerHTML =
+    '<div class="panel-header">' +
+      '<div class="panel-title">' + esc(isNew ? 'New Exclusive Tile' : tile.text) + '</div>' +
+      '<div class="panel-id">' + (isNew ? '(new)' : esc(tile.id.substring(0, 8)) + '…') + '</div>' +
+    '</div>' +
+    '<div class="panel-body" id="pack-panel-body">' +
+      '<div>' +
+        '<div class="section-label">Tile Image</div>' +
+        '<div class="image-section">' +
+          '<div class="image-current-wrap" id="pack-image-wrap">' +
+            '<span class="img-placeholder" id="pack-img-placeholder" style="' + (isNew ? '' : 'display:none') + '">' + esc(tile.emoji || '🎯') + '</span>' +
+            '<img id="pack-image-current" src="' + (isNew ? '' : '/api/image/' + esc(tile.id) + '?t=' + Date.now()) + '" ' +
+              'alt="" style="' + (isNew ? 'display:none' : '') + '" ' +
+              'onerror="this.style.display=\\'none\\';document.getElementById(\\'pack-img-placeholder\\').style.display=\\'\\';">' +
+          '</div>' +
+          '<div class="image-controls">' +
+            '<div class="image-hint">Exclusive tile image. Generate with Gemini, then approve or discard.</div>' +
+            '<button class="btn-generate" id="pack-btn-generate" onclick="showPackPromptEditor()">❆ Generate New Image</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="prompt-editor" id="pack-prompt-editor">' +
+          '<div class="prompt-editor-header"><span class="prompt-editor-label">Generation Prompt</span><span class="prompt-editor-hint">Edit before running</span></div>' +
+          '<textarea class="prompt-textarea" id="pack-prompt-textarea" rows="5"></textarea>' +
+          '<div class="prompt-actions">' +
+            '<button class="btn-run" onclick="runPackGeneration()">Run Generation</button>' +
+            '<button class="btn-cancel-prompt" onclick="hidePackPromptEditor()">Cancel</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="gen-loading" id="pack-gen-loading"><div class="spinner"></div><span>Generating with Gemini 2.5 Flash…</span></div>' +
+        '<div class="gen-result" id="pack-gen-result">' +
+          '<div class="gen-result-label">✓ Image generated — approve or discard</div>' +
+          '<div class="gen-result-inner">' +
+            '<div class="gen-preview-wrap"><img id="pack-gen-preview-img" src="" alt="generated"></div>' +
+            '<div class="gen-actions">' +
+              '<button class="btn-approve" onclick="approvePackImage()">✓ Use This Image</button>' +
+              '<button class="btn-discard" onclick="discardPackImage()">✕ Discard · Keep Original</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div>' +
+        '<div class="section-label">Metadata</div>' +
+        '<div style="display:flex;flex-direction:column;gap:12px">' +
+          '<div class="field"><label class="field-label">Name</label><input class="field-input" id="pack-field-name" type="text" value="' + esc(tile.text || '') + '"></div>' +
+          '<div class="field"><label class="field-label">Emoji</label><input class="field-input" id="pack-field-emoji" type="text" value="' + esc(tile.emoji || '') + '"></div>' +
+          '<div class="fields-row">' +
+            '<div class="field"><label class="field-label">Category</label><select class="field-input" id="pack-field-category" style="cursor:pointer">' +
+              CATEGORIES.map(c => '<option value="' + c + '"' + (c === tile.category ? ' selected' : '') + '>' + esc(c) + '</option>').join('') +
+            '</select></div>' +
+            '<div class="field"><label class="field-label">Rarity</label><select class="field-input" id="pack-field-rarity" style="cursor:pointer">' +
+              RARITIES.map(r => '<option value="' + r + '"' + (r === tile.rarity ? ' selected' : '') + '>' + esc(r) + '</option>').join('') +
+            '</select></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="panel-footer">' +
+      (isNew ? '' : '<button class="btn-delete" onclick="removeExclusiveTile(\\'' + esc(tile.id) + '\\')">🗑 Remove from Pack</button>') +
+      '<div class="footer-right">' +
+        '<button class="btn-cancel" onclick="cancelPackEdit()">Cancel</button>' +
+        '<button class="btn-save" onclick="saveExclusiveTile(' + (isNew ? 'null' : '\\'' + esc(tile.id) + '\\'') + ')">Save Changes</button>' +
+      '</div>' +
+    '</div>';
+
+  window._packEditingTile      = tile;
+  window._packPendingImageB64  = null;
+  window._packLastPrompt       = null;
+  window._packIsNewExclusive   = isNew;
+}
+
+// ── Exclusive tile image generation ──────────────────────────────────────────
+function showPackPromptEditor() {
+  if (!window._packLastPrompt) {
+    const name = document.getElementById('pack-field-name').value.trim() || 'a tile';
+    const cat  = document.getElementById('pack-field-category').value;
+    window._packLastPrompt = buildPrompt(name, cat);
+  }
+  document.getElementById('pack-prompt-textarea').value = window._packLastPrompt;
+  document.getElementById('pack-prompt-editor').classList.add('visible');
+  document.getElementById('pack-btn-generate').style.display = 'none';
+  document.getElementById('pack-gen-result').classList.remove('visible');
+}
+
+function hidePackPromptEditor() {
+  document.getElementById('pack-prompt-editor').classList.remove('visible');
+  document.getElementById('pack-btn-generate').style.display = '';
+}
+
+async function runPackGeneration() {
+  const prompt = document.getElementById('pack-prompt-textarea').value.trim();
+  if (!prompt) { alert('Enter a prompt before running.'); return; }
+  window._packLastPrompt = prompt;
+  document.getElementById('pack-prompt-editor').classList.remove('visible');
+  document.getElementById('pack-gen-loading').classList.add('visible');
+  try {
+    const r = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt}),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Generation failed');
+    window._packPendingImageB64 = data.image_b64;
+    document.getElementById('pack-gen-preview-img').src = 'data:image/png;base64,' + data.image_b64;
+    document.getElementById('pack-gen-loading').classList.remove('visible');
+    document.getElementById('pack-gen-result').classList.add('visible');
+  } catch (err) {
+    document.getElementById('pack-gen-loading').classList.remove('visible');
+    document.getElementById('pack-btn-generate').style.display = '';
+    alert('Generation failed: ' + err.message);
+  }
+}
+
+async function approvePackImage() {
+  const b64  = window._packPendingImageB64;
+  const tile = window._packEditingTile;
+  if (!b64) return;
+  if (!window._packIsNewExclusive && tile && tile.id) {
+    const r = await fetch('/api/packs/' + currentPackId + '/tiles/' + tile.id + '/image', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({image_b64: b64}),
+    });
+    if (!r.ok) { alert('Failed to save image'); return; }
+    window._packPendingImageB64 = null;
+  }
+  const img = document.getElementById('pack-image-current');
+  const ph  = document.getElementById('pack-img-placeholder');
+  img.src = 'data:image/png;base64,' + b64;
+  img.style.display = 'block';
+  if (ph) ph.style.display = 'none';
+  document.getElementById('pack-gen-result').classList.remove('visible');
+  document.getElementById('pack-btn-generate').style.display = '';
+}
+
+function discardPackImage() {
+  window._packPendingImageB64 = null;
+  document.getElementById('pack-gen-result').classList.remove('visible');
+  document.getElementById('pack-btn-generate').style.display = '';
+}
+
+async function saveExclusiveTile(tileId) {
+  const name     = document.getElementById('pack-field-name').value.trim();
+  const emoji    = document.getElementById('pack-field-emoji').value.trim();
+  const category = document.getElementById('pack-field-category').value;
+  const rarity   = document.getElementById('pack-field-rarity').value;
+  if (!name) { alert('Name is required'); return; }
+
+  if (!tileId) {
+    // New exclusive tile — POST to server immediately
+    const body = {text: name, emoji, category, rarity};
+    if (window._packPendingImageB64) body.image_b64 = window._packPendingImageB64;
+    const r = await fetch('/api/packs/' + currentPackId + '/tiles', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body),
+    });
+    if (!r.ok) { alert('Failed to save tile'); return; }
+    const newTile = await r.json();
+    packData.tiles = packData.tiles || [];
+    packData.tiles.push(newTile);
+    window._packPendingImageB64 = null;
+    selectedMod = {type: 'exclusive', id: newTile.id};
+    window._packEditingTile    = newTile;
+    window._packIsNewExclusive = false;
+  } else {
+    // Edit existing exclusive tile — update in-memory; full pack saved on Save Pack
+    const tile = (packData.tiles || []).find(t => t.id === tileId);
+    if (tile) { tile.text = name; tile.emoji = emoji; tile.category = category; tile.rarity = rarity; }
+    markDirty();
+  }
+  updatePackSummaryPanel();
+  renderPackDiffList();
+}
+
+function cancelPackEdit() {
+  selectedMod = null;
+  renderPackDiffList();
+  resetPackRightPanel();
+}
+
+function removeExclusiveTile(tileId) {
+  if (!confirm('Remove this tile from the pack? The tile will be deleted.')) return;
+  packData.tiles = (packData.tiles || []).filter(t => t.id !== tileId);
+  markDirty();
+  selectedMod = null;
+  updatePackSummaryPanel();
+  renderPackDiffList();
+  resetPackRightPanel();
+}
+
+// ── Right panel: override editor ──────────────────────────────────────────────
+function showOverrideEditor(uuid) {
+  const rightEl = document.getElementById('pack-right-' + currentPackId);
+  if (!rightEl) return;
+  const baseTile  = tiles.find(t => t.id === uuid);
+  const newRarity = (packData.rarityOverrides || {})[uuid] || 'veryCommon';
+  const fromRarity = baseTile ? baseTile.rarity : '?';
+  const name = baseTile ? baseTile.text : 'Unknown tile (' + uuid.substring(0, 8) + '…)';
+
+  rightEl.innerHTML =
+    '<div class="panel-header">' +
+      '<div class="panel-title">' + esc(name) + '</div>' +
+      '<div class="panel-id">Rarity Override</div>' +
+    '</div>' +
+    '<div class="panel-body">' +
+      '<div>' +
+        '<div class="section-label">Rarity Change</div>' +
+        '<div class="rarity-from-to">' +
+          '<div><div style="font-size:10px;color:var(--text3);margin-bottom:4px">BASE</div><span class="rarity ' + (RARITY_CLS[fromRarity] || '') + '">' + esc(fromRarity) + '</span></div>' +
+          '<div class="arrow">→</div>' +
+          '<div><div style="font-size:10px;color:var(--text3);margin-bottom:4px">IN THIS PACK</div>' +
+            '<select class="field-input" id="override-rarity-sel" style="cursor:pointer">' +
+              RARITIES.map(r => '<option value="' + r + '"' + (r === newRarity ? ' selected' : '') + '>' + esc(r) + '</option>').join('') +
+            '</select>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      (baseTile ?
+        '<div>' +
+          '<div class="section-label">Base Tile Info</div>' +
+          '<div class="override-base-info">' +
+            '<div class="name">' + esc(baseTile.text) + ' ' + esc(baseTile.emoji || '') + '</div>' +
+            '<div>' + esc(baseTile.category) + ' · base rarity: ' + esc(baseTile.rarity) + '</div>' +
+          '</div>' +
+        '</div>' : '') +
+      '<div>' +
+        '<button class="btn-remove" onclick="removeOverride(\\'' + esc(uuid) + '\\')">Remove Override</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="panel-footer">' +
+      '<div></div>' +
+      '<div class="footer-right">' +
+        '<button class="btn-cancel" onclick="cancelPackEdit()">Cancel</button>' +
+        '<button class="btn-save" onclick="saveOverride(\\'' + esc(uuid) + '\\')">Save Changes</button>' +
+      '</div>' +
+    '</div>';
+}
+
+function saveOverride(uuid) {
+  const newRarity = document.getElementById('override-rarity-sel').value;
+  packData.rarityOverrides = packData.rarityOverrides || {};
+  packData.rarityOverrides[uuid] = newRarity;
+  markDirty();
+  renderPackDiffList();
+  showOverrideEditor(uuid);
+}
+
+function removeOverride(uuid) {
+  if (!confirm('Remove this rarity override?')) return;
+  if (packData.rarityOverrides) delete packData.rarityOverrides[uuid];
+  markDirty();
+  selectedMod = null;
+  updatePackSummaryPanel();
+  renderPackDiffList();
+  resetPackRightPanel();
+}
+
+// ── Right panel: excluded editor ──────────────────────────────────────────────
+function showExcludedEditor(uuid) {
+  const rightEl = document.getElementById('pack-right-' + currentPackId);
+  if (!rightEl) return;
+  const baseTile = tiles.find(t => t.id === uuid);
+  const name = baseTile ? baseTile.text : 'Unknown tile (' + uuid.substring(0, 8) + '…)';
+
+  rightEl.innerHTML =
+    '<div class="panel-header">' +
+      '<div class="panel-title">' + esc(name) + '</div>' +
+      '<div class="panel-id">Excluded from Pool</div>' +
+    '</div>' +
+    '<div class="panel-body">' +
+      (baseTile ?
+        '<div class="override-base-info">' +
+          '<div class="name">' + esc(baseTile.text) + ' ' + esc(baseTile.emoji || '') + '</div>' +
+          '<div>' + esc(baseTile.category) + ' · rarity: ' + esc(baseTile.rarity) + '</div>' +
+        '</div>' : '') +
+      '<div class="excluded-callout">This tile is hidden from all boards when this pack is active.</div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">' +
+        '<button class="btn-convert" onclick="convertExclusionToOverride(\\'' + esc(uuid) + '\\')">Convert to Override Instead</button>' +
+        '<button class="btn-remove" onclick="removeExclusion(\\'' + esc(uuid) + '\\')">Remove Exclusion</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="panel-footer"><div></div><div class="footer-right"><button class="btn-cancel" onclick="cancelPackEdit()">Cancel</button></div></div>';
+}
+
+function removeExclusion(uuid) {
+  if (!confirm('Remove this exclusion? The tile will return to the pool.')) return;
+  packData.excludedTileIDs = (packData.excludedTileIDs || []).filter(id => id !== uuid);
+  markDirty();
+  selectedMod = null;
+  updatePackSummaryPanel();
+  renderPackDiffList();
+  resetPackRightPanel();
+}
+
+function convertExclusionToOverride(uuid) {
+  const baseTile = tiles.find(t => t.id === uuid);
+  packData.excludedTileIDs = (packData.excludedTileIDs || []).filter(id => id !== uuid);
+  packData.rarityOverrides = packData.rarityOverrides || {};
+  packData.rarityOverrides[uuid] = baseTile ? baseTile.rarity : 'common';
+  markDirty();
+  selectedMod = {type: 'override', id: uuid};
+  updatePackSummaryPanel();
+  renderPackDiffList();
+  showOverrideEditor(uuid);
+}
+
+// ── Shared reset ──────────────────────────────────────────────────────────────
+function resetPackRightPanel() {
+  const rightEl = document.getElementById('pack-right-' + currentPackId);
+  if (!rightEl) return;
+  const pack = PACKS_META.find(p => p.id === currentPackId) || {};
+  rightEl.innerHTML =
+    '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px">' +
+      '<div class="pack-summary">' +
+        '<div class="pack-summary-name">' + esc(pack.name || '') + '</div>' +
+        '<div class="pack-summary-counts" id="pack-counts-' + esc(currentPackId) + '">—</div>' +
+        '<div class="pack-summary-hint">Select a modification to edit, or use + Add to create one.</div>' +
+      '</div>' +
+    '</div>';
+  updatePackSummaryPanel();
+}
+
+// Placeholder stubs for Tasks 5–6
 function savePack() {}
 function startAddExclusive() {}
 function startMoveFromBase() {}
