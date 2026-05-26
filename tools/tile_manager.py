@@ -922,8 +922,8 @@ async function approvePackImage() {
       body: JSON.stringify({image_b64: b64}),
     });
     if (!r.ok) { alert('Failed to save image'); return; }
-    window._packPendingImageB64 = null;
   }
+  window._packPendingImageB64 = null;
   const img = document.getElementById('pack-image-current');
   const ph  = document.getElementById('pack-img-placeholder');
   img.src = 'data:image/png;base64,' + b64;
