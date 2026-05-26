@@ -5,7 +5,7 @@ Usage: GEMINI_API_KEY=your_key python3 tools/tile_manager.py
 Opens a browser UI for managing tiles in squares.json and TileImages/.
 """
 
-import base64, json, os, uuid, webbrowser
+import base64, json, os, sys, uuid, webbrowser
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 
@@ -125,7 +125,6 @@ def discover_packs() -> list[dict]:
                 "excludedCount": len(data.get("excludedTileIDs", [])),
             })
         except (json.JSONDecodeError, KeyError) as exc:
-            import sys
             print(f"   ⚠  Skipping {path.name}: {exc}", file=sys.stderr)
     return packs
 
@@ -1854,6 +1853,9 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         self.send_json({"saved": pack_id})
 
     def _handle_add_pack_tile(self, pack_id: str):
+        if "/" in pack_id:
+            self.send_error_json(404, "Not found")
+            return
         try:
             pack = load_pack(pack_id)
         except FileNotFoundError:
@@ -1885,6 +1887,9 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         self.send_json(tile, 201)
 
     def _handle_save_pack_tile_image(self, pack_id: str, tile_id: str):
+        if "/" in pack_id or "/" in tile_id:
+            self.send_error_json(404, "Not found")
+            return
         try:
             pack = load_pack(pack_id)
         except FileNotFoundError:
