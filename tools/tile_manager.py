@@ -113,16 +113,20 @@ def discover_packs() -> list[dict]:
     """Return summary info for every pack-*.json in PACKS_DIR, sorted by filename."""
     packs = []
     for path in sorted(PACKS_DIR.glob("pack-*.json")):
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
-        packs.append({
-            "id":            data["id"],
-            "name":          data["name"],
-            "description":   data.get("description", ""),
-            "tileCount":     len(data.get("tiles", [])),
-            "overrideCount": len(data.get("rarityOverrides", {})),
-            "excludedCount": len(data.get("excludedTileIDs", [])),
-        })
+        try:
+            with open(path, encoding="utf-8") as f:
+                data = json.load(f)
+            packs.append({
+                "id":            data["id"],
+                "name":          data["name"],
+                "description":   data.get("description", ""),
+                "tileCount":     len(data.get("tiles", [])),
+                "overrideCount": len(data.get("rarityOverrides", {})),
+                "excludedCount": len(data.get("excludedTileIDs", [])),
+            })
+        except (json.JSONDecodeError, KeyError) as exc:
+            import sys
+            print(f"   ⚠  Skipping {path.name}: {exc}", file=sys.stderr)
     return packs
 
 
@@ -920,12 +924,18 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         self.send_json(PACKS_METADATA)
 
     def _handle_get_pack(self, pack_id: str):
+        if "/" in pack_id:
+            self.send_error_json(404, "Not found")
+            return
         try:
             self.send_json(load_pack(pack_id))
         except FileNotFoundError:
             self.send_error_json(404, f"Pack {pack_id!r} not found")
 
     def _handle_put_pack(self, pack_id: str):
+        if "/" in pack_id:
+            self.send_error_json(404, "Not found")
+            return
         try:
             body = self.read_json_body()
         except Exception:
