@@ -1310,8 +1310,27 @@ function filterTilePicker(input) {
   });
 }
 
-// Placeholder stub for Task 6
-function savePack() {}
+// ── Save Pack ─────────────────────────────────────────────────────────────────
+async function savePack() {
+  if (!packData || !currentPackId) return;
+  const r = await fetch('/api/packs/' + currentPackId, {
+    method: 'PUT',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(packData),
+  });
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    alert('Failed to save pack: ' + (err.error || r.status));
+    return;
+  }
+  isDirty = false;
+  const btn = document.getElementById('btn-save-' + currentPackId);
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Saved ✓';
+    setTimeout(() => { btn.textContent = 'Save Pack'; }, 1500);
+  }
+}
 
 function updateStats() {
   document.getElementById('stat-tiles').textContent = tiles.length;
