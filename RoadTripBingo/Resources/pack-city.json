@@ -2,7 +2,7 @@
   "id": "city",
   "name": "City",
   "description": "Traffic, towers, crosswalks, and the organized chaos of the American city.",
-  "imageName": "pack-city",
+  "imageName": "City",
   "tiles": [],
   "rarityOverrides": {
     "170DDCD4-5B1C-4A27-AF08-3EFE0F723A94": "veryCommon",

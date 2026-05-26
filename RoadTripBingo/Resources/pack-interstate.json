@@ -2,7 +2,7 @@
   "id": "interstate",
   "name": "Interstate",
   "description": "Highways, rest stops, weigh stations, and the endless white line.",
-  "imageName": "pack-interstate",
+  "imageName": "Interstate",
   "tiles": [],
   "rarityOverrides": {
     "95F10877-1BC5-4F38-A6B1-5C8469946794": "veryCommon",

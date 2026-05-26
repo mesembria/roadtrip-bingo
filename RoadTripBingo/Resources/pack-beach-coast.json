@@ -2,7 +2,7 @@
   "id": "beach-coast",
   "name": "Beach & Coast",
   "description": "Surf shops, piers, seagulls, and the salt-air side of the road.",
-  "imageName": "pack-beach-coast",
+  "imageName": "Beach",
   "tiles": [
     {
       "id": "F1A00001-0000-0000-0000-000000000020",

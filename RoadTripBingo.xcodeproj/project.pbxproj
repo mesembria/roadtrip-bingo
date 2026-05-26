@@ -13,6 +13,12 @@
 		2E8B64CFB6574C864BB4D4B2 /* OpponentStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */; };
 		312E1E01EF66D434A2BF17E8 /* squares.json in Resources */ = {isa = PBXBuildFile; fileRef = 731548D4671F0ACB06D7FB47 /* squares.json */; };
 		A3F2C81D9B7E4D05BC164E72 /* BingoSplash.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C9D4A02E5F1B4C83A71E0F36 /* BingoSplash.jpg */; };
+		3D47EA3DA1524F70A5DA7523 /* Interstate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5EEBCB9CB46045EB8FB122BC /* Interstate.jpg */; };
+		C96CA07BB7D042BDB3B5F735 /* City.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 653F985D32AF442EA13BA8C8 /* City.jpg */; };
+		43FDEDA164D445628C4FBF20 /* Farm.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5D20E55C87C44A7D959E8555 /* Farm.jpg */; };
+		C6CDBAB25638482897762AB6 /* Mountains.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DC2E7359B75944799E170852 /* Mountains.jpg */; };
+		26A643EC161042F8905C2D59 /* Beach.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5BAA42C57160460BB39D98DD /* Beach.jpg */; };
+		809E22EED2654B46B8A89733 /* Southwest.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 62A9812F31F04F3F85F0F698 /* Southwest.jpg */; };
 		7D4B2F9E1A3C50E8B7620459 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E8A3F1C2D7B54E90A6251834 /* Assets.xcassets */; };
 		361B5DFCB064D6B926002432 /* PowerUpStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F575318E432FD2D90841DB00 /* PowerUpStripView.swift */; };
 		37E192F91D44E4C8B112DD40 /* ToastEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9693B97F5B0E3B8D989A90 /* ToastEvent.swift */; };
@@ -110,6 +116,12 @@
 		6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentStripView.swift; sourceTree = "<group>"; };
 		731548D4671F0ACB06D7FB47 /* squares.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = squares.json; sourceTree = "<group>"; };
 		C9D4A02E5F1B4C83A71E0F36 /* BingoSplash.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = BingoSplash.jpg; sourceTree = "<group>"; };
+		5EEBCB9CB46045EB8FB122BC /* Interstate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Interstate.jpg; sourceTree = "<group>"; };
+		653F985D32AF442EA13BA8C8 /* City.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = City.jpg; sourceTree = "<group>"; };
+		5D20E55C87C44A7D959E8555 /* Farm.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Farm.jpg; sourceTree = "<group>"; };
+		DC2E7359B75944799E170852 /* Mountains.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Mountains.jpg; sourceTree = "<group>"; };
+		5BAA42C57160460BB39D98DD /* Beach.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Beach.jpg; sourceTree = "<group>"; };
+		62A9812F31F04F3F85F0F698 /* Southwest.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Southwest.jpg; sourceTree = "<group>"; };
 		E8A3F1C2D7B54E90A6251834 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		74EB052E3667A4113B417DE3 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		76A8C0599EECB353352C2464 /* BingoGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingoGridView.swift; sourceTree = "<group>"; };
@@ -180,6 +192,12 @@
 				F7435F2C02764EBFBC989AD8 /* pack-mountains.json */,
 				157DCF28288D46F4A6E595EC /* pack-beach-coast.json */,
 				FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */,
+				5EEBCB9CB46045EB8FB122BC /* Interstate.jpg */,
+				653F985D32AF442EA13BA8C8 /* City.jpg */,
+				5D20E55C87C44A7D959E8555 /* Farm.jpg */,
+				DC2E7359B75944799E170852 /* Mountains.jpg */,
+				5BAA42C57160460BB39D98DD /* Beach.jpg */,
+				62A9812F31F04F3F85F0F698 /* Southwest.jpg */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -403,6 +421,12 @@
 				3DE42D22EACE40998A5D0027 /* pack-mountains.json in Resources */,
 				2194A8C806B94EFB8924FB62 /* pack-beach-coast.json in Resources */,
 				D6A274CFF01243079B46F993 /* pack-desert-southwest.json in Resources */,
+				3D47EA3DA1524F70A5DA7523 /* Interstate.jpg in Resources */,
+				C96CA07BB7D042BDB3B5F735 /* City.jpg in Resources */,
+				43FDEDA164D445628C4FBF20 /* Farm.jpg in Resources */,
+				C6CDBAB25638482897762AB6 /* Mountains.jpg in Resources */,
+				26A643EC161042F8905C2D59 /* Beach.jpg in Resources */,
+				809E22EED2654B46B8A89733 /* Southwest.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

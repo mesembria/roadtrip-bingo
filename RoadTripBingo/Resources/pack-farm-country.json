@@ -2,7 +2,7 @@
   "id": "farm-country",
   "name": "Farm Country",
   "description": "Hay bales, open fields, livestock, and the quiet rhythm of rural America.",
-  "imageName": "pack-farm-country",
+  "imageName": "Farm",
   "tiles": [
     {
       "id": "F1A00001-0000-0000-0000-000000000001",

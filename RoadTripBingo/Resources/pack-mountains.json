@@ -2,7 +2,7 @@
   "id": "mountains",
   "name": "Mountains",
   "description": "Snow caps, switchbacks, pine forests, and the thin air of elevation.",
-  "imageName": "pack-mountains",
+  "imageName": "Mountains",
   "tiles": [
     {
       "id": "F1A00001-0000-0000-0000-000000000010",
