@@ -50,7 +50,7 @@ struct TilePacksView: View {
                             PackCardView(
                                 pack: pack,
                                 isSelected: appState.activePackIDs.contains(pack.id),
-                                isReadOnly: !appState.isHost
+                                isReadOnly: appState.screen != .home && !appState.isHost
                             ) {
                                 appState.togglePack(pack.id)
                             }
@@ -92,7 +92,8 @@ struct PackCardView: View {
             VStack(spacing: 0) {
                 // Pack image
                 ZStack(alignment: .topTrailing) {
-                    if let uiImage = UIImage(named: pack.imageName) {
+                    if let path = Bundle.main.path(forResource: pack.imageName, ofType: "jpg"),
+                       let uiImage = UIImage(contentsOfFile: path) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()

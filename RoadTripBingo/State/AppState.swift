@@ -151,7 +151,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     }
 
     func togglePack(_ packID: String) {
-        guard isHost else { return }
+        // Allow toggle from the home screen (before a game) or by the host during a session.
+        guard isHost || screen == .home else { return }
         if activePackIDs.contains(packID) {
             activePackIDs.removeAll { $0 == packID }
         } else {

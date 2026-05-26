@@ -232,6 +232,7 @@ struct HomeView: View {
                         )
                     }
                     .frame(maxWidth: 360)
+                    .padding(.bottom, 12)
                     .sheet(isPresented: $showChallenges) {
                         DailyChallengesView(
                             challenges: appState.activeChallenges,
