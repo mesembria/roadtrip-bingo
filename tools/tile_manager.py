@@ -640,10 +640,153 @@ function toggleAddMenu(packId) {
   menu.classList.toggle('open');
 }
 
-// Placeholder stubs — implemented in later tasks
-function loadPackScreen(packId) {}
-function onPackSearch(val) {}
-function onPackTypeFilter(val) {}
+// ── Pack screen data ──────────────────────────────────────────────────────────
+async function loadPackScreen(packId) {
+  selectedMod     = null;
+  packFilterType  = '';
+  packSearchQuery = '';
+  packData = await fetch('/api/packs/' + packId).then(r => r.json());
+  renderPackDiffList();
+  updatePackSummaryPanel();
+}
+
+function onPackSearch(val) {
+  packSearchQuery = val.toLowerCase();
+  renderPackDiffList();
+}
+
+function onPackTypeFilter(val) {
+  packFilterType = val;
+  renderPackDiffList();
+}
+
+function markDirty() {
+  isDirty = true;
+  const btn = document.getElementById('btn-save-' + currentPackId);
+  if (btn) btn.disabled = false;
+}
+
+// ── Render diff list ──────────────────────────────────────────────────────────
+function getPackMods() {
+  if (!packData) return [];
+  const mods = [];
+  // Exclusive tiles
+  (packData.tiles || []).forEach(t => {
+    mods.push({ type: 'exclusive', id: t.id, tile: t });
+  });
+  // Rarity overrides
+  Object.entries(packData.rarityOverrides || {}).forEach(([uuid, newRarity]) => {
+    const baseTile = tiles.find(t => t.id === uuid);
+    mods.push({ type: 'override', id: uuid, baseTile, newRarity });
+  });
+  // Exclusions
+  (packData.excludedTileIDs || []).forEach(uuid => {
+    const baseTile = tiles.find(t => t.id === uuid);
+    mods.push({ type: 'excluded', id: uuid, baseTile });
+  });
+  return mods;
+}
+
+function getFilteredMods() {
+  return getPackMods().filter(m => {
+    if (packFilterType && m.type !== packFilterType) return false;
+    if (!packSearchQuery) return true;
+    const name = m.type === 'exclusive'
+      ? (m.tile.text || '').toLowerCase()
+      : (m.baseTile ? m.baseTile.text : '').toLowerCase();
+    return name.includes(packSearchQuery);
+  });
+}
+
+function renderPackDiffList() {
+  if (!currentPackId || !packData) return;
+  const listEl  = document.getElementById('diff-list-' + currentPackId);
+  const countEl = document.getElementById('diff-count-' + currentPackId);
+  if (!listEl) return;
+  const filtered = getFilteredMods();
+  const all      = getPackMods();
+
+  countEl.textContent = all.length + ' modification' + (all.length !== 1 ? 's' : '');
+
+  listEl.innerHTML = filtered.map(m => {
+    const isSelected = selectedMod && selectedMod.type === m.type && selectedMod.id === m.id;
+    const sel = isSelected ? ' selected' : '';
+
+    if (m.type === 'exclusive') {
+      const imgSrc     = '/api/image/' + m.tile.id;
+      const rarityBadge = '<span class="rarity ' + (RARITY_CLS[m.tile.rarity] || '') + '">' + esc(m.tile.rarity) + '</span>';
+      return '<div class="diff-row exclusive' + sel + '" onclick="selectMod(\\'' + m.type + '\\',\\'' + m.id + '\\')">' +
+        '<div class="diff-thumb"><img src="' + imgSrc + '" onerror="this.style.display=\\'none\\'"></div>' +
+        '<div class="diff-name">' + esc(m.tile.text) + '</div>' +
+        '<div><span class="diff-badge exclusive">EXCLUSIVE</span></div>' +
+        '<div class="diff-detail">' + rarityBadge + '</div>' +
+        '</div>';
+    }
+
+    if (m.type === 'override') {
+      const name   = m.baseTile ? esc(m.baseTile.text) : '<em style="color:var(--text3)">Unknown tile</em>';
+      const fromR  = m.baseTile ? m.baseTile.rarity : '?';
+      const detail = '<span style="color:var(--text2)">' + esc(fromR) + '</span> → <span style="color:var(--amber)">' + esc(m.newRarity) + '</span>';
+      return '<div class="diff-row override' + sel + '" onclick="selectMod(\\'' + m.type + '\\',\\'' + m.id + '\\')">' +
+        '<div class="diff-thumb" style="font-size:12px;color:var(--text3)">—</div>' +
+        '<div class="diff-name">' + name + '</div>' +
+        '<div><span class="diff-badge override">OVERRIDE</span></div>' +
+        '<div class="diff-detail override-arrow">' + detail + '</div>' +
+        '</div>';
+    }
+
+    // excluded
+    const name = m.baseTile ? esc(m.baseTile.text) : '<em style="color:var(--text3)">Unknown tile</em>';
+    return '<div class="diff-row excluded' + sel + '" onclick="selectMod(\\'' + m.type + '\\',\\'' + m.id + '\\')">' +
+      '<div class="diff-thumb" style="font-size:12px;color:var(--text3)">—</div>' +
+      '<div class="diff-name strikethrough">' + name + '</div>' +
+      '<div><span class="diff-badge excluded">EXCLUDED</span></div>' +
+      '<div class="diff-detail"></div>' +
+      '</div>';
+  }).join('');
+
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text3);font-size:13px">' +
+      (all.length === 0 ? 'No modifications — use + Add to begin.' : 'No results for current filter.') +
+      '</div>';
+  }
+}
+
+function selectMod(type, id) {
+  selectedMod = { type, id };
+  renderPackDiffList();
+  renderPackRightPanel();
+}
+
+function updatePackSummaryPanel() {
+  if (!packData || !currentPackId) return;
+  const countsEl = document.getElementById('pack-counts-' + currentPackId);
+  if (!countsEl) return;
+  const exclusive = (packData.tiles || []).length;
+  const overrides = Object.keys(packData.rarityOverrides || {}).length;
+  const excluded  = (packData.excludedTileIDs || []).length;
+  countsEl.innerHTML =
+    '<strong style="color:var(--green)">'  + exclusive + '</strong> exclusive tile' + (exclusive !== 1 ? 's' : '') + '<br>' +
+    '<strong style="color:var(--amber)">'  + overrides + '</strong> rarity override' + (overrides !== 1 ? 's' : '') + '<br>' +
+    '<strong style="color:var(--red)">'    + excluded  + '</strong> exclusion'        + (excluded  !== 1 ? 's' : '');
+}
+
+function renderPackRightPanel() {
+  if (!selectedMod || !packData || !currentPackId) return;
+  const { type, id } = selectedMod;
+  if (type === 'exclusive') {
+    const tile = (packData.tiles || []).find(t => t.id === id);
+    if (tile) showExclusiveEditor(tile);
+    return;
+  }
+  if (type === 'override') { showOverrideEditor(id); return; }
+  if (type === 'excluded')  { showExcludedEditor(id); return; }
+}
+
+// Placeholder stubs for functions implemented in Tasks 4–6
+function showExclusiveEditor(tile) {}
+function showOverrideEditor(uuid) {}
+function showExcludedEditor(uuid) {}
 function savePack() {}
 function startAddExclusive() {}
 function startMoveFromBase() {}
