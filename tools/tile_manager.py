@@ -19,6 +19,7 @@ SCRIPT_DIR   = Path(__file__).parent
 REPO_ROOT    = SCRIPT_DIR.parent
 SQUARES_JSON = REPO_ROOT / "RoadTripBingo/Resources/squares.json"
 TILE_IMAGES  = REPO_ROOT / "RoadTripBingo/Resources/TileImages"
+PACKS_DIR    = REPO_ROOT / "RoadTripBingo/Resources"
 
 # ── To add a new category: add it to BOTH constants below ───────────────────
 
@@ -58,6 +59,9 @@ GEMINI_URL   = (
 )
 
 PORT = 8765
+
+# Populated at server startup; injected into the HTML SPA.
+PACKS_METADATA: list[dict] = []
 
 
 def build_prompt(text: str, category: str) -> str:
@@ -101,6 +105,40 @@ def save_image(tile_id: str, image_b64: str) -> None:
     p = image_path(tile_id)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_bytes(data)
+
+
+# ── Pack I/O ──────────────────────────────────────────────────────────────────
+
+def discover_packs() -> list[dict]:
+    """Return summary info for every pack-*.json in PACKS_DIR, sorted by filename."""
+    packs = []
+    for path in sorted(PACKS_DIR.glob("pack-*.json")):
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        packs.append({
+            "id":            data["id"],
+            "name":          data["name"],
+            "description":   data.get("description", ""),
+            "tileCount":     len(data.get("tiles", [])),
+            "overrideCount": len(data.get("rarityOverrides", {})),
+            "excludedCount": len(data.get("excludedTileIDs", [])),
+        })
+    return packs
+
+
+def load_pack(pack_id: str) -> dict:
+    """Load and return the full JSON for pack-{pack_id}.json. Raises FileNotFoundError if missing."""
+    path = PACKS_DIR / f"pack-{pack_id}.json"
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_pack(pack_id: str, pack_data: dict) -> None:
+    """Write pack_data to pack-{pack_id}.json with 2-space indent and trailing newline."""
+    path = PACKS_DIR / f"pack-{pack_id}.json"
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(pack_data, f, indent=2, sort_keys=False, ensure_ascii=False)
+        f.write("\n")
 
 
 # ── Gemini API ────────────────────────────────────────────────────────────────
@@ -722,6 +760,11 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             self.send_json(load_tiles())
         elif path.startswith("/api/image/"):
             self._serve_image(path[len("/api/image/"):])
+        elif path == "/api/packs":
+            self._handle_list_packs()
+        elif path.startswith("/api/packs/"):
+            pack_id = path[len("/api/packs/"):]
+            self._handle_get_pack(pack_id)
         else:
             self.send_error_json(404, "Not found")
 
@@ -734,6 +777,18 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         elif path.startswith("/api/tiles/") and path.endswith("/image"):
             tile_id = path[len("/api/tiles/"):-len("/image")]
             self._handle_save_image(tile_id)
+        elif path.startswith("/api/packs/"):
+            pack_path = path[len("/api/packs/"):]
+            if pack_path.endswith("/tiles"):
+                pack_id = pack_path[: -len("/tiles")]
+                self._handle_add_pack_tile(pack_id)
+            elif "/tiles/" in pack_path and pack_path.endswith("/image"):
+                parts = pack_path.split("/tiles/", 1)
+                pack_id = parts[0]
+                tile_id = parts[1][: -len("/image")]
+                self._handle_save_pack_tile_image(pack_id, tile_id)
+            else:
+                self.send_error_json(404, "Not found")
         else:
             self.send_error_json(404, "Not found")
 
@@ -742,6 +797,9 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         if path.startswith("/api/tiles/"):
             tile_id = path[len("/api/tiles/"):]
             self._handle_update_tile(tile_id)
+        elif path.startswith("/api/packs/"):
+            pack_id = path[len("/api/packs/"):]
+            self._handle_put_pack(pack_id)
         else:
             self.send_error_json(404, "Not found")
 
@@ -760,7 +818,8 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         html = HTML_APP.replace(
             "/* __INJECT__ */",
             f"const CATEGORIES = {json.dumps(CATEGORIES)};\n"
-            f"    const RARITIES = {json.dumps(RARITIES)};",
+            f"    const RARITIES = {json.dumps(RARITIES)};\n"
+            f"    const PACKS_META = {json.dumps(PACKS_METADATA)};",
         ).encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -857,6 +916,89 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         self.send_json({"saved": tile_id})
 
 
+    def _handle_list_packs(self):
+        self.send_json(PACKS_METADATA)
+
+    def _handle_get_pack(self, pack_id: str):
+        try:
+            self.send_json(load_pack(pack_id))
+        except FileNotFoundError:
+            self.send_error_json(404, f"Pack {pack_id!r} not found")
+
+    def _handle_put_pack(self, pack_id: str):
+        try:
+            body = self.read_json_body()
+        except Exception:
+            self.send_error_json(400, "Invalid JSON body")
+            return
+        for field in ("id", "name", "tiles", "rarityOverrides", "excludedTileIDs"):
+            if field not in body:
+                self.send_error_json(400, f"Missing required field: {field!r}")
+                return
+        if body["id"] != pack_id:
+            self.send_error_json(400, "Pack 'id' in body does not match URL")
+            return
+        # Ensure pack file already exists — pack files are pre-bundled, not created here.
+        pack_path = PACKS_DIR / f"pack-{pack_id}.json"
+        if not pack_path.exists():
+            self.send_error_json(404, f"Pack {pack_id!r} not found")
+            return
+        save_pack(pack_id, body)
+        self.send_json({"saved": pack_id})
+
+    def _handle_add_pack_tile(self, pack_id: str):
+        try:
+            pack = load_pack(pack_id)
+        except FileNotFoundError:
+            self.send_error_json(404, f"Pack {pack_id!r} not found")
+            return
+        try:
+            body = self.read_json_body()
+        except Exception:
+            self.send_error_json(400, "Invalid JSON body")
+            return
+        required = {"text", "emoji", "category", "rarity"}
+        missing = required - body.keys()
+        if missing:
+            self.send_error_json(400, f"Missing fields: {', '.join(sorted(missing))}")
+            return
+        # Preserve provided UUID (Move from Base preserves the original tile ID).
+        tile_id = body.get("id") or str(uuid.uuid4()).upper()
+        tile = {
+            "id":       tile_id,
+            "text":     body["text"],
+            "emoji":    body["emoji"],
+            "category": body["category"],
+            "rarity":   body["rarity"],
+        }
+        pack.setdefault("tiles", []).append(tile)
+        save_pack(pack_id, pack)
+        if "image_b64" in body:
+            save_image(tile_id, body["image_b64"])
+        self.send_json(tile, 201)
+
+    def _handle_save_pack_tile_image(self, pack_id: str, tile_id: str):
+        try:
+            pack = load_pack(pack_id)
+        except FileNotFoundError:
+            self.send_error_json(404, f"Pack {pack_id!r} not found")
+            return
+        if not any(t["id"] == tile_id for t in pack.get("tiles", [])):
+            self.send_error_json(404, f"Tile {tile_id!r} not in pack {pack_id!r}")
+            return
+        try:
+            body = self.read_json_body()
+        except Exception:
+            self.send_error_json(400, "Invalid JSON body")
+            return
+        image_b64 = body.get("image_b64", "")
+        if not image_b64:
+            self.send_error_json(400, "image_b64 is required")
+            return
+        save_image(tile_id, image_b64)
+        self.send_json({"saved": tile_id})
+
+
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main():
@@ -864,6 +1006,11 @@ def main():
     if not api_key:
         print("⚠  GEMINI_API_KEY not set — image generation will be disabled")
     TileManagerHandler.api_key = api_key
+
+    global PACKS_METADATA
+    PACKS_METADATA = discover_packs()
+    names = ", ".join(p["name"] for p in PACKS_METADATA)
+    print(f"   Packs loaded: {names or '(none found)'}")
 
     server = HTTPServer(("127.0.0.1", PORT), TileManagerHandler)
     url = f"http://localhost:{PORT}"
