@@ -514,7 +514,7 @@ let packSearchQuery = '';    // search filter for diff list
 
 // ── Tab switching ─────────────────────────────────────────────────────────────
 function switchTab(tabId) {
-  if (tabId !== 'base' && isDirty) {
+  if (isDirty) {
     if (!confirm('You have unsaved pack changes. Leave anyway?')) return;
   }
   // Deactivate all tabs and screens
