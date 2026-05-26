@@ -1134,12 +1134,180 @@ function resetPackRightPanel() {
   updatePackSummaryPanel();
 }
 
-// Placeholder stubs for Tasks 5–6
+// ── Addition flow: Create Exclusive Tile ──────────────────────────────────────
+function startAddExclusive() {
+  document.querySelectorAll('.add-menu').forEach(m => m.classList.remove('open'));
+  selectedMod = null;
+  renderPackDiffList();
+  showExclusiveEditor({ text: '', emoji: '', category: CATEGORIES[0] || 'nature', rarity: 'common' });
+  window._packIsNewExclusive = true;
+  window._packEditingTile = {};
+}
+
+// ── Addition flow: Override Rarity ────────────────────────────────────────────
+function startAddOverride() {
+  document.querySelectorAll('.add-menu').forEach(m => m.classList.remove('open'));
+  const rightEl = document.getElementById('pack-right-' + currentPackId);
+  if (!rightEl) return;
+
+  const existingOverrides  = Object.keys(packData.rarityOverrides || {});
+  const existingExcluded   = packData.excludedTileIDs || [];
+  const alreadyHandled     = new Set([...existingOverrides, ...existingExcluded]);
+  const candidates         = tiles.filter(t => !alreadyHandled.has(t.id));
+
+  rightEl.innerHTML = buildTilePickerHTML('Override Rarity', candidates, 'confirmAddOverride', null);
+}
+
+async function confirmAddOverride(uuid) {
+  const baseTile   = tiles.find(t => t.id === uuid);
+  const rightEl    = document.getElementById('pack-right-' + currentPackId);
+  const fromRarity = baseTile ? baseTile.rarity : 'common';
+  const defaultTo  = RARITIES[Math.max(0, RARITIES.indexOf(fromRarity) - 1)] || 'veryCommon';
+
+  rightEl.innerHTML =
+    '<div class="panel-header"><div class="panel-title">Override Rarity</div><div class="panel-id">' + esc(baseTile ? baseTile.text : uuid) + '</div></div>' +
+    '<div class="panel-body">' +
+      '<div class="section-label">Choose New Rarity</div>' +
+      '<div class="rarity-from-to">' +
+        '<div><div style="font-size:10px;color:var(--text3);margin-bottom:4px">BASE</div><span class="rarity ' + (RARITY_CLS[fromRarity]||'') + '">' + esc(fromRarity) + '</span></div>' +
+        '<div class="arrow">→</div>' +
+        '<div><div style="font-size:10px;color:var(--text3);margin-bottom:4px">IN THIS PACK</div>' +
+          '<select class="field-input" id="new-override-rarity" style="cursor:pointer">' +
+            RARITIES.map(r => '<option value="' + r + '"' + (r === defaultTo ? ' selected' : '') + '>' + r + '</option>').join('') +
+          '</select>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="picker-actions">' +
+      '<button class="btn-run" onclick="finaliseAddOverride(\\'' + uuid + '\\')">Add Override</button>' +
+      '<button class="btn-cancel-prompt" onclick="resetPackRightPanel()">Cancel</button>' +
+    '</div>';
+}
+
+function finaliseAddOverride(uuid) {
+  const newRarity = document.getElementById('new-override-rarity').value;
+  packData.rarityOverrides = packData.rarityOverrides || {};
+  packData.rarityOverrides[uuid] = newRarity;
+  markDirty();
+  selectedMod = { type: 'override', id: uuid };
+  updatePackSummaryPanel();
+  renderPackDiffList();
+  showOverrideEditor(uuid);
+}
+
+// ── Addition flow: Exclude Base Tile ──────────────────────────────────────────
+function startExcludeBase() {
+  document.querySelectorAll('.add-menu').forEach(m => m.classList.remove('open'));
+  const rightEl = document.getElementById('pack-right-' + currentPackId);
+  if (!rightEl) return;
+
+  const existingOverrides = Object.keys(packData.rarityOverrides || {});
+  const existingExcluded  = packData.excludedTileIDs || [];
+  const alreadyHandled    = new Set([...existingOverrides, ...existingExcluded]);
+  const candidates        = tiles.filter(t => !alreadyHandled.has(t.id));
+
+  rightEl.innerHTML = buildTilePickerHTML('Exclude Base Tile', candidates, 'confirmExclude',
+    'When this pack is active, the selected tile will not appear on any board.');
+}
+
+function confirmExclude(uuid) {
+  packData.excludedTileIDs = packData.excludedTileIDs || [];
+  packData.excludedTileIDs.push(uuid);
+  markDirty();
+  selectedMod = { type: 'excluded', id: uuid };
+  updatePackSummaryPanel();
+  renderPackDiffList();
+  showExcludedEditor(uuid);
+}
+
+// ── Addition flow: Move from Base ─────────────────────────────────────────────
+function startMoveFromBase() {
+  document.querySelectorAll('.add-menu').forEach(m => m.classList.remove('open'));
+  const rightEl = document.getElementById('pack-right-' + currentPackId);
+  if (!rightEl) return;
+
+  const packTileIds = new Set((packData.tiles || []).map(t => t.id));
+  const candidates  = tiles.filter(t => !packTileIds.has(t.id));
+
+  rightEl.innerHTML = buildTilePickerHTML(
+    'Move from Base',
+    candidates,
+    'confirmMoveFromBase',
+    'This tile will be removed from the base pool and become exclusive to this pack. This cannot be undone without manually editing squares.json.'
+  );
+}
+
+async function confirmMoveFromBase(uuid) {
+  const baseTile = tiles.find(t => t.id === uuid);
+  if (!baseTile) { alert('Tile not found'); return; }
+
+  // Read the image before deleting
+  let imageB64 = null;
+  try {
+    const imgResp = await fetch('/api/image/' + uuid);
+    if (imgResp.ok) {
+      const blob = await imgResp.blob();
+      imageB64 = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.readAsDataURL(blob);
+      });
+    }
+  } catch (_) {}
+
+  // Delete from base
+  const delResp = await fetch('/api/tiles/' + uuid, { method: 'DELETE' });
+  if (!delResp.ok) { alert('Failed to remove tile from base'); return; }
+  tiles = tiles.filter(t => t.id !== uuid);
+  renderTable();
+  updateStats();
+
+  // Add to pack (preserve UUID, send image if we have it)
+  const body = { id: uuid, text: baseTile.text, emoji: baseTile.emoji || '', category: baseTile.category, rarity: baseTile.rarity };
+  if (imageB64) body.image_b64 = imageB64;
+  const addResp = await fetch('/api/packs/' + currentPackId + '/tiles', {
+    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+  });
+  if (!addResp.ok) { alert('Tile deleted from base but failed to add to pack — check pack JSON manually'); return; }
+  const newTile = await addResp.json();
+  packData.tiles = packData.tiles || [];
+  packData.tiles.push(newTile);
+
+  selectedMod = { type: 'exclusive', id: uuid };
+  updatePackSummaryPanel();
+  renderPackDiffList();
+  showExclusiveEditor(newTile);
+}
+
+// ── Shared tile picker HTML builder ───────────────────────────────────────────
+function buildTilePickerHTML(title, candidates, confirmFn, warningText) {
+  const rows = candidates.map(t =>
+    '<div class="tile-picker-row" onclick="' + confirmFn + '(\\'' + t.id + '\\')">' +
+      '<div class="diff-thumb" style="font-size:14px">' + esc(t.emoji || '') + '</div>' +
+      '<div class="name">' + esc(t.text) + '</div>' +
+      '<div class="cat">' + esc(t.category) + ' · ' + esc(t.rarity) + '</div>' +
+    '</div>'
+  ).join('');
+
+  return '<div class="panel-header"><div class="panel-title">' + esc(title) + '</div></div>' +
+    '<div class="tile-picker">' +
+      '<input class="tile-picker-search" type="text" placeholder="Filter tiles…" oninput="filterTilePicker(this)">' +
+      (warningText ? '<div class="warning-callout">' + esc(warningText) + '</div>' : '') +
+      '<div class="tile-picker-list" id="tile-picker-list">' + rows + '</div>' +
+    '</div>' +
+    '<div class="picker-actions"><button class="btn-cancel-prompt" onclick="resetPackRightPanel()">Cancel</button></div>';
+}
+
+function filterTilePicker(input) {
+  const q = input.value.toLowerCase();
+  document.querySelectorAll('.tile-picker-row').forEach(row => {
+    const text = row.querySelector('.name').textContent.toLowerCase();
+    row.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+// Placeholder stub for Task 6
 function savePack() {}
-function startAddExclusive() {}
-function startMoveFromBase() {}
-function startAddOverride() {}
-function startExcludeBase() {}
 
 function updateStats() {
   document.getElementById('stat-tiles').textContent = tiles.length;
