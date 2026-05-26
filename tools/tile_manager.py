@@ -645,7 +645,17 @@ async function loadPackScreen(packId) {
   selectedMod     = null;
   packFilterType  = '';
   packSearchQuery = '';
-  packData = await fetch('/api/packs/' + packId).then(r => r.json());
+  isDirty         = false;
+  try {
+    const r = await fetch('/api/packs/' + packId);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    packData = await r.json();
+  } catch (err) {
+    packData = null;
+    const listEl = document.getElementById('diff-list-' + packId);
+    if (listEl) listEl.innerHTML = '<div style="padding:24px;text-align:center;color:var(--red);font-size:13px">Failed to load pack: ' + esc(err.message) + '</div>';
+    return;
+  }
   renderPackDiffList();
   updatePackSummaryPanel();
 }
@@ -702,7 +712,7 @@ function renderPackDiffList() {
   if (!currentPackId || !packData) return;
   const listEl  = document.getElementById('diff-list-' + currentPackId);
   const countEl = document.getElementById('diff-count-' + currentPackId);
-  if (!listEl) return;
+  if (!listEl || !countEl) return;
   const filtered = getFilteredMods();
   const all      = getPackMods();
 
