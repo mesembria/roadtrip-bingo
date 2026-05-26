@@ -514,6 +514,8 @@ let packSearchQuery = '';    // search filter for diff list
 
 // ── Tab switching ─────────────────────────────────────────────────────────────
 function switchTab(tabId) {
+  // No-op if already on this tab
+  if (document.getElementById('tab-' + tabId)?.classList.contains('active')) return;
   if (isDirty) {
     if (!confirm('You have unsaved pack changes. Leave anyway?')) return;
   }
@@ -870,6 +872,16 @@ function showExclusiveEditor(tile) {
 
 // ── Exclusive tile image generation ──────────────────────────────────────────
 function showPackPromptEditor() {
+  // Warn if user already approved an image — re-generating will replace it
+  if (window._packPendingImageB64 && window._packIsNewExclusive) {
+    if (!confirm('You already approved an image for this tile. Generating a new one will replace it. Continue?')) return;
+    window._packPendingImageB64 = null;
+    // Reset the displayed image back to placeholder
+    const img = document.getElementById('pack-image-current');
+    const ph  = document.getElementById('pack-img-placeholder');
+    if (img) { img.src = ''; img.style.display = 'none'; }
+    if (ph)  { ph.style.display = ''; }
+  }
   if (!window._packLastPrompt) {
     const name = document.getElementById('pack-field-name').value.trim() || 'a tile';
     const cat  = document.getElementById('pack-field-category').value;
@@ -966,7 +978,8 @@ async function saveExclusiveTile(tileId) {
   } else {
     // Edit existing exclusive tile — update in-memory; full pack saved on Save Pack
     const tile = (packData.tiles || []).find(t => t.id === tileId);
-    if (tile) { tile.text = name; tile.emoji = emoji; tile.category = category; tile.rarity = rarity; }
+    if (!tile) { alert('Tile not found in pack — it may have been removed.'); return; }
+    tile.text = name; tile.emoji = emoji; tile.category = category; tile.rarity = rarity;
     markDirty();
   }
   updatePackSummaryPanel();
@@ -980,7 +993,7 @@ function cancelPackEdit() {
 }
 
 function removeExclusiveTile(tileId) {
-  if (!confirm('Remove this tile from the pack? The tile will be deleted.')) return;
+  if (!confirm('Remove this tile from the pack? The change will be saved when you click Save Pack.')) return;
   packData.tiles = (packData.tiles || []).filter(t => t.id !== tileId);
   markDirty();
   selectedMod = null;
