@@ -189,22 +189,27 @@ HTML_APP = """<!DOCTYPE html>
   --font-mono: 'JetBrains Mono', monospace;
 }
 html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-ui); }
+.topbar { flex-shrink: 0; height: 44px; display: flex; align-items: stretch; background: var(--surface); border-bottom: 1px solid var(--border); }
+.topbar-logo { display: flex; align-items: center; padding: 0 18px; gap: 8px; font-family: var(--font-display); font-size: 15px; color: var(--amber); border-right: 1px solid var(--border); white-space: nowrap; flex-shrink: 0; }
+.topbar-logo span { color: var(--text3); font-size: 12px; font-family: var(--font-ui); font-weight: 400; }
+.tabs { display: flex; align-items: stretch; overflow-x: auto; flex: 1; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { display: flex; align-items: center; gap: 7px; padding: 0 16px; font-size: 13px; font-weight: 600; color: var(--text3); cursor: pointer; border-right: 1px solid var(--border); border-bottom: 3px solid transparent; white-space: nowrap; transition: color .12s, background .12s; user-select: none; }
+.tab:hover { color: var(--text2); background: var(--surface2); }
+.tab.active { color: var(--amber); border-bottom-color: var(--amber); background: var(--bg); }
+.tab-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.topbar-stat { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 0 18px; border-left: 1px solid var(--border); flex-shrink: 0; }
+.topbar-stat .val { font-family: var(--font-mono); font-size: 15px; line-height: 1; }
+.topbar-stat .lbl { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: .8px; margin-top: 2px; }
+.screens { flex: 1; overflow: hidden; position: relative; }
+.screen { display: none; position: absolute; inset: 0; flex-direction: row; }
+.screen.active { display: flex; }
 body::before {
   content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: 0.025;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 128px;
 }
 .app { display: flex; flex-direction: column; height: 100vh; }
-.header {
-  flex-shrink: 0; display: flex; align-items: center; gap: 20px;
-  padding: 0 20px; height: 52px; background: var(--surface); border-bottom: 1px solid var(--border);
-}
-.header-logo { font-family: var(--font-display); font-size: 17px; color: var(--amber); }
-.header-logo span { color: var(--text3); font-size: 13px; font-family: var(--font-ui); font-weight: 400; margin-left: 10px; }
-.header-stats { display: flex; gap: 20px; margin-left: auto; }
-.stat { display: flex; flex-direction: column; align-items: flex-end; }
-.stat-val { font-family: var(--font-mono); font-size: 15px; color: var(--text); line-height: 1; }
-.stat-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 1px; }
 .body { flex: 1; display: flex; overflow: hidden; }
 .left { width: 460px; flex-shrink: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
 .toolbar { flex-shrink: 0; display: flex; gap: 8px; align-items: center; padding: 10px 12px; background: var(--surface); border-bottom: 1px solid var(--border); }
@@ -296,18 +301,96 @@ body::before {
 .btn-cancel { background: transparent; border: 1px solid var(--border2); border-radius: 4px; padding: 7px 14px; font-family: var(--font-ui); font-size: 13px; color: var(--text3); cursor: pointer; }
 .btn-save { background: var(--amber); border: none; border-radius: 4px; padding: 7px 20px; font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: var(--bg); cursor: pointer; letter-spacing: 0.3px; transition: opacity 0.15s; }
 .btn-save:hover { opacity: 0.85; }
+/* ── Pack diff list ─────────────────────────────── */
+.pack-left { width: 460px; flex-shrink: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border); overflow: hidden; }
+.pack-right { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.diff-toolbar { flex-shrink: 0; display: flex; gap: 8px; align-items: center; padding: 10px 12px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.type-select { background: var(--bg); border: 1px solid var(--border2); border-radius: 4px; padding: 6px 8px; font-family: var(--font-ui); font-size: 13px; color: var(--text2); outline: none; cursor: pointer; }
+.btn-add-split { position: relative; display: inline-block; }
+.btn-add-split button { background: var(--amber); border: none; border-radius: 4px; padding: 6px 12px; font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: var(--bg); cursor: pointer; letter-spacing: 0.3px; transition: opacity .15s; }
+.btn-add-split button:hover { opacity: 0.85; }
+.add-menu { display: none; position: absolute; right: 0; top: calc(100% + 4px); background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; overflow: hidden; z-index: 50; min-width: 180px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+.add-menu.open { display: block; }
+.add-menu-item { display: block; width: 100%; text-align: left; padding: 9px 14px; font-family: var(--font-ui); font-size: 13px; font-weight: 500; color: var(--text); background: transparent; border: none; cursor: pointer; transition: background .1s; }
+.add-menu-item:hover { background: var(--surface3); }
+.diff-col-head { flex-shrink: 0; display: grid; grid-template-columns: 44px 1fr 90px 1fr; padding: 5px 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.diff-col-head span { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); font-weight: 600; }
+.diff-list { flex: 1; overflow-y: auto; }
+.diff-list::-webkit-scrollbar { width: 4px; }
+.diff-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.diff-row { display: grid; grid-template-columns: 44px 1fr 90px 1fr; padding: 6px 12px; align-items: center; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .1s; border-left: 3px solid transparent; }
+.diff-row:hover { background: var(--surface2); }
+.diff-row.selected { background: var(--surface2); }
+.diff-row.exclusive { border-left-color: var(--green); }
+.diff-row.override { border-left-color: var(--amber); }
+.diff-row.excluded { border-left-color: var(--red); opacity: 0.7; }
+.diff-row.selected.exclusive { background: rgba(74,144,96,0.08); }
+.diff-row.selected.override  { background: rgba(232,168,48,0.08); }
+.diff-row.selected.excluded  { background: rgba(200,64,64,0.08); }
+.diff-thumb { width: 30px; height: 30px; background: var(--surface3); border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.diff-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.diff-name { font-size: 13px; font-weight: 500; color: var(--text); padding: 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.diff-name.strikethrough { text-decoration: line-through; color: var(--text2); }
+.diff-badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; letter-spacing: .8px; width: fit-content; }
+.diff-badge.exclusive { color: var(--green); background: rgba(74,144,96,0.15); }
+.diff-badge.override  { color: var(--amber); background: rgba(232,168,48,0.15); }
+.diff-badge.excluded  { color: var(--red);   background: rgba(200,64,64,0.15); }
+.diff-detail { font-size: 11px; color: var(--text2); padding: 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.diff-detail.override-arrow { color: var(--amber); }
+.diff-footer { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; border-top: 1px solid var(--border); background: var(--surface); }
+.diff-footer-count { font-size: 10px; color: var(--text3); letter-spacing: .5px; }
+.btn-save-pack { background: var(--green); border: none; border-radius: 4px; padding: 6px 18px; font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: white; cursor: pointer; transition: opacity .15s; }
+.btn-save-pack:hover { opacity: 0.85; }
+.btn-save-pack:disabled { opacity: 0.35; cursor: default; }
+/* Pack right panel states */
+.pack-summary { padding: 24px 20px; display: flex; flex-direction: column; gap: 8px; }
+.pack-summary-name { font-family: var(--font-display); font-size: 20px; color: var(--amber); }
+.pack-summary-counts { font-size: 13px; color: var(--text2); line-height: 2; }
+.pack-summary-hint { font-size: 12px; color: var(--text3); margin-top: 8px; }
+.rarity-from-to { display: flex; align-items: center; gap: 12px; padding: 14px 0; }
+.rarity-from-to .arrow { font-size: 18px; color: var(--text3); }
+.override-base-info { background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; padding: 12px; font-size: 12px; color: var(--text2); display: flex; flex-direction: column; gap: 4px; }
+.override-base-info .name { font-size: 14px; font-weight: 600; color: var(--text); }
+.excluded-callout { background: rgba(200,64,64,0.08); border: 1px solid rgba(200,64,64,0.25); border-radius: 6px; padding: 12px; font-size: 12px; color: var(--red); }
+.btn-remove { background: transparent; border: 1px solid var(--red-dim); border-radius: 4px; padding: 8px 14px; font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--red); cursor: pointer; width: 100%; letter-spacing: .3px; transition: all .15s; }
+.btn-remove:hover { background: rgba(200,64,64,0.1); }
+.btn-convert { background: transparent; border: 1px solid var(--amber-dim); border-radius: 4px; padding: 8px 14px; font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--amber); cursor: pointer; width: 100%; letter-spacing: .3px; transition: all .15s; margin-bottom: 8px; }
+.btn-convert:hover { background: rgba(232,168,48,0.1); }
+/* Base tile picker (used by addition flows) */
+.tile-picker { display: flex; flex-direction: column; overflow: hidden; flex: 1; }
+.tile-picker-search { background: var(--bg); border: 1px solid var(--border2); border-radius: 4px; padding: 7px 10px; font-family: var(--font-ui); font-size: 13px; color: var(--text); outline: none; margin: 12px 20px 8px; }
+.tile-picker-search:focus { border-color: var(--amber-dim); }
+.tile-picker-list { flex: 1; overflow-y: auto; }
+.tile-picker-row { display: flex; align-items: center; gap: 10px; padding: 7px 20px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background .1s; }
+.tile-picker-row:hover { background: var(--surface2); }
+.tile-picker-row .name { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+.tile-picker-row .cat  { font-size: 11px; color: var(--text2); }
+.warning-callout { background: rgba(200,64,64,0.08); border: 1px solid rgba(200,64,64,0.25); border-radius: 6px; padding: 12px 20px; font-size: 12px; color: var(--red); margin: 0 20px 12px; line-height: 1.5; }
+.warning-callout.amber { background: rgba(232,168,48,0.08); border-color: rgba(232,168,48,0.25); color: var(--amber); }
+.picker-actions { display: flex; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.picker-rarity-wrap { padding: 12px 20px; }
+.picker-rarity-label { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--text3); font-weight: 600; margin-bottom: 10px; }
 * { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
 </style>
 </head>
 <body>
 <div class="app">
-  <header class="header">
-    <div class="header-logo">Road Trip Bingo <span>/ Tile Manager</span></div>
-    <div class="header-stats">
-      <div class="stat"><span class="stat-val" id="stat-tiles">—</span><span class="stat-lbl">Tiles</span></div>
-      <div class="stat"><span class="stat-val" id="stat-cats">—</span><span class="stat-lbl">Categories</span></div>
+  <div class="topbar">
+    <div class="topbar-logo">Road Trip Bingo <span>/ Tile Manager</span></div>
+    <div class="tabs" id="tabs">
+      <div class="tab active" id="tab-base" onclick="switchTab('base')">
+        <div class="tab-dot" style="background:var(--text2)"></div>
+        Base Tiles
+      </div>
+      <!-- Pack tabs injected by JS on init -->
     </div>
-  </header>
+    <div class="topbar-stat">
+      <span class="val" id="stat-tiles">—</span>
+      <span class="lbl">Tiles</span>
+    </div>
+  </div>
+  <div class="screens">
+  <div class="screen active" id="screen-base">
   <div class="body">
     <div class="left">
       <div class="toolbar">
@@ -393,8 +476,11 @@ body::before {
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </div><!-- .body -->
+  </div><!-- #screen-base -->
+  <!-- Pack screens injected by JS on init -->
+  </div><!-- .screens -->
+</div><!-- .app -->
 <script>
 /* __INJECT__ */
 
@@ -407,6 +493,47 @@ let deleteConfirming = false;
 let lastUsedPrompt = null;  // preserved across discard so user can iterate on a custom prompt
 let sortKey = null;   // 'name' | 'rarity' | null
 let sortAsc = true;
+
+// ── Pack tab colors (by pack id) ─────────────────────────────────────────────
+const PACK_COLORS = {
+  'farm-country':     '#4A9060',
+  'interstate':       '#5B8DD9',
+  'city':             '#9060C8',
+  'mountains':        '#7A9060',
+  'beach-coast':      '#4090A8',
+  'desert-southwest': '#C87840',
+};
+
+// ── Pack screen state ─────────────────────────────────────────────────────────
+let currentPackId   = null;  // which pack tab is active (null = base tiles)
+let packData        = null;  // full pack object in client memory
+let selectedMod     = null;  // {type: 'exclusive'|'override'|'excluded', id: uuid}
+let isDirty         = false; // unsaved pack changes
+let packFilterType  = '';    // '' | 'exclusive' | 'override' | 'excluded'
+let packSearchQuery = '';    // search filter for diff list
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(tabId) {
+  if (tabId !== 'base' && isDirty) {
+    if (!confirm('You have unsaved pack changes. Leave anyway?')) return;
+  }
+  // Deactivate all tabs and screens
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  // Activate selected
+  const tabEl    = document.getElementById('tab-' + tabId);
+  const screenEl = document.getElementById('screen-' + tabId);
+  if (tabEl)    tabEl.classList.add('active');
+  if (screenEl) screenEl.classList.add('active');
+
+  if (tabId === 'base') {
+    currentPackId = null;
+    isDirty = false;
+  } else {
+    currentPackId = tabId;
+    loadPackScreen(tabId);
+  }
+}
 
 // ── Prompt building (mirrors server-side logic) ──────────────────────────────────────
 const CATEGORY_HINTS_JS = {
@@ -432,11 +559,91 @@ async function init() {
   tiles = tilesData;
   renderTable();
   updateStats();
+  buildPackTabs();
 }
+
+function buildPackTabs() {
+  const tabsEl    = document.getElementById('tabs');
+  const screensEl = document.querySelector('.screens');
+  PACKS_META.forEach(pack => {
+    // Tab
+    const color = PACK_COLORS[pack.id] || 'var(--text2)';
+    const tab = document.createElement('div');
+    tab.className = 'tab';
+    tab.id = 'tab-' + pack.id;
+    tab.innerHTML = '<div class="tab-dot" style="background:' + color + '"></div>' + esc(pack.name);
+    tab.onclick = () => switchTab(pack.id);
+    tabsEl.appendChild(tab);
+    // Screen skeleton (content populated when first visited)
+    const screen = document.createElement('div');
+    screen.className = 'screen';
+    screen.id = 'screen-' + pack.id;
+    screen.innerHTML =
+      '<div class="pack-left">' +
+        '<div class="diff-toolbar">' +
+          '<div class="search-wrap" style="flex:1">' +
+            '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);width:13px;height:13px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>' +
+            '<input class="search" type="text" placeholder="Search modifications…" oninput="onPackSearch(this.value)">' +
+          '</div>' +
+          '<select class="type-select" onchange="onPackTypeFilter(this.value)">' +
+            '<option value="">All types</option>' +
+            '<option value="exclusive">Exclusive</option>' +
+            '<option value="override">Override</option>' +
+            '<option value="excluded">Excluded</option>' +
+          '</select>' +
+          '<div class="btn-add-split" id="add-split-' + pack.id + '">' +
+            '<button onclick="toggleAddMenu(\\'' + pack.id + '\\')">+ Add ▾</button>' +
+            '<div class="add-menu" id="add-menu-' + pack.id + '">' +
+              '<button class="add-menu-item" onclick="startAddExclusive()">Create Exclusive Tile</button>' +
+              '<button class="add-menu-item" onclick="startMoveFromBase()">Move from Base</button>' +
+              '<button class="add-menu-item" onclick="startAddOverride()">Override Rarity</button>' +
+              '<button class="add-menu-item" onclick="startExcludeBase()">Exclude Base Tile</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="diff-col-head"><span></span><span>Tile</span><span>Type</span><span>Detail</span></div>' +
+        '<div class="diff-list" id="diff-list-' + pack.id + '"></div>' +
+        '<div class="diff-footer">' +
+          '<span class="diff-footer-count" id="diff-count-' + pack.id + '">—</span>' +
+          '<button class="btn-save-pack" id="btn-save-' + pack.id + '" disabled onclick="savePack()">Save Pack</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pack-right" id="pack-right-' + pack.id + '">' +
+        '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px">' +
+          '<div class="pack-summary">' +
+            '<div class="pack-summary-name">' + esc(pack.name) + '</div>' +
+            '<div class="pack-summary-counts" id="pack-counts-' + pack.id + '">Loading…</div>' +
+            '<div class="pack-summary-hint">Select a modification to edit, or use + Add to create one.</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    screensEl.appendChild(screen);
+  });
+  // Close add menus when clicking outside
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.btn-add-split')) {
+      document.querySelectorAll('.add-menu').forEach(m => m.classList.remove('open'));
+    }
+  });
+}
+
+function toggleAddMenu(packId) {
+  const menu = document.getElementById('add-menu-' + packId);
+  menu.classList.toggle('open');
+}
+
+// Placeholder stubs — implemented in later tasks
+function loadPackScreen(packId) {}
+function onPackSearch(val) {}
+function onPackTypeFilter(val) {}
+function savePack() {}
+function startAddExclusive() {}
+function startMoveFromBase() {}
+function startAddOverride() {}
+function startExcludeBase() {}
 
 function updateStats() {
   document.getElementById('stat-tiles').textContent = tiles.length;
-  document.getElementById('stat-cats').textContent = CATEGORIES.length;
 }
 
 // ── Dropdowns ─────────────────────────────────────────────────────────────────────────
