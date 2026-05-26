@@ -517,6 +517,12 @@ function switchTab(tabId) {
   if (isDirty) {
     if (!confirm('You have unsaved pack changes. Leave anyway?')) return;
   }
+  // Reset all pack state before switching (prevents stale state across tabs)
+  packData        = null;
+  selectedMod     = null;
+  packFilterType  = '';
+  packSearchQuery = '';
+  isDirty         = false;
   // Deactivate all tabs and screens
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -528,7 +534,6 @@ function switchTab(tabId) {
 
   if (tabId === 'base') {
     currentPackId = null;
-    isDirty = false;
   } else {
     currentPackId = tabId;
     loadPackScreen(tabId);
@@ -578,6 +583,9 @@ function buildPackTabs() {
     const screen = document.createElement('div');
     screen.className = 'screen';
     screen.id = 'screen-' + pack.id;
+    // NOTE: .add-menu-item clicks do NOT close the menu via the click-outside handler
+    // (they're inside .btn-add-split so closest('.btn-add-split') is truthy).
+    // Task 5 action functions (startAddExclusive etc.) must call toggleAddMenu explicitly to close.
     screen.innerHTML =
       '<div class="pack-left">' +
         '<div class="diff-toolbar">' +
