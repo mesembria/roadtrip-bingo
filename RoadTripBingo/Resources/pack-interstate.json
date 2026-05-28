@@ -3,13 +3,54 @@
   "name": "Interstate",
   "description": "Highways, rest stops, weigh stations, and the endless white line.",
   "imageName": "Interstate",
-  "tiles": [],
+  "tiles": [
+    {
+      "id": "96794F0E-2FF3-49BB-A03A-FE760A8B728A",
+      "text": "Weigh Station",
+      "emoji": "⚖️",
+      "category": "signs",
+      "rarity": "uncommon"
+    },
+    {
+      "id": "FD790CF8-9C74-489F-9B5D-61EA067469DD",
+      "text": "Ghost Town",
+      "emoji": "👻",
+      "category": "landmarks",
+      "rarity": "veryRare"
+    },
+    {
+      "id": "01B2195F-8A68-431D-BE3F-19E2C2457C03",
+      "text": "Rest Area Sign",
+      "emoji": "🛏️",
+      "category": "signs",
+      "rarity": "common"
+    },
+    {
+      "id": "6452E9FD-291D-4DDE-8CA4-6FFDEB73A24F",
+      "text": "Runaway Truck Ramp",
+      "emoji": "🚛",
+      "category": "signs",
+      "rarity": "rare"
+    },
+    {
+      "id": "9CB9371C-354F-3F5B-ACCF-914CFE365C29",
+      "text": "State Trooper Car",
+      "emoji": "🚔",
+      "category": "vehicles",
+      "rarity": "uncommon"
+    },
+    {
+      "id": "D1676C11-21B1-32CB-9850-777B52120238",
+      "text": "Welcome Center",
+      "emoji": "🗺️",
+      "category": "landmarks",
+      "rarity": "uncommon"
+    }
+  ],
   "rarityOverrides": {
     "95F10877-1BC5-4F38-A6B1-5C8469946794": "veryCommon",
     "B15573AB-373C-4093-957F-87EAAD1FF91D": "veryCommon",
     "69822FBE-A091-40B0-BE4A-9BE98A51293A": "veryCommon",
-    "01B2195F-8A68-431D-BE3F-19E2C2457C03": "veryCommon",
-    "96794F0E-2FF3-49BB-A03A-FE760A8B728A": "common",
     "0ED19DD6-E519-44AD-A531-66A65D01C3F6": "veryCommon",
     "8031441A-0A40-43A1-9A1D-908CF7CD08BE": "veryCommon",
     "BDF48176-EA53-4AE5-9BBD-57A4C1BF35AA": "veryCommon",
