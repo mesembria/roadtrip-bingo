@@ -10,7 +10,7 @@
     "category": "vehicles",
     "emoji": "🚐",
     "id": "C06E05E6-15F9-4867-B8A5-47A82727CD13",
-    "rarity": "uncommon",
+    "rarity": "common",
     "text": "RV"
   },
   {
@@ -164,7 +164,7 @@
     "category": "vehicles",
     "emoji": "🍦",
     "id": "F448BB29-CAB1-4CCD-8C42-D3DD6B76292C",
-    "rarity": "rare",
+    "rarity": "uncommon",
     "text": "Ice Cream Truck"
   },
   {
@@ -241,7 +241,7 @@
     "category": "nature",
     "emoji": "🌈",
     "id": "5700EA4F-7F21-45B2-8E93-40F7A151A255",
-    "rarity": "rare",
+    "rarity": "uncommon",
     "text": "Rainbow"
   },
   {
@@ -479,7 +479,7 @@
     "category": "food",
     "emoji": "💵",
     "id": "ACE3CB99-BC1E-4874-AFB7-E4B5D5D8FAD1",
-    "rarity": "veryCommon",
+    "rarity": "common",
     "text": "Dollar General"
   },
   {
@@ -1130,7 +1130,7 @@
     "category": "landmarks",
     "emoji": "🎈",
     "id": "0D71D1E3-D56E-4584-B7DB-FD9EFA88B060",
-    "rarity": "rare",
+    "rarity": "uncommon",
     "text": "Hot Air Balloon"
   },
   {
@@ -1158,7 +1158,7 @@
     "category": "signs",
     "emoji": "🛣️",
     "id": "3220B1AF-B3AE-493C-8313-180D7C3D3E69",
-    "rarity": "uncommon",
+    "rarity": "rare",
     "text": "Route 66 Sign"
   },
   {
@@ -1186,7 +1186,7 @@
     "category": "signs",
     "emoji": "🏷️",
     "id": "A6F7CA63-1204-4831-8F57-F7BBF95BED53",
-    "rarity": "uncommon",
+    "rarity": "veryCommon",
     "text": "Yard Sale"
   },
   {
