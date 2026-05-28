@@ -141,10 +141,10 @@
   },
   {
     "category": "vehicles",
-    "emoji": "🚌",
+    "emoji": "🚗",
     "id": "F8E12E7A-4A96-4990-8719-90423D457EE6",
-    "rarity": "rare",
-    "text": "Double-Decker Bus"
+    "rarity": "veryRare",
+    "text": "Stretched Limousine"
   },
   {
     "category": "vehicles",
@@ -192,14 +192,14 @@
     "category": "nature",
     "emoji": "🦌",
     "id": "B23F16C4-D19A-4D6C-A61A-3D6A65E86DE1",
-    "rarity": "uncommon",
+    "rarity": "common",
     "text": "Deer"
   },
   {
     "category": "nature",
     "emoji": "🏚️",
     "id": "621A699E-7B91-46C8-AB53-BBFB2E21BE77",
-    "rarity": "veryCommon",
+    "rarity": "uncommon",
     "text": "Red Barn"
   },
   {
@@ -208,13 +208,6 @@
     "id": "814EBF76-AD02-4C8D-9943-DC94892B3B1D",
     "rarity": "uncommon",
     "text": "Sunflower Field"
-  },
-  {
-    "category": "nature",
-    "emoji": "🌾",
-    "id": "FA75C56E-321A-4958-9F9A-050CA316AB90",
-    "rarity": "veryCommon",
-    "text": "Hay Bale"
   },
   {
     "category": "nature",
@@ -379,20 +372,13 @@
   },
   {
     "category": "food",
-    "emoji": "🅿️",
-    "id": "FD790CF8-9C74-489F-9B5D-61EA067469DD",
-    "rarity": "veryCommon",
-    "text": "Rest Stop"
-  },
-  {
-    "category": "food",
     "emoji": "🚗",
     "id": "AA2E08D4-5E1C-4EE8-A690-4BEC6459231A",
     "rarity": "common",
     "text": "Drive-Through"
   },
   {
-    "category": "food",
+    "category": "signs",
     "emoji": "📢",
     "id": "6BA6FFCC-5BC1-4A77-AD4C-E80BC54241EE",
     "rarity": "veryCommon",
@@ -469,7 +455,7 @@
     "text": "Truck Stop"
   },
   {
-    "category": "food",
+    "category": "landmarks",
     "emoji": "🚿",
     "id": "54125617-DEA9-4FFF-B967-ACEEBF3E60A5",
     "rarity": "uncommon",
@@ -582,13 +568,6 @@
   },
   {
     "category": "landmarks",
-    "emoji": "🏠",
-    "id": "A14147C1-EDE5-4762-9302-0D4EEE5E9E2D",
-    "rarity": "common",
-    "text": "Grain Silo"
-  },
-  {
-    "category": "landmarks",
     "emoji": "🏟️",
     "id": "35468309-B9C7-4780-905E-47C27F63E12C",
     "rarity": "uncommon",
@@ -600,13 +579,6 @@
     "id": "019ACCAD-2097-4BC8-B923-3F314FFC236F",
     "rarity": "uncommon",
     "text": "Fairground"
-  },
-  {
-    "category": "landmarks",
-    "emoji": "🏛️",
-    "id": "A567E170-5E12-459A-B3E7-A552CB7D7388",
-    "rarity": "rare",
-    "text": "State Capitol"
   },
   {
     "category": "landmarks",
@@ -680,13 +652,6 @@
   },
   {
     "category": "landmarks",
-    "emoji": "👻",
-    "id": "7CBDA785-2C75-4C5A-8599-F992A1A8FDAF",
-    "rarity": "veryRare",
-    "text": "Ghost Town"
-  },
-  {
-    "category": "landmarks",
     "emoji": "⭐",
     "id": "4D572B60-AD21-4F40-BA9A-A3D4F2A3A491",
     "rarity": "rare",
@@ -697,7 +662,7 @@
     "emoji": "⛏️",
     "id": "E8A0F6BE-2AB6-49EA-A199-F43D7A1FBFA0",
     "rarity": "rare",
-    "text": "Mining Facility"
+    "text": "Open-Pit Mine"
   },
   {
     "category": "weather",
@@ -715,16 +680,9 @@
   },
   {
     "category": "weather",
-    "emoji": "🌪️",
-    "id": "EFDF3832-1699-449C-A7B5-124E44366CE9",
-    "rarity": "veryRare",
-    "text": "Dust Storm"
-  },
-  {
-    "category": "weather",
     "emoji": "❄️",
     "id": "1CA02B04-B431-467D-A705-D64A1CA3D9F7",
-    "rarity": "uncommon",
+    "rarity": "rare",
     "text": "Snow on Mountains"
   },
   {
@@ -752,14 +710,14 @@
     "category": "weather",
     "emoji": "⚡",
     "id": "778FA937-C5B2-4C47-91C6-80E73F443B29",
-    "rarity": "uncommon",
+    "rarity": "rare",
     "text": "Lightning"
   },
   {
     "category": "weather",
     "emoji": "🌨️",
     "id": "C0A4CB35-D900-4AE6-90D5-75C70518348F",
-    "rarity": "rare",
+    "rarity": "veryRare",
     "text": "Hail"
   },
   {
@@ -792,13 +750,6 @@
   },
   {
     "category": "weather",
-    "emoji": "⭐",
-    "id": "97861B7C-F490-4D4B-82F3-2D6E23F3DA89",
-    "rarity": "uncommon",
-    "text": "Stars Visible"
-  },
-  {
-    "category": "weather",
     "emoji": "🌡️",
     "id": "BA705AAF-0D8B-43EE-8DA9-476B3E5A97D0",
     "rarity": "uncommon",
@@ -810,13 +761,6 @@
     "id": "377ADB1F-1F22-4D07-9069-EB6A08DBC0A1",
     "rarity": "rare",
     "text": "Wildfire Smoke"
-  },
-  {
-    "category": "weather",
-    "emoji": "🌀",
-    "id": "B957584E-97A2-4DBB-B421-A80D1832D7C5",
-    "rarity": "rare",
-    "text": "Dust Devil"
   },
   {
     "category": "weather",
@@ -878,7 +822,7 @@
     "category": "signs",
     "emoji": "🛑",
     "id": "0BF88129-859B-49B8-A85D-14C54449B4C6",
-    "rarity": "veryCommon",
+    "rarity": "common",
     "text": "Speed Limit 75+"
   },
   {
@@ -900,14 +844,7 @@
     "emoji": "⛔",
     "id": "47403EBA-0F94-4761-A284-1F5E6B626D40",
     "rarity": "common",
-    "text": "No Passing Zone"
-  },
-  {
-    "category": "signs",
-    "emoji": "⚖️",
-    "id": "96794F0E-2FF3-49BB-A03A-FE760A8B728A",
-    "rarity": "uncommon",
-    "text": "Weigh Station"
+    "text": "No Passing Zone Sign"
   },
   {
     "category": "signs",
@@ -922,20 +859,6 @@
     "id": "BDF48176-EA53-4AE5-9BBD-57A4C1BF35AA",
     "rarity": "common",
     "text": "Highway Interchange"
-  },
-  {
-    "category": "signs",
-    "emoji": "🛏️",
-    "id": "01B2195F-8A68-431D-BE3F-19E2C2457C03",
-    "rarity": "common",
-    "text": "Rest Area Sign"
-  },
-  {
-    "category": "signs",
-    "emoji": "🚛",
-    "id": "6452E9FD-291D-4DDE-8CA4-6FFDEB73A24F",
-    "rarity": "rare",
-    "text": "Runaway Truck Ramp"
   },
   {
     "category": "signs",
@@ -956,7 +879,7 @@
     "emoji": "⛓️",
     "id": "F070E239-C059-456B-B908-11CB3902D05D",
     "rarity": "rare",
-    "text": "Chain Control Sign"
+    "text": "Tire Chains on Car"
   },
   {
     "category": "signs",
@@ -1072,10 +995,10 @@
   },
   {
     "category": "vehicles",
-    "emoji": "⛏️",
+    "emoji": "🗑️",
     "id": "C44588F4-72FF-4691-8AB7-8B9C6DB664D9",
     "rarity": "uncommon",
-    "text": "Coal Truck"
+    "text": "Garbage Truck"
   },
   {
     "category": "vehicles",
@@ -1102,28 +1025,28 @@
     "category": "nature",
     "emoji": "🦌",
     "id": "05150C84-9A42-4F02-9FA8-685C4881A307",
-    "rarity": "rare",
+    "rarity": "veryRare",
     "text": "Elk"
   },
   {
     "category": "nature",
     "emoji": "🦌",
     "id": "C2738543-1B62-4D94-A914-3ECF040D81D0",
-    "rarity": "rare",
+    "rarity": "veryRare",
     "text": "Pronghorn Antelope"
   },
   {
     "category": "nature",
     "emoji": "🦅",
     "id": "8C5057CC-7613-4CDD-B659-9ACBC78487FD",
-    "rarity": "rare",
+    "rarity": "veryRare",
     "text": "Bald Eagle"
   },
   {
     "category": "nature",
     "emoji": "🐿️",
     "id": "D02A26D6-AE5F-4402-A3C7-8E39E20082B1",
-    "rarity": "uncommon",
+    "rarity": "rare",
     "text": "Prairie Dogs"
   },
   {
@@ -1144,7 +1067,7 @@
     "category": "nature",
     "emoji": "🪨",
     "id": "B7ED7D37-B022-45D6-8FFE-B8FA780B6684",
-    "rarity": "common",
+    "rarity": "rare",
     "text": "Red Rock Cliffs"
   },
   {
@@ -1158,8 +1081,8 @@
     "category": "nature",
     "emoji": "🏚️",
     "id": "7912F43E-141F-40A4-B209-125709247146",
-    "rarity": "uncommon",
-    "text": "Tobacco Barn"
+    "rarity": "rare",
+    "text": "Rusted Old Barn"
   },
   {
     "category": "nature",
@@ -1177,24 +1100,17 @@
   },
   {
     "category": "nature",
-    "emoji": "⛰️",
+    "emoji": "🪨",
     "id": "9ECF0037-9500-4C09-A8A7-F8DD573C4EAC",
-    "rarity": "uncommon",
-    "text": "Limestone Cliffs"
+    "rarity": "rare",
+    "text": "White Rock Cliffs"
   },
   {
     "category": "nature",
     "emoji": "🐎",
     "id": "725B6E6E-33F5-413E-831B-1B0A79B00A99",
-    "rarity": "common",
+    "rarity": "uncommon",
     "text": "White Fence Horse Farm"
-  },
-  {
-    "category": "landmarks",
-    "emoji": "🏗️",
-    "id": "CB998D77-472F-4201-8025-9790FE1B3C82",
-    "rarity": "common",
-    "text": "Grain Elevator"
   },
   {
     "category": "landmarks",
@@ -1222,7 +1138,7 @@
     "emoji": "🏛️",
     "id": "61F546BA-61C6-4A2A-A616-CFCF2866F011",
     "rarity": "uncommon",
-    "text": "County Courthouse"
+    "text": "Courthouse with Clock Tower"
   },
   {
     "category": "landmarks",
@@ -1263,7 +1179,7 @@
     "category": "signs",
     "emoji": "🚨",
     "id": "FB9D41AD-3615-480A-9499-B2ACDA6185A8",
-    "rarity": "common",
+    "rarity": "uncommon",
     "text": "Tornado Siren"
   },
   {
@@ -1272,5 +1188,11 @@
     "id": "A6F7CA63-1204-4831-8F57-F7BBF95BED53",
     "rarity": "uncommon",
     "text": "Yard Sale"
+  },
+  {
+    "category": "vehicles",
+    "id": "1686B2E7-ED35-44B1-95F2-31353A7F2039",
+    "rarity": "common",
+    "text": "Large Plane"
   }
 ]
