@@ -524,6 +524,16 @@ function switchTab(tabId) {
   if (isDirty) {
     if (!confirm('You have unsaved pack changes. Leave anyway?')) return;
   }
+  // Reset the old pack's right panel to remove any exclusive-tile-editor elements
+  // (pack-gen-loading, pack-prompt-editor, pack-field-name, etc.) from the DOM.
+  // Those elements all use hardcoded IDs without a pack suffix, so leaving them
+  // in a hidden screen creates duplicate IDs. The next pack that opens an exclusive
+  // tile editor then creates the same IDs, and document.getElementById() returns
+  // whichever came first in document order — causing generation to silently target
+  // the wrong (invisible) panel instead of the active one.
+  if (currentPackId) {
+    resetPackRightPanel();
+  }
   // Reset all pack state before switching (prevents stale state across tabs)
   packData        = null;
   selectedMod     = null;
