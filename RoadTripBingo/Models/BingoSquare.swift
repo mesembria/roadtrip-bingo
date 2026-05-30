@@ -15,7 +15,7 @@ enum SquareCategory: String, Codable, CaseIterable {
 struct BingoSquare: Codable, Identifiable, Hashable {
     let id: UUID
     let text: String
-    let emoji: String
+    let emoji: String?
     let category: SquareCategory
     let rarity: SquareRarity
 

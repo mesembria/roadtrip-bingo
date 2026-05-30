@@ -99,7 +99,7 @@ struct GameView: View {
             }
         }
         .sensoryFeedback(.success, trigger: appState.completedLine != nil)
-        .sensoryFeedback(.impact(.medium), trigger: powerUpTrigger)
+        .sensoryFeedback(.impact(weight: .medium), trigger: powerUpTrigger)
         .sensoryFeedback(.warning, trigger: threatCount)
     }
 

@@ -116,8 +116,8 @@ private struct TargetTileView: View {
             Group {
                 if let img = AmericanaTheme.tileImage(for: square) {
                     img.resizable().scaledToFit()
-                } else {
-                    Text(square.emoji).font(.system(size: 14))
+                } else if let emoji = square.emoji {
+                    Text(emoji).font(.system(size: 14))
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

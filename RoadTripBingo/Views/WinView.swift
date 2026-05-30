@@ -33,7 +33,7 @@ struct WinView: View {
                 }
             }.padding(48)
         }
-        .sensoryFeedback(.impact(.heavy), trigger: didAppear)
+        .sensoryFeedback(.impact(weight: .heavy), trigger: didAppear)
         .onAppear { if isLocalWin { didAppear = true } }
     }
 

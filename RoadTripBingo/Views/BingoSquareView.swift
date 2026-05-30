@@ -23,7 +23,7 @@ struct BingoSquareView: View {
             }
             .buttonStyle(.plain)
             .sensoryFeedback(trigger: isMarked) { _, new in
-                new ? .impact(.light) : .selection
+                new ? .impact(weight: .light) : .selection
             }
         }
     }
