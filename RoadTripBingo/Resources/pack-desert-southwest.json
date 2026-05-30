@@ -9,42 +9,48 @@
       "text": "Saguaro Cactus",
       "emoji": "🌵",
       "category": "nature",
-      "rarity": "veryCommon"
+      "rarity": "veryCommon",
+      "description": "A very tall green saguaro cactus with two arms curving upward against a blazing orange sky"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000031",
       "text": "Trading Post Sign",
       "emoji": "🪶",
       "category": "signs",
-      "rarity": "uncommon"
+      "rarity": "uncommon",
+      "description": "A rustic weathered wooden roadside sign for a Native American trading post with painted symbols"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000032",
       "text": "Dry Riverbed",
       "emoji": "🏜️",
       "category": "nature",
-      "rarity": "common"
+      "rarity": "common",
+      "description": "A wide sandy dry riverbed with smooth rounded rocks and no water, running through desert scrub"
     },
     {
       "id": "B957584E-97A2-4DBB-B421-A80D1832D7C5",
       "text": "Dust Devil",
       "emoji": "🌀",
       "category": "weather",
-      "rarity": "rare"
+      "rarity": "rare",
+      "description": "A spinning column of dust and debris swirling upward like a small tornado on a flat desert plain"
     },
     {
       "id": "EFDF3832-1699-449C-A7B5-124E44366CE9",
       "text": "Dust Storm",
       "emoji": "🌪️",
       "category": "weather",
-      "rarity": "veryRare"
+      "rarity": "veryRare",
+      "description": "A massive brown wall of blowing dust called a haboob rolling across a desert landscape"
     },
     {
       "id": "7CBDA785-2C75-4C5A-8599-F992A1A8FDAF",
       "text": "Ghost Town",
       "emoji": "👻",
       "category": "landmarks",
-      "rarity": "veryRare"
+      "rarity": "veryRare",
+      "description": "Abandoned wooden buildings with broken windows and a dusty empty main street"
     }
   ],
   "rarityOverrides": {

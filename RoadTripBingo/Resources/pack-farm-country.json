@@ -9,28 +9,32 @@
       "text": "Combine Harvester",
       "emoji": "🌾",
       "category": "vehicles",
-      "rarity": "veryCommon"
+      "rarity": "veryCommon",
+      "description": "A large yellow combine harvester cutting through a golden wheat or corn field"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000002",
       "text": "Giant Circular Sprinkler",
       "emoji": "💧",
       "category": "landmarks",
-      "rarity": "common"
+      "rarity": "common",
+      "description": "A huge center-pivot irrigation system making a perfect green circle in a dry brown field, seen from above"
     },
     {
       "id": "FA75C56E-321A-4958-9F9A-050CA316AB90",
       "text": "Pier",
       "emoji": "🎣",
       "category": "landmarks",
-      "rarity": "common"
+      "rarity": "common",
+      "description": "A small wooden dock extending out over a quiet farm pond surrounded by fields"
     },
     {
       "id": "A14147C1-EDE5-4762-9302-0D4EEE5E9E2D",
       "text": "Grain Silo",
       "emoji": "🏠",
       "category": "landmarks",
-      "rarity": "common"
+      "rarity": "common",
+      "description": "A tall round silver metal grain silo standing beside a red barn on a flat farm"
     }
   ],
   "rarityOverrides": {

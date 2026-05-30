@@ -9,28 +9,32 @@
       "text": "Surf Shop",
       "emoji": "🏄",
       "category": "landmarks",
-      "rarity": "common"
+      "rarity": "common",
+      "description": "A colorful surf shop with surfboards in every color leaning against the outside walls"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000021",
       "text": "Lifeguard Tower",
       "emoji": "🚨",
       "category": "landmarks",
-      "rarity": "common"
+      "rarity": "common",
+      "description": "A tall wooden lifeguard tower on a sandy beach with a red flag on top and an ocean view"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000022",
       "text": "Seagull Flock",
       "emoji": "🐦",
       "category": "nature",
-      "rarity": "veryCommon"
+      "rarity": "veryCommon",
+      "description": "A large flock of white and gray seagulls swooping low over a sandy beach or shoreline"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000023",
       "text": "Pier",
       "emoji": "🎣",
       "category": "landmarks",
-      "rarity": "common"
+      "rarity": "common",
+      "description": "A long wooden pier stretching out over calm blue water with people fishing from the end"
     }
   ],
   "rarityOverrides": {

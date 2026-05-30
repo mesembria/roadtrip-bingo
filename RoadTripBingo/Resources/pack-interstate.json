@@ -9,42 +9,48 @@
       "text": "Weigh Station",
       "emoji": "⚖️",
       "category": "signs",
-      "rarity": "uncommon"
+      "rarity": "uncommon",
+      "description": "A truck weigh station building with a large semi truck sitting on the scales"
     },
     {
       "id": "FD790CF8-9C74-489F-9B5D-61EA067469DD",
       "text": "Ghost Town",
       "emoji": "👻",
       "category": "landmarks",
-      "rarity": "veryRare"
+      "rarity": "veryRare",
+      "description": "Abandoned wooden buildings with broken windows and a dusty empty main street"
     },
     {
       "id": "01B2195F-8A68-431D-BE3F-19E2C2457C03",
       "text": "Rest Area Sign",
       "emoji": "🛏️",
       "category": "signs",
-      "rarity": "common"
+      "rarity": "common",
+      "description": "A green highway sign showing a rest area ahead with a picnic table and bed symbol"
     },
     {
       "id": "6452E9FD-291D-4DDE-8CA4-6FFDEB73A24F",
       "text": "Runaway Truck Ramp",
       "emoji": "🚛",
       "category": "signs",
-      "rarity": "rare"
+      "rarity": "rare",
+      "description": "A steep gravel escape ramp shooting uphill off the highway, designed to stop runaway trucks"
     },
     {
       "id": "9CB9371C-354F-3F5B-ACCF-914CFE365C29",
       "text": "State Trooper Car",
       "emoji": "🚔",
       "category": "vehicles",
-      "rarity": "uncommon"
+      "rarity": "uncommon",
+      "description": "A state police patrol car with a light bar on top parked on a highway shoulder"
     },
     {
       "id": "D1676C11-21B1-32CB-9850-777B52120238",
       "text": "Welcome Center",
       "emoji": "🗺️",
       "category": "landmarks",
-      "rarity": "uncommon"
+      "rarity": "uncommon",
+      "description": "A highway welcome center building with state flags out front and a glass visitor's entrance"
     }
   ],
   "rarityOverrides": {

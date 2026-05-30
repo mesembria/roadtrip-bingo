@@ -4,1384 +4,1582 @@
     "emoji": "🚛",
     "id": "95F10877-1BC5-4F38-A6B1-5C8469946794",
     "rarity": "veryCommon",
-    "text": "Semi Truck"
+    "text": "Semi Truck",
+    "description": "A large semi truck with a shiny chrome cab and big exhaust stacks, seen from the side on a highway"
   },
   {
     "category": "vehicles",
     "emoji": "🚐",
     "id": "C06E05E6-15F9-4867-B8A5-47A82727CD13",
     "rarity": "common",
-    "text": "RV"
+    "text": "RV",
+    "description": "A large white motorhome recreational vehicle driving on a highway"
   },
   {
     "category": "vehicles",
     "emoji": "🏍️",
     "id": "80067278-3DC2-425E-BD95-DCD19E535633",
     "rarity": "veryCommon",
-    "text": "Motorcycle"
+    "text": "Motorcycle",
+    "description": "A motorcycle with a helmeted rider, seen from the side on a road"
   },
   {
     "category": "vehicles",
     "emoji": "🚌",
     "id": "537CBB6C-15E0-49AE-A2C9-7F4E5D0804F2",
     "rarity": "common",
-    "text": "School Bus"
+    "text": "School Bus",
+    "description": "A classic yellow school bus with black stripes and a folding stop sign arm on the side"
   },
   {
     "category": "vehicles",
     "emoji": "🚜",
     "id": "4A495FE0-B728-477D-8863-FD00E9140BB6",
     "rarity": "uncommon",
-    "text": "Tractor"
+    "text": "Tractor",
+    "description": "A large red farm tractor with big rear wheels and a cab, seen from the side in a field"
   },
   {
     "category": "vehicles",
     "emoji": "🛻",
     "id": "E044FC0C-DE73-4F07-9812-45FE6AA69E63",
     "rarity": "veryCommon",
-    "text": "Pickup Truck"
+    "text": "Pickup Truck",
+    "description": "A full-size pickup truck with an open bed, seen from the side"
   },
   {
     "category": "vehicles",
     "emoji": "🚔",
     "id": "170DDCD4-5B1C-4A27-AF08-3EFE0F723A94",
     "rarity": "common",
-    "text": "Police Car"
+    "text": "Police Car",
+    "description": "A black and white police cruiser with a light bar on the roof, parked on a road"
   },
   {
     "category": "vehicles",
     "emoji": "🚒",
     "id": "686F9B09-BB0F-4890-A32D-1EAE02656756",
     "rarity": "uncommon",
-    "text": "Fire Truck"
+    "text": "Fire Truck",
+    "description": "A bright red fire truck with a tall ladder on top and hoses along the side"
   },
   {
     "category": "vehicles",
     "emoji": "🚁",
     "id": "50A60D8C-A164-4EAF-82AF-45F1B67D504E",
     "rarity": "rare",
-    "text": "Helicopter"
+    "text": "Helicopter",
+    "description": "A blue and white helicopter flying in a clear sky, seen from the side"
   },
   {
     "category": "vehicles",
     "emoji": "✈️",
     "id": "076A09D6-9AF6-4197-A891-7DEC99856119",
     "rarity": "rare",
-    "text": "Small Plane"
+    "text": "Small Plane",
+    "description": "A small single-engine propeller plane in a blue sky, seen from below"
   },
   {
     "category": "vehicles",
     "emoji": "🐴",
     "id": "2AB6C54B-DEAD-401A-BCE8-B5E4F50AE481",
     "rarity": "rare",
-    "text": "Horse Trailer"
+    "text": "Horse Trailer",
+    "description": "A silver two-horse trailer with side ventilation slots being towed by a pickup truck"
   },
   {
     "category": "vehicles",
     "emoji": "🚚",
     "id": "B15573AB-373C-4093-957F-87EAAD1FF91D",
     "rarity": "common",
-    "text": "Flatbed Truck"
+    "text": "Flatbed Truck",
+    "description": "A flatbed semi truck hauling large wooden beams or steel pipes on its flat deck"
   },
   {
     "category": "vehicles",
     "emoji": "🚧",
     "id": "69822FBE-A091-40B0-BE4A-9BE98A51293A",
     "rarity": "common",
-    "text": "Dump Truck"
+    "text": "Dump Truck",
+    "description": "A large orange dump truck with its bed tilted up and dirt spilling out"
   },
   {
     "category": "vehicles",
     "emoji": "🚑",
     "id": "F50FE702-488F-44D8-9173-D2BFDA251793",
     "rarity": "uncommon",
-    "text": "Ambulance"
+    "text": "Ambulance",
+    "description": "A white ambulance with a red cross and flashing lights on the roof"
   },
   {
     "category": "vehicles",
     "emoji": "🚗",
     "id": "D598618B-F39A-4D8D-B456-58F75264ECE9",
     "rarity": "uncommon",
-    "text": "Convertible"
+    "text": "Convertible",
+    "description": "A shiny convertible car with the top folded down, driver enjoying the open air"
   },
   {
     "category": "vehicles",
     "emoji": "🌮",
     "id": "6296D382-C8DD-406B-92FA-D53A490DCCB2",
     "rarity": "uncommon",
-    "text": "Food Truck"
+    "text": "Food Truck",
+    "description": "A colorfully painted food truck parked on a street with a serving window open"
   },
   {
     "category": "vehicles",
     "emoji": "📦",
     "id": "64A7AE8D-C86E-43AC-930D-EA6E2C8D5E87",
     "rarity": "uncommon",
-    "text": "Mail Truck"
+    "text": "Mail Truck",
+    "description": "A white US Postal Service mail truck with a blue eagle logo, right-hand drive"
   },
   {
     "category": "vehicles",
     "emoji": "⛵",
     "id": "1A3BCA03-F619-49E8-893F-353E58496588",
     "rarity": "uncommon",
-    "text": "Boat on Trailer"
+    "text": "Boat on Trailer",
+    "description": "A motorboat on a wheeled trailer being towed by a truck down a highway"
   },
   {
     "category": "vehicles",
     "emoji": "🏗️",
     "id": "108DE4C2-9050-49B7-8BEA-66C963B12791",
     "rarity": "common",
-    "text": "Construction Vehicle"
+    "text": "Construction Vehicle",
+    "description": "A bright yellow construction excavator with a bucket arm digging into dirt"
   },
   {
     "category": "vehicles",
     "emoji": "🔧",
     "id": "E2FA93F7-DC08-46ED-8FFC-39A4CC83A1D1",
     "rarity": "common",
-    "text": "Tow Truck"
+    "text": "Tow Truck",
+    "description": "An orange tow truck with a hook arm at the rear, towing a broken-down car"
   },
   {
     "category": "vehicles",
     "emoji": "🚗",
     "id": "F8E12E7A-4A96-4990-8719-90423D457EE6",
     "rarity": "veryRare",
-    "text": "Stretched Limousine"
+    "text": "Stretched Limousine",
+    "description": "An extremely long white stretch limousine, nearly twice as long as a normal car"
   },
   {
     "category": "vehicles",
     "emoji": "🚐",
     "id": "50D51761-D440-4F2B-AC49-2EF57DAEC0A6",
     "rarity": "veryCommon",
-    "text": "Minivan"
+    "text": "Minivan",
+    "description": "A family minivan in a solid color, seen from a three-quarter angle"
   },
   {
     "category": "vehicles",
     "emoji": "🏎️",
     "id": "F37B5C2A-C56A-491E-9507-1006FD1AEF5D",
     "rarity": "common",
-    "text": "Sports Car"
+    "text": "Sports Car",
+    "description": "A low sleek sports car in bright red, speeding down an open road"
   },
   {
     "category": "vehicles",
     "emoji": "🍦",
     "id": "F448BB29-CAB1-4CCD-8C42-D3DD6B76292C",
     "rarity": "uncommon",
-    "text": "Ice Cream Truck"
+    "text": "Ice Cream Truck",
+    "description": "A white ice cream truck with colorful pictures of ice cream treats painted on the side"
   },
   {
     "category": "vehicles",
     "emoji": "🛢️",
     "id": "83F9D56A-0D16-4626-B2D0-E476EA773BA9",
     "rarity": "rare",
-    "text": "Tank Truck"
+    "text": "Tank Truck",
+    "description": "A large cylindrical tank truck, like a milk tanker or fuel truck, on a highway"
   },
   {
     "category": "nature",
     "emoji": "🐄",
     "id": "D9C027FB-CDD5-4E3D-9055-CB19C600136A",
     "rarity": "veryCommon",
-    "text": "Cow"
+    "text": "Cow",
+    "description": "A black and white Holstein cow standing in a green grassy field"
   },
   {
     "category": "nature",
     "emoji": "🐎",
     "id": "6DA38EF8-1586-4C66-A554-EC4E49CBE8F1",
     "rarity": "common",
-    "text": "Horse"
+    "text": "Horse",
+    "description": "A brown horse standing in a green pasture behind a wooden fence"
   },
   {
     "category": "nature",
     "emoji": "🦌",
     "id": "B23F16C4-D19A-4D6C-A61A-3D6A65E86DE1",
     "rarity": "common",
-    "text": "Deer"
+    "text": "Deer",
+    "description": "A white-tailed deer standing alert at the edge of a field, large ears perked up"
   },
   {
     "category": "nature",
     "emoji": "🏚️",
     "id": "621A699E-7B91-46C8-AB53-BBFB2E21BE77",
     "rarity": "uncommon",
-    "text": "Red Barn"
+    "text": "Red Barn",
+    "description": "A classic red wooden barn with white X-cross doors and a gambrel roof"
   },
   {
     "category": "nature",
     "emoji": "🌻",
     "id": "814EBF76-AD02-4C8D-9943-DC94892B3B1D",
     "rarity": "uncommon",
-    "text": "Sunflower Field"
+    "text": "Sunflower Field",
+    "description": "A wide field of bright yellow sunflowers all with their faces turned toward the sun"
   },
   {
     "category": "nature",
     "emoji": "💨",
     "id": "0C4928A8-0141-4F56-B187-7D4F7F659AA7",
     "rarity": "uncommon",
-    "text": "Wind Turbine"
+    "text": "Wind Turbine",
+    "description": "A tall white wind turbine with three long spinning blades on top of a green hill"
   },
   {
     "category": "nature",
     "emoji": "🏔️",
     "id": "3123E8B9-FD3E-4DC4-A370-4E1E13F95F40",
     "rarity": "uncommon",
-    "text": "Mountain"
+    "text": "Mountain",
+    "description": "A tall snow-capped mountain peak rising above rolling foothills"
   },
   {
     "category": "nature",
     "emoji": "🌊",
     "id": "CE3A8924-5C4F-499C-BA33-322CCAF2593B",
     "rarity": "common",
-    "text": "River"
+    "text": "River",
+    "description": "A wide green river winding between grassy banks and distant trees"
   },
   {
     "category": "nature",
     "emoji": "🏞️",
     "id": "3EC043CB-6069-4CFB-9F1E-73068068A53C",
     "rarity": "common",
-    "text": "Lake"
+    "text": "Lake",
+    "description": "A calm blue lake surrounded by green trees and rolling hills"
   },
   {
     "category": "nature",
     "emoji": "🌈",
     "id": "5700EA4F-7F21-45B2-8E93-40F7A151A255",
     "rarity": "uncommon",
-    "text": "Rainbow"
+    "text": "Rainbow",
+    "description": "A bright full rainbow arching across a stormy sky over green fields"
   },
   {
     "category": "nature",
     "emoji": "🌈",
     "id": "1078E2A1-D30B-4E9A-AE32-894D0C9CA56F",
     "rarity": "veryRare",
-    "text": "Double Rainbow"
+    "text": "Double Rainbow",
+    "description": "Two complete rainbow arches side by side over a lush green landscape after heavy rain"
   },
   {
     "category": "nature",
     "emoji": "🌵",
     "id": "65FAFD7F-384F-43B2-B90A-300A844F79D0",
     "rarity": "uncommon",
-    "text": "Cactus"
+    "text": "Cactus",
+    "description": "A tall green saguaro cactus with two arms raised against a blue sky"
   },
   {
     "category": "nature",
     "emoji": "🌽",
     "id": "3055B218-5E2B-4574-A83B-9EDD80E79E8F",
     "rarity": "veryCommon",
-    "text": "Cornfield"
+    "text": "Cornfield",
+    "description": "Tall rows of green corn plants with yellow tassels on top, stretching to the flat horizon"
   },
   {
     "category": "nature",
     "emoji": "🍎",
     "id": "629A958E-0BE6-421B-B7C0-2AB112751A8C",
     "rarity": "uncommon",
-    "text": "Orchard"
+    "text": "Orchard",
+    "description": "Rows of fruit trees loaded with red apples or peaches in a sunny orchard"
   },
   {
     "category": "nature",
     "emoji": "🐦",
     "id": "D05964A8-D3FF-4E15-AEC3-54831936B903",
     "rarity": "veryCommon",
-    "text": "Flock of Birds"
+    "text": "Flock of Birds",
+    "description": "A large V-shaped flock of black birds flying across a pale sky"
   },
   {
     "category": "nature",
     "emoji": "🐐",
     "id": "BF9F37F8-B798-41D5-9669-9B55BC69A4F1",
     "rarity": "common",
-    "text": "Goat"
+    "text": "Goat",
+    "description": "A white goat with small curved horns standing on a rocky hillside"
   },
   {
     "category": "nature",
     "emoji": "🐑",
     "id": "E17D0F7E-2FC8-489F-84F5-4CE627C31BE0",
     "rarity": "common",
-    "text": "Sheep"
+    "text": "Sheep",
+    "description": "A fluffy white sheep with black legs and a black face standing in a green meadow"
   },
   {
     "category": "nature",
     "emoji": "🐷",
     "id": "E7AA2D29-1891-4662-9FA3-8E021212A14A",
     "rarity": "common",
-    "text": "Pig"
+    "text": "Pig",
+    "description": "A round pink pig rolling in a muddy pen on a farm"
   },
   {
     "category": "nature",
     "emoji": "🐶",
     "id": "EA3330C4-D621-407C-A610-A244A969D17D",
     "rarity": "common",
-    "text": "Dog in Car Window"
+    "text": "Dog in Car Window",
+    "description": "A happy dog hanging its head out of a car window, ears and tongue flapping in the wind"
   },
   {
     "category": "nature",
     "emoji": "💐",
     "id": "D4A00F7A-EB24-4C92-ACFD-74A442C8F74E",
     "rarity": "common",
-    "text": "Wildflowers"
+    "text": "Wildflowers",
+    "description": "A colorful patch of wildflowers in yellow, purple, and white blooming along a roadside"
   },
   {
     "category": "nature",
     "emoji": "💦",
     "id": "0699DCDE-E093-4EFA-9EB6-7EA71DA6C220",
     "rarity": "uncommon",
-    "text": "Waterfall"
+    "text": "Waterfall",
+    "description": "A tall waterfall cascading down a rocky cliff into a mist-filled pool below"
   },
   {
     "category": "nature",
     "emoji": "🍇",
     "id": "589E9C4B-436E-4FBE-B190-069481BBA35A",
     "rarity": "uncommon",
-    "text": "Vineyard"
+    "text": "Vineyard",
+    "description": "Rows of grapevines on a hillside with heavy clusters of purple grapes hanging down"
   },
   {
     "category": "nature",
     "emoji": "🦬",
     "id": "75077334-D3F1-40CA-B3C2-E8481BE4EAB6",
     "rarity": "rare",
-    "text": "Buffalo"
+    "text": "Buffalo",
+    "description": "A massive dark brown American bison with a huge shaggy head and a hump, standing in a field"
   },
   {
     "category": "nature",
     "emoji": "🦅",
     "id": "0ED91A0C-812D-4474-818C-C23CAC7D29BA",
     "rarity": "uncommon",
-    "text": "Hawk"
+    "text": "Hawk",
+    "description": "A red-tailed hawk soaring in wide circles against a blue sky, wings spread wide"
   },
   {
     "category": "food",
     "emoji": "🍟",
     "id": "64F9FE5B-D850-474F-B08E-3D26744CC1A1",
     "rarity": "veryCommon",
-    "text": "McDonald's"
+    "text": "McDonald's",
+    "description": "A McDonald's restaurant building with the iconic golden arches sign out front"
   },
   {
     "category": "food",
     "emoji": "☕",
     "id": "5A18A63A-BDB4-4232-817B-D31AACE731E4",
     "rarity": "common",
-    "text": "Starbucks"
+    "text": "Starbucks",
+    "description": "A Starbucks coffee shop with the green mermaid logo sign on the building"
   },
   {
     "category": "food",
     "emoji": "🥖",
     "id": "3DE3F367-3105-4F8B-A89D-2F134E21D01D",
     "rarity": "veryCommon",
-    "text": "Subway"
+    "text": "Subway",
+    "description": "A Subway sandwich restaurant with the yellow and green logo sign on the storefront"
   },
   {
     "category": "food",
     "emoji": "⛽",
     "id": "FC3885BA-C6C8-495C-A4D1-792FC4393D20",
     "rarity": "veryCommon",
-    "text": "Gas Station"
+    "text": "Gas Station",
+    "description": "A roadside gas station with multiple fuel pumps under a tall lit-up canopy sign"
   },
   {
     "category": "food",
     "emoji": "🚗",
     "id": "AA2E08D4-5E1C-4EE8-A690-4BEC6459231A",
     "rarity": "common",
-    "text": "Drive-Through"
+    "text": "Drive-Through",
+    "description": "A car pulling up to a fast food restaurant's drive-through pickup window"
   },
   {
     "category": "signs",
     "emoji": "📢",
     "id": "6BA6FFCC-5BC1-4A77-AD4C-E80BC54241EE",
     "rarity": "veryCommon",
-    "text": "Billboard"
+    "text": "Billboard",
+    "description": "A large rectangular roadside billboard with a bright colorful advertisement"
   },
   {
     "category": "food",
     "emoji": "🍽️",
     "id": "C02110DF-B97E-4804-BC87-61F59D43E880",
     "rarity": "uncommon",
-    "text": "Roadside Diner"
+    "text": "Roadside Diner",
+    "description": "A classic shiny chrome diner with a neon 'OPEN' sign and customers visible through the windows"
   },
   {
     "category": "food",
     "emoji": "🍑",
     "id": "0EE0FA48-441D-4BD1-8160-5D46F171DE27",
     "rarity": "rare",
-    "text": "Fruit Stand"
+    "text": "Fruit Stand",
+    "description": "A rustic wooden roadside stand with baskets of fresh apples, peaches, and corn for sale"
   },
   {
     "category": "food",
     "emoji": "🍦",
     "id": "4B422869-2A7E-4FFF-B250-2B1265FDE0B4",
     "rarity": "rare",
-    "text": "Ice Cream Stand"
+    "text": "Ice Cream Stand",
+    "description": "A small roadside ice cream stand with a giant soft-serve swirl cone on the rooftop"
   },
   {
     "category": "food",
     "emoji": "🍔",
     "id": "32FF3538-17B5-4FBD-B158-3292916652A1",
     "rarity": "common",
-    "text": "Wendy's"
+    "text": "Wendy's",
+    "description": "A Wendy's fast food restaurant with the red logo and girl's face sign"
   },
   {
     "category": "food",
     "emoji": "🌮",
     "id": "9F6669D7-64CD-4779-AD14-AB599EAC8CC4",
     "rarity": "common",
-    "text": "Taco Bell"
+    "text": "Taco Bell",
+    "description": "A Taco Bell restaurant with the purple bell logo sign on a roadside building"
   },
   {
     "category": "food",
     "emoji": "🐔",
     "id": "4868253E-FED2-44A0-B0BC-22DE1A0D8286",
     "rarity": "common",
-    "text": "Chick-fil-A"
+    "text": "Chick-fil-A",
+    "description": "A Chick-fil-A restaurant with the red and white logo sign on a roadside building"
   },
   {
     "category": "food",
     "emoji": "🍦",
     "id": "9A2BF58F-B9EE-453B-B920-48089FFDCA9C",
     "rarity": "uncommon",
-    "text": "Dairy Queen"
+    "text": "Dairy Queen",
+    "description": "A Dairy Queen ice cream restaurant with the red and white oval logo sign"
   },
   {
     "category": "food",
     "emoji": "🪑",
     "id": "0A1EC644-9E8D-495B-83C4-082FB99CE2A8",
     "rarity": "uncommon",
-    "text": "Cracker Barrel"
+    "text": "Cracker Barrel",
+    "description": "A Cracker Barrel Old Country Store with a wooden barrel sign and rocking chairs on the front porch"
   },
   {
     "category": "food",
     "emoji": "🧇",
     "id": "7823EA54-5434-4B0F-80D1-A44D212DBE2E",
     "rarity": "uncommon",
-    "text": "Waffle House"
+    "text": "Waffle House",
+    "description": "A Waffle House restaurant with the bright yellow sign and a lit-up counter visible through the windows"
   },
   {
     "category": "food",
     "emoji": "🚛",
     "id": "0ED19DD6-E519-44AD-A531-66A65D01C3F6",
     "rarity": "common",
-    "text": "Truck Stop"
+    "text": "Truck Stop",
+    "description": "A busy truck stop with rows of big rigs parked and a large canopy over the fuel pumps"
   },
   {
     "category": "landmarks",
     "emoji": "🚿",
     "id": "54125617-DEA9-4FFF-B967-ACEEBF3E60A5",
     "rarity": "uncommon",
-    "text": "Car Wash"
+    "text": "Car Wash",
+    "description": "A drive-through car wash with blue and green foam spinning brushes and soap suds flying"
   },
   {
     "category": "food",
     "emoji": "🏨",
     "id": "C337DE62-D57C-4F6D-A056-F8D793A4608F",
     "rarity": "common",
-    "text": "Motel Sign"
+    "text": "Motel Sign",
+    "description": "A vintage glowing neon motel sign in bright pinks and blues with a 'VACANCY' light"
   },
   {
     "category": "food",
     "emoji": "⛺",
     "id": "BD1E25BE-13F3-4CA7-9996-9F021507BD0A",
     "rarity": "uncommon",
-    "text": "Campground Sign"
+    "text": "Campground Sign",
+    "description": "A brown wooden sign with a tent or campfire symbol and an arrow pointing to a campground"
   },
   {
     "category": "food",
     "emoji": "💵",
     "id": "ACE3CB99-BC1E-4874-AFB7-E4B5D5D8FAD1",
     "rarity": "common",
-    "text": "Dollar General"
+    "text": "Dollar General",
+    "description": "A Dollar General store with a bold yellow and black sign on a small standalone building"
   },
   {
     "category": "food",
     "emoji": "🎆",
     "id": "61743806-12C6-4D96-B910-C9B9597AA55C",
     "rarity": "rare",
-    "text": "Fireworks Stand"
+    "text": "Fireworks Stand",
+    "description": "A small roadside tent stand with colorful patriotic banners and boxes of fireworks for sale"
   },
   {
     "category": "food",
     "emoji": "🍖",
     "id": "C4DE0574-D323-4137-9C68-75545A83FEA1",
     "rarity": "rare",
-    "text": "Roadside BBQ"
+    "text": "Roadside BBQ",
+    "description": "A smoky roadside BBQ stand with a hand-painted sign and a big black barrel smoker"
   },
   {
     "category": "food",
     "emoji": "🏕️",
     "id": "452898E6-22F3-45D1-81E7-21D9D2F55823",
     "rarity": "uncommon",
-    "text": "RV Park"
+    "text": "RV Park",
+    "description": "A campground packed with colorful motorhomes and trailers in rows with power hookups"
   },
   {
     "category": "food",
     "emoji": "🛍️",
     "id": "5EE47430-2936-4E95-87FA-AAEB70B725AF",
     "rarity": "uncommon",
-    "text": "Outlet Mall"
+    "text": "Outlet Mall",
+    "description": "A large outdoor shopping center with many brand name outlet store signs visible from the road"
   },
   {
     "category": "landmarks",
     "emoji": "🌉",
     "id": "749BEDC0-5C82-43EA-8A2A-80C246CF1CED",
     "rarity": "veryCommon",
-    "text": "Bridge"
+    "text": "Bridge",
+    "description": "A long bridge with steel girders spanning a wide river or valley"
   },
   {
     "category": "landmarks",
     "emoji": "🛣️",
     "id": "DEEB0A9E-7E27-4127-92DA-AFBC203520C7",
     "rarity": "veryCommon",
-    "text": "Overpass"
+    "text": "Overpass",
+    "description": "A curved concrete highway overpass arch crossing over a road below"
   },
   {
     "category": "landmarks",
     "emoji": "🚂",
     "id": "00212E99-DEE3-4353-BCB4-7EE08B582E39",
     "rarity": "common",
-    "text": "Railroad Crossing"
+    "text": "Railroad Crossing",
+    "description": "A railroad crossing with red X warning signs and black and white striped crossing arms"
   },
   {
     "category": "landmarks",
     "emoji": "🪧",
     "id": "14EDE11E-57C9-4FA5-8B49-F044F4798347",
     "rarity": "uncommon",
-    "text": "State Border Sign"
+    "text": "State Border Sign",
+    "description": "A colorful 'Welcome to [State]' sign at a state border crossing on the highway"
   },
   {
     "category": "landmarks",
     "emoji": "💰",
     "id": "B2DEEFBA-A491-4019-B51D-82C346B9B175",
     "rarity": "uncommon",
-    "text": "Toll Booth"
+    "text": "Toll Booth",
+    "description": "A highway toll plaza with striped arm gates and overhead 'TOLL' signs above each lane"
   },
   {
     "category": "landmarks",
     "emoji": "👋",
     "id": "F417EFC2-7FCB-419E-B20D-369A7C900C98",
     "rarity": "uncommon",
-    "text": "Welcome Sign"
+    "text": "Welcome Sign",
+    "description": "A decorative 'Welcome to Our Town' sign on an ornate post at the entrance to a small city"
   },
   {
     "category": "landmarks",
     "emoji": "🏗️",
     "id": "37812093-076D-42A2-BE1E-2CB47D0C87D2",
     "rarity": "common",
-    "text": "Water Tower"
+    "text": "Water Tower",
+    "description": "A round water tower painted with a town name, standing on tall metal legs above a small town"
   },
   {
     "category": "landmarks",
     "emoji": "⛪",
     "id": "F34801F3-3E5B-4338-8E7F-9FB753A618E5",
     "rarity": "common",
-    "text": "Church Steeple"
+    "text": "Church Steeple",
+    "description": "A white painted church steeple with a pointed top and a cross, rising above the surrounding trees"
   },
   {
     "category": "landmarks",
     "emoji": "🏟️",
     "id": "35468309-B9C7-4780-905E-47C27F63E12C",
     "rarity": "uncommon",
-    "text": "Sports Stadium"
+    "text": "Sports Stadium",
+    "description": "A large sports stadium with towering floodlights and a packed parking lot surrounding it"
   },
   {
     "category": "landmarks",
     "emoji": "🎡",
     "id": "019ACCAD-2097-4BC8-B923-3F314FFC236F",
     "rarity": "uncommon",
-    "text": "Fairground"
+    "text": "Fairground",
+    "description": "A county fairground with a colorful Ferris wheel, carnival rides, and food stands"
   },
   {
     "category": "landmarks",
     "emoji": "🌬️",
     "id": "2CC48DD8-1D89-4F17-9E5C-9ABB1571082A",
     "rarity": "uncommon",
-    "text": "Wind Farm"
+    "text": "Wind Farm",
+    "description": "A row of tall white wind turbines with spinning blades spread across a flat or rolling landscape"
   },
   {
     "category": "landmarks",
     "emoji": "☀️",
     "id": "931D476C-1FF5-4214-B20F-CEBF7B299C86",
     "rarity": "uncommon",
-    "text": "Solar Farm"
+    "text": "Solar Farm",
+    "description": "A large flat field covered with endless rows of shiny dark blue solar panels"
   },
   {
     "category": "landmarks",
     "emoji": "✈️",
     "id": "A4817B0E-0016-49C9-B685-4A1B0F29EA81",
     "rarity": "uncommon",
-    "text": "Airport"
+    "text": "Airport",
+    "description": "A regional airport building with a control tower and commercial planes visible on the tarmac"
   },
   {
     "category": "landmarks",
     "emoji": "📡",
     "id": "9E41D599-9E13-4D05-99F0-A6C23EEAB953",
     "rarity": "common",
-    "text": "Radio Tower"
+    "text": "Radio Tower",
+    "description": "A tall red and white steel radio broadcast tower with blinking red warning lights at the top"
   },
   {
     "category": "landmarks",
     "emoji": "🎬",
     "id": "041124CE-0C8A-4ED2-88B4-738F176EB383",
     "rarity": "rare",
-    "text": "Drive-In Theater"
+    "text": "Drive-In Theater",
+    "description": "A drive-in movie theater with a giant white screen and rows of cars parked in front of it at dusk"
   },
   {
     "category": "landmarks",
     "emoji": "🌉",
     "id": "3F4CEAFE-E45F-4D18-846A-4F5FE6EF9E59",
     "rarity": "rare",
-    "text": "Covered Bridge"
+    "text": "Covered Bridge",
+    "description": "An old wooden covered bridge with a shingled roof over a narrow country road spanning a stream"
   },
   {
     "category": "landmarks",
     "emoji": "🗼",
     "id": "1FA254CD-692C-47EC-9716-44C1712F42F3",
     "rarity": "rare",
-    "text": "Lighthouse"
+    "text": "Lighthouse",
+    "description": "A red and white striped lighthouse tower with a bright flashing light at the top on a rocky coast"
   },
   {
     "category": "landmarks",
     "emoji": "🌲",
     "id": "0FD97E95-BAD3-4CCB-B1F4-FFBF24F49698",
     "rarity": "rare",
-    "text": "National Park Sign"
+    "text": "National Park Sign",
+    "description": "A brown wooden National Park entrance sign with gold carved letters and a National Park Service logo"
   },
   {
     "category": "landmarks",
     "emoji": "🗿",
     "id": "56532FC1-1F41-47F3-8FFE-DB587B548225",
     "rarity": "rare",
-    "text": "Monument"
+    "text": "Monument",
+    "description": "A tall stone or bronze monument or war memorial with an inscription carved into the base"
   },
   {
     "category": "landmarks",
     "emoji": "🌊",
     "id": "A4636DA8-1049-4F64-81E4-6DFBED0AD14E",
     "rarity": "rare",
-    "text": "Dam"
+    "text": "Dam",
+    "description": "A massive concrete dam holding back a huge blue reservoir, with water spilling over the spillway"
   },
   {
     "category": "landmarks",
     "emoji": "⭐",
     "id": "4D572B60-AD21-4F40-BA9A-A3D4F2A3A491",
     "rarity": "rare",
-    "text": "Roadside Attraction"
+    "text": "Roadside Attraction",
+    "description": "A quirky giant sculpture — like a huge ball of yarn or big blue ox — drawing attention from passing drivers"
   },
   {
     "category": "landmarks",
     "emoji": "⛏️",
     "id": "E8A0F6BE-2AB6-49EA-A199-F43D7A1FBFA0",
     "rarity": "rare",
-    "text": "Open-Pit Mine"
+    "text": "Open-Pit Mine",
+    "description": "A massive open-pit mine carved into the earth in a series of winding circular terraces"
   },
   {
     "category": "weather",
     "emoji": "☁️",
     "id": "73DAA30D-094F-4819-836E-EDCAAA0CA01D",
     "rarity": "veryCommon",
-    "text": "Dark Clouds"
+    "text": "Dark Clouds",
+    "description": "Heavy dark gray storm clouds building on the horizon with a strip of light below"
   },
   {
     "category": "weather",
     "emoji": "🌫️",
     "id": "05676D29-AF0F-4268-8CED-39F7FC95655D",
     "rarity": "common",
-    "text": "Fog"
+    "text": "Fog",
+    "description": "Thick white fog blanketing a road and valley, making everything beyond a short distance invisible"
   },
   {
     "category": "weather",
     "emoji": "❄️",
     "id": "1CA02B04-B431-467D-A705-D64A1CA3D9F7",
     "rarity": "rare",
-    "text": "Snow on Mountains"
+    "text": "Snow on Mountains",
+    "description": "Distant mountain peaks capped with bright white snow against a clear blue sky"
   },
   {
     "category": "weather",
     "emoji": "💧",
     "id": "9816A354-3056-4D18-B50D-2A18354A814C",
     "rarity": "common",
-    "text": "Puddles"
+    "text": "Puddles",
+    "description": "Large shimmering puddles of rainwater on a road, reflecting the sky"
   },
   {
     "category": "weather",
     "emoji": "☀️",
     "id": "EC7E56DD-CFB6-4502-BEC4-08B0D03E468F",
     "rarity": "veryCommon",
-    "text": "Sun Glare"
+    "text": "Sun Glare",
+    "description": "Blinding white sunlight pouring directly through a car windshield, creating a bright starburst glare"
   },
   {
     "category": "weather",
     "emoji": "⛈️",
     "id": "B7AFCA1F-A005-4F0D-9F71-F40BEF9A3847",
     "rarity": "uncommon",
-    "text": "Thunderstorm"
+    "text": "Thunderstorm",
+    "description": "A dark churning thunderstorm with heavy rain pouring down and lightning flashing in the clouds"
   },
   {
     "category": "weather",
     "emoji": "⚡",
     "id": "778FA937-C5B2-4C47-91C6-80E73F443B29",
     "rarity": "rare",
-    "text": "Lightning"
+    "text": "Lightning",
+    "description": "A bright jagged white lightning bolt striking down from dark purple storm clouds"
   },
   {
     "category": "weather",
     "emoji": "🌨️",
     "id": "C0A4CB35-D900-4AE6-90D5-75C70518348F",
     "rarity": "veryRare",
-    "text": "Hail"
+    "text": "Hail",
+    "description": "Large white hailstones bouncing off a car hood and pinging off the road in a storm"
   },
   {
     "category": "weather",
     "emoji": "🌪️",
     "id": "27E19173-E4B8-4A1D-872F-D96114B9A7F0",
     "rarity": "veryRare",
-    "text": "Tornado Warning Sign"
+    "text": "Tornado Warning Sign",
+    "description": "An orange electronic highway message sign flashing a tornado warning with a funnel cloud graphic"
   },
   {
     "category": "weather",
     "emoji": "🏜️",
     "id": "944B6E26-F677-455F-B087-9D883297CF5B",
     "rarity": "veryRare",
-    "text": "Mirage"
+    "text": "Mirage",
+    "description": "A shimmering pool of water appearing on a hot desert road that disappears as you approach"
   },
   {
     "category": "weather",
     "emoji": "🌅",
     "id": "5B2CADFC-84CF-437F-99AA-A0F270C804B3",
     "rarity": "uncommon",
-    "text": "Dramatic Sunset"
+    "text": "Dramatic Sunset",
+    "description": "A blazing orange and pink sunset spreading across a wide flat horizon with glowing clouds"
   },
   {
     "category": "weather",
     "emoji": "🌕",
     "id": "9EE07CB2-390A-4CA2-90E3-0A49ECEBC1BF",
     "rarity": "rare",
-    "text": "Low-Hanging Moon"
+    "text": "Low-Hanging Moon",
+    "description": "A huge golden full moon sitting very low on the horizon, looking enormous above a flat landscape"
   },
   {
     "category": "weather",
     "emoji": "🌡️",
     "id": "BA705AAF-0D8B-43EE-8DA9-476B3E5A97D0",
     "rarity": "uncommon",
-    "text": "Hot Haze Shimmer"
+    "text": "Hot Haze Shimmer",
+    "description": "A heat mirage making the road ahead appear to ripple and shimmer like a liquid on a very hot day"
   },
   {
     "category": "weather",
     "emoji": "🔥",
     "id": "377ADB1F-1F22-4D07-9069-EB6A08DBC0A1",
     "rarity": "rare",
-    "text": "Wildfire Smoke"
+    "text": "Wildfire Smoke",
+    "description": "A thick orange and gray haze of wildfire smoke filling the sky and blocking out the sun"
   },
   {
     "category": "weather",
     "emoji": "🧊",
     "id": "321FA7B9-C0A4-42FD-8AB8-F0A3CB768041",
     "rarity": "rare",
-    "text": "Ice on Road Sign"
+    "text": "Ice on Road Sign",
+    "description": "A yellow diamond warning sign with a skidding car or ice crystal, warning of icy road conditions"
   },
   {
     "category": "weather",
     "emoji": "🌊",
     "id": "ED587D67-BC0F-449F-AF9B-0F95BDC99975",
     "rarity": "uncommon",
-    "text": "Flash Flood Sign"
+    "text": "Flash Flood Sign",
+    "description": "A yellow or orange warning sign reading 'Flash Flood Area' at a low water crossing"
   },
   {
     "category": "weather",
     "emoji": "🌥️",
     "id": "C01928E2-84A3-42F4-B6AB-AD43E6D0F250",
     "rarity": "veryCommon",
-    "text": "Overcast Sky"
+    "text": "Overcast Sky",
+    "description": "A flat uniform gray overcast sky stretching from edge to edge overhead"
   },
   {
     "category": "weather",
     "emoji": "🌦️",
     "id": "751DEA69-CD45-42A5-B380-6746C804F491",
     "rarity": "common",
-    "text": "Sprinkles"
+    "text": "Sprinkles",
+    "description": "Light rain drops dotting a car windshield with the wipers just starting to move"
   },
   {
     "category": "weather",
     "emoji": "🚩",
     "id": "AD928E00-26F6-464F-8A34-33E0DF1E598D",
     "rarity": "common",
-    "text": "Windy Flags"
+    "text": "Windy Flags",
+    "description": "Flags on a tall flagpole blowing nearly horizontal in a strong gusty wind"
   },
   {
     "category": "weather",
     "emoji": "🌨️",
     "id": "B492D74A-9B0D-4149-AD42-C6C720808A22",
     "rarity": "rare",
-    "text": "Frost on Windows"
+    "text": "Frost on Windows",
+    "description": "Car windows completely covered in delicate white frost crystal patterns on a cold morning"
   },
   {
     "category": "weather",
     "emoji": "🌁",
     "id": "9CBFBFF7-F5AC-4DA1-837B-39F8AA1FC0D4",
     "rarity": "uncommon",
-    "text": "Morning Mist"
+    "text": "Morning Mist",
+    "description": "Wispy white mist drifting low over green meadows and a quiet river in the cool early morning"
   },
   {
     "category": "weather",
     "emoji": "🌤️",
     "id": "5B9CF2B0-DD20-4CC7-B133-15C58562B36A",
     "rarity": "common",
-    "text": "Dramatic Clouds"
+    "text": "Dramatic Clouds",
+    "description": "Tall white billowing thunderhead storm clouds towering into a deep blue sky"
   },
   {
     "category": "signs",
     "emoji": "🛑",
     "id": "0BF88129-859B-49B8-A85D-14C54449B4C6",
     "rarity": "common",
-    "text": "Speed Limit 75+"
+    "text": "Speed Limit 75+",
+    "description": "A white rectangular speed limit sign with a large black number of 75 or higher"
   },
   {
     "category": "signs",
     "emoji": "🚧",
     "id": "BA7780E8-DDC9-47BC-820E-75FE9837F559",
     "rarity": "veryCommon",
-    "text": "Construction Zone"
+    "text": "Construction Zone",
+    "description": "An orange highway construction zone with road workers, orange cones, and heavy machinery"
   },
   {
     "category": "signs",
     "emoji": "↩️",
     "id": "CE8F28EC-A149-4B14-98CC-4081F3CD3120",
     "rarity": "uncommon",
-    "text": "Detour Sign"
+    "text": "Detour Sign",
+    "description": "A bright orange square detour sign with a thick black arrow pointing in a new direction"
   },
   {
     "category": "signs",
     "emoji": "⛔",
     "id": "47403EBA-0F94-4761-A284-1F5E6B626D40",
     "rarity": "common",
-    "text": "No Passing Zone Sign"
+    "text": "No Passing Zone Sign",
+    "description": "A yellow and black 'Do Not Pass' road sign showing a dashed line and a solid line"
   },
   {
     "category": "signs",
     "emoji": "🔢",
     "id": "8031441A-0A40-43A1-9A1D-908CF7CD08BE",
     "rarity": "common",
-    "text": "Mile Marker ×0"
+    "text": "Mile Marker ×0",
+    "description": "A small white rectangular highway mile marker post showing a round number ending in zero"
   },
   {
     "category": "signs",
     "emoji": "🔄",
     "id": "BDF48176-EA53-4AE5-9BBD-57A4C1BF35AA",
     "rarity": "common",
-    "text": "Highway Interchange"
+    "text": "Highway Interchange",
+    "description": "A complex highway interchange with multiple curving ramps and roads crossing over each other"
   },
   {
     "category": "signs",
     "emoji": "🦌",
     "id": "7300A8FD-19F6-4524-99E8-E87FDFA04005",
     "rarity": "common",
-    "text": "Deer Crossing Sign"
+    "text": "Deer Crossing Sign",
+    "description": "A yellow diamond warning sign showing a silhouette of a leaping deer"
   },
   {
     "category": "signs",
     "emoji": "🪨",
     "id": "EC9590A3-0F87-40F7-87FF-EB328EAE47D8",
     "rarity": "rare",
-    "text": "Falling Rock Sign"
+    "text": "Falling Rock Sign",
+    "description": "A yellow diamond warning sign showing a large rock tumbling down a cliff face onto a road"
   },
   {
     "category": "signs",
     "emoji": "⛓️",
     "id": "F070E239-C059-456B-B908-11CB3902D05D",
     "rarity": "rare",
-    "text": "Tire Chains on Car"
+    "text": "Tire Chains on Car",
+    "description": "Metal tire chains wrapped tightly around the rear tires of a car driving on a snowy road"
   },
   {
     "category": "signs",
     "emoji": "⬇️",
     "id": "A29C5C51-C484-4FEF-92CA-EE7B260CDBE2",
     "rarity": "uncommon",
-    "text": "Low Clearance Sign"
+    "text": "Low Clearance Sign",
+    "description": "A yellow warning sign showing a bridge arch with a maximum vehicle height measurement in feet"
   },
   {
     "category": "signs",
     "emoji": "🚫",
     "id": "86A6E3FF-563B-476A-AA96-22B9B743DBA6",
     "rarity": "uncommon",
-    "text": "Wrong Way Sign"
+    "text": "Wrong Way Sign",
+    "description": "A rectangular red and white 'Wrong Way' sign posted at a highway entrance ramp"
   },
   {
     "category": "signs",
     "emoji": "↔️",
     "id": "DB7A9E10-0002-494E-930C-FBD94F7A2024",
     "rarity": "uncommon",
-    "text": "Divided Highway Sign"
+    "text": "Divided Highway Sign",
+    "description": "A yellow warning sign showing a single road splitting into two separate lanes divided by a median"
   },
   {
     "category": "signs",
     "emoji": "🏞️",
     "id": "C8E31186-5C16-4743-BFE0-A5810E7BC674",
     "rarity": "uncommon",
-    "text": "Scenic Overlook Sign"
+    "text": "Scenic Overlook Sign",
+    "description": "A brown rectangular sign with a mountain and sun graphic pointing to a scenic overlook pulloff"
   },
   {
     "category": "signs",
     "emoji": "📜",
     "id": "AD3E993C-DA2C-4665-ADEC-757CFCEC6E72",
     "rarity": "uncommon",
-    "text": "Historical Marker"
+    "text": "Historical Marker",
+    "description": "A brown or blue cast iron historical marker on a post beside a road with writing about local history"
   },
   {
     "category": "signs",
     "emoji": "♻️",
     "id": "2704C435-B1EA-4799-B614-EE114AD0CDAC",
     "rarity": "common",
-    "text": "Adopt-a-Highway Sign"
+    "text": "Adopt-a-Highway Sign",
+    "description": "A green highway litter pickup sign reading 'Adopt-A-Highway — Next 2 Miles' with a sponsor name"
   },
   {
     "category": "signs",
     "emoji": "➡️",
     "id": "7A06EE27-53A7-49B4-9D16-6F37675C4E80",
     "rarity": "uncommon",
-    "text": "Road Narrows Sign"
+    "text": "Road Narrows Sign",
+    "description": "A yellow diamond warning sign showing a wide road gradually narrowing to a narrow road"
   },
   {
     "category": "signs",
     "emoji": "🌉",
     "id": "64DB0AFD-5495-4958-9487-CD1DCDA5E966",
     "rarity": "uncommon",
-    "text": "Bridge Ices Sign"
+    "text": "Bridge Ices Sign",
+    "description": "A yellow diamond warning sign reading 'Bridge Ices Before Road' with an ice crystal graphic"
   },
   {
     "category": "signs",
     "emoji": "💧",
     "id": "697664F0-F373-47BE-8FFA-A53E43F55C0C",
     "rarity": "uncommon",
-    "text": "Slippery When Wet"
+    "text": "Slippery When Wet",
+    "description": "A yellow diamond warning sign showing a car sliding sideways on a slippery wet road"
   },
   {
     "category": "signs",
     "emoji": "🔃",
     "id": "442558F2-2C64-4E3F-833E-209869CDEFF5",
     "rarity": "uncommon",
-    "text": "No U-Turn Sign"
+    "text": "No U-Turn Sign",
+    "description": "A round red and white sign showing a curved U-turn arrow crossed out by a thick red diagonal line"
   },
   {
     "category": "signs",
     "emoji": "🔀",
     "id": "AB6933FB-F468-407E-881D-DE57BE1E593E",
     "rarity": "common",
-    "text": "Merging Traffic Sign"
+    "text": "Merging Traffic Sign",
+    "description": "A yellow diamond warning sign showing two lane lines merging into one"
   },
   {
     "category": "signs",
     "emoji": "✅",
     "id": "CCA0E6AF-2ACF-43F5-BEDC-4043267F37BA",
     "rarity": "uncommon",
-    "text": "End Construction Sign"
+    "text": "End Construction Sign",
+    "description": "An orange rectangular sign reading 'End Road Work' at the end of a highway construction zone"
   },
   {
     "category": "signs",
     "emoji": "🛣️",
     "id": "E63D9E68-57EA-4EB7-8AC4-A30215EAE5E1",
     "rarity": "common",
-    "text": "State Highway Sign"
+    "text": "State Highway Sign",
+    "description": "A distinctive state highway route sign shape — like a circle, shield, or outline — with a route number"
   },
   {
     "category": "vehicles",
     "emoji": "🚘",
     "id": "0BCFCD83-6C35-4830-9C1C-A8FB9BF8671B",
     "rarity": "common",
-    "text": "Car Carrier"
+    "text": "Car Carrier",
+    "description": "A large flatbed truck transporting multiple cars stacked on two levels"
   },
   {
     "category": "vehicles",
     "emoji": "🐄",
     "id": "744CE9F9-887F-460D-B022-262622D6BAB1",
     "rarity": "common",
-    "text": "Livestock Trailer"
+    "text": "Livestock Trailer",
+    "description": "A white slatted livestock trailer being towed by a pickup truck"
   },
   {
     "category": "vehicles",
     "emoji": "🪵",
     "id": "A4E493A3-C320-49CF-B905-BEDB2362844C",
     "rarity": "uncommon",
-    "text": "Logging Truck"
+    "text": "Logging Truck",
+    "description": "A logging truck hauling a huge stack of freshly cut tree trunks"
   },
   {
     "category": "vehicles",
     "emoji": "🗑️",
     "id": "C44588F4-72FF-4691-8AB7-8B9C6DB664D9",
     "rarity": "uncommon",
-    "text": "Garbage Truck"
+    "text": "Garbage Truck",
+    "description": "A large green garbage truck with a mechanical arm for lifting trash cans"
   },
   {
     "category": "vehicles",
     "emoji": "🛩️",
     "id": "14FF5A74-56CF-478F-BE68-46F280437D8C",
     "rarity": "uncommon",
-    "text": "Crop Duster"
+    "text": "Crop Duster",
+    "description": "A small yellow biplane flying low over a flat farm field, spraying a white mist"
   },
   {
     "category": "vehicles",
     "emoji": "🐴",
     "id": "507FA95C-5CEB-40D3-B4E2-EEC40DDE2135",
     "rarity": "rare",
-    "text": "Amish Buggy"
+    "text": "Amish Buggy",
+    "description": "A black horse-drawn Amish buggy with an orange slow-moving vehicle triangle on the back"
   },
   {
     "category": "nature",
     "emoji": "🦃",
     "id": "E7A4CC7D-0154-4E54-8087-27370DC12F6A",
     "rarity": "uncommon",
-    "text": "Wild Turkey"
+    "text": "Wild Turkey",
+    "description": "A large wild turkey with a fan-shaped tail and a red wattle walking through a field"
   },
   {
     "category": "nature",
     "emoji": "🦌",
     "id": "05150C84-9A42-4F02-9FA8-685C4881A307",
     "rarity": "veryRare",
-    "text": "Elk"
+    "text": "Elk",
+    "description": "A large bull elk with a massive set of antlers standing in a mountain meadow"
   },
   {
     "category": "nature",
     "emoji": "🦌",
     "id": "C2738543-1B62-4D94-A914-3ECF040D81D0",
     "rarity": "veryRare",
-    "text": "Pronghorn Antelope"
+    "text": "Pronghorn Antelope",
+    "description": "A pronghorn antelope with tan and black markings and short curved horns, standing in a dry field"
   },
   {
     "category": "nature",
     "emoji": "🦅",
     "id": "8C5057CC-7613-4CDD-B659-9ACBC78487FD",
     "rarity": "veryRare",
-    "text": "Bald Eagle"
+    "text": "Bald Eagle",
+    "description": "A bald eagle soaring with wings fully spread, white head and tail feathers bright against a blue sky"
   },
   {
     "category": "nature",
     "emoji": "🐿️",
     "id": "D02A26D6-AE5F-4402-A3C7-8E39E20082B1",
     "rarity": "rare",
-    "text": "Prairie Dogs"
+    "text": "Prairie Dogs",
+    "description": "Several small prairie dogs standing upright on their hind legs at the entrance to their burrow"
   },
   {
     "category": "nature",
     "emoji": "🦙",
     "id": "E04D2A5D-C985-42DD-82E9-8C1234E9F839",
     "rarity": "uncommon",
-    "text": "Llama Farm"
+    "text": "Llama Farm",
+    "description": "Several fluffy llamas with long necks and big eyes standing in a grassy field"
   },
   {
     "category": "nature",
     "emoji": "🌾",
     "id": "1532CC43-DDA7-400A-BFD0-0ADD8874D565",
     "rarity": "veryCommon",
-    "text": "Wheat Field"
+    "text": "Wheat Field",
+    "description": "A golden wheat field with stalks swaying in the breeze under a bright blue sky"
   },
   {
     "category": "nature",
     "emoji": "🪨",
     "id": "B7ED7D37-B022-45D6-8FFE-B8FA780B6684",
     "rarity": "rare",
-    "text": "Red Rock Cliffs"
+    "text": "Red Rock Cliffs",
+    "description": "Tall orange-red sandstone cliffs glowing in bright sunlight against a blue sky"
   },
   {
     "category": "nature",
     "emoji": "🌊",
     "id": "60185DC6-14A2-4F24-A214-F724D068B1C7",
     "rarity": "uncommon",
-    "text": "River Rapids"
+    "text": "River Rapids",
+    "description": "White foamy water rushing and splashing over rocks in a fast-moving river"
   },
   {
     "category": "nature",
     "emoji": "🏚️",
     "id": "7912F43E-141F-40A4-B209-125709247146",
     "rarity": "rare",
-    "text": "Rusted Old Barn"
+    "text": "Rusted Old Barn",
+    "description": "An old wooden barn with peeling rust-colored paint and a sagging roof"
   },
   {
     "category": "nature",
     "emoji": "🎄",
     "id": "94D79C63-C9A1-4A13-8157-835C11343E6C",
     "rarity": "uncommon",
-    "text": "Christmas Tree Farm"
+    "text": "Christmas Tree Farm",
+    "description": "Rows of perfectly spaced green Christmas trees growing on a gentle hillside"
   },
   {
     "category": "nature",
     "emoji": "🦆",
     "id": "D9C87165-5006-4079-89A8-BFCAFA874174",
     "rarity": "veryCommon",
-    "text": "Farm Pond"
+    "text": "Farm Pond",
+    "description": "A small still pond in the middle of a farm field, reflecting the blue sky"
   },
   {
     "category": "nature",
     "emoji": "🪨",
     "id": "9ECF0037-9500-4C09-A8A7-F8DD573C4EAC",
     "rarity": "rare",
-    "text": "White Rock Cliffs"
+    "text": "White Rock Cliffs",
+    "description": "Dramatic white chalk or limestone cliffs rising steeply from green valley floors"
   },
   {
     "category": "nature",
     "emoji": "🐎",
     "id": "725B6E6E-33F5-413E-831B-1B0A79B00A99",
     "rarity": "uncommon",
-    "text": "White Fence Horse Farm"
+    "text": "White Fence Horse Farm",
+    "description": "A horse farm with long white wooden rail fences stretching across a green meadow"
   },
   {
     "category": "landmarks",
     "emoji": "🛢️",
     "id": "AA9D965C-F49D-4B42-9B01-9D0976761427",
     "rarity": "common",
-    "text": "Oil Pump Jack"
+    "text": "Oil Pump Jack",
+    "description": "A black oil pump jack rocking up and down rhythmically in a flat open field"
   },
   {
     "category": "landmarks",
     "emoji": "⛷️",
     "id": "60F03332-B413-4CBF-83C8-A65B266C65D0",
     "rarity": "uncommon",
-    "text": "Ski Lift"
+    "text": "Ski Lift",
+    "description": "A ski chairlift with pairs of chairs hanging from steel cables going up a snow-covered slope"
   },
   {
     "category": "landmarks",
     "emoji": "🎈",
     "id": "0D71D1E3-D56E-4584-B7DB-FD9EFA88B060",
     "rarity": "uncommon",
-    "text": "Hot Air Balloon"
+    "text": "Hot Air Balloon",
+    "description": "A colorful striped hot air balloon floating peacefully in a clear blue sky"
   },
   {
     "category": "landmarks",
     "emoji": "🏛️",
     "id": "61F546BA-61C6-4A2A-A616-CFCF2866F011",
     "rarity": "uncommon",
-    "text": "Courthouse with Clock Tower"
+    "text": "Courthouse with Clock Tower",
+    "description": "An old stone courthouse building with a large four-sided clock tower and an American flag flying"
   },
   {
     "category": "landmarks",
     "emoji": "🎣",
     "id": "1BEDAAAB-90B2-4CC4-A8BD-237E1D48C8DD",
     "rarity": "uncommon",
-    "text": "Fisherman by Water"
+    "text": "Fisherman by Water",
+    "description": "A person in a sun hat fishing from the bank of a calm river or lake with a long fishing rod"
   },
   {
     "category": "landmarks",
     "emoji": "🚣",
     "id": "3BD198B9-87C0-47FD-84B6-589A6B23738F",
     "rarity": "uncommon",
-    "text": "Kayaker or Rafter"
+    "text": "Kayaker or Rafter",
+    "description": "A person in a bright orange life jacket paddling a kayak or riding a rubber raft down a river"
   },
   {
     "category": "signs",
     "emoji": "🛣️",
     "id": "3220B1AF-B3AE-493C-8313-180D7C3D3E69",
     "rarity": "rare",
-    "text": "Route 66 Sign"
+    "text": "Route 66 Sign",
+    "description": "The classic black and white shield-shaped Route 66 highway marker sign on a post"
   },
   {
     "category": "signs",
     "emoji": "🦌",
     "id": "87D08710-197C-4864-BE1A-C03FA82435E6",
     "rarity": "uncommon",
-    "text": "Elk Crossing Sign"
+    "text": "Elk Crossing Sign",
+    "description": "A yellow warning sign showing the dark silhouette of a large elk with antlers"
   },
   {
     "category": "signs",
     "emoji": "🥾",
     "id": "4C15F891-AAD8-4653-A52A-E7DD059D3013",
     "rarity": "rare",
-    "text": "Appalachian Trail Sign"
+    "text": "Appalachian Trail Sign",
+    "description": "A rectangular brown wooden sign or white painted blaze marking where the Appalachian Trail crosses a road"
   },
   {
     "category": "signs",
     "emoji": "🚨",
     "id": "FB9D41AD-3615-480A-9499-B2ACDA6185A8",
     "rarity": "uncommon",
-    "text": "Tornado Siren"
+    "text": "Tornado Siren",
+    "description": "A tall metal pole with a large gray outdoor emergency warning siren mounted on top"
   },
   {
     "category": "signs",
     "emoji": "🏷️",
     "id": "A6F7CA63-1204-4831-8F57-F7BBF95BED53",
     "rarity": "veryCommon",
-    "text": "Yard Sale"
+    "text": "Yard Sale",
+    "description": "Colorful tables piled with clothes, toys, and household items spread across a front lawn with a 'YARD SALE' sign"
   },
   {
     "category": "vehicles",
     "id": "1686B2E7-ED35-44B1-95F2-31353A7F2039",
     "rarity": "common",
-    "text": "Large Plane"
+    "text": "Large Plane",
+    "description": "A large commercial passenger jet flying overhead in a clear blue sky"
   },
   {
     "category": "vehicles",
     "emoji": "🪪",
     "id": "20A927BB-05D8-376D-AE8F-A90B52EE40C8",
     "rarity": "veryCommon",
-    "text": "License Plate from Another State"
+    "text": "License Plate from Another State",
+    "description": "A rectangular license plate with a colorful state design and letters and numbers"
   },
   {
     "category": "vehicles",
     "emoji": "🛻",
     "id": "EAE4E491-F2D1-3CAD-AAAC-7BD22D9ADDF7",
     "rarity": "common",
-    "text": "Lifted Truck"
+    "text": "Lifted Truck",
+    "description": "A pickup truck with giant oversized wheels and raised suspension, much taller than normal"
   },
   {
     "category": "vehicles",
     "emoji": "⛳",
     "id": "6000EE0A-EC7E-3B46-85A0-13219E8161E2",
     "rarity": "uncommon",
-    "text": "Golf Cart on Street"
+    "text": "Golf Cart on Street",
+    "description": "A golf cart driving on a regular neighborhood street instead of a golf course"
   },
   {
     "category": "vehicles",
     "emoji": "🪖",
     "id": "CA2AB532-9234-3BF6-A9D9-BC4EBC5D11FF",
     "rarity": "rare",
-    "text": "Military Convoy"
+    "text": "Military Convoy",
+    "description": "A row of green military trucks and Humvees driving in a convoy on a highway"
   },
   {
     "category": "vehicles",
     "emoji": "🚌",
     "id": "E7462975-1FDB-3F94-AC1D-58582450B7AA",
     "rarity": "rare",
-    "text": "Converted School Bus RV"
+    "text": "Converted School Bus RV",
+    "description": "An old school bus painted with bright murals and curtains in the windows, converted into a home"
   },
   {
     "category": "vehicles",
     "emoji": "⚡",
     "id": "508ACF2E-4908-3685-B1C8-2C09D1B27A8E",
     "rarity": "uncommon",
-    "text": "Electric Car at Charging Station"
+    "text": "Electric Car at Charging Station",
+    "description": "A sleek electric car plugged into a tall white charging station in a parking lot"
   },
   {
     "category": "nature",
     "emoji": "🌾",
     "id": "7FB6AACA-0113-3B01-9404-EDECCBF8754C",
     "rarity": "common",
-    "text": "Tumbleweed"
+    "text": "Tumbleweed",
+    "description": "A dry round tumbleweed bouncing across a dusty desert road"
   },
   {
     "category": "nature",
     "emoji": "🐾",
     "id": "5614C234-67B9-3416-873F-92CFE4975D44",
     "rarity": "uncommon",
-    "text": "Armadillo"
+    "text": "Armadillo",
+    "description": "An armadillo with a rounded armored shell and a pointed snout, walking on dry ground"
   },
   {
     "category": "nature",
     "emoji": "🦅",
     "id": "EB0AD8DB-A599-37B7-BFCF-44EB7BE105B8",
     "rarity": "uncommon",
-    "text": "Vultures Circling"
+    "text": "Vultures Circling",
+    "description": "Several large black vultures circling in wide slow loops high in the sky"
   },
   {
     "category": "nature",
     "emoji": "🐎",
     "id": "BC52173A-B9F4-3C6E-82FA-60E7FF155F96",
     "rarity": "rare",
-    "text": "Wild Horses"
+    "text": "Wild Horses",
+    "description": "A group of wild horses running free across an open grassy plain, manes flying"
   },
   {
     "category": "nature",
     "emoji": "🐊",
     "id": "72CFDB3B-2AB7-39DA-9F52-22F2D3B04511",
     "rarity": "rare",
-    "text": "Alligator"
+    "text": "Alligator",
+    "description": "A large alligator lying on a muddy riverbank with its mouth open showing sharp teeth"
   },
   {
     "category": "nature",
     "emoji": "🐦",
     "id": "FF64E7F2-26B5-3CB5-9635-3D4009CE5B0A",
     "rarity": "rare",
-    "text": "Roadrunner"
+    "text": "Roadrunner",
+    "description": "A roadrunner bird with a speckled brown body and a long tail, sprinting across dry ground"
   },
   {
     "category": "landmarks",
     "emoji": "🗿",
     "id": "A428A43F-2475-38C8-B037-4798F1191056",
     "rarity": "uncommon",
-    "text": "Giant Roadside Statue"
+    "text": "Giant Roadside Statue",
+    "description": "A huge novelty statue — like a giant corn cob, dinosaur, or hot dog — next to a roadside shop"
   },
   {
     "category": "landmarks",
     "emoji": "🏚️",
     "id": "435CFB62-75BB-3ADA-A4BF-97FC01AA5E87",
     "rarity": "common",
-    "text": "Abandoned Building"
+    "text": "Abandoned Building",
+    "description": "An old abandoned brick building with broken windows, peeling paint, and weeds growing up the walls"
   },
   {
     "category": "landmarks",
     "emoji": "⛰️",
     "id": "4F969C82-F7E7-313B-AF55-624D19BB1A75",
     "rarity": "uncommon",
-    "text": "Rock Tunnel"
+    "text": "Rock Tunnel",
+    "description": "A road disappearing into a dark tunnel bored straight through solid rock"
   },
   {
     "category": "landmarks",
     "emoji": "🛝",
     "id": "1D810558-8870-3535-80AE-53575737D471",
     "rarity": "uncommon",
-    "text": "Rest Stop Playground"
+    "text": "Rest Stop Playground",
+    "description": "A small playground with colorful swings and climbing equipment at a highway rest stop"
   },
   {
     "category": "food",
     "emoji": "🦫",
     "id": "14E85104-6013-3C95-84F2-F75E602B93ED",
     "rarity": "uncommon",
-    "text": "Buc-ee's"
+    "text": "Buc-ee's",
+    "description": "A giant Buc-ee's travel center with the cartoon smiling beaver mascot sign and dozens of fuel pumps"
   },
   {
     "category": "food",
     "emoji": "🎆",
     "id": "6EFCF38E-E745-36C1-9167-0B7EBFC7B00B",
     "rarity": "common",
-    "text": "Fireworks Superstore"
+    "text": "Fireworks Superstore",
+    "description": "A large roadside store with a huge red and yellow 'Fireworks Superstore' sign and banners"
   },
   {
     "category": "food",
     "emoji": "🥤",
     "id": "BB4DD049-66DD-3E9E-A8C5-CA75FB39B317",
     "rarity": "uncommon",
-    "text": "Sonic Drive-In"
+    "text": "Sonic Drive-In",
+    "description": "A Sonic Drive-In with colorful menu boards at covered parking stalls and carhops on roller skates"
   },
   {
     "category": "food",
     "emoji": "🍔",
     "id": "F9C61F3C-93EE-308F-8901-CB5D07F9AEAC",
     "rarity": "uncommon",
-    "text": "In-N-Out Burger"
+    "text": "In-N-Out Burger",
+    "description": "An In-N-Out Burger restaurant with the red and white crossed palm tree and arrow logo"
   },
   {
     "category": "food",
     "emoji": "⛽",
     "id": "64300F49-5488-3674-8B12-1AEE577971AF",
     "rarity": "common",
-    "text": "Pilot / Love's Truck Stop"
+    "text": "Pilot / Love's Truck Stop",
+    "description": "A large truck stop with fueling lanes for big rigs and a tall Pilot or Love's logo sign"
   },
   {
     "category": "food",
     "emoji": "🛍️",
     "id": "3E9570E3-459A-3C2D-8226-E36AD595D8A4",
     "rarity": "common",
-    "text": "Roadside Souvenir Shop"
+    "text": "Roadside Souvenir Shop",
+    "description": "A small shop with a bright painted sign and racks of souvenirs and trinkets displayed outside"
   },
   {
     "category": "signs",
     "emoji": "🪧",
     "id": "84ED3979-D624-3AB3-938E-B25330C459A4",
     "rarity": "uncommon",
-    "text": "Funny Town Name Sign"
+    "text": "Funny Town Name Sign",
+    "description": "A green town name road sign with an unusual or silly-sounding place name like 'Boring' or 'Peculiar'"
   },
   {
     "category": "signs",
     "emoji": "📡",
     "id": "348BCF77-2B49-30ED-A0BE-03F2BBA04CE5",
     "rarity": "common",
-    "text": "Radar Speed Sign"
+    "text": "Radar Speed Sign",
+    "description": "An electronic speed feedback sign displaying your current speed in large bright digital numbers"
   },
   {
     "category": "signs",
     "emoji": "⛽",
     "id": "D62EEA67-E90F-3918-8CB5-D9DACAC5A70D",
     "rarity": "common",
-    "text": "Next Gas Sign"
+    "text": "Next Gas Sign",
+    "description": "A blue highway sign showing 'Next Gas' with the distance in miles and a fuel pump icon"
   },
   {
     "category": "signs",
     "emoji": "⚠️",
     "id": "02E74882-80DC-3850-8D78-01A503B62084",
     "rarity": "uncommon",
-    "text": "Amber Alert Highway Sign"
+    "text": "Amber Alert Highway Sign",
+    "description": "A large orange electronic highway message board displaying an Amber Alert with a vehicle description"
   },
   {
     "category": "signs",
     "emoji": "🌽",
     "id": "BCA3B438-CE22-3867-815D-74B04002D7AD",
     "rarity": "rare",
-    "text": "Corn Maze Sign"
+    "text": "Corn Maze Sign",
+    "description": "A hand-painted wooden sign advertising a fall corn maze at a nearby farm, with a corn design"
   }
 ]
