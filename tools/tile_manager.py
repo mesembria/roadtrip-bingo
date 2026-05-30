@@ -62,14 +62,19 @@ PORT = 8765
 PACKS_METADATA: list[dict] = []
 
 
-def build_prompt(text: str, category: str) -> str:
-    """Build the Gemini image generation prompt for a tile."""
-    subject = f"a {text.lower()}"
+def build_prompt(tile: dict) -> str:
+    """Build the Gemini image generation prompt for a tile.
+
+    Uses tile['description'] as the subject phrase if present and non-empty;
+    falls back to tile['text'] (the tile name) otherwise.
+    STYLE is always appended; CATEGORY_HINTS adds a layout hint per category.
+    """
+    description = tile.get("description") or tile["text"]
+    category = tile.get("category", "")
     hint = CATEGORY_HINTS.get(category, "")
-    # Strip trailing period and capitalize only the first character
-    subject_clean = subject.rstrip(".")
-    subject_cap = subject_clean[0].upper() + subject_clean[1:]
-    parts = [f"{subject_cap}.", hint, STYLE]
+    desc_clean = description.rstrip(".")
+    desc_cap = desc_clean[0].upper() + desc_clean[1:]
+    parts = [f"{desc_cap}.", hint, STYLE]
     return " ".join(p for p in parts if p).strip()
 
 
