@@ -482,6 +482,9 @@ const S = {
   pickerSearch: '',
   pickerSelectedTileId: null,
   pickerSelectedRarity: '',
+
+  // Lightbox
+  lightboxTileId: null,
 };
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
@@ -607,7 +610,7 @@ function renderTileList() {
     const packIds = tilePackIds(tile.id);
     const dots = packIds.map(pid => {
       const p = S.packs.find(x => x.id === pid);
-      return `<span class="pack-dot" style="background:${packColor(pid)}" title="${p ? esc(p.name) : pid}"></span>`;
+      return `<span class="pack-dot" style="background:${packColor(pid)}" title="${p ? esc(p.name) : esc(pid)}"></span>`;
     }).join('');
     const sel = S.selectedTileId === tile.id ? ' selected' : '';
     const col = rarityColor(tile.rarity);
@@ -629,6 +632,13 @@ function renderTileList() {
 // ── Select / deselect tile ────────────────────────────────────────────────────
 
 function selectTile(id) {
+  // Clear any pending delete confirmation
+  if (deleteConfirmTimeout) {
+    clearTimeout(deleteConfirmTimeout);
+    deleteConfirmTimeout = null;
+    const btn = document.getElementById('delete-tile-btn');
+    if (btn) { btn.dataset.confirming = ''; btn.textContent = '🗑 Delete Tile'; }
+  }
   S.selectedTileId = id;
   S.isNewTile = false;
   S.imgState = 'idle';
@@ -1046,6 +1056,10 @@ async function deleteTile() {
 // ── New tile ──────────────────────────────────────────────────────────────────
 
 function openNewTile() {
+  if (deleteConfirmTimeout) {
+    clearTimeout(deleteConfirmTimeout);
+    deleteConfirmTimeout = null;
+  }
   S.isNewTile = true;
   S.selectedTileId = null;
   S.imgState = 'idle';
@@ -1321,11 +1335,14 @@ function renderPicker() {
 async function confirmAddTile() {
   if (!S.pickerSelectedTileId) return;
   const packId = S.pickerPackId;
+  const pd = S.packData[packId];
+  if (!pd) { alert('Pack data not loaded'); return; }
+  const newRef = { id: S.pickerSelectedTileId, rarity: S.pickerSelectedRarity };
+  const updatedTiles = [...pd.tiles, newRef];
   try {
-    const pd = S.packData[packId];
-    pd.tiles.push({ id: S.pickerSelectedTileId, rarity: S.pickerSelectedRarity });
-    await api('PUT', `/api/packs/${packId}`, pd);
-    // Update local packs metadata tileCount
+    await api('PUT', `/api/packs/${packId}`, { ...pd, tiles: updatedTiles });
+    // API succeeded — now update local state
+    pd.tiles = updatedTiles;
     const meta = S.packs.find(p => p.id === packId);
     if (meta) meta.tileCount = pd.tiles.length;
     closePicker();
@@ -1333,6 +1350,7 @@ async function confirmAddTile() {
     renderTileList(); // refresh pack dots
   } catch (err) {
     alert(`Failed to add tile: ${err.message}`);
+    // pd.tiles is unchanged — no rollback needed
   }
 }
 
@@ -1342,7 +1360,16 @@ function closePicker() {
 }
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+  init().catch(err => {
+    document.getElementById('app').innerHTML =
+      `<div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:12px;color:var(--red);font-family:var(--font-ui);">
+        <div style="font-size:18px;font-weight:700">Failed to load</div>
+        <div style="font-size:13px;color:var(--text2)">${esc(err.message)}</div>
+        <div style="font-size:11px;color:var(--text3)">Is the server running? Refresh to retry.</div>
+      </div>`;
+  });
+});
 </script>
 </body>
 </html>"""
@@ -1438,7 +1465,6 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             "/* __INJECT__ */",
             f"const CATEGORIES = {json.dumps(CATEGORIES)};\n"
             f"    const RARITIES = {json.dumps(RARITIES)};\n"
-            f"    const PACKS_META = {json.dumps(PACKS_METADATA)};\n"
             f"    const CATEGORY_HINTS_MAP = {json.dumps(CATEGORY_HINTS)};",
         ).encode("utf-8")
         self.send_response(200)
