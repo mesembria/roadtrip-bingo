@@ -73,7 +73,7 @@ def build_prompt(tile: dict) -> str:
     category = tile.get("category", "")
     hint = CATEGORY_HINTS.get(category, "")
     desc_clean = description.rstrip(".")
-    desc_cap = desc_clean[0].upper() + desc_clean[1:]
+    desc_cap = (desc_clean[0].upper() + desc_clean[1:]) if desc_clean else ""
     parts = [f"{desc_cap}.", hint, STYLE]
     return " ".join(p for p in parts if p).strip()
 
