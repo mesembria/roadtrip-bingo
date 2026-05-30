@@ -49,9 +49,10 @@ def test_unknown_category_omits_hint():
     assert "Flat vector illustration" in result
 
 
-def test_build_prompt_all_period_description_does_not_crash():
+def test_build_prompt_all_period_description_falls_back_to_text():
     tile = {"text": "Semi Truck", "category": "vehicles", "description": "..."}
     result = tm.build_prompt(tile)
+    assert result.startswith("Semi Truck.")
     assert "Flat vector illustration" in result
 
 

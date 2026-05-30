@@ -65,16 +65,18 @@ PACKS_METADATA: list[dict] = []
 def build_prompt(tile: dict) -> str:
     """Build the Gemini image generation prompt for a tile.
 
-    Uses tile['description'] as the subject phrase if present and non-empty;
-    falls back to tile['text'] (the tile name) otherwise.
+    Uses tile['description'] as the subject phrase if present, non-empty, and
+    non-trivial (not composed entirely of punctuation); falls back to tile['text']
+    (the tile name) otherwise.
     STYLE is always appended; CATEGORY_HINTS adds a layout hint per category.
     """
-    description = tile.get("description") or tile["text"]
+    raw = (tile.get("description") or "").rstrip(".")
+    subject = raw if raw.strip() else tile["text"]
     category = tile.get("category", "")
     hint = CATEGORY_HINTS.get(category, "")
-    desc_clean = description.rstrip(".")
-    desc_cap = (desc_clean[0].upper() + desc_clean[1:]) if desc_clean else ""
-    parts = [f"{desc_cap}.", hint, STYLE]
+    subject_clean = subject.rstrip(".")
+    subject_cap = (subject_clean[0].upper() + subject_clean[1:]) if subject_clean else subject
+    parts = [f"{subject_cap}.", hint, STYLE]
     return " ".join(p for p in parts if p).strip()
 
 
@@ -557,7 +559,8 @@ const CATEGORY_HINTS_JS = {
 const STYLE_JS = 'Flat vector illustration, clean thin outlines, bright but realistic colors. Use natural, true-to-life colors for each object and all parts should match the colors that object would actually have in real life. Plain solid white background — the illustration sits directly on white with absolutely no drop shadow, no border, no card, no frame, no vignette, no outline around the image edge. Square composition. No text, no labels, no letters.';
 
 function buildPrompt(tile) {
-  const subject = (tile.description || tile.text || 'a tile').replace(/\\.+$/, '');
+  const raw = (tile.description || '').replace(/\\.+$/, '').trim();
+  const subject = raw || tile.text || 'a tile';
   const subjectCap = subject.charAt(0).toUpperCase() + subject.slice(1);
   const hint = CATEGORY_HINTS_JS[tile.category] || '';
   return [subjectCap + '.', hint, STYLE_JS].filter(Boolean).join(' ').replace(/\\s+/g, ' ').trim();
