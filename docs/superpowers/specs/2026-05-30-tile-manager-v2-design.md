@@ -49,7 +49,7 @@ The `rarityOverrides` and `excludedTileIDs` fields in pack JSON become obsolete.
 
 Every entry in `tiles` is a `{id, rarity}` pair. All tile metadata (name, category, description, image) lives in `squares.json`. This makes packs lightweight references and `squares.json` the single source of truth for tile content.
 
-> **Note:** Migrating existing packs from the old format (rarityOverrides + excludedTileIDs) to the new format requires a one-time migration script. This is out of scope for the tile manager implementation itself but must be done before the tool is used with the new format. A companion Swift app change to `SquarePool` is also required and is tracked separately.
+> **Note:** Migrating existing packs to this format is handled by `tools/migrate_packs.py` (see Migration Script section). The migration must be run before the new tool is used. A companion `SquarePool` update in the Swift app is also in scope (see Swift App section).
 
 ---
 
@@ -306,10 +306,48 @@ Unchanged from existing tool: dark Americana palette, Rye + Barlow Condensed fon
 
 ---
 
+## Migration Script
+
+A one-time Python script (`tools/migrate_packs.py`) run before the new tool is used. It converts all `pack-*.json` files from the old format to the new format:
+
+1. For each pack, read `rarityOverrides`, `excludedTileIDs`, and `tiles` (exclusives).
+2. Build the new `tiles` array:
+   - All base tiles from `squares.json` that are **not** in `excludedTileIDs` → add as `{id, rarity}`, using the `rarityOverrides` value if present, otherwise the tile's default rarity from `squares.json`.
+   - All existing exclusive tiles → first write their full metadata into `squares.json` (they become regular tiles), then add as `{id, rarity}`.
+3. Remove `rarityOverrides` and `excludedTileIDs` from the pack JSON.
+4. Write the updated pack JSON back to disk.
+
+The script is idempotent (safe to run twice) and prints a summary of changes made per pack.
+
+---
+
+## Swift App — SquarePool Update
+
+`SquarePool` currently loads `squares.json` as the base pool and applies pack modifications at deal time. It must be updated to load an explicit pack's tile list directly.
+
+### New loading behaviour
+
+When a pack is active, `SquarePool` loads the pack's `tiles` array and resolves each entry against `squares.json`:
+
+```swift
+// For each {id, rarity} in pack.tiles:
+// 1. Look up the full tile in squares.json by id
+// 2. Override the rarity with the pack's rarity value
+// 3. Use the resolved tile in the deal pool
+```
+
+Tiles in `squares.json` that are not referenced by the active pack are not included in the pool.
+
+When no pack is active (base game), `SquarePool` loads and uses `squares.json` directly with no pack filtering — this is the "Base" pack implicitly, but no pack file is needed for it. Alternatively, a `pack-base.json` can be introduced later to make the base pool explicit; this is not required for the initial migration.
+
+### Backward compatibility
+
+The old `rarityOverrides` and `excludedTileIDs` fields are simply ignored by the new loading code. Once the migration script has run, they will not be present in any pack file.
+
+---
+
 ## Out of Scope
 
-- Migration script from old pack format to new (separate task)
-- Swift app `SquarePool` update to load explicit pack tile lists (separate task)
 - Reviewing and re-curating existing pack content to match the new explicit model (content task, not tool task)
 - Creating new pack JSON files from within the tool (edit files directly, restart server)
 - Reordering tiles within a pack
