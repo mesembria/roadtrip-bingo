@@ -185,1488 +185,1154 @@ HTML_APP = """<!DOCTYPE html>
 <meta charset="UTF-8">
 <title>Tile Manager</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Rye&family=Barlow+Condensed:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --bg: #0D0D0B; --surface: #141410; --surface2: #1C1C17; --surface3: #242420;
   --border: #2E2E28; --border2: #3A3A32;
   --text: #E8E0CC; --text2: #9A9080; --text3: #5A5448;
-  --amber: #E8A830; --amber-dim: #7A5A18;
+  --amber: #E8A830; --amber-dim: #7A5A18; --amber-tint: rgba(232,168,48,0.08);
   --red: #C84040; --red-dim: #6A2020;
   --green: #4A9060; --green-dim: #1E4028;
+  --vc: #6BC88A; --co: #7BAAF0; --un: #E8C060; --ra: #E87070; --vr: #C090F0;
   --font-display: 'Rye', serif;
   --font-ui: 'Barlow Condensed', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
 }
-html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-ui); }
-.topbar { flex-shrink: 0; height: 44px; display: flex; align-items: stretch; background: var(--surface); border-bottom: 1px solid var(--border); }
-.topbar-logo { display: flex; align-items: center; padding: 0 18px; gap: 8px; font-family: var(--font-display); font-size: 15px; color: var(--amber); border-right: 1px solid var(--border); white-space: nowrap; flex-shrink: 0; }
-.topbar-logo span { color: var(--text3); font-size: 12px; font-family: var(--font-ui); font-weight: 400; }
-.tabs { display: flex; align-items: stretch; overflow-x: auto; flex: 1; }
-.tabs::-webkit-scrollbar { display: none; }
-.tab { display: flex; align-items: center; gap: 7px; padding: 0 16px; font-size: 13px; font-weight: 600; color: var(--text3); cursor: pointer; border-right: 1px solid var(--border); border-bottom: 3px solid transparent; white-space: nowrap; transition: color .12s, background .12s; user-select: none; }
-.tab:hover { color: var(--text2); background: var(--surface2); }
-.tab.active { color: var(--amber); border-bottom-color: var(--amber); background: var(--bg); }
-.tab-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.topbar-stat { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 0 18px; border-left: 1px solid var(--border); flex-shrink: 0; }
-.topbar-stat .val { font-family: var(--font-mono); font-size: 15px; line-height: 1; }
-.topbar-stat .lbl { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: .8px; margin-top: 2px; }
-.screens { flex: 1; overflow: hidden; position: relative; }
-.screen { display: none; position: absolute; inset: 0; flex-direction: row; }
-.screen.active { display: flex; }
-body::before {
-  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 128px;
-}
-.app { display: flex; flex-direction: column; height: 100vh; }
-.body { flex: 1; display: flex; overflow: hidden; }
-.left { width: 460px; flex-shrink: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
-.toolbar { flex-shrink: 0; display: flex; gap: 8px; align-items: center; padding: 10px 12px; background: var(--surface); border-bottom: 1px solid var(--border); }
-.search-wrap { flex: 1; position: relative; }
-.search-wrap svg { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--text3); width: 13px; height: 13px; }
-.search { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 4px; padding: 6px 10px 6px 28px; font-family: var(--font-ui); font-size: 13px; color: var(--text); outline: none; transition: border-color 0.15s; }
-.search:focus { border-color: var(--amber-dim); }
-.search::placeholder { color: var(--text3); }
-.cat-select { background: var(--bg); border: 1px solid var(--border2); border-radius: 4px; padding: 6px 8px; font-family: var(--font-ui); font-size: 13px; color: var(--text2); outline: none; cursor: pointer; }
-.btn-add { background: var(--amber); border: none; border-radius: 4px; padding: 6px 12px; font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: var(--bg); cursor: pointer; white-space: nowrap; letter-spacing: 0.3px; transition: opacity 0.15s; }
-.btn-add:hover { opacity: 0.85; }
-.col-head { flex-shrink: 0; display: grid; grid-template-columns: 44px 1fr 96px 82px; padding: 5px 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
-.col-head span { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); font-weight: 600; }
-.col-head span.sortable { cursor: pointer; user-select: none; }
-.col-head span.sortable:hover { color: var(--text2); }
-.col-head span.sort-active { color: var(--amber); }
-.table-body { flex: 1; overflow-y: auto; }
-.table-body::-webkit-scrollbar { width: 4px; }
-.table-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-.row { display: grid; grid-template-columns: 44px 1fr 96px 82px; padding: 6px 12px; align-items: center; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; border-left: 2px solid transparent; }
-.row:hover { background: var(--surface2); }
-.row.selected { background: var(--surface2); border-left-color: var(--amber); }
-.row-thumb { width: 30px; height: 30px; background: var(--surface3); border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.row-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.row-name { font-size: 13px; color: var(--text); padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
-.row-cat { font-size: 11px; color: var(--text2); font-weight: 500; }
-.rarity { font-size: 10px; font-family: var(--font-mono); font-weight: 500; padding: 2px 6px; border-radius: 3px; width: fit-content; }
-.rarity.vc  { color: #4A9060; background: rgba(74,144,96,0.12); }
-.rarity.c   { color: #4870A8; background: rgba(72,112,168,0.12); }
-.rarity.u   { color: #B87830; background: rgba(184,120,48,0.12); }
-.rarity.r   { color: #C84040; background: rgba(200,64,64,0.12); }
-.rarity.vr  { color: #9060C8; background: rgba(144,96,200,0.12); }
-.table-footer { flex-shrink: 0; padding: 6px 12px; border-top: 1px solid var(--border); background: var(--surface); font-size: 10px; color: var(--text3); letter-spacing: 0.5px; }
-.right { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.panel-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--text3); }
-.panel-empty svg { width: 48px; height: 48px; opacity: 0.3; }
-.panel-content { flex: 1; display: none; flex-direction: column; overflow: hidden; }
-.panel-header { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid var(--border); background: var(--surface); }
-.panel-title { font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: 0.3px; }
-.panel-id { font-family: var(--font-mono); font-size: 10px; color: var(--text3); }
-.panel-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 22px; }
-.panel-body::-webkit-scrollbar { width: 4px; }
-.panel-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-.section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.image-section { display: flex; gap: 16px; align-items: flex-start; }
-.image-current-wrap { width: 110px; height: 110px; flex-shrink: 0; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.image-current-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.img-placeholder { font-size: 52px; }
-.image-controls { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-.image-hint { font-size: 12px; color: var(--text2); line-height: 1.5; }
-.btn-generate { background: transparent; border: 1px solid var(--amber-dim); border-radius: 5px; padding: 9px 14px; font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--amber); cursor: pointer; letter-spacing: 0.3px; transition: background 0.15s, border-color 0.15s; display: flex; align-items: center; gap: 7px; }
-.btn-generate:hover { background: rgba(232,168,48,0.1); border-color: var(--amber); }
-.prompt-editor { background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; overflow: hidden; display: none; margin-top: 12px; animation: slideDown 0.18s ease; }
-.prompt-editor.visible { display: block; }
-@keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-.prompt-editor-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--border); }
-.prompt-editor-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--amber); font-weight: 600; }
-.prompt-editor-hint  { font-size: 10px; color: var(--text3); }
-.prompt-textarea { width: 100%; background: transparent; border: none; outline: none; padding: 10px 12px; font-family: var(--font-mono); font-size: 11px; color: var(--text2); line-height: 1.6; resize: none; min-height: 90px; }
-.prompt-actions { display: flex; gap: 8px; padding: 8px 12px; border-top: 1px solid var(--border); }
-.btn-run { background: var(--amber); border: none; border-radius: 4px; padding: 7px 14px; font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: var(--bg); cursor: pointer; transition: opacity 0.15s; }
-.btn-run:hover { opacity: 0.85; }
-.btn-cancel-prompt { background: transparent; border: 1px solid var(--border2); border-radius: 4px; padding: 7px 12px; font-family: var(--font-ui); font-size: 13px; color: var(--text3); cursor: pointer; }
-.gen-loading { display: none; align-items: center; gap: 10px; padding: 8px 0; margin-top: 8px; }
-.gen-loading.visible { display: flex; }
-.spinner { width: 18px; height: 18px; border: 2px solid var(--border2); border-top-color: var(--amber); border-radius: 50%; animation: spin 0.7s linear infinite; }
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-ui); font-size: 14px; }
+
+/* ── Top bar ── */
+.topbar { height: 44px; display: flex; align-items: stretch; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.topbar-logo { display: flex; align-items: center; padding: 0 18px; gap: 8px; font-family: var(--font-display); font-size: 14px; color: var(--amber); border-right: 1px solid var(--border); white-space: nowrap; flex-shrink: 0; }
+.topbar-logo span { color: var(--text3); font-size: 11px; font-family: var(--font-ui); }
+.tab-bar { display: flex; align-items: stretch; }
+.tab-btn { padding: 0 22px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text2); font-family: var(--font-ui); font-size: 13px; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; text-transform: uppercase; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+/* ── Layout ── */
+#app { display: flex; flex-direction: column; height: 100vh; }
+.tab-pane { display: none; flex: 1; overflow: hidden; }
+.tab-pane.active { display: flex; }
+.split { display: flex; width: 100%; height: 100%; overflow: hidden; }
+
+/* ── Tile list column ── */
+.tile-list-col { width: 400px; flex-shrink: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border); background: var(--surface); }
+.list-toolbar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.search-input, .cat-filter { background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-ui); font-size: 13px; padding: 5px 8px; border-radius: 4px; }
+.search-input { flex: 1; }
+.cat-filter option { background: var(--surface2); }
+.btn { padding: 5px 12px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-family: var(--font-ui); font-size: 13px; font-weight: 600; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+.btn:hover { border-color: var(--amber); color: var(--amber); }
+.btn-amber { border-color: var(--amber); color: var(--amber); background: var(--surface2); }
+.btn-amber:hover { background: var(--amber-tint); }
+.btn-red { border-color: var(--red); color: var(--red); background: var(--surface2); }
+.btn-red:hover { background: rgba(200,64,64,0.1); }
+.btn-green { border-color: var(--green); color: var(--green); background: var(--surface2); }
+.btn-green:hover { background: rgba(74,144,96,0.1); }
+.col-headers { display: grid; grid-template-columns: 38px 1fr 90px 56px; gap: 0; padding: 4px 12px; border-bottom: 1px solid var(--border); background: var(--surface2); font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; }
+.tile-list-body { flex: 1; overflow-y: auto; }
+.tile-list-body::-webkit-scrollbar { width: 6px; }
+.tile-list-body::-webkit-scrollbar-track { background: transparent; }
+.tile-list-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.tile-row { display: grid; grid-template-columns: 38px 1fr 90px 56px; gap: 0; align-items: center; padding: 4px 12px; border-bottom: 1px solid var(--border); cursor: pointer; min-height: 46px; }
+.tile-row:hover { background: var(--surface2); }
+.tile-row.selected { background: var(--amber-tint); border-left: 3px solid var(--amber); padding-left: 9px; }
+.tile-thumb { width: 34px; height: 34px; object-fit: cover; border-radius: 3px; background: var(--surface3); display: block; }
+.thumb-placeholder { width: 34px; height: 34px; border-radius: 3px; background: var(--surface3); }
+.tile-name { font-size: 13px; padding-right: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rarity-badge { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+.pack-dots { display: flex; gap: 3px; flex-wrap: wrap; }
+.pack-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.list-footer { padding: 6px 12px; font-size: 11px; color: var(--text3); border-top: 1px solid var(--border); flex-shrink: 0; }
+
+/* ── Detail panel ── */
+.detail-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+.detail-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--text3); font-size: 13px; }
+.detail-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.detail-header { padding: 10px 16px; border-bottom: 1px solid var(--border); font-family: var(--font-display); font-size: 14px; color: var(--amber); flex-shrink: 0; }
+.detail-body { flex: 1; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 16px; align-items: start; }
+.detail-body::-webkit-scrollbar { width: 6px; }
+.detail-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.detail-footer { padding: 10px 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-shrink: 0; background: var(--surface); }
+
+/* ── Image section ── */
+.image-section { display: flex; flex-direction: column; gap: 8px; }
+.image-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.image-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; position: relative; aspect-ratio: 1; cursor: pointer; }
+.image-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.image-box.pending { border-color: var(--green); }
+.image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text3); font-size: 12px; }
+.image-spinner { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--text2); font-size: 12px; }
+.spinner-ring { width: 32px; height: 32px; border: 3px solid var(--border2); border-top-color: var(--amber); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.gen-loading span { font-size: 12px; color: var(--text2); }
-.gen-result { background: var(--green-dim,#1E4028); border: 1px solid var(--green); border-radius: 6px; padding: 12px; display: none; margin-top: 12px; animation: slideDown 0.18s ease; }
-.gen-result.visible { display: block; }
-.gen-result-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--green); font-weight: 600; margin-bottom: 10px; }
-.gen-result-inner { display: flex; gap: 12px; align-items: center; }
-.gen-preview-wrap { width: 80px; height: 80px; flex-shrink: 0; background: var(--surface3); border-radius: 6px; border: 1px solid var(--border2); overflow: hidden; }
-.gen-preview-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.gen-actions { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-.btn-approve { background: var(--green); border: none; border-radius: 4px; padding: 8px 12px; font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: white; cursor: pointer; transition: opacity 0.15s; }
-.btn-approve:hover { opacity: 0.85; }
-.btn-discard { background: transparent; border: 1px solid var(--border2); border-radius: 4px; padding: 8px 12px; font-family: var(--font-ui); font-size: 13px; color: var(--text3); cursor: pointer; }
-.field { display: flex; flex-direction: column; gap: 5px; }
-.field-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text3); font-weight: 600; }
-.field-input { background: var(--surface2); border: 1px solid var(--border2); border-radius: 5px; padding: 8px 11px; font-family: var(--font-ui); font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; width: 100%; }
-.field-input:focus { border-color: var(--amber-dim); }
-.fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.panel-footer { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid var(--border); background: var(--surface); }
-.btn-delete { background: transparent; border: 1px solid var(--red-dim); border-radius: 4px; padding: 7px 14px; font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--red); cursor: pointer; letter-spacing: 0.3px; transition: all 0.15s; }
-.btn-delete:hover { background: rgba(200,64,64,0.1); }
-.footer-right { display: flex; gap: 8px; }
-.btn-cancel { background: transparent; border: 1px solid var(--border2); border-radius: 4px; padding: 7px 14px; font-family: var(--font-ui); font-size: 13px; color: var(--text3); cursor: pointer; }
-.btn-save { background: var(--amber); border: none; border-radius: 4px; padding: 7px 20px; font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: var(--bg); cursor: pointer; letter-spacing: 0.3px; transition: opacity 0.15s; }
-.btn-save:hover { opacity: 0.85; }
-/* ── Pack diff list ─────────────────────────────── */
-.pack-left { width: 460px; flex-shrink: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border); overflow: hidden; }
-.pack-right { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.diff-toolbar { flex-shrink: 0; display: flex; gap: 8px; align-items: center; padding: 10px 12px; background: var(--surface); border-bottom: 1px solid var(--border); }
-.type-select { background: var(--bg); border: 1px solid var(--border2); border-radius: 4px; padding: 6px 8px; font-family: var(--font-ui); font-size: 13px; color: var(--text2); outline: none; cursor: pointer; }
-.btn-add-split { position: relative; display: inline-block; }
-.btn-add-split button { background: var(--amber); border: none; border-radius: 4px; padding: 6px 12px; font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: var(--bg); cursor: pointer; letter-spacing: 0.3px; transition: opacity .15s; }
-.btn-add-split button:hover { opacity: 0.85; }
-.add-menu { display: none; position: absolute; right: 0; top: calc(100% + 4px); background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; overflow: hidden; z-index: 50; min-width: 180px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
-.add-menu.open { display: block; }
-.add-menu-item { display: block; width: 100%; text-align: left; padding: 9px 14px; font-family: var(--font-ui); font-size: 13px; font-weight: 500; color: var(--text); background: transparent; border: none; cursor: pointer; transition: background .1s; }
-.add-menu-item:hover { background: var(--surface3); }
-.diff-col-head { flex-shrink: 0; display: grid; grid-template-columns: 44px 1fr 90px 1fr; padding: 5px 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
-.diff-col-head span { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); font-weight: 600; }
-.diff-list { flex: 1; overflow-y: auto; }
-.diff-list::-webkit-scrollbar { width: 4px; }
-.diff-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-.diff-row { display: grid; grid-template-columns: 44px 1fr 90px 1fr; padding: 6px 12px; align-items: center; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .1s; border-left: 3px solid transparent; }
-.diff-row:hover { background: var(--surface2); }
-.diff-row.selected { background: var(--surface2); }
-.diff-row.exclusive { border-left-color: var(--green); }
-.diff-row.override { border-left-color: var(--amber); }
-.diff-row.excluded { border-left-color: var(--red); opacity: 0.7; }
-.diff-row.selected.exclusive { background: rgba(74,144,96,0.08); }
-.diff-row.selected.override  { background: rgba(232,168,48,0.08); }
-.diff-row.selected.excluded  { background: rgba(200,64,64,0.08); }
-.diff-thumb { width: 30px; height: 30px; background: var(--surface3); border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-.diff-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.diff-name { font-size: 13px; font-weight: 500; color: var(--text); padding: 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.diff-name.strikethrough { text-decoration: line-through; color: var(--text2); }
-.diff-badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; letter-spacing: .8px; width: fit-content; }
-.diff-badge.exclusive { color: var(--green); background: rgba(74,144,96,0.15); }
-.diff-badge.override  { color: var(--amber); background: rgba(232,168,48,0.15); }
-.diff-badge.excluded  { color: var(--red);   background: rgba(200,64,64,0.15); }
-.diff-detail { font-size: 11px; color: var(--text2); padding: 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.diff-detail.override-arrow { color: var(--amber); }
-.diff-footer { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; border-top: 1px solid var(--border); background: var(--surface); }
-.diff-footer-count { font-size: 10px; color: var(--text3); letter-spacing: .5px; }
-.btn-save-pack { background: var(--green); border: none; border-radius: 4px; padding: 6px 18px; font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: white; cursor: pointer; transition: opacity .15s; }
-.btn-save-pack:hover { opacity: 0.85; }
-.btn-save-pack:disabled { opacity: 0.35; cursor: default; }
-/* Pack right panel states */
-.pack-summary { padding: 24px 20px; display: flex; flex-direction: column; gap: 8px; }
-.pack-summary-name { font-family: var(--font-display); font-size: 20px; color: var(--amber); }
-.pack-summary-counts { font-size: 13px; color: var(--text2); line-height: 2; }
-.pack-summary-hint { font-size: 12px; color: var(--text3); margin-top: 8px; }
-.rarity-from-to { display: flex; align-items: center; gap: 12px; padding: 14px 0; }
-.rarity-from-to .arrow { font-size: 18px; color: var(--text3); }
-.override-base-info { background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; padding: 12px; font-size: 12px; color: var(--text2); display: flex; flex-direction: column; gap: 4px; }
-.override-base-info .name { font-size: 14px; font-weight: 600; color: var(--text); }
-.excluded-callout { background: rgba(200,64,64,0.08); border: 1px solid rgba(200,64,64,0.25); border-radius: 6px; padding: 12px; font-size: 12px; color: var(--red); }
-.btn-remove { background: transparent; border: 1px solid var(--red-dim); border-radius: 4px; padding: 8px 14px; font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--red); cursor: pointer; width: 100%; letter-spacing: .3px; transition: all .15s; }
-.btn-remove:hover { background: rgba(200,64,64,0.1); }
-.btn-convert { background: transparent; border: 1px solid var(--amber-dim); border-radius: 4px; padding: 8px 14px; font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--amber); cursor: pointer; width: 100%; letter-spacing: .3px; transition: all .15s; margin-bottom: 8px; }
-.btn-convert:hover { background: rgba(232,168,48,0.1); }
-/* Base tile picker (used by addition flows) */
-.tile-picker { display: flex; flex-direction: column; overflow: hidden; flex: 1; }
-.tile-picker-search { background: var(--bg); border: 1px solid var(--border2); border-radius: 4px; padding: 7px 10px; font-family: var(--font-ui); font-size: 13px; color: var(--text); outline: none; margin: 12px 20px 8px; }
-.tile-picker-search:focus { border-color: var(--amber-dim); }
-.tile-picker-list { flex: 1; overflow-y: auto; }
-.tile-picker-row { display: flex; align-items: center; gap: 10px; padding: 7px 20px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background .1s; }
-.tile-picker-row:hover { background: var(--surface2); }
-.tile-picker-row .name { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
-.tile-picker-row .cat  { font-size: 11px; color: var(--text2); }
-.warning-callout { background: rgba(200,64,64,0.08); border: 1px solid rgba(200,64,64,0.25); border-radius: 6px; padding: 12px 20px; font-size: 12px; color: var(--red); margin: 0 20px 12px; line-height: 1.5; }
-.warning-callout.amber { background: rgba(232,168,48,0.08); border-color: rgba(232,168,48,0.25); color: var(--amber); }
-.picker-actions { display: flex; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
-.picker-rarity-wrap { padding: 12px 20px; }
-.picker-rarity-label { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--text3); font-weight: 600; margin-bottom: 10px; }
-* { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+.image-box-footer { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(13,13,11,0.88); padding: 6px 10px; font-size: 11px; color: var(--text2); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.gen-btn { background: none; border: none; color: var(--amber); font-family: var(--font-ui); font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.gen-btn:hover { color: #fff; }
+.gen-btn:disabled { color: var(--text3); cursor: default; }
+.approve-row { display: flex; gap: 6px; }
+.approve-btn { padding: 4px 10px; border-radius: 4px; border: 1px solid var(--green); background: var(--green-dim); color: var(--green); font-family: var(--font-ui); font-size: 12px; font-weight: 600; cursor: pointer; }
+.discard-btn { padding: 4px 10px; border-radius: 4px; border: 1px solid var(--red-dim); background: transparent; color: var(--red); font-family: var(--font-ui); font-size: 12px; font-weight: 600; cursor: pointer; }
+
+/* ── Meta section ── */
+.meta-section { display: flex; flex-direction: column; gap: 14px; }
+.field-group { display: flex; flex-direction: column; gap: 4px; }
+.field-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+.field-input { background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-ui); font-size: 13px; padding: 6px 8px; border-radius: 4px; width: 100%; }
+.field-input:focus { outline: none; border-color: var(--amber-dim); }
+.field-input::placeholder { color: var(--text3); }
+.field-select { background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-ui); font-size: 13px; padding: 6px 8px; border-radius: 4px; width: 100%; }
+.field-textarea { background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-ui); font-size: 12px; padding: 6px 8px; border-radius: 4px; width: 100%; resize: vertical; min-height: 80px; line-height: 1.5; }
+.field-textarea:focus { outline: none; border-color: var(--amber-dim); }
+.rarity-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.rarity-chip { padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border2); background: transparent; color: var(--text2); font-family: var(--font-ui); font-size: 12px; font-weight: 600; cursor: pointer; }
+.rarity-chip.selected { border-color: currentColor; background: rgba(255,255,255,0.07); }
+
+/* ── Pack membership section ── */
+.pack-membership { display: flex; flex-direction: column; gap: 2px; }
+.pack-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 4px; border: 1px solid transparent; }
+.pack-row.included { background: var(--amber-tint); }
+.pack-row.will-remove { opacity: 0.5; border-color: var(--red-dim); }
+.pack-color-bar { width: 4px; height: 24px; border-radius: 2px; flex-shrink: 0; }
+.pack-row-name { flex: 1; font-size: 13px; font-weight: 600; }
+.pack-row-status { font-size: 11px; color: var(--text2); white-space: nowrap; }
+.pack-row-status.included-status { color: var(--green); }
+.pack-row-status.remove-status { color: var(--red); }
+.pack-toggle-btn { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border2); background: none; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.pack-toggle-btn.included { border-color: var(--amber); background: var(--amber); color: #000; }
+.pack-toggle-btn.will-remove { border-color: var(--red); color: var(--red); }
+.rarity-inline-picker { display: flex; gap: 4px; flex-wrap: wrap; padding: 4px 0 4px 12px; }
+.rarity-inline-chip { padding: 3px 8px; border-radius: 10px; border: 1px solid var(--border2); background: transparent; color: var(--text2); font-family: var(--font-ui); font-size: 11px; font-weight: 600; cursor: pointer; }
+.rarity-inline-chip:hover { border-color: currentColor; }
+.rarity-inline-chip.selected { border-color: currentColor; background: rgba(255,255,255,0.07); }
+
+/* ── Pack gallery (left col, Pack View) ── */
+.pack-gallery-col { width: 180px; flex-shrink: 0; border-right: 1px solid var(--border); background: var(--surface); overflow-y: auto; }
+.pack-card { cursor: pointer; border-bottom: 1px solid var(--border); }
+.pack-card:hover { background: var(--surface2); }
+.pack-card.selected { border-left: 3px solid var(--amber); background: var(--amber-tint); }
+.pack-card-img { width: 100%; height: 80px; object-fit: cover; display: block; background: var(--surface3); }
+.pack-card-info { padding: 6px 10px; }
+.pack-card-name { font-family: var(--font-display); font-size: 12px; color: var(--amber); line-height: 1.3; }
+.pack-card-count { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* ── Pack detail (right area, Pack View) ── */
+.pack-detail-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.pack-detail-toolbar { display: flex; align-items: center; gap: 10px; padding: 8px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; background: var(--surface); }
+.pack-detail-name { font-family: var(--font-display); font-size: 16px; color: var(--amber); flex-shrink: 0; }
+.pack-detail-body { flex: 1; overflow-y: auto; padding: 16px; }
+.pack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+.pack-grid-cell { position: relative; aspect-ratio: 1; border-radius: 4px; overflow: hidden; cursor: pointer; background: var(--surface2); border: 1px solid var(--border); }
+.pack-grid-cell:hover { border-color: var(--amber); }
+.pack-grid-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pack-grid-rarity-dot { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; }
+.pack-grid-name { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(13,13,11,0.82); font-size: 10px; padding: 2px 4px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pack-list { display: flex; flex-direction: column; gap: 0; }
+.pack-list-row { display: grid; grid-template-columns: 38px 1fr 90px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.pack-list-row:hover { background: var(--surface2); }
+.rarity-bar-section { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+.rarity-bar-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.rarity-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--surface3); }
+.rarity-bar-seg { height: 100%; transition: width 0.3s; }
+.rarity-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+.rarity-legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text2); }
+.rarity-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Add-tile picker overlay ── */
+.picker-overlay { position: fixed; inset: 0; background: rgba(13,13,11,0.7); z-index: 100; display: flex; align-items: flex-start; justify-content: flex-end; }
+.picker-panel { width: 420px; height: 100%; background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.picker-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.picker-title { font-family: var(--font-display); font-size: 14px; color: var(--amber); }
+.picker-search { padding: 8px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.picker-list { flex: 1; overflow-y: auto; }
+.picker-tile-row { display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.picker-tile-row:hover { background: var(--surface2); }
+.picker-rarity-picker { background: var(--surface2); padding: 8px 12px; border-bottom: 1px solid var(--amber-dim); }
+.picker-rarity-label { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+
+/* ── Lightbox ── */
+.lightbox { position: fixed; inset: 0; background: rgba(13,13,11,0.85); z-index: 200; display: flex; align-items: center; justify-content: center; }
+.lightbox.hidden { display: none; }
+.lightbox-box { width: 540px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.lightbox-img { width: 100%; aspect-ratio: 1; object-fit: contain; display: block; background: var(--surface2); }
+.lightbox-footer { padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.lightbox-name { font-family: var(--font-display); font-size: 13px; color: var(--amber); }
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="topbar">
-    <div class="topbar-logo">Road Trip Bingo <span>/ Tile Manager</span></div>
-    <div class="tabs" id="tabs">
-      <div class="tab active" id="tab-base" onclick="switchTab('base')">
-        <div class="tab-dot" style="background:var(--text2)"></div>
-        Base Tiles
-      </div>
-      <!-- Pack tabs injected by JS on init -->
-    </div>
-    <div class="topbar-stat">
-      <span class="val" id="stat-tiles">—</span>
-      <span class="lbl">Tiles</span>
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-logo">Road Trip Bingo <span>&#x2B21; Tile Manager</span></div>
+    <nav class="tab-bar">
+      <button class="tab-btn active" data-tab="tiles">All Tiles</button>
+      <button class="tab-btn" data-tab="packs">Pack View</button>
+    </nav>
+  </header>
+
+  <!-- All Tiles Tab -->
+  <div class="tab-pane active" data-tab="tiles">
+    <div class="split">
+      <aside class="tile-list-col">
+        <div class="list-toolbar">
+          <input id="tile-search" class="search-input" placeholder="Search tiles&hellip;" type="search">
+          <select id="cat-filter" class="cat-filter"><option value="">All Categories</option></select>
+          <button class="btn btn-amber" id="add-tile-btn">+ Add</button>
+        </div>
+        <div class="col-headers">
+          <span></span><span>Name</span><span>Rarity</span><span>Packs</span>
+        </div>
+        <div class="tile-list-body" id="tile-list-body"></div>
+        <div class="list-footer" id="tile-list-footer"></div>
+      </aside>
+      <main class="detail-col" id="detail-col">
+        <div class="detail-empty" id="detail-empty">Select a tile to edit</div>
+        <div class="detail-panel" id="detail-panel" style="display:none">
+          <div class="detail-header" id="detail-header">Tile</div>
+          <div class="detail-body" id="detail-body"></div>
+          <div class="detail-footer">
+            <button class="btn btn-red" id="delete-tile-btn" style="display:none">&#x1F5D1; Delete Tile</button>
+            <div style="flex:1"></div>
+            <button class="btn" id="cancel-tile-btn">Cancel</button>
+            <button class="btn btn-amber" id="save-tile-btn">Save Changes</button>
+          </div>
+        </div>
+      </main>
     </div>
   </div>
-  <div class="screens">
-  <div class="screen active" id="screen-base">
-  <div class="body">
-    <div class="left">
-      <div class="toolbar">
-        <div class="search-wrap">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          <input class="search" id="search" type="text" placeholder="Search tiles…">
-        </div>
-        <select class="cat-select" id="filter-cat"></select>
-        <button class="btn-add" onclick="startAddMode()">+ Add Tile</button>
-      </div>
-      <div class="col-head">
-        <span></span><span id="sort-name" class="sortable" onclick="toggleSort('name')">Name</span><span>Category</span><span id="sort-rarity" class="sortable" onclick="toggleSort('rarity')">Rarity</span>
-      </div>
-      <div class="table-body" id="table-body"></div>
-      <div class="table-footer" id="table-footer">Loading…</div>
+
+  <!-- Pack View Tab -->
+  <div class="tab-pane" data-tab="packs">
+    <div class="split">
+      <aside class="pack-gallery-col" id="pack-gallery"></aside>
+      <main class="pack-detail-col" id="pack-detail-col">
+        <div class="detail-empty">Select a pack</div>
+      </main>
     </div>
-    <div class="right">
-      <div class="panel-empty" id="panel-empty">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-        <p>Select a tile to edit</p>
-      </div>
-      <div class="panel-content" id="panel-content">
-        <div class="panel-header">
-          <div class="panel-title" id="panel-title"></div>
-          <div class="panel-id" id="panel-id"></div>
-        </div>
-        <div class="panel-body">
-          <div>
-            <div class="section-label">Tile Image</div>
-            <div class="image-section">
-              <div class="image-current-wrap" id="image-wrap">
-                <span class="img-placeholder" id="img-placeholder"></span>
-                <img id="image-current" src="" alt="" style="display:none" onerror="this.style.display='none';document.getElementById('img-placeholder').style.display=''">
-              </div>
-              <div class="image-controls">
-                <div class="image-hint">Current image. Generate a new one with Gemini, then approve or discard before saving.</div>
-                <button class="btn-generate" id="btn-generate" onclick="showPromptEditor()">❆ Generate New Image</button>
-              </div>
-            </div>
-            <div class="prompt-editor" id="prompt-editor">
-              <div class="prompt-editor-header">
-                <span class="prompt-editor-label">Generation Prompt</span>
-                <span class="prompt-editor-hint">Edit before running</span>
-              </div>
-              <textarea class="prompt-textarea" id="prompt-textarea" rows="5"></textarea>
-              <div class="prompt-actions">
-                <button class="btn-run" onclick="runGeneration()">Run Generation</button>
-                <button class="btn-cancel-prompt" onclick="hidePromptEditor()">Cancel</button>
-              </div>
-            </div>
-            <div class="gen-loading" id="gen-loading">
-              <div class="spinner"></div>
-              <span>Generating with Gemini 2.5 Flash…</span>
-            </div>
-            <div class="gen-result" id="gen-result">
-              <div class="gen-result-label">✓ Image generated — approve or discard</div>
-              <div class="gen-result-inner">
-                <div class="gen-preview-wrap"><img id="gen-preview-img" src="" alt="generated"></div>
-                <div class="gen-actions">
-                  <button class="btn-approve" onclick="approveImage()">✓ Use This Image</button>
-                  <button class="btn-discard" onclick="discardImage()">✕ Discard · Keep Original</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="section-label">Metadata</div>
-            <div style="display:flex;flex-direction:column;gap:12px">
-              <div class="field"><label class="field-label">Name</label><input class="field-input" id="field-name" type="text"></div>
-              <div class="field"><label class="field-label">Image Description <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(optional — defaults to tile name)</span></label><textarea class="field-input" id="field-description" rows="2" style="resize:vertical;font-size:13px;line-height:1.5" placeholder="e.g. A red Kenworth semi truck cab, side view, no trailer"></textarea></div>
-              <div class="fields-row">
-                <div class="field"><label class="field-label">Category</label><select class="field-input" id="field-category" style="cursor:pointer"></select></div>
-                <div class="field"><label class="field-label">Rarity</label><select class="field-input" id="field-rarity" style="cursor:pointer"></select></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="panel-footer">
-          <button class="btn-delete" id="btn-delete" onclick="deleteTile()">🗑 Delete Tile</button>
-          <div class="footer-right">
-            <button class="btn-cancel" onclick="cancelEdit()">Cancel</button>
-            <button class="btn-save" onclick="saveTile()">Save Changes</button>
-          </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox hidden" id="lightbox">
+    <div class="lightbox-box" id="lightbox-box">
+      <img class="lightbox-img" id="lightbox-img" src="" alt="">
+      <div class="lightbox-footer">
+        <span class="lightbox-name" id="lightbox-name"></span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="gen-btn" id="lightbox-gen-btn">&#x2746; Generate Again</button>
+          <button class="btn" id="lightbox-close-btn">&#x2715; Close</button>
         </div>
       </div>
     </div>
-  </div><!-- .body -->
-  </div><!-- #screen-base -->
-  <!-- Pack screens injected by JS on init -->
-  </div><!-- .screens -->
-</div><!-- .app -->
+  </div>
+</div>
+
 <script>
 /* __INJECT__ */
 
-// ── State ─────────────────────────────────────────────────────────────────────────────
-let tiles = [];
-let selectedId = null;
-let isAddMode = false;
-let pendingImageB64 = null;
-let deleteConfirming = false;
-let lastUsedPrompt = null;  // preserved across discard so user can iterate on a custom prompt
-let sortKey = null;   // 'name' | 'rarity' | null
-let sortAsc = true;
+// ── Constants ─────────────────────────────────────────────────────────────────
 
-// ── Pack tab colors (by pack id) ─────────────────────────────────────────────
 const PACK_COLORS = {
-  'farm-country':     '#4A9060',
-  'interstate':       '#5B8DD9',
-  'city':             '#9060C8',
-  'mountains':        '#7A9060',
-  'beach-coast':      '#4090A8',
+  'base': '#4A9060',
+  'farm-country': '#4A9060',
+  'interstate': '#5B8DD9',
+  'city': '#9060C8',
+  'mountains': '#7A9060',
+  'beach-coast': '#4090A8',
   'desert-southwest': '#C87840',
 };
-
-// ── Pack screen state ─────────────────────────────────────────────────────────
-let currentPackId   = null;  // which pack tab is active (null = base tiles)
-let packData        = null;  // full pack object in client memory
-let selectedMod     = null;  // {type: 'exclusive'|'override'|'excluded', id: uuid}
-let isDirty         = false; // unsaved pack changes
-let packFilterType  = '';    // '' | 'exclusive' | 'override' | 'excluded'
-let packSearchQuery = '';    // search filter for diff list
-
-// ── Tab switching ─────────────────────────────────────────────────────────────
-function switchTab(tabId) {
-  // No-op if already on this tab
-  if (document.getElementById('tab-' + tabId)?.classList.contains('active')) return;
-  if (isDirty) {
-    if (!confirm('You have unsaved pack changes. Leave anyway?')) return;
-  }
-  // Reset the old pack's right panel to remove any exclusive-tile-editor elements
-  // (pack-gen-loading, pack-prompt-editor, pack-field-name, etc.) from the DOM.
-  // Those elements all use hardcoded IDs without a pack suffix, so leaving them
-  // in a hidden screen creates duplicate IDs. The next pack that opens an exclusive
-  // tile editor then creates the same IDs, and document.getElementById() returns
-  // whichever came first in document order — causing generation to silently target
-  // the wrong (invisible) panel instead of the active one.
-  if (currentPackId) {
-    resetPackRightPanel();
-  }
-  // Reset all pack state before switching (prevents stale state across tabs)
-  packData        = null;
-  selectedMod     = null;
-  packFilterType  = '';
-  packSearchQuery = '';
-  isDirty         = false;
-  // Deactivate all tabs and screens
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  // Activate selected
-  const tabEl    = document.getElementById('tab-' + tabId);
-  const screenEl = document.getElementById('screen-' + tabId);
-  if (tabEl)    tabEl.classList.add('active');
-  if (screenEl) screenEl.classList.add('active');
-
-  if (tabId === 'base') {
-    currentPackId = null;
-  } else {
-    currentPackId = tabId;
-    loadPackScreen(tabId);
-  }
-}
-
-// ── Prompt building (mirrors server-side logic) ──────────────────────────────────────
-const CATEGORY_HINTS_JS = {
-  vehicles:  'Side view, full vehicle visible.',
-  nature:    'Full subject visible, centered.',
-  signs:     'The physical sign or object itself, not just a flat sign graphic.',
-  landmarks: 'Full structure visible.',
-  food:      'Storefront or roadside view.',
-  weather:   'Dramatic sky scene.',
+const RARITY_COLORS = {
+  veryCommon: '#6BC88A', common: '#7BAAF0',
+  uncommon: '#E8C060', rare: '#E87070', veryRare: '#C090F0',
 };
-const STYLE_JS = 'Flat vector illustration, clean thin outlines, bright but realistic colors. Use natural, true-to-life colors for each object and all parts should match the colors that object would actually have in real life. Plain solid white background — the illustration sits directly on white with absolutely no drop shadow, no border, no card, no frame, no vignette, no outline around the image edge. Square composition. No text, no labels, no letters.';
-
-function buildPrompt(tile) {
-  const raw = (tile.description || '').replace(/\\.+$/, '').trim();
-  const subject = raw || tile.text || 'a tile';
-  const subjectCap = subject.charAt(0).toUpperCase() + subject.slice(1);
-  const hint = CATEGORY_HINTS_JS[tile.category] || '';
-  return [subjectCap + '.', hint, STYLE_JS].filter(Boolean).join(' ').replace(/\\s+/g, ' ').trim();
-}
-
-// ── Init ────────────────────────────────────────────────────────────────────────────────
-async function init() {
-  populateCategoryDropdowns();
-  populateRarityDropdowns();
-  const tilesData = await fetch('/api/tiles').then(r => r.json());
-  tiles = tilesData;
-  renderTable();
-  updateStats();
-  buildPackTabs();
-}
-
-function buildPackTabs() {
-  const tabsEl    = document.getElementById('tabs');
-  const screensEl = document.querySelector('.screens');
-  PACKS_META.forEach(pack => {
-    // Tab
-    const color = PACK_COLORS[pack.id] || 'var(--text2)';
-    const tab = document.createElement('div');
-    tab.className = 'tab';
-    tab.id = 'tab-' + pack.id;
-    tab.innerHTML = '<div class="tab-dot" style="background:' + color + '"></div>' + esc(pack.name);
-    tab.onclick = () => switchTab(pack.id);
-    tabsEl.appendChild(tab);
-    // Screen skeleton (content populated when first visited)
-    const screen = document.createElement('div');
-    screen.className = 'screen';
-    screen.id = 'screen-' + pack.id;
-    // NOTE: .add-menu-item clicks do NOT close the menu via the click-outside handler
-    // (they're inside .btn-add-split so closest('.btn-add-split') is truthy).
-    // Task 5 action functions (startAddExclusive etc.) must call toggleAddMenu explicitly to close.
-    screen.innerHTML =
-      '<div class="pack-left">' +
-        '<div class="diff-toolbar">' +
-          '<div class="search-wrap" style="flex:1">' +
-            '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);width:13px;height:13px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>' +
-            '<input class="search" type="text" placeholder="Search modifications…" oninput="onPackSearch(this.value)">' +
-          '</div>' +
-          '<select class="type-select" onchange="onPackTypeFilter(this.value)">' +
-            '<option value="">All types</option>' +
-            '<option value="exclusive">Exclusive</option>' +
-            '<option value="override">Override</option>' +
-            '<option value="excluded">Excluded</option>' +
-          '</select>' +
-          '<div class="btn-add-split" id="add-split-' + pack.id + '">' +
-            '<button onclick="toggleAddMenu(\\'' + pack.id + '\\')">+ Add ▾</button>' +
-            '<div class="add-menu" id="add-menu-' + pack.id + '">' +
-              '<button class="add-menu-item" onclick="startAddExclusive()">Create Exclusive Tile</button>' +
-              '<button class="add-menu-item" onclick="startMoveFromBase()">Move from Base</button>' +
-              '<button class="add-menu-item" onclick="startAddOverride()">Override Rarity</button>' +
-              '<button class="add-menu-item" onclick="startExcludeBase()">Exclude Base Tile</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="diff-col-head"><span></span><span>Tile</span><span>Type</span><span>Detail</span></div>' +
-        '<div class="diff-list" id="diff-list-' + pack.id + '"></div>' +
-        '<div class="diff-footer">' +
-          '<span class="diff-footer-count" id="diff-count-' + pack.id + '">—</span>' +
-          '<button class="btn-save-pack" id="btn-save-' + pack.id + '" disabled onclick="savePack()">Save Pack</button>' +
-        '</div>' +
-      '</div>' +
-      '<div class="pack-right" id="pack-right-' + pack.id + '">' +
-        '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px">' +
-          '<div class="pack-summary">' +
-            '<div class="pack-summary-name">' + esc(pack.name) + '</div>' +
-            '<div class="pack-summary-counts" id="pack-counts-' + pack.id + '">Loading…</div>' +
-            '<div class="pack-summary-hint">Select a modification to edit, or use + Add to create one.</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-    screensEl.appendChild(screen);
-  });
-  // Close add menus when clicking outside
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.btn-add-split')) {
-      document.querySelectorAll('.add-menu').forEach(m => m.classList.remove('open'));
-    }
-  });
-}
-
-function toggleAddMenu(packId) {
-  const menu = document.getElementById('add-menu-' + packId);
-  menu.classList.toggle('open');
-}
-
-// ── Pack screen data ──────────────────────────────────────────────────────────
-async function loadPackScreen(packId) {
-  selectedMod     = null;
-  packFilterType  = '';
-  packSearchQuery = '';
-  isDirty         = false;
-  try {
-    const r = await fetch('/api/packs/' + packId);
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    packData = await r.json();
-  } catch (err) {
-    packData = null;
-    const listEl = document.getElementById('diff-list-' + packId);
-    if (listEl) listEl.innerHTML = '<div style="padding:24px;text-align:center;color:var(--red);font-size:13px">Failed to load pack: ' + esc(err.message) + '</div>';
-    return;
-  }
-  renderPackDiffList();
-  updatePackSummaryPanel();
-}
-
-function onPackSearch(val) {
-  packSearchQuery = val.toLowerCase();
-  renderPackDiffList();
-}
-
-function onPackTypeFilter(val) {
-  packFilterType = val;
-  renderPackDiffList();
-}
-
-function markDirty() {
-  isDirty = true;
-  const btn = document.getElementById('btn-save-' + currentPackId);
-  if (btn) btn.disabled = false;
-}
-
-// ── Render diff list ──────────────────────────────────────────────────────────
-function getPackMods() {
-  if (!packData) return [];
-  const mods = [];
-  // Exclusive tiles
-  (packData.tiles || []).forEach(t => {
-    mods.push({ type: 'exclusive', id: t.id, tile: t });
-  });
-  // Rarity overrides
-  Object.entries(packData.rarityOverrides || {}).forEach(([uuid, newRarity]) => {
-    const baseTile = tiles.find(t => t.id === uuid);
-    mods.push({ type: 'override', id: uuid, baseTile, newRarity });
-  });
-  // Exclusions
-  (packData.excludedTileIDs || []).forEach(uuid => {
-    const baseTile = tiles.find(t => t.id === uuid);
-    mods.push({ type: 'excluded', id: uuid, baseTile });
-  });
-  return mods;
-}
-
-function getFilteredMods() {
-  return getPackMods().filter(m => {
-    if (packFilterType && m.type !== packFilterType) return false;
-    if (!packSearchQuery) return true;
-    const name = m.type === 'exclusive'
-      ? (m.tile.text || '').toLowerCase()
-      : (m.baseTile ? m.baseTile.text : '').toLowerCase();
-    return name.includes(packSearchQuery);
-  });
-}
-
-function renderPackDiffList() {
-  if (!currentPackId || !packData) return;
-  const listEl  = document.getElementById('diff-list-' + currentPackId);
-  const countEl = document.getElementById('diff-count-' + currentPackId);
-  if (!listEl || !countEl) return;
-  const filtered = getFilteredMods();
-  const all      = getPackMods();
-
-  countEl.textContent = all.length + ' modification' + (all.length !== 1 ? 's' : '');
-
-  listEl.innerHTML = filtered.map(m => {
-    const isSelected = selectedMod && selectedMod.type === m.type && selectedMod.id === m.id;
-    const sel = isSelected ? ' selected' : '';
-
-    if (m.type === 'exclusive') {
-      const imgSrc     = '/api/image/' + m.tile.id;
-      const rarityBadge = '<span class="rarity ' + (RARITY_CLS[m.tile.rarity] || '') + '">' + esc(m.tile.rarity) + '</span>';
-      return '<div class="diff-row exclusive' + sel + '" onclick="selectMod(\\'' + m.type + '\\',\\'' + m.id + '\\')">' +
-        '<div class="diff-thumb"><img src="' + imgSrc + '" onerror="this.style.display=\\'none\\'"></div>' +
-        '<div class="diff-name">' + esc(m.tile.text) + '</div>' +
-        '<div><span class="diff-badge exclusive">EXCLUSIVE</span></div>' +
-        '<div class="diff-detail">' + rarityBadge + '</div>' +
-        '</div>';
-    }
-
-    if (m.type === 'override') {
-      const name   = m.baseTile ? esc(m.baseTile.text) : '<em style="color:var(--text3)">Unknown tile</em>';
-      const fromR  = m.baseTile ? m.baseTile.rarity : '?';
-      const detail = '<span style="color:var(--text2)">' + esc(fromR) + '</span> → <span style="color:var(--amber)">' + esc(m.newRarity) + '</span>';
-      return '<div class="diff-row override' + sel + '" onclick="selectMod(\\'' + m.type + '\\',\\'' + m.id + '\\')">' +
-        '<div class="diff-thumb" style="font-size:12px;color:var(--text3)">—</div>' +
-        '<div class="diff-name">' + name + '</div>' +
-        '<div><span class="diff-badge override">OVERRIDE</span></div>' +
-        '<div class="diff-detail override-arrow">' + detail + '</div>' +
-        '</div>';
-    }
-
-    // excluded
-    const name = m.baseTile ? esc(m.baseTile.text) : '<em style="color:var(--text3)">Unknown tile</em>';
-    return '<div class="diff-row excluded' + sel + '" onclick="selectMod(\\'' + m.type + '\\',\\'' + m.id + '\\')">' +
-      '<div class="diff-thumb" style="font-size:12px;color:var(--text3)">—</div>' +
-      '<div class="diff-name strikethrough">' + name + '</div>' +
-      '<div><span class="diff-badge excluded">EXCLUDED</span></div>' +
-      '<div class="diff-detail"></div>' +
-      '</div>';
-  }).join('');
-
-  if (filtered.length === 0) {
-    listEl.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text3);font-size:13px">' +
-      (all.length === 0 ? 'No modifications — use + Add to begin.' : 'No results for current filter.') +
-      '</div>';
-  }
-}
-
-function selectMod(type, id) {
-  selectedMod = { type, id };
-  renderPackDiffList();
-  renderPackRightPanel();
-}
-
-function updatePackSummaryPanel() {
-  if (!packData || !currentPackId) return;
-  const countsEl = document.getElementById('pack-counts-' + currentPackId);
-  if (!countsEl) return;
-  const exclusive = (packData.tiles || []).length;
-  const overrides = Object.keys(packData.rarityOverrides || {}).length;
-  const excluded  = (packData.excludedTileIDs || []).length;
-  countsEl.innerHTML =
-    '<strong style="color:var(--green)">'  + exclusive + '</strong> exclusive tile' + (exclusive !== 1 ? 's' : '') + '<br>' +
-    '<strong style="color:var(--amber)">'  + overrides + '</strong> rarity override' + (overrides !== 1 ? 's' : '') + '<br>' +
-    '<strong style="color:var(--red)">'    + excluded  + '</strong> exclusion'        + (excluded  !== 1 ? 's' : '');
-}
-
-function renderPackRightPanel() {
-  if (!selectedMod || !packData || !currentPackId) return;
-  const { type, id } = selectedMod;
-  if (type === 'exclusive') {
-    const tile = (packData.tiles || []).find(t => t.id === id);
-    if (tile) showExclusiveEditor(tile);
-    return;
-  }
-  if (type === 'override') { showOverrideEditor(id); return; }
-  if (type === 'excluded')  { showExcludedEditor(id); return; }
-}
-
-// ── Right panel: exclusive tile editor ───────────────────────────────────────
-function showExclusiveEditor(tile) {
-  const rightEl = document.getElementById('pack-right-' + currentPackId);
-  if (!rightEl) return;
-  const isNew = !tile.id;
-  rightEl.innerHTML =
-    '<div class="panel-header">' +
-      '<div class="panel-title">' + esc(isNew ? 'New Exclusive Tile' : tile.text) + '</div>' +
-      '<div class="panel-id">' + (isNew ? '(new)' : esc(tile.id.substring(0, 8)) + '…') + '</div>' +
-    '</div>' +
-    '<div class="panel-body" id="pack-panel-body">' +
-      '<div>' +
-        '<div class="section-label">Tile Image</div>' +
-        '<div class="image-section">' +
-          '<div class="image-current-wrap" id="pack-image-wrap">' +
-            '<span class="img-placeholder" id="pack-img-placeholder" style="' + (isNew ? '' : 'display:none') + '">' + esc(tile.emoji || '🎯') + '</span>' +
-            '<img id="pack-image-current" src="' + (isNew ? '' : '/api/image/' + esc(tile.id) + '?t=' + Date.now()) + '" ' +
-              'alt="" style="' + (isNew ? 'display:none' : '') + '" ' +
-              'onerror="this.style.display=\\'none\\';document.getElementById(\\'pack-img-placeholder\\').style.display=\\'\\';">' +
-          '</div>' +
-          '<div class="image-controls">' +
-            '<div class="image-hint">Exclusive tile image. Generate with Gemini, then approve or discard.</div>' +
-            '<button class="btn-generate" id="pack-btn-generate" onclick="showPackPromptEditor()">❆ Generate New Image</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="prompt-editor" id="pack-prompt-editor">' +
-          '<div class="prompt-editor-header"><span class="prompt-editor-label">Generation Prompt</span><span class="prompt-editor-hint">Edit before running</span></div>' +
-          '<textarea class="prompt-textarea" id="pack-prompt-textarea" rows="5"></textarea>' +
-          '<div class="prompt-actions">' +
-            '<button class="btn-run" onclick="runPackGeneration()">Run Generation</button>' +
-            '<button class="btn-cancel-prompt" onclick="hidePackPromptEditor()">Cancel</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="gen-loading" id="pack-gen-loading"><div class="spinner"></div><span>Generating with Gemini 2.5 Flash…</span></div>' +
-        '<div class="gen-result" id="pack-gen-result">' +
-          '<div class="gen-result-label">✓ Image generated — approve or discard</div>' +
-          '<div class="gen-result-inner">' +
-            '<div class="gen-preview-wrap"><img id="pack-gen-preview-img" src="" alt="generated"></div>' +
-            '<div class="gen-actions">' +
-              '<button class="btn-approve" onclick="approvePackImage()">✓ Use This Image</button>' +
-              '<button class="btn-discard" onclick="discardPackImage()">✕ Discard · Keep Original</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div>' +
-        '<div class="section-label">Metadata</div>' +
-        '<div style="display:flex;flex-direction:column;gap:12px">' +
-          '<div class="field"><label class="field-label">Name</label><input class="field-input" id="pack-field-name" type="text" value="' + esc(tile.text || '') + '"></div>' +
-          '<div class="field"><label class="field-label">Image Description <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(optional — defaults to tile name)</span></label><textarea class="field-input" id="pack-field-description" rows="2" style="resize:vertical;font-size:13px;line-height:1.5" placeholder="e.g. A red Kenworth semi truck cab, side view, no trailer">' + esc(tile.description || '') + '</textarea></div>' +
-          '<div class="field"><label class="field-label">Emoji</label><input class="field-input" id="pack-field-emoji" type="text" value="' + esc(tile.emoji || '') + '"></div>' +
-          '<div class="fields-row">' +
-            '<div class="field"><label class="field-label">Category</label><select class="field-input" id="pack-field-category" style="cursor:pointer">' +
-              CATEGORIES.map(c => '<option value="' + c + '"' + (c === tile.category ? ' selected' : '') + '>' + esc(c) + '</option>').join('') +
-            '</select></div>' +
-            '<div class="field"><label class="field-label">Rarity</label><select class="field-input" id="pack-field-rarity" style="cursor:pointer">' +
-              RARITIES.map(r => '<option value="' + r + '"' + (r === tile.rarity ? ' selected' : '') + '>' + esc(r) + '</option>').join('') +
-            '</select></div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>' +
-    '<div class="panel-footer">' +
-      (isNew ? '' : '<button class="btn-delete" onclick="removeExclusiveTile(\\'' + esc(tile.id) + '\\')">🗑 Remove from Pack</button>') +
-      '<div class="footer-right">' +
-        '<button class="btn-cancel" onclick="cancelPackEdit()">Cancel</button>' +
-        '<button class="btn-save" onclick="saveExclusiveTile(' + (isNew ? 'null' : '\\'' + esc(tile.id) + '\\'') + ')">Save Changes</button>' +
-      '</div>' +
-    '</div>';
-
-  window._packEditingTile      = tile;
-  window._packPendingImageB64  = null;
-  window._packLastPrompt       = null;
-  window._packIsNewExclusive   = isNew;
-}
-
-// ── Exclusive tile image generation ──────────────────────────────────────────
-function showPackPromptEditor() {
-  // Warn if user already approved an image — re-generating will replace it
-  if (window._packPendingImageB64 && window._packIsNewExclusive) {
-    if (!confirm('You already approved an image for this tile. Generating a new one will replace it. Continue?')) return;
-    window._packPendingImageB64 = null;
-    // Reset the displayed image back to placeholder
-    const img = document.getElementById('pack-image-current');
-    const ph  = document.getElementById('pack-img-placeholder');
-    if (img) { img.src = ''; img.style.display = 'none'; }
-    if (ph)  { ph.style.display = ''; }
-  }
-  if (!window._packLastPrompt) {
-    const descEl = document.getElementById('pack-field-description');
-    window._packLastPrompt = buildPrompt({
-      text:        document.getElementById('pack-field-name').value.trim() || 'a tile',
-      description: descEl ? descEl.value.trim() : '',
-      category:    document.getElementById('pack-field-category').value,
-    });
-  }
-  document.getElementById('pack-prompt-textarea').value = window._packLastPrompt;
-  document.getElementById('pack-prompt-editor').classList.add('visible');
-  document.getElementById('pack-btn-generate').style.display = 'none';
-  document.getElementById('pack-gen-result').classList.remove('visible');
-}
-
-function hidePackPromptEditor() {
-  document.getElementById('pack-prompt-editor').classList.remove('visible');
-  document.getElementById('pack-btn-generate').style.display = '';
-}
-
-async function runPackGeneration() {
-  const prompt = document.getElementById('pack-prompt-textarea').value.trim();
-  if (!prompt) { alert('Enter a prompt before running.'); return; }
-  window._packLastPrompt = prompt;
-  document.getElementById('pack-prompt-editor').classList.remove('visible');
-  document.getElementById('pack-gen-loading').classList.add('visible');
-  try {
-    const r = await fetch('/api/generate', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({prompt}),
-    });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || 'Generation failed');
-    window._packPendingImageB64 = data.image_b64;
-    document.getElementById('pack-gen-preview-img').src = 'data:image/png;base64,' + data.image_b64;
-    document.getElementById('pack-gen-loading').classList.remove('visible');
-    document.getElementById('pack-gen-result').classList.add('visible');
-  } catch (err) {
-    document.getElementById('pack-gen-loading').classList.remove('visible');
-    document.getElementById('pack-btn-generate').style.display = '';
-    alert('Generation failed: ' + err.message);
-  }
-}
-
-async function approvePackImage() {
-  const b64  = window._packPendingImageB64;
-  const tile = window._packEditingTile;
-  if (!b64) return;
-  if (!window._packIsNewExclusive && tile && tile.id) {
-    const r = await fetch('/api/packs/' + currentPackId + '/tiles/' + tile.id + '/image', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({image_b64: b64}),
-    });
-    if (!r.ok) { alert('Failed to save image'); return; }
-  }
-  // Only clear the pending image for existing tiles — the image was just saved to disk above.
-  // For new tiles, keep _packPendingImageB64 so saveExclusiveTile(null) can include it in the
-  // POST body when the tile is created. saveExclusiveTile clears it after use.
-  if (!window._packIsNewExclusive) {
-    window._packPendingImageB64 = null;
-  }
-  const img = document.getElementById('pack-image-current');
-  const ph  = document.getElementById('pack-img-placeholder');
-  img.src = 'data:image/png;base64,' + b64;
-  img.style.display = 'block';
-  if (ph) ph.style.display = 'none';
-  document.getElementById('pack-gen-result').classList.remove('visible');
-  document.getElementById('pack-btn-generate').style.display = '';
-}
-
-function discardPackImage() {
-  window._packPendingImageB64 = null;
-  document.getElementById('pack-gen-result').classList.remove('visible');
-  document.getElementById('pack-btn-generate').style.display = '';
-}
-
-async function saveExclusiveTile(tileId) {
-  const name     = document.getElementById('pack-field-name').value.trim();
-  const emoji    = document.getElementById('pack-field-emoji').value.trim();
-  const category = document.getElementById('pack-field-category').value;
-  const rarity   = document.getElementById('pack-field-rarity').value;
-  if (!name) { alert('Name is required'); return; }
-
-  if (!tileId) {
-    // New exclusive tile — POST to server immediately
-    const descriptionEl = document.getElementById('pack-field-description');
-    const description = descriptionEl ? descriptionEl.value.trim() : '';
-    const body = {text: name, emoji, category, rarity};
-    if (description) body.description = description;
-    if (window._packPendingImageB64) body.image_b64 = window._packPendingImageB64;
-    const r = await fetch('/api/packs/' + currentPackId + '/tiles', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(body),
-    });
-    if (!r.ok) { alert('Failed to save tile'); return; }
-    const newTile = await r.json();
-    packData.tiles = packData.tiles || [];
-    packData.tiles.push(newTile);
-    window._packPendingImageB64 = null;
-    selectedMod = {type: 'exclusive', id: newTile.id};
-    window._packEditingTile    = newTile;
-    window._packIsNewExclusive = false;
-  } else {
-    // Edit existing exclusive tile — update in-memory; full pack saved on Save Pack
-    const tile = (packData.tiles || []).find(t => t.id === tileId);
-    if (!tile) { alert('Tile not found in pack — it may have been removed.'); return; }
-    const descEl = document.getElementById('pack-field-description');
-    const desc = descEl ? descEl.value.trim() : '';
-    tile.text = name; tile.emoji = emoji; tile.category = category; tile.rarity = rarity;
-    if (desc) { tile.description = desc; } else { delete tile.description; }
-    markDirty();
-  }
-  updatePackSummaryPanel();
-  renderPackDiffList();
-}
-
-function cancelPackEdit() {
-  selectedMod = null;
-  renderPackDiffList();
-  resetPackRightPanel();
-}
-
-function removeExclusiveTile(tileId) {
-  if (!confirm('Remove this tile from the pack? The change will be saved when you click Save Pack.')) return;
-  packData.tiles = (packData.tiles || []).filter(t => t.id !== tileId);
-  markDirty();
-  selectedMod = null;
-  updatePackSummaryPanel();
-  renderPackDiffList();
-  resetPackRightPanel();
-}
-
-// ── Right panel: override editor ──────────────────────────────────────────────
-function showOverrideEditor(uuid) {
-  const rightEl = document.getElementById('pack-right-' + currentPackId);
-  if (!rightEl) return;
-  const baseTile  = tiles.find(t => t.id === uuid);
-  const newRarity = (packData.rarityOverrides || {})[uuid] || 'veryCommon';
-  const fromRarity = baseTile ? baseTile.rarity : '?';
-  const name = baseTile ? baseTile.text : 'Unknown tile (' + uuid.substring(0, 8) + '…)';
-
-  rightEl.innerHTML =
-    '<div class="panel-header">' +
-      '<div class="panel-title">' + esc(name) + '</div>' +
-      '<div class="panel-id">Rarity Override</div>' +
-    '</div>' +
-    '<div class="panel-body">' +
-      '<div>' +
-        '<div class="section-label">Rarity Change</div>' +
-        '<div class="rarity-from-to">' +
-          '<div><div style="font-size:10px;color:var(--text3);margin-bottom:4px">BASE</div><span class="rarity ' + (RARITY_CLS[fromRarity] || '') + '">' + esc(fromRarity) + '</span></div>' +
-          '<div class="arrow">→</div>' +
-          '<div><div style="font-size:10px;color:var(--text3);margin-bottom:4px">IN THIS PACK</div>' +
-            '<select class="field-input" id="override-rarity-sel" style="cursor:pointer">' +
-              RARITIES.map(r => '<option value="' + r + '"' + (r === newRarity ? ' selected' : '') + '>' + esc(r) + '</option>').join('') +
-            '</select>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      (baseTile ?
-        '<div>' +
-          '<div class="section-label">Base Tile Info</div>' +
-          '<div class="override-base-info">' +
-            '<div class="name">' + esc(baseTile.text) + ' ' + esc(baseTile.emoji || '') + '</div>' +
-            '<div>' + esc(baseTile.category) + ' · base rarity: ' + esc(baseTile.rarity) + '</div>' +
-          '</div>' +
-        '</div>' : '') +
-      '<div>' +
-        '<button class="btn-remove" onclick="removeOverride(\\'' + esc(uuid) + '\\')">Remove Override</button>' +
-      '</div>' +
-    '</div>' +
-    '<div class="panel-footer">' +
-      '<div></div>' +
-      '<div class="footer-right">' +
-        '<button class="btn-cancel" onclick="cancelPackEdit()">Cancel</button>' +
-        '<button class="btn-save" onclick="saveOverride(\\'' + esc(uuid) + '\\')">Save Changes</button>' +
-      '</div>' +
-    '</div>';
-}
-
-function saveOverride(uuid) {
-  const newRarity = document.getElementById('override-rarity-sel').value;
-  packData.rarityOverrides = packData.rarityOverrides || {};
-  packData.rarityOverrides[uuid] = newRarity;
-  markDirty();
-  renderPackDiffList();
-  showOverrideEditor(uuid);
-}
-
-function removeOverride(uuid) {
-  if (!confirm('Remove this rarity override?')) return;
-  if (packData.rarityOverrides) delete packData.rarityOverrides[uuid];
-  markDirty();
-  selectedMod = null;
-  updatePackSummaryPanel();
-  renderPackDiffList();
-  resetPackRightPanel();
-}
-
-// ── Right panel: excluded editor ──────────────────────────────────────────────
-function showExcludedEditor(uuid) {
-  const rightEl = document.getElementById('pack-right-' + currentPackId);
-  if (!rightEl) return;
-  const baseTile = tiles.find(t => t.id === uuid);
-  const name = baseTile ? baseTile.text : 'Unknown tile (' + uuid.substring(0, 8) + '…)';
-
-  rightEl.innerHTML =
-    '<div class="panel-header">' +
-      '<div class="panel-title">' + esc(name) + '</div>' +
-      '<div class="panel-id">Excluded from Pool</div>' +
-    '</div>' +
-    '<div class="panel-body">' +
-      (baseTile ?
-        '<div class="override-base-info">' +
-          '<div class="name">' + esc(baseTile.text) + ' ' + esc(baseTile.emoji || '') + '</div>' +
-          '<div>' + esc(baseTile.category) + ' · rarity: ' + esc(baseTile.rarity) + '</div>' +
-        '</div>' : '') +
-      '<div class="excluded-callout">This tile is hidden from all boards when this pack is active.</div>' +
-      '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">' +
-        '<button class="btn-convert" onclick="convertExclusionToOverride(\\'' + esc(uuid) + '\\')">Convert to Override Instead</button>' +
-        '<button class="btn-remove" onclick="removeExclusion(\\'' + esc(uuid) + '\\')">Remove Exclusion</button>' +
-      '</div>' +
-    '</div>' +
-    '<div class="panel-footer"><div></div><div class="footer-right"><button class="btn-cancel" onclick="cancelPackEdit()">Cancel</button></div></div>';
-}
-
-function removeExclusion(uuid) {
-  if (!confirm('Remove this exclusion? The tile will return to the pool.')) return;
-  packData.excludedTileIDs = (packData.excludedTileIDs || []).filter(id => id !== uuid);
-  markDirty();
-  selectedMod = null;
-  updatePackSummaryPanel();
-  renderPackDiffList();
-  resetPackRightPanel();
-}
-
-function convertExclusionToOverride(uuid) {
-  const baseTile = tiles.find(t => t.id === uuid);
-  packData.excludedTileIDs = (packData.excludedTileIDs || []).filter(id => id !== uuid);
-  packData.rarityOverrides = packData.rarityOverrides || {};
-  packData.rarityOverrides[uuid] = baseTile ? baseTile.rarity : 'common';
-  markDirty();
-  selectedMod = {type: 'override', id: uuid};
-  updatePackSummaryPanel();
-  renderPackDiffList();
-  showOverrideEditor(uuid);
-}
-
-// ── Shared reset ──────────────────────────────────────────────────────────────
-function resetPackRightPanel() {
-  const rightEl = document.getElementById('pack-right-' + currentPackId);
-  if (!rightEl) return;
-  const pack = PACKS_META.find(p => p.id === currentPackId) || {};
-  rightEl.innerHTML =
-    '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px">' +
-      '<div class="pack-summary">' +
-        '<div class="pack-summary-name">' + esc(pack.name || '') + '</div>' +
-        '<div class="pack-summary-counts" id="pack-counts-' + esc(currentPackId) + '">—</div>' +
-        '<div class="pack-summary-hint">Select a modification to edit, or use + Add to create one.</div>' +
-      '</div>' +
-    '</div>';
-  updatePackSummaryPanel();
-}
-
-// ── Addition flow: Create Exclusive Tile ──────────────────────────────────────
-function startAddExclusive() {
-  document.querySelectorAll('.add-menu').forEach(m => m.classList.remove('open'));
-  selectedMod = null;
-  renderPackDiffList();
-  showExclusiveEditor({ text: '', emoji: '', category: CATEGORIES[0] || 'nature', rarity: 'common' });
-  window._packIsNewExclusive = true;
-  window._packEditingTile = {};
-}
-
-// ── Addition flow: Override Rarity ────────────────────────────────────────────
-function startAddOverride() {
-  document.querySelectorAll('.add-menu').forEach(m => m.classList.remove('open'));
-  const rightEl = document.getElementById('pack-right-' + currentPackId);
-  if (!rightEl) return;
-
-  const existingOverrides  = Object.keys(packData.rarityOverrides || {});
-  const existingExcluded   = packData.excludedTileIDs || [];
-  const alreadyHandled     = new Set([...existingOverrides, ...existingExcluded]);
-  const candidates         = tiles.filter(t => !alreadyHandled.has(t.id));
-
-  rightEl.innerHTML = buildTilePickerHTML('Override Rarity', candidates, 'confirmAddOverride', null);
-}
-
-async function confirmAddOverride(uuid) {
-  const baseTile   = tiles.find(t => t.id === uuid);
-  const rightEl    = document.getElementById('pack-right-' + currentPackId);
-  const fromRarity = baseTile ? baseTile.rarity : 'common';
-  const defaultTo  = RARITIES[Math.max(0, RARITIES.indexOf(fromRarity) - 1)] || 'veryCommon';
-
-  rightEl.innerHTML =
-    '<div class="panel-header"><div class="panel-title">Override Rarity</div><div class="panel-id">' + esc(baseTile ? baseTile.text : uuid) + '</div></div>' +
-    '<div class="panel-body">' +
-      '<div class="section-label">Choose New Rarity</div>' +
-      '<div class="rarity-from-to">' +
-        '<div><div style="font-size:10px;color:var(--text3);margin-bottom:4px">BASE</div><span class="rarity ' + (RARITY_CLS[fromRarity]||'') + '">' + esc(fromRarity) + '</span></div>' +
-        '<div class="arrow">→</div>' +
-        '<div><div style="font-size:10px;color:var(--text3);margin-bottom:4px">IN THIS PACK</div>' +
-          '<select class="field-input" id="new-override-rarity" style="cursor:pointer">' +
-            RARITIES.map(r => '<option value="' + r + '"' + (r === defaultTo ? ' selected' : '') + '>' + r + '</option>').join('') +
-          '</select>' +
-        '</div>' +
-      '</div>' +
-    '</div>' +
-    '<div class="picker-actions">' +
-      '<button class="btn-run" onclick="finaliseAddOverride(\\'' + uuid + '\\')">Add Override</button>' +
-      '<button class="btn-cancel-prompt" onclick="resetPackRightPanel()">Cancel</button>' +
-    '</div>';
-}
-
-function finaliseAddOverride(uuid) {
-  const newRarity = document.getElementById('new-override-rarity').value;
-  packData.rarityOverrides = packData.rarityOverrides || {};
-  packData.rarityOverrides[uuid] = newRarity;
-  markDirty();
-  selectedMod = { type: 'override', id: uuid };
-  updatePackSummaryPanel();
-  renderPackDiffList();
-  showOverrideEditor(uuid);
-}
-
-// ── Addition flow: Exclude Base Tile ──────────────────────────────────────────
-function startExcludeBase() {
-  document.querySelectorAll('.add-menu').forEach(m => m.classList.remove('open'));
-  const rightEl = document.getElementById('pack-right-' + currentPackId);
-  if (!rightEl) return;
-
-  const existingOverrides = Object.keys(packData.rarityOverrides || {});
-  const existingExcluded  = packData.excludedTileIDs || [];
-  const alreadyHandled    = new Set([...existingOverrides, ...existingExcluded]);
-  const candidates        = tiles.filter(t => !alreadyHandled.has(t.id));
-
-  rightEl.innerHTML = buildTilePickerHTML('Exclude Base Tile', candidates, 'confirmExclude',
-    'When this pack is active, the selected tile will not appear on any board.');
-}
-
-function confirmExclude(uuid) {
-  packData.excludedTileIDs = packData.excludedTileIDs || [];
-  packData.excludedTileIDs.push(uuid);
-  markDirty();
-  selectedMod = { type: 'excluded', id: uuid };
-  updatePackSummaryPanel();
-  renderPackDiffList();
-  showExcludedEditor(uuid);
-}
-
-// ── Addition flow: Move from Base ─────────────────────────────────────────────
-function startMoveFromBase() {
-  document.querySelectorAll('.add-menu').forEach(m => m.classList.remove('open'));
-  const rightEl = document.getElementById('pack-right-' + currentPackId);
-  if (!rightEl) return;
-
-  const packTileIds = new Set((packData.tiles || []).map(t => t.id));
-  const candidates  = tiles.filter(t => !packTileIds.has(t.id));
-
-  rightEl.innerHTML = buildTilePickerHTML(
-    'Move from Base',
-    candidates,
-    'confirmMoveFromBase',
-    'This tile will be removed from the base pool and become exclusive to this pack. This cannot be undone without manually editing squares.json.'
-  );
-}
-
-async function confirmMoveFromBase(uuid) {
-  const baseTile = tiles.find(t => t.id === uuid);
-  if (!baseTile) { alert('Tile not found'); return; }
-
-  // Disable the picker immediately to prevent double-clicks during async ops
-  const pickerList = document.getElementById('tile-picker-list');
-  if (pickerList) pickerList.style.pointerEvents = 'none';
-
-  // Read the image before deleting
-  let imageB64 = null;
-  try {
-    const imgResp = await fetch('/api/image/' + uuid);
-    if (imgResp.ok) {
-      const blob = await imgResp.blob();
-      imageB64 = await new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result.split(',')[1]);
-        reader.readAsDataURL(blob);
-      });
-    }
-  } catch (_) {}
-
-  // Delete from base
-  const delResp = await fetch('/api/tiles/' + uuid, { method: 'DELETE' });
-  if (!delResp.ok) { alert('Failed to remove tile from base'); return; }
-  tiles = tiles.filter(t => t.id !== uuid);
-  renderTable();
-  updateStats();
-
-  // Add to pack (preserve UUID, send image if we have it)
-  const body = { id: uuid, text: baseTile.text, emoji: baseTile.emoji || '', category: baseTile.category, rarity: baseTile.rarity };
-  if (imageB64) body.image_b64 = imageB64;
-  const addResp = await fetch('/api/packs/' + currentPackId + '/tiles', {
-    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
-  });
-  if (!addResp.ok) { alert('Tile deleted from base but failed to add to pack — check pack JSON manually'); resetPackRightPanel(); return; }
-  const newTile = await addResp.json();
-  packData.tiles = packData.tiles || [];
-  packData.tiles.push(newTile);
-
-  selectedMod = { type: 'exclusive', id: uuid };
-  updatePackSummaryPanel();
-  renderPackDiffList();
-  showExclusiveEditor(newTile);
-}
-
-// ── Shared tile picker HTML builder ───────────────────────────────────────────
-function buildTilePickerHTML(title, candidates, confirmFn, warningText) {
-  const rows = candidates.map(t =>
-    '<div class="tile-picker-row" onclick="' + confirmFn + '(\\'' + t.id + '\\')">' +
-      '<div class="diff-thumb" style="font-size:14px">' + esc(t.emoji || '') + '</div>' +
-      '<div class="name">' + esc(t.text) + '</div>' +
-      '<div class="cat">' + esc(t.category) + ' · ' + esc(t.rarity) + '</div>' +
-    '</div>'
-  ).join('');
-
-  return '<div class="panel-header"><div class="panel-title">' + esc(title) + '</div></div>' +
-    '<div class="tile-picker">' +
-      '<input class="tile-picker-search" type="text" placeholder="Filter tiles…" oninput="filterTilePicker(this)">' +
-      (warningText ? '<div class="warning-callout">' + esc(warningText) + '</div>' : '') +
-      '<div class="tile-picker-list" id="tile-picker-list">' + rows + '</div>' +
-    '</div>' +
-    '<div class="picker-actions"><button class="btn-cancel-prompt" onclick="resetPackRightPanel()">Cancel</button></div>';
-}
-
-function filterTilePicker(input) {
-  const q = input.value.toLowerCase();
-  document.querySelectorAll('.tile-picker-row').forEach(row => {
-    const text = row.querySelector('.name').textContent.toLowerCase();
-    row.style.display = text.includes(q) ? '' : 'none';
-  });
-}
-
-// ── Save Pack ─────────────────────────────────────────────────────────────────
-async function savePack() {
-  if (!packData || !currentPackId) return;
-  const r = await fetch('/api/packs/' + currentPackId, {
-    method: 'PUT',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(packData),
-  });
-  if (!r.ok) {
-    const err = await r.json().catch(() => ({}));
-    alert('Failed to save pack: ' + (err.error || r.status));
-    return;
-  }
-  isDirty = false;
-  const btn = document.getElementById('btn-save-' + currentPackId);
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Saved ✓';
-    setTimeout(() => { btn.textContent = 'Save Pack'; }, 1500);
-  }
-}
-
-function updateStats() {
-  document.getElementById('stat-tiles').textContent = tiles.length;
-}
-
-// ── Dropdowns ─────────────────────────────────────────────────────────────────────────
-function populateCategoryDropdowns() {
-  const filter = document.getElementById('filter-cat');
-  filter.innerHTML = '<option value="">All categories</option>' +
-    CATEGORIES.map(c => '<option value="' + c + '">' + c + '</option>').join('');
-  const edit = document.getElementById('field-category');
-  edit.innerHTML = CATEGORIES.map(c => '<option value="' + c + '">' + c + '</option>').join('');
-}
-
-function populateRarityDropdowns() {
-  const sel = document.getElementById('field-rarity');
-  sel.innerHTML = RARITIES.map(r => '<option value="' + r + '">' + r + '</option>').join('');
-}
-
-// ── Table ──────────────────────────────────────────────────────────────────────────────
-const RARITY_CLS   = { veryCommon:'vc', common:'c', uncommon:'u', rare:'r', veryRare:'vr' };
-const RARITY_ORDER = { veryCommon:0, common:1, uncommon:2, rare:3, veryRare:4 };
-
-function toggleSort(key) {
-  if (sortKey === key) { sortAsc = !sortAsc; } else { sortKey = key; sortAsc = true; }
-  renderTable();
-}
-
-function getFiltered() {
-  const q = document.getElementById('search').value.toLowerCase();
-  const cat = document.getElementById('filter-cat').value;
-  const result = tiles.filter(t =>
-    (!q || t.text.toLowerCase().includes(q) || t.category.includes(q)) &&
-    (!cat || t.category === cat)
-  );
-  if (sortKey === 'name') {
-    result.sort((a, b) => sortAsc ? a.text.localeCompare(b.text) : b.text.localeCompare(a.text));
-  } else if (sortKey === 'rarity') {
-    result.sort((a, b) => sortAsc
-      ? (RARITY_ORDER[a.rarity] ?? 99) - (RARITY_ORDER[b.rarity] ?? 99)
-      : (RARITY_ORDER[b.rarity] ?? 99) - (RARITY_ORDER[a.rarity] ?? 99));
-  }
-  return result;
-}
-
-function renderTable() {
-  // Update sort header indicators
-  ['name', 'rarity'].forEach(k => {
-    const el = document.getElementById('sort-' + k);
-    const label = k === 'name' ? 'Name' : 'Rarity';
-    const isActive = sortKey === k;
-    el.textContent = isActive ? label + ' ' + (sortAsc ? '▲' : '▼') : label;
-    el.classList.toggle('sort-active', isActive);
-  });
-
-  const filtered = getFiltered();
-  document.getElementById('table-body').innerHTML = filtered.map(t => {
-    const sel = t.id === selectedId ? ' selected' : '';
-    return '<div class="row' + sel + '" onclick="selectTile(\\'' + t.id + '\\')">' +
-      '<div class="row-thumb"><img src="/api/image/' + t.id + '" alt="" onerror="this.style.display=\\'none\\'"></div>' +
-      '<div class="row-name">' + esc(t.text) + '</div>' +
-      '<div class="row-cat">' + esc(t.category) + '</div>' +
-      '<div class="rarity ' + (RARITY_CLS[t.rarity] || '') + '">' + esc(t.rarity) + '</div>' +
-      '</div>';
-  }).join('');
-  document.getElementById('table-footer').textContent =
-    filtered.length + ' of ' + tiles.length + ' tiles · ' + CATEGORIES.length + ' categories';
-}
+const RARITY_LABELS = {
+  veryCommon: 'V.Common', common: 'Common',
+  uncommon: 'Uncommon', rare: 'Rare', veryRare: 'V.Rare',
+};
+
+// ── State ─────────────────────────────────────────────────────────────────────
+
+const S = {
+  tiles: [],        // [{id, text, category, rarity, description}]
+  packs: [],        // [{id, name, description, tileCount}] from /api/packs
+  packData: {},     // {packId: {id, name, tiles: [{id, rarity}]}} lazily loaded
+
+  activeTab: 'tiles',
+  selectedTileId: null,
+  selectedPackId: null,
+
+  search: '',
+  catFilter: '',
+  packViewMode: 'grid', // 'grid' | 'list'
+  packSearch: '',
+
+  // Detail panel (All Tiles tab)
+  isNewTile: false,
+  edit: {           // pending edits for selected tile
+    name: '', category: '', rarity: '', description: '',
+    packChanges: {}, // packId -> {action:'add'|'remove', rarity?:string}
+  },
+
+  // Image generation
+  imgState: 'idle', // 'idle' | 'generating' | 'pending'
+  pendingB64: null,
+
+  // Add-tile picker (Pack View)
+  pickerPackId: null,
+  pickerTiles: [],
+  pickerSearch: '',
+  pickerSelectedTileId: null,
+  pickerSelectedRarity: '',
+};
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
 
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+async function api(method, path, body) {
+  const opts = { method, headers: {} };
+  if (body !== null && body !== undefined) {
+    opts.body = JSON.stringify(body);
+    opts.headers['Content-Type'] = 'application/json';
+  }
+  const r = await fetch(path, opts);
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({ error: r.statusText }));
+    throw new Error(e.error || r.statusText);
+  }
+  return r.json();
+}
+function rarityColor(r) { return RARITY_COLORS[r] || '#888'; }
+function rarityLabel(r) { return RARITY_LABELS[r] || r; }
+function packColor(id) { return PACK_COLORS[id] || '#888'; }
+function tileById(id) { return S.tiles.find(t => t.id === id); }
+function tilePackIds(tileId) {
+  return Object.entries(S.packData)
+    .filter(([,pd]) => pd && pd.tiles.some(r => r.id === tileId))
+    .map(([id]) => id);
+}
+function tilePackRarity(tileId, packId) {
+  const pd = S.packData[packId];
+  const ref = pd && pd.tiles.find(r => r.id === tileId);
+  return ref ? ref.rarity : null;
+}
 
-// ── Select ───────────────────────────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+async function init() {
+  // Populate category filter
+  const cf = document.getElementById('cat-filter');
+  CATEGORIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c.charAt(0).toUpperCase() + c.slice(1);
+    cf.appendChild(opt);
+  });
+
+  [S.tiles, S.packs] = await Promise.all([
+    api('GET', '/api/tiles'),
+    api('GET', '/api/packs'),
+  ]);
+
+  // Pre-load all pack data (so pack-dot membership is visible immediately)
+  await Promise.all(S.packs.map(p => loadPackData(p.id)));
+
+  renderTileList();
+  renderPackGallery();
+
+  // Wire up tab buttons
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.addEventListener('click', () => switchTab(b.dataset.tab));
+  });
+
+  // Wire up tile list controls
+  document.getElementById('tile-search').addEventListener('input', e => {
+    S.search = e.target.value; renderTileList();
+  });
+  document.getElementById('cat-filter').addEventListener('change', e => {
+    S.catFilter = e.target.value; renderTileList();
+  });
+  document.getElementById('add-tile-btn').addEventListener('click', openNewTile);
+  document.getElementById('save-tile-btn').addEventListener('click', saveTile);
+  document.getElementById('cancel-tile-btn').addEventListener('click', cancelEdit);
+  document.getElementById('delete-tile-btn').addEventListener('click', deleteTile);
+
+  // Lightbox
+  document.getElementById('lightbox').addEventListener('click', e => {
+    if (e.target === document.getElementById('lightbox')) closeLightbox();
+  });
+  document.getElementById('lightbox-close-btn').addEventListener('click', closeLightbox);
+  document.getElementById('lightbox-gen-btn').addEventListener('click', () => {
+    closeLightbox(); generateImage();
+  });
+}
+
+async function loadPackData(packId) {
+  if (S.packData[packId]) return S.packData[packId];
+  const pd = await api('GET', `/api/packs/${packId}`);
+  S.packData[packId] = pd;
+  return pd;
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+
+function switchTab(tab) {
+  S.activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.dataset.tab === tab));
+  if (tab === 'packs' && S.packs.length > 0 && !S.selectedPackId) {
+    selectPack(S.packs[0].id);
+  }
+}
+
+// ── Tile list ─────────────────────────────────────────────────────────────────
+
+function filteredTiles() {
+  let tiles = S.tiles;
+  if (S.search) {
+    const q = S.search.toLowerCase();
+    tiles = tiles.filter(t => t.text.toLowerCase().includes(q) || (t.category||'').toLowerCase().includes(q));
+  }
+  if (S.catFilter) {
+    tiles = tiles.filter(t => t.category === S.catFilter);
+  }
+  return tiles;
+}
+
+function renderTileList() {
+  const body = document.getElementById('tile-list-body');
+  const footer = document.getElementById('tile-list-footer');
+  const tiles = filteredTiles();
+
+  body.innerHTML = tiles.map(tile => {
+    const packIds = tilePackIds(tile.id);
+    const dots = packIds.map(pid => {
+      const p = S.packs.find(x => x.id === pid);
+      return `<span class="pack-dot" style="background:${packColor(pid)}" title="${p ? esc(p.name) : pid}"></span>`;
+    }).join('');
+    const sel = S.selectedTileId === tile.id ? ' selected' : '';
+    const col = rarityColor(tile.rarity);
+    return `<div class="tile-row${sel}" data-id="${esc(tile.id)}">
+      <div><img class="tile-thumb" src="/api/image/${esc(tile.id)}" onerror="this.style.visibility='hidden'" loading="lazy"></div>
+      <div class="tile-name">${esc(tile.text)}</div>
+      <div><span class="rarity-badge" style="color:${col}">${esc(rarityLabel(tile.rarity))}</span></div>
+      <div class="pack-dots">${dots}</div>
+    </div>`;
+  }).join('');
+
+  footer.textContent = `${S.tiles.length} tiles total`;
+
+  body.querySelectorAll('.tile-row').forEach(row => {
+    row.addEventListener('click', () => selectTile(row.dataset.id));
+  });
+}
+
+// ── Select / deselect tile ────────────────────────────────────────────────────
+
 function selectTile(id) {
-  const tile = tiles.find(t => t.id === id);
+  S.selectedTileId = id;
+  S.isNewTile = false;
+  S.imgState = 'idle';
+  S.pendingB64 = null;
+  const tile = tileById(id);
   if (!tile) return;
-  selectedId = id;
-  isAddMode = false;
-  pendingImageB64 = null;
-  lastUsedPrompt = null;
-  resetDeleteConfirm();
-  renderTable();
-  showPanel(tile);
-}
-
-function showPanel(tile) {
-  document.getElementById('panel-title').textContent = tile.text;
-  document.getElementById('panel-id').textContent = tile.id.substring(0, 8) + '…';
-  setCurrentImage('/api/image/' + tile.id + '?t=' + Date.now());
-  document.getElementById('field-name').value = tile.text;
-  document.getElementById('field-description').value = tile.description || '';
-  document.getElementById('field-category').value = tile.category;
-  document.getElementById('field-rarity').value = tile.rarity;
-  document.getElementById('btn-delete').style.display = '';
-  resetGenerationUI();
-  document.getElementById('panel-empty').style.display = 'none';
-  document.getElementById('panel-content').style.display = 'flex';
-}
-
-function setCurrentImage(src) {
-  const img = document.getElementById('image-current');
-  const ph  = document.getElementById('img-placeholder');
-  img.src = src;
-  img.style.display = 'block';
-  ph.style.display = 'none';
-  img.onerror = () => { img.style.display = 'none'; ph.style.display = ''; };
-}
-
-// ── Add mode ───────────────────────────────────────────────────────────────────────────
-function startAddMode() {
-  selectedId = null;
-  isAddMode = true;
-  pendingImageB64 = null;
-  lastUsedPrompt = null;
-  resetDeleteConfirm();
-  document.getElementById('panel-title').textContent = 'New Tile';
-  document.getElementById('panel-id').textContent = '(new)';
-  document.getElementById('image-current').style.display = 'none';
-  document.getElementById('img-placeholder').style.display = '';
-  document.getElementById('field-name').value = '';
-  document.getElementById('field-description').value = '';
-  document.getElementById('field-category').value = CATEGORIES[0] || '';
-  document.getElementById('field-rarity').value = RARITIES[0] || 'veryCommon';
-  document.getElementById('btn-delete').style.display = 'none';
-  resetGenerationUI();
-  document.getElementById('panel-empty').style.display = 'none';
-  document.getElementById('panel-content').style.display = 'flex';
-  renderTable();
-}
-
-// ── Generation ──────────────────────────────────────────────────────────────────────────
-function resetGenerationUI() {
-  document.getElementById('prompt-editor').classList.remove('visible');
-  document.getElementById('gen-loading').classList.remove('visible');
-  document.getElementById('gen-result').classList.remove('visible');
-  document.getElementById('btn-generate').style.display = '';
-}
-
-function showPromptEditor() {
-  // Re-use the last prompt the user ran (or typed) so they can iterate on it.
-  // Fall back to the auto-built prompt only on first open for this tile.
-  if (!lastUsedPrompt) {
-    lastUsedPrompt = buildPrompt({
-      text:        document.getElementById('field-name').value.trim() || 'a tile',
-      description: document.getElementById('field-description').value.trim(),
-      category:    document.getElementById('field-category').value,
-    });
-  }
-  document.getElementById('prompt-textarea').value = lastUsedPrompt;
-  document.getElementById('prompt-editor').classList.add('visible');
-  document.getElementById('btn-generate').style.display = 'none';
-  document.getElementById('gen-result').classList.remove('visible');
-}
-
-function hidePromptEditor() {
-  document.getElementById('prompt-editor').classList.remove('visible');
-  document.getElementById('btn-generate').style.display = '';
-}
-
-async function runGeneration() {
-  const prompt = document.getElementById('prompt-textarea').value.trim();
-  if (!prompt) { alert('Enter a prompt before running generation.'); return; }
-  lastUsedPrompt = prompt;  // remember for next attempt
-  document.getElementById('prompt-editor').classList.remove('visible');
-  document.getElementById('gen-loading').classList.add('visible');
-  try {
-    const r = await fetch('/api/generate', {
-      method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({prompt}),
-    });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || 'Generation failed');
-    pendingImageB64 = data.image_b64;
-    document.getElementById('gen-preview-img').src = 'data:image/png;base64,' + pendingImageB64;
-    document.getElementById('gen-loading').classList.remove('visible');
-    document.getElementById('gen-result').classList.add('visible');
-  } catch (err) {
-    document.getElementById('gen-loading').classList.remove('visible');
-    document.getElementById('btn-generate').style.display = '';
-    alert('Generation failed: ' + err.message);
-  }
-}
-
-async function approveImage() {
-  if (!pendingImageB64) return;
-  const b64 = pendingImageB64;  // capture before any async/null
-  if (!isAddMode && selectedId) {
-    const r = await fetch('/api/tiles/' + selectedId + '/image', {
-      method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({image_b64: b64}),
-    });
-    if (!r.ok) { alert('Failed to save image'); return; }
-    // Image is now on disk; clear pending so stale data can't leak into future flows
-    pendingImageB64 = null;
-  }
-  setCurrentImage('data:image/png;base64,' + b64);
-  document.getElementById('gen-result').classList.remove('visible');
-  document.getElementById('btn-generate').style.display = '';
-}
-
-function discardImage() {
-  pendingImageB64 = null;
-  document.getElementById('gen-result').classList.remove('visible');
-  document.getElementById('btn-generate').style.display = '';
-}
-
-// ── Save ──────────────────────────────────────────────────────────────────────────────────
-async function saveTile() {
-  const name     = document.getElementById('field-name').value.trim();
-  const category = document.getElementById('field-category').value;
-  const rarity   = document.getElementById('field-rarity').value;
-  if (!name) { alert('Name is required'); return; }
-
-  if (isAddMode) {
-    const description = document.getElementById('field-description').value.trim();
-    const body = {text: name, category, rarity};
-    if (description) body.description = description;
-    if (pendingImageB64) body.image_b64 = pendingImageB64;
-    const r = await fetch('/api/tiles', {
-      method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(body),
-    });
-    if (!r.ok) { alert('Failed to save tile'); return; }
-    const newTile = await r.json();
-    tiles.push(newTile);
-    selectedId = newTile.id;
-    isAddMode = false;
-    pendingImageB64 = null;
-  } else {
-    const description = document.getElementById('field-description').value.trim();
-    const r = await fetch('/api/tiles/' + selectedId, {
-      method: 'PUT', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({text: name, category, rarity, description}),
-    });
-    if (!r.ok) { alert('Failed to update tile'); return; }
-    const updated = await r.json();
-    const idx = tiles.findIndex(t => t.id === selectedId);
-    if (idx >= 0) tiles[idx] = updated;
-  }
-
-  document.getElementById('panel-title').textContent = name;
-  document.getElementById('panel-id').textContent = selectedId ? selectedId.substring(0, 8) + '…' : '(new)';
-  document.getElementById('btn-delete').style.display = '';
-  renderTable();
-  updateStats();
-}
-
-// ── Delete ───────────────────────────────────────────────────────────────────────────────
-function resetDeleteConfirm() {
-  deleteConfirming = false;
-  const btn = document.getElementById('btn-delete');
-  btn.textContent = '🗑 Delete Tile';
-  btn.style.background = '';
-  btn.style.color = '';
-  btn.style.borderColor = '';
-}
-
-async function deleteTile() {
-  if (!deleteConfirming) {
-    deleteConfirming = true;
-    const btn = document.getElementById('btn-delete');
-    btn.textContent = 'Confirm Delete';
-    btn.style.background = 'var(--red)';
-    btn.style.color = 'white';
-    btn.style.borderColor = 'var(--red)';
-    setTimeout(resetDeleteConfirm, 3000);
-    return;
-  }
-  const r = await fetch('/api/tiles/' + selectedId, {method: 'DELETE'});
-  if (!r.ok) { alert('Failed to delete tile'); return; }
-  tiles = tiles.filter(t => t.id !== selectedId);
-  selectedId = null;
-  isAddMode = false;
-  renderTable();
-  updateStats();
-  document.getElementById('panel-content').style.display = 'none';
-  document.getElementById('panel-empty').style.display = '';
-  resetDeleteConfirm();
+  S.edit = {
+    name: tile.text,
+    category: tile.category || '',
+    rarity: tile.rarity,
+    description: tile.description || '',
+    packChanges: {},
+  };
+  renderTileList();
+  renderDetailPanel();
 }
 
 function cancelEdit() {
-  if (isAddMode) {
-    isAddMode = false;
-    selectedId = null;
-    document.getElementById('panel-content').style.display = 'none';
-    document.getElementById('panel-empty').style.display = '';
-    renderTable();
-  } else if (selectedId) {
-    selectTile(selectedId);
+  if (S.isNewTile) {
+    S.selectedTileId = null;
+    S.isNewTile = false;
+    hideDetailPanel();
+    renderTileList();
+    return;
+  }
+  if (S.selectedTileId) selectTile(S.selectedTileId);
+}
+
+function hideDetailPanel() {
+  document.getElementById('detail-empty').style.display = '';
+  document.getElementById('detail-panel').style.display = 'none';
+}
+
+function showDetailPanel() {
+  document.getElementById('detail-empty').style.display = 'none';
+  document.getElementById('detail-panel').style.display = '';
+}
+
+// ── Detail panel ──────────────────────────────────────────────────────────────
+
+function renderDetailPanel() {
+  showDetailPanel();
+  const hdr = document.getElementById('detail-header');
+  const body = document.getElementById('detail-body');
+  const deleteBtn = document.getElementById('delete-tile-btn');
+  const saveBtn = document.getElementById('save-tile-btn');
+
+  hdr.textContent = S.isNewTile ? '✦ New Tile' : (tileById(S.selectedTileId)?.text || 'Tile');
+  deleteBtn.style.display = S.isNewTile ? 'none' : '';
+  saveBtn.textContent = S.isNewTile ? 'Create Tile' : 'Save Changes';
+  // Disable save during active generation
+  saveBtn.disabled = S.imgState === 'generating' || S.imgState === 'pending';
+
+  const fieldsReady = S.isNewTile ? (S.edit.name && S.edit.category) : true;
+
+  body.innerHTML = `
+    <div class="image-section">
+      ${renderImageSection(fieldsReady)}
+    </div>
+    <div class="meta-section">
+      ${renderMetaSection()}
+      ${renderPackMembershipSection(fieldsReady)}
+    </div>`;
+
+  // Wire image box click (lightbox for approved images)
+  if (S.imgState === 'idle' && !S.isNewTile && S.selectedTileId) {
+    document.querySelector('.image-box')?.addEventListener('click', () => {
+      openLightbox(S.selectedTileId);
+    });
+  }
+  // Wire generate button
+  document.getElementById('gen-btn')?.addEventListener('click', generateImage);
+  // Wire approve/discard
+  document.getElementById('approve-btn')?.addEventListener('click', approveImage);
+  document.getElementById('discard-btn')?.addEventListener('click', discardImage);
+  // Wire meta fields
+  wireMetaFields();
+  // Wire pack membership toggles
+  wirePackMembership();
+}
+
+function renderImageSection(fieldsReady) {
+  const tileId = S.selectedTileId;
+  const imgUrl = tileId ? `/api/image/${tileId}` : '';
+  const genLabel = (tileId && !S.isNewTile) ? '❆ Generate Again' : '❆ Generate Image';
+  const genDisabled = !fieldsReady || !S.edit.description || S.imgState === 'generating' ? 'disabled' : '';
+
+  let boxInner = '';
+  if (S.imgState === 'generating') {
+    boxInner = `<div class="image-spinner"><div class="spinner-ring"></div><span>Generating&hellip; ~15s</span></div>`;
+  } else if (S.imgState === 'pending' && S.pendingB64) {
+    boxInner = `<img src="data:image/png;base64,${S.pendingB64}" alt="Generated" style="width:100%;height:100%;object-fit:cover;display:block">
+      <div class="image-box-footer">
+        <div class="approve-row">
+          <button class="approve-btn" id="approve-btn">&#x2713; Use This Image</button>
+          <button class="discard-btn" id="discard-btn">&#x2715; Discard</button>
+        </div>
+      </div>`;
+  } else if (imgUrl && !S.isNewTile) {
+    boxInner = `<img src="${imgUrl}" alt="Tile image" onerror="this.parentElement.innerHTML='<div class=image-placeholder>No image</div>'">
+      <div class="image-box-footer">
+        <span style="font-size:10px;color:var(--text3)">click to expand</span>
+        <button class="gen-btn" id="gen-btn" ${genDisabled}>${genLabel}</button>
+      </div>`;
+  } else {
+    boxInner = `<div class="image-placeholder">No image</div>
+      <div class="image-box-footer">
+        <span></span>
+        <button class="gen-btn" id="gen-btn" ${genDisabled}>${genLabel}</button>
+      </div>`;
+  }
+
+  const pendingClass = S.imgState === 'pending' ? ' pending' : '';
+  return `<div class="image-label">Image</div>
+    <div class="image-box${pendingClass}">${boxInner}</div>`;
+}
+
+function renderMetaSection() {
+  const catOptions = CATEGORIES.map(c =>
+    `<option value="${c}" ${S.edit.category === c ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1)}</option>`
+  ).join('');
+  const rarityChips = RARITIES.map(r => {
+    const col = rarityColor(r);
+    const sel = S.edit.rarity === r ? ' selected' : '';
+    return `<button class="rarity-chip${sel}" data-rarity="${r}" style="color:${col};${sel ? `border-color:${col}` : ''}">${rarityLabel(r)}</button>`;
+  }).join('');
+
+  return `<div>
+    <div class="field-group" style="margin-bottom:10px">
+      <div class="field-label">Name</div>
+      <input id="field-name" class="field-input" value="${esc(S.edit.name)}" placeholder="Tile name">
+    </div>
+    <div class="field-group" style="margin-bottom:10px">
+      <div class="field-label">Category</div>
+      <select id="field-cat" class="field-select">
+        <option value="">&#x2014; select &#x2014;</option>${catOptions}
+      </select>
+    </div>
+    <div class="field-group" style="margin-bottom:10px">
+      <div class="field-label">Default Rarity</div>
+      <div class="rarity-chips" id="rarity-chips">${rarityChips}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Description <span style="color:var(--text3);font-size:10px">(used for image generation)</span></div>
+      <textarea id="field-desc" class="field-textarea">${esc(S.edit.description)}</textarea>
+    </div>
+  </div>`;
+}
+
+function renderPackMembershipSection(fieldsReady) {
+  if (!fieldsReady) {
+    return `<div style="opacity:0.4">
+      <div class="field-label" style="margin-bottom:8px">Pack Membership</div>
+      <div style="font-size:12px;color:var(--text3)">Fill in name and category first</div>
+    </div>`;
+  }
+  const tileId = S.selectedTileId;
+  const rows = S.packs.map(pack => {
+    const change = S.edit.packChanges[pack.id];
+    const currentRarity = tilePackRarity(tileId, pack.id);
+    const isCurrentlyIn = currentRarity !== null;
+    const isAdd = change?.action === 'add';
+    const isRemove = change?.action === 'remove';
+    const isIncluded = (isCurrentlyIn && !isRemove) || isAdd;
+
+    let statusText = '', statusClass = '', toggleClass = '', toggleContent = '';
+    if (isRemove) {
+      statusText = 'Will remove on save'; statusClass = 'remove-status';
+      toggleClass = 'will-remove'; toggleContent = '✕';
+    } else if (isIncluded) {
+      const r = isAdd ? (change.rarity || S.edit.rarity) : currentRarity;
+      statusText = `Included · ${rarityLabel(r)}`; statusClass = 'included-status';
+      toggleClass = 'included'; toggleContent = '✓';
+    } else {
+      statusText = 'Not included'; statusClass = '';
+      toggleClass = ''; toggleContent = '○';
+    }
+
+    const rowClass = isRemove ? 'pack-row will-remove' : isIncluded ? 'pack-row included' : 'pack-row';
+    const col = packColor(pack.id);
+
+    // Inline rarity picker (shown when clicking circle to add)
+    const showPicker = change?.showPicker === true;
+    const pickerHtml = showPicker ? renderInlineRarityPicker(pack.id, change?.rarity || S.edit.rarity) : '';
+
+    return `<div data-pack-row="${esc(pack.id)}">
+      <div class="${rowClass}">
+        <span class="pack-color-bar" style="background:${col}"></span>
+        <span class="pack-row-name">${esc(pack.name)}</span>
+        <span class="pack-row-status ${statusClass}">${esc(statusText)}</span>
+        <button class="pack-toggle-btn ${toggleClass}" data-pack-toggle="${esc(pack.id)}">${toggleContent}</button>
+      </div>
+      ${pickerHtml}
+    </div>`;
+  }).join('');
+
+  return `<div>
+    <div class="field-label" style="margin-bottom:8px">Pack Membership</div>
+    <div class="pack-membership">${rows}</div>
+  </div>`;
+}
+
+function renderInlineRarityPicker(packId, selectedRarity) {
+  const chips = RARITIES.map(r => {
+    const col = rarityColor(r);
+    const sel = selectedRarity === r ? ' selected' : '';
+    return `<button class="rarity-inline-chip${sel}" data-pack-rarity-pick="${esc(packId)}" data-rarity="${r}"
+      style="color:${col};${sel?`border-color:${col}`:''}">
+      ${rarityLabel(r)}</button>`;
+  }).join('');
+  return `<div class="rarity-inline-picker">${chips}</div>`;
+}
+
+// ── Wire meta field events ────────────────────────────────────────────────────
+
+function wireMetaFields() {
+  document.getElementById('field-name')?.addEventListener('input', e => {
+    S.edit.name = e.target.value;
+    // Pre-fill description on new tiles when name + category are both set
+    if (S.isNewTile && S.edit.category && !S.edit.description) {
+      const prefill = (CATEGORY_HINTS_MAP || {})[S.edit.category] || '';
+      S.edit.description = prefill ? `${S.edit.name}. ${prefill}` : `${S.edit.name}.`;
+      document.getElementById('field-desc').value = S.edit.description;
+    }
+    document.getElementById('detail-header').textContent = S.isNewTile ? '✦ New Tile' : S.edit.name;
+    // Re-render image + pack section to unlock if both fields now set
+    if (S.isNewTile) renderDetailPanel();
+  });
+  document.getElementById('field-cat')?.addEventListener('change', e => {
+    S.edit.category = e.target.value;
+    if (S.isNewTile && S.edit.name && !S.edit.description) {
+      const prefill = (CATEGORY_HINTS_MAP || {})[S.edit.category] || '';
+      S.edit.description = prefill ? `${S.edit.name}. ${prefill}` : `${S.edit.name}.`;
+      document.getElementById('field-desc').value = S.edit.description;
+    }
+    if (S.isNewTile) renderDetailPanel();
+  });
+  document.getElementById('field-desc')?.addEventListener('input', e => {
+    S.edit.description = e.target.value;
+    // Enable/disable gen button
+    const genBtn = document.getElementById('gen-btn');
+    if (genBtn) genBtn.disabled = !S.edit.description || S.imgState === 'generating';
+  });
+  document.getElementById('rarity-chips')?.addEventListener('click', e => {
+    const chip = e.target.closest('[data-rarity]');
+    if (!chip) return;
+    S.edit.rarity = chip.dataset.rarity;
+    document.querySelectorAll('.rarity-chip').forEach(c => {
+      const r = c.dataset.rarity;
+      const col = rarityColor(r);
+      const sel = r === S.edit.rarity;
+      c.classList.toggle('selected', sel);
+      c.style.borderColor = sel ? col : '';
+    });
+  });
+}
+
+// ── Wire pack membership events ───────────────────────────────────────────────
+
+function wirePackMembership() {
+  document.querySelectorAll('[data-pack-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const packId = btn.dataset.packToggle;
+      const change = S.edit.packChanges[packId];
+      const currentRarity = tilePackRarity(S.selectedTileId, packId);
+      const isCurrentlyIn = currentRarity !== null;
+      const isAdd = change?.action === 'add';
+      const isRemove = change?.action === 'remove';
+
+      if (isRemove) {
+        // Undo the pending remove -> back to included
+        delete S.edit.packChanges[packId];
+      } else if (isAdd) {
+        // Cancel the pending add
+        delete S.edit.packChanges[packId];
+      } else if (isCurrentlyIn) {
+        // Currently included -> mark as will-remove
+        S.edit.packChanges[packId] = { action: 'remove' };
+      } else {
+        // Not included -> show inline rarity picker
+        S.edit.packChanges[packId] = {
+          action: 'add',
+          showPicker: true,
+          rarity: S.edit.rarity,
+        };
+      }
+      renderDetailPanel();
+    });
+  });
+
+  document.querySelectorAll('[data-pack-rarity-pick]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const packId = chip.dataset.packRarityPick;
+      const rarity = chip.dataset.rarity;
+      S.edit.packChanges[packId] = { action: 'add', rarity, showPicker: false };
+      renderDetailPanel();
+    });
+  });
+}
+
+// ── Save / Create tile ────────────────────────────────────────────────────────
+
+async function saveTile() {
+  if (!S.edit.name || !S.edit.category || !S.edit.rarity) {
+    alert('Name, category, and rarity are required.');
+    return;
+  }
+  const saveBtn = document.getElementById('save-tile-btn');
+  saveBtn.disabled = true;
+  try {
+    if (S.isNewTile) {
+      // Build pack membership array
+      const packMembership = Object.entries(S.edit.packChanges)
+        .filter(([,c]) => c.action === 'add')
+        .map(([packId, c]) => ({ packId, rarity: c.rarity || S.edit.rarity }));
+      const body = {
+        text: S.edit.name,
+        category: S.edit.category,
+        rarity: S.edit.rarity,
+        description: S.edit.description || undefined,
+        packMembership,
+      };
+      if (S.pendingB64) body.image_b64 = S.pendingB64;
+      const tile = await api('POST', '/api/tiles', body);
+      S.tiles.push(tile);
+      // Update pack data locally
+      for (const { packId, rarity } of packMembership) {
+        if (S.packData[packId]) {
+          S.packData[packId].tiles.push({ id: tile.id, rarity });
+        }
+      }
+      S.isNewTile = false;
+      S.selectedTileId = tile.id;
+      S.imgState = 'idle';
+      S.pendingB64 = null;
+      S.edit = { name: tile.text, category: tile.category, rarity: tile.rarity,
+                 description: tile.description || '', packChanges: {} };
+    } else {
+      // Build pack membership changes array
+      const packMembership = Object.entries(S.edit.packChanges).map(([packId, c]) => ({
+        packId, action: c.action, rarity: c.rarity,
+      }));
+      const body = {
+        text: S.edit.name, category: S.edit.category, rarity: S.edit.rarity,
+        description: S.edit.description || '',
+        packMembership,
+      };
+      const tile = await api('PUT', `/api/tiles/${S.selectedTileId}`, body);
+      // Update local state
+      const idx = S.tiles.findIndex(t => t.id === S.selectedTileId);
+      if (idx !== -1) S.tiles[idx] = tile;
+      // Rebuild pack data for affected packs
+      for (const [packId, c] of Object.entries(S.edit.packChanges)) {
+        const pd = S.packData[packId];
+        if (!pd) continue;
+        if (c.action === 'add') {
+          pd.tiles = pd.tiles.filter(r => r.id !== S.selectedTileId);
+          pd.tiles.push({ id: S.selectedTileId, rarity: c.rarity || tile.rarity });
+        } else if (c.action === 'remove') {
+          pd.tiles = pd.tiles.filter(r => r.id !== S.selectedTileId);
+        }
+      }
+      S.edit.packChanges = {};
+    }
+    renderTileList();
+    renderDetailPanel();
+  } catch (err) {
+    alert(`Save failed: ${err.message}`);
+  } finally {
+    saveBtn.disabled = false;
   }
 }
 
-// ── Event listeners ───────────────────────────────────────────────────────────────────
-document.getElementById('search').addEventListener('input', renderTable);
-document.getElementById('filter-cat').addEventListener('change', renderTable);
+// ── Delete tile ───────────────────────────────────────────────────────────────
+
+let deleteConfirmTimeout = null;
+async function deleteTile() {
+  const btn = document.getElementById('delete-tile-btn');
+  if (!btn) return;
+  if (btn.dataset.confirming !== 'true') {
+    btn.dataset.confirming = 'true';
+    btn.textContent = '🗑 Confirm Delete';
+    deleteConfirmTimeout = setTimeout(() => {
+      btn.dataset.confirming = '';
+      btn.textContent = '🗑 Delete Tile';
+    }, 3000);
+    return;
+  }
+  clearTimeout(deleteConfirmTimeout);
+  btn.disabled = true;
+  try {
+    await api('DELETE', `/api/tiles/${S.selectedTileId}`);
+    // Remove from local state
+    S.tiles = S.tiles.filter(t => t.id !== S.selectedTileId);
+    Object.values(S.packData).forEach(pd => {
+      if (pd) pd.tiles = pd.tiles.filter(r => r.id !== S.selectedTileId);
+    });
+    S.selectedTileId = null;
+    hideDetailPanel();
+    renderTileList();
+  } catch (err) {
+    alert(`Delete failed: ${err.message}`);
+    btn.disabled = false;
+  }
+}
+
+// ── New tile ──────────────────────────────────────────────────────────────────
+
+function openNewTile() {
+  S.isNewTile = true;
+  S.selectedTileId = null;
+  S.imgState = 'idle';
+  S.pendingB64 = null;
+  S.edit = { name: '', category: '', rarity: 'common', description: '', packChanges: {} };
+  renderTileList();
+  renderDetailPanel();
+}
+
+// ── Image generation ──────────────────────────────────────────────────────────
+
+async function generateImage() {
+  if (S.imgState === 'generating') return;
+  S.imgState = 'generating';
+  S.pendingB64 = null;
+  renderDetailPanel();
+  try {
+    let body;
+    if (S.isNewTile || !S.selectedTileId) {
+      body = { description: S.edit.description, name: S.edit.name };
+    } else {
+      body = { tile_id: S.selectedTileId };
+    }
+    const { image_b64 } = await api('POST', '/api/generate', body);
+    S.pendingB64 = image_b64;
+    S.imgState = 'pending';
+  } catch (err) {
+    S.imgState = 'idle';
+    alert(`Generation failed: ${err.message}`);
+  }
+  renderDetailPanel();
+}
+
+async function approveImage() {
+  if (!S.pendingB64) return;
+  if (S.isNewTile) {
+    // For new tiles, hold in memory until Create Tile
+    S.imgState = 'idle';
+    // Keep pendingB64 -- it will be sent with the tile data
+    renderDetailPanel();
+    return;
+  }
+  // For existing tiles, save immediately
+  try {
+    await api('POST', `/api/tiles/${S.selectedTileId}/image`, { image_b64: S.pendingB64 });
+    S.imgState = 'idle';
+    S.pendingB64 = null;
+    renderDetailPanel();
+  } catch (err) {
+    alert(`Failed to save image: ${err.message}`);
+  }
+}
+
+function discardImage() {
+  S.imgState = 'idle';
+  S.pendingB64 = null;
+  renderDetailPanel();
+}
+
+// ── Lightbox ──────────────────────────────────────────────────────────────────
+
+function openLightbox(tileId) {
+  const tile = tileById(tileId);
+  if (!tile) return;
+  S.lightboxTileId = tileId;
+  document.getElementById('lightbox-img').src = `/api/image/${tileId}`;
+  document.getElementById('lightbox-name').textContent = tile.text;
+  document.getElementById('lightbox').classList.remove('hidden');
+}
+
+function closeLightbox() {
+  S.lightboxTileId = null;
+  document.getElementById('lightbox').classList.add('hidden');
+  document.getElementById('lightbox-img').src = '';
+}
+
+// ── Pack gallery (Pack View) ──────────────────────────────────────────────────
+
+function renderPackGallery() {
+  const gallery = document.getElementById('pack-gallery');
+  gallery.innerHTML = S.packs.map(pack => {
+    const sel = S.selectedPackId === pack.id ? ' selected' : '';
+    return `<div class="pack-card${sel}" data-pack-id="${esc(pack.id)}">
+      <img class="pack-card-img" src="/api/image/${esc(pack.id)}"
+           onerror="this.style.display='none'" loading="lazy">
+      <div class="pack-card-info">
+        <div class="pack-card-name">${esc(pack.name)}</div>
+        <div class="pack-card-count">${pack.tileCount} tiles</div>
+      </div>
+    </div>`;
+  }).join('');
+  gallery.querySelectorAll('.pack-card').forEach(card => {
+    card.addEventListener('click', () => selectPack(card.dataset.packId));
+  });
+}
+
+async function selectPack(packId) {
+  S.selectedPackId = packId;
+  S.packSearch = '';
+  S.pickerPackId = null;
+  renderPackGallery();
+  await loadPackData(packId);
+  renderPackDetail();
+}
+
+// ── Pack detail ───────────────────────────────────────────────────────────────
+
+function renderPackDetail() {
+  const col = document.getElementById('pack-detail-col');
+  const pd = S.packData[S.selectedPackId];
+  const packMeta = S.packs.find(p => p.id === S.selectedPackId);
+  if (!pd || !packMeta) { col.innerHTML = '<div class="detail-empty">Loading&hellip;</div>'; return; }
+
+  // Resolve tile refs against tile data
+  const resolvedTiles = pd.tiles
+    .map(ref => {
+      const tile = tileById(ref.id);
+      return tile ? { ...tile, packRarity: ref.rarity } : null;
+    })
+    .filter(Boolean);
+
+  // Apply pack search
+  const q = S.packSearch.toLowerCase();
+  const displayTiles = q
+    ? resolvedTiles.filter(t => t.text.toLowerCase().includes(q))
+    : resolvedTiles;
+
+  // Rarity breakdown
+  const counts = {};
+  RARITIES.forEach(r => counts[r] = 0);
+  resolvedTiles.forEach(t => { counts[t.packRarity] = (counts[t.packRarity] || 0) + 1; });
+  const total = resolvedTiles.length;
+
+  const gridHtml = displayTiles.map(tile => `
+    <div class="pack-grid-cell" data-tile-id="${esc(tile.id)}">
+      <img src="/api/image/${esc(tile.id)}" alt="${esc(tile.text)}" onerror="this.style.display='none'" loading="lazy">
+      <span class="pack-grid-rarity-dot" style="background:${rarityColor(tile.packRarity)}"></span>
+      <div class="pack-grid-name">${esc(tile.text)}</div>
+    </div>`).join('');
+
+  const barSegs = RARITIES.map(r => {
+    const pct = total > 0 ? (counts[r] / total * 100).toFixed(1) : 0;
+    return `<div class="rarity-bar-seg" style="width:${pct}%;background:${rarityColor(r)}"></div>`;
+  }).join('');
+
+  const legendItems = RARITIES.map(r =>
+    `<div class="rarity-legend-item">
+      <span class="rarity-legend-dot" style="background:${rarityColor(r)}"></span>
+      ${counts[r]} ${rarityLabel(r).toLowerCase()}
+    </div>`
+  ).join('');
+
+  col.innerHTML = `
+    <div class="pack-detail-toolbar">
+      <span class="pack-detail-name">${esc(packMeta.name)}</span>
+      <input class="search-input" id="pack-search" placeholder="Search tiles&hellip;" style="max-width:200px" value="${esc(S.packSearch)}">
+      <div style="flex:1"></div>
+      <button class="btn btn-amber" id="pack-add-tile-btn">+ Add Tile</button>
+    </div>
+    <div class="pack-detail-body">
+      <div class="pack-grid" id="pack-grid">${gridHtml}</div>
+      <div class="rarity-bar-section">
+        <div class="rarity-bar-label">Rarity Breakdown &mdash; ${total} tiles</div>
+        <div class="rarity-bar">${barSegs}</div>
+        <div class="rarity-legend">${legendItems}</div>
+      </div>
+    </div>`;
+
+  document.getElementById('pack-search').addEventListener('input', e => {
+    S.packSearch = e.target.value;
+    renderPackDetail();
+  });
+  document.getElementById('pack-add-tile-btn').addEventListener('click', openAddTilePicker);
+
+  // Grid cell click -> switch to All Tiles tab with tile selected
+  col.querySelectorAll('.pack-grid-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      switchTab('tiles');
+      selectTile(cell.dataset.tileId);
+    });
+  });
+}
+
+// ── Add tile picker ───────────────────────────────────────────────────────────
+
+async function openAddTilePicker() {
+  S.pickerPackId = S.selectedPackId;
+  S.pickerSearch = '';
+  S.pickerSelectedTileId = null;
+  S.pickerSelectedRarity = RARITIES[0];
+  try {
+    S.pickerTiles = await api('GET', `/api/packs/${S.pickerPackId}/tiles-not-in-pack`);
+  } catch (err) {
+    alert(`Failed to load available tiles: ${err.message}`);
+    return;
+  }
+  renderPicker();
+}
+
+function renderPicker() {
+  // Remove existing picker if any
+  document.getElementById('picker-overlay')?.remove();
+
+  const q = S.pickerSearch.toLowerCase();
+  const tiles = q
+    ? S.pickerTiles.filter(t => t.text.toLowerCase().includes(q))
+    : S.pickerTiles;
+
+  const rows = tiles.map(tile => {
+    const sel = S.pickerSelectedTileId === tile.id ? ' style="background:var(--surface2)"' : '';
+    return `<div class="picker-tile-row" data-tile-id="${esc(tile.id)}"${sel}>
+      <img class="tile-thumb" src="/api/image/${esc(tile.id)}" onerror="this.style.visibility='hidden'" loading="lazy">
+      <span>${esc(tile.text)}</span>
+      <span class="rarity-badge" style="color:${rarityColor(tile.rarity)}">${esc(rarityLabel(tile.rarity))}</span>
+    </div>`;
+  }).join('');
+
+  const pickerChips = S.pickerSelectedTileId ? RARITIES.map(r => {
+    const col = rarityColor(r);
+    const sel = r === S.pickerSelectedRarity ? ' selected' : '';
+    return `<button class="rarity-inline-chip${sel}" data-pick-rarity="${r}"
+      style="color:${col};${sel?`border-color:${col}`:''}">
+      ${rarityLabel(r)}</button>`;
+  }).join('') : '';
+
+  const pickerHtml = S.pickerSelectedTileId ? `
+    <div class="picker-rarity-picker">
+      <div class="picker-rarity-label">Select rarity for this pack:</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${pickerChips}</div>
+      <div style="margin-top:8px">
+        <button class="btn btn-green" id="picker-confirm-btn">Add to Pack</button>
+      </div>
+    </div>` : '';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'picker-overlay';
+  overlay.id = 'picker-overlay';
+  overlay.innerHTML = `
+    <div class="picker-panel">
+      <div class="picker-header">
+        <span class="picker-title">Add Tile to Pack</span>
+        <button class="btn" id="picker-close-btn">&#x2715;</button>
+      </div>
+      <div class="picker-search">
+        <input class="search-input" id="picker-search" placeholder="Search&hellip;" value="${esc(S.pickerSearch)}" style="width:100%">
+      </div>
+      ${pickerHtml}
+      <div class="picker-list" id="picker-list">${rows}</div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  document.getElementById('picker-close-btn').addEventListener('click', closePicker);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closePicker(); });
+  document.getElementById('picker-search').addEventListener('input', e => {
+    S.pickerSearch = e.target.value; renderPicker();
+  });
+  document.querySelectorAll('.picker-tile-row').forEach(row => {
+    row.addEventListener('click', () => {
+      S.pickerSelectedTileId = row.dataset.tileId;
+      const tile = S.pickerTiles.find(t => t.id === S.pickerSelectedTileId);
+      S.pickerSelectedRarity = tile?.rarity || RARITIES[0];
+      renderPicker();
+    });
+  });
+  document.querySelectorAll('[data-pick-rarity]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      S.pickerSelectedRarity = chip.dataset.pickRarity; renderPicker();
+    });
+  });
+  document.getElementById('picker-confirm-btn')?.addEventListener('click', confirmAddTile);
+}
+
+async function confirmAddTile() {
+  if (!S.pickerSelectedTileId) return;
+  const packId = S.pickerPackId;
+  try {
+    const pd = S.packData[packId];
+    pd.tiles.push({ id: S.pickerSelectedTileId, rarity: S.pickerSelectedRarity });
+    await api('PUT', `/api/packs/${packId}`, pd);
+    // Update local packs metadata tileCount
+    const meta = S.packs.find(p => p.id === packId);
+    if (meta) meta.tileCount = pd.tiles.length;
+    closePicker();
+    renderPackDetail();
+    renderTileList(); // refresh pack dots
+  } catch (err) {
+    alert(`Failed to add tile: ${err.message}`);
+  }
+}
+
+function closePicker() {
+  document.getElementById('picker-overlay')?.remove();
+  S.pickerPackId = null;
+}
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
