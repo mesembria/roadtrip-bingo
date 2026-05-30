@@ -462,6 +462,7 @@ body::before {
             <div class="section-label">Metadata</div>
             <div style="display:flex;flex-direction:column;gap:12px">
               <div class="field"><label class="field-label">Name</label><input class="field-input" id="field-name" type="text"></div>
+              <div class="field"><label class="field-label">Image Description <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(optional — defaults to tile name)</span></label><textarea class="field-input" id="field-description" rows="2" style="resize:vertical;font-size:13px;line-height:1.5" placeholder="e.g. A red Kenworth semi truck cab, side view, no trailer"></textarea></div>
               <div class="fields-row">
                 <div class="field"><label class="field-label">Category</label><select class="field-input" id="field-category" style="cursor:pointer"></select></div>
                 <div class="field"><label class="field-label">Rarity</label><select class="field-input" id="field-rarity" style="cursor:pointer"></select></div>
@@ -1429,6 +1430,7 @@ function showPanel(tile) {
   document.getElementById('panel-id').textContent = tile.id.substring(0, 8) + '…';
   setCurrentImage('/api/image/' + tile.id + '?t=' + Date.now());
   document.getElementById('field-name').value = tile.text;
+  document.getElementById('field-description').value = tile.description || '';
   document.getElementById('field-category').value = tile.category;
   document.getElementById('field-rarity').value = tile.rarity;
   document.getElementById('btn-delete').style.display = '';
@@ -1458,6 +1460,7 @@ function startAddMode() {
   document.getElementById('image-current').style.display = 'none';
   document.getElementById('img-placeholder').style.display = '';
   document.getElementById('field-name').value = '';
+  document.getElementById('field-description').value = '';
   document.getElementById('field-category').value = CATEGORIES[0] || '';
   document.getElementById('field-rarity').value = RARITIES[0] || 'veryCommon';
   document.getElementById('btn-delete').style.display = 'none';
@@ -1549,7 +1552,9 @@ async function saveTile() {
   if (!name) { alert('Name is required'); return; }
 
   if (isAddMode) {
+    const description = document.getElementById('field-description').value.trim();
     const body = {text: name, category, rarity};
+    if (description) body.description = description;
     if (pendingImageB64) body.image_b64 = pendingImageB64;
     const r = await fetch('/api/tiles', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -1562,9 +1567,10 @@ async function saveTile() {
     isAddMode = false;
     pendingImageB64 = null;
   } else {
+    const description = document.getElementById('field-description').value.trim();
     const r = await fetch('/api/tiles/' + selectedId, {
       method: 'PUT', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({text: name, category, rarity}),
+      body: JSON.stringify({text: name, category, rarity, description}),
     });
     if (!r.ok) { alert('Failed to update tile'); return; }
     const updated = await r.json();
