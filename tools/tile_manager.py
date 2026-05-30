@@ -41,16 +41,14 @@ CATEGORY_HINTS = {
 RARITIES = ["veryCommon", "common", "uncommon", "rare", "veryRare"]
 
 STYLE = (
-    "Flat vector illustration, clean thin outlines, bright colors. "
+    "Flat vector illustration, clean thin outlines, bright but realistic colors. "
+    "Use natural, true-to-life colors for each object and all parts should match "
+    "the colors that object would actually have in real life. "
     "Plain solid white background — the illustration sits directly on white "
     "with absolutely no drop shadow, no border, no card, no frame, no vignette, "
     "no outline around the image edge. "
     "Square composition. No text, no labels, no letters."
 )
-
-# Per-tile prompt overrides for subjects that need extra specificity.
-# Key = tile text, value = subject phrase (replaces "a {text.lower()}").
-OVERRIDES: dict[str, str] = {}
 
 GEMINI_MODEL = "gemini-2.5-flash-image"
 GEMINI_URL   = (
@@ -66,7 +64,7 @@ PACKS_METADATA: list[dict] = []
 
 def build_prompt(text: str, category: str) -> str:
     """Build the Gemini image generation prompt for a tile."""
-    subject = OVERRIDES.get(text, f"a {text.lower()}")
+    subject = f"a {text.lower()}"
     hint = CATEGORY_HINTS.get(category, "")
     # Strip trailing period and capitalize only the first character
     subject_clean = subject.rstrip(".")
@@ -934,7 +932,12 @@ async function approvePackImage() {
     });
     if (!r.ok) { alert('Failed to save image'); return; }
   }
-  window._packPendingImageB64 = null;
+  // Only clear the pending image for existing tiles — the image was just saved to disk above.
+  // For new tiles, keep _packPendingImageB64 so saveExclusiveTile(null) can include it in the
+  // POST body when the tile is created. saveExclusiveTile clears it after use.
+  if (!window._packIsNewExclusive) {
+    window._packPendingImageB64 = null;
+  }
   const img = document.getElementById('pack-image-current');
   const ph  = document.getElementById('pack-img-placeholder');
   img.src = 'data:image/png;base64,' + b64;
