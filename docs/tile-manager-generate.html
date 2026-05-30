@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tile Manager — Generate Flow</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rye&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0D0D0B; --surface: #141410; --surface2: #1C1C17; --surface3: #242420;
+    --border: #2E2E28; --amber: #E8A830; --green: #4A9060; --red: #C84040;
+    --text1: #F0EAD8; --text2: #8A8470; --text3: #5A5448;
+  }
+  body { background: #0A0A08; color: var(--text1); font-family: 'Barlow', sans-serif; padding: 36px 24px 80px; max-width: 1200px; margin: 0 auto; }
+  h1 { font-family: 'Rye', serif; color: var(--amber); font-size: 24px; text-align: center; margin-bottom: 6px; }
+  .subtitle { text-align: center; color: var(--text2); font-size: 13px; margin-bottom: 40px; }
+
+  .states { display: flex; gap: 0; align-items: flex-start; }
+  .state { flex: 1; min-width: 0; }
+  .connector { display: flex; align-items: center; padding: 0 10px; padding-top: 26px; color: var(--text3); font-size: 22px; flex-shrink: 0; }
+
+  .state-label {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text2);
+    margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+  }
+  .sn {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--surface3); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--amber); flex-shrink: 0;
+  }
+
+  /* Panel */
+  .panel { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .ph { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 14px; }
+  .ph-title { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+  .ph-meta { font-size: 11px; color: var(--text2); }
+  .pb { padding: 12px 14px; }
+  .pf { padding: 8px 14px; border-top: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; gap: 8px; }
+
+  /* Labels */
+  .sl {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text2);
+    margin-bottom: 5px; margin-top: 12px;
+  }
+  .sl:first-child { margin-top: 0; }
+
+  /* Rarity */
+  .rarity { font-size: 10px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; display: inline-block; }
+  .rarity-r { background: rgba(200,64,64,0.25); color: #E87070; }
+  .rarity-vc { background: rgba(74,144,96,0.25); color: #6BC88A; }
+
+  /* Buttons */
+  .btn { background: var(--amber); color: var(--bg); border: none; border-radius: 5px; font-size: 11px; font-weight: 700; padding: 5px 11px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.5px; cursor: default; white-space: nowrap; }
+  .btn-ghost    { background: transparent; border: 1px solid var(--border); color: var(--text2); }
+  .btn-green    { background: var(--green); color: #fff; }
+  .btn-disabled { background: var(--surface3); color: var(--text3); border: 1px solid var(--border); }
+  .btn-sm { font-size: 10px; padding: 4px 9px; }
+
+  /* Fields */
+  .field { background: var(--surface3); border: 1px solid var(--border); border-radius: 5px; padding: 6px 8px; margin-bottom: 6px; }
+  .field-label { font-size: 9px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text2); margin-bottom: 3px; }
+  .field-value { font-size: 12px; color: var(--text1); line-height: 1.4; }
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+  /* Rarity chips */
+  .chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+  .chip { padding: 3px 7px; border-radius: 4px; font-size: 10px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; border: 1px solid var(--border); color: var(--text3); cursor: default; }
+  .chip-r  { background: rgba(200,64,64,0.3); border-color: #E87070; color: #E87070; }
+  .chip-vc { background: rgba(74,144,96,0.3); border-color: #6BC88A; color: #6BC88A; }
+
+  /* Image section */
+  .img-section { background: var(--surface3); border: 1px solid var(--border); border-radius: 6px; padding: 10px; }
+
+  .img-box {
+    width: 80px; height: 80px; border-radius: 6px; flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .img-empty   { background: var(--surface2); border: 1px dashed var(--border); color: var(--text3); font-size: 10px; gap: 4px; }
+  .img-empty .ico { font-size: 22px; }
+  .img-spin    { background: var(--surface2); border: 1px solid rgba(232,168,48,0.25); gap: 6px; }
+  .img-result  { background: linear-gradient(135deg,#2A3A2A,#1A2A1A); border: 2px solid var(--green); font-size: 48px; }
+  .img-approved { background: linear-gradient(135deg,#2A3A2A,#1A2A1A); border: 1px solid var(--border); font-size: 48px; }
+
+  .spinner { width: 22px; height: 22px; border: 2px solid var(--border); border-top-color: var(--amber); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Style footnote */
+  .style-note {
+    font-size: 10px; color: var(--text3); margin-top: 7px;
+    padding: 5px 8px; background: var(--surface2); border-radius: 4px;
+    border: 1px solid var(--border); line-height: 1.4;
+  }
+  .style-note strong { color: var(--text2); }
+
+  .callout { font-size: 11px; color: var(--text2); padding: 8px 10px; background: rgba(232,168,48,0.05); border: 1px dashed rgba(232,168,48,0.25); border-radius: 5px; line-height: 1.5; margin-top: 8px; }
+  .callout strong { color: var(--amber); }
+
+  .hl { outline: 2px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
+  .hl-green { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<h1>Generate Image — Simplified Flow</h1>
+<p class="subtitle">Description → Generate → Approve/Discard. No prompt editor. Style appended silently.</p>
+
+<div class="states">
+
+  <!-- ── State 1: Idle, no image ── -->
+  <div class="state">
+    <div class="state-label"><div class="sn">1</div>Idle — description filled</div>
+    <div class="panel">
+      <div class="ph">
+        <div class="ph-title">🌉 Suspension Bridge</div>
+        <div class="ph-meta">landmarks · <span class="rarity rarity-r">Rare</span></div>
+      </div>
+      <div class="pb">
+        <div class="field-grid" style="margin-bottom:6px;">
+          <div class="field"><div class="field-label">Name</div><div class="field-value">Suspension Bridge</div></div>
+          <div class="field"><div class="field-label">Category</div><div class="field-value">landmarks</div></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Default Rarity</div>
+          <div class="chips"><div class="chip">V.Common</div><div class="chip">Common</div><div class="chip">Uncommon</div><div class="chip chip-r">Rare ✓</div><div class="chip">V.Rare</div></div>
+        </div>
+
+        <div class="sl">Description</div>
+        <div class="field" style="margin-bottom:8px;">
+          <div class="field-value" style="font-size:11px;">A large suspension bridge with tall steel towers and long hanging cables spanning a wide river gorge. Full structure visible.</div>
+        </div>
+
+        <div class="sl">Image</div>
+        <div class="img-section">
+          <div style="display:flex;gap:10px;align-items:center;">
+            <div class="img-box img-empty">
+              <div class="ico">🖼</div>
+              <div>No image</div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px;">No image yet.</div>
+              <button class="btn btn-sm">❆ Generate Image</button>
+            </div>
+          </div>
+          <div class="style-note">Prompt sent to Gemini: <strong>description</strong> + style constant</div>
+        </div>
+      </div>
+      <div class="pf">
+        <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(200,64,64,0.3);margin-right:auto;">🗑 Delete</button>
+        <button class="btn btn-ghost btn-sm">Cancel</button>
+        <button class="btn btn-sm">Save Changes</button>
+      </div>
+    </div>
+    <div class="callout">On a <strong>new tile</strong>, description is pre-filled with the tile name + category hint. User edits it freely — that's what gets saved. On an <strong>existing tile</strong>, the saved description is already there.</div>
+  </div>
+
+  <div class="connector">→</div>
+
+  <!-- ── State 2: Generating ── -->
+  <div class="state">
+    <div class="state-label"><div class="sn">2</div>Generating — spinner, button gone</div>
+    <div class="panel">
+      <div class="ph">
+        <div class="ph-title">🌉 Suspension Bridge</div>
+        <div class="ph-meta">landmarks · <span class="rarity rarity-r">Rare</span></div>
+      </div>
+      <div class="pb">
+        <div class="field-grid" style="margin-bottom:6px;">
+          <div class="field"><div class="field-label">Name</div><div class="field-value">Suspension Bridge</div></div>
+          <div class="field"><div class="field-label">Category</div><div class="field-value">landmarks</div></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Default Rarity</div>
+          <div class="chips"><div class="chip">V.Common</div><div class="chip">Common</div><div class="chip">Uncommon</div><div class="chip chip-r">Rare ✓</div><div class="chip">V.Rare</div></div>
+        </div>
+
+        <div class="sl">Description</div>
+        <div class="field" style="margin-bottom:8px;">
+          <div class="field-value" style="font-size:11px;">A large suspension bridge with tall steel towers and long hanging cables spanning a wide river gorge. Full structure visible.</div>
+        </div>
+
+        <div class="sl">Image</div>
+        <div class="img-section hl">
+          <div style="display:flex;gap:10px;align-items:center;">
+            <div class="img-box img-spin">
+              <div class="spinner"></div>
+              <div style="font-size:9px;color:var(--text2);margin-top:2px;">~15s</div>
+            </div>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--amber);margin-bottom:3px;">Generating…</div>
+              <div style="font-size:10px;color:var(--text2);margin-bottom:8px;">Gemini 2.5 Flash</div>
+              <button class="btn btn-ghost btn-sm">Cancel</button>
+            </div>
+          </div>
+          <div class="style-note">Prompt sent to Gemini: <strong>description</strong> + style constant</div>
+        </div>
+      </div>
+      <div class="pf">
+        <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(200,64,64,0.3);margin-right:auto;">🗑 Delete</button>
+        <button class="btn btn-ghost btn-sm">Cancel</button>
+        <button class="btn btn-disabled btn-sm">Save Changes</button>
+      </div>
+    </div>
+    <div class="callout">Save Changes is blocked while generation is in flight — must resolve the image first.</div>
+  </div>
+
+  <div class="connector">→</div>
+
+  <!-- ── State 3: Result ── -->
+  <div class="state">
+    <div class="state-label"><div class="sn">3</div>Result — approve or discard</div>
+    <div class="panel">
+      <div class="ph">
+        <div class="ph-title">🌉 Suspension Bridge</div>
+        <div class="ph-meta">landmarks · <span class="rarity rarity-r">Rare</span></div>
+      </div>
+      <div class="pb">
+        <div class="field-grid" style="margin-bottom:6px;">
+          <div class="field"><div class="field-label">Name</div><div class="field-value">Suspension Bridge</div></div>
+          <div class="field"><div class="field-label">Category</div><div class="field-value">landmarks</div></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Default Rarity</div>
+          <div class="chips"><div class="chip">V.Common</div><div class="chip">Common</div><div class="chip">Uncommon</div><div class="chip chip-r">Rare ✓</div><div class="chip">V.Rare</div></div>
+        </div>
+
+        <div class="sl">Description</div>
+        <div class="field" style="margin-bottom:8px;">
+          <div class="field-value" style="font-size:11px;">A large suspension bridge with tall steel towers and long hanging cables spanning a wide river gorge. Full structure visible.</div>
+        </div>
+
+        <div class="sl">Image</div>
+        <div class="img-section hl-green">
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div class="img-box img-result">🌉</div>
+            <div style="flex:1;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px;">Image ready</div>
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <button class="btn btn-green btn-sm">✓ Use This Image</button>
+                <button class="btn btn-ghost btn-sm">✕ Discard · try again</button>
+              </div>
+            </div>
+          </div>
+          <div class="style-note">Prompt sent to Gemini: <strong>description</strong> + style constant</div>
+        </div>
+      </div>
+      <div class="pf">
+        <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(200,64,64,0.3);margin-right:auto;">🗑 Delete</button>
+        <button class="btn btn-ghost btn-sm">Cancel</button>
+        <button class="btn btn-disabled btn-sm">Save Changes</button>
+      </div>
+    </div>
+    <div class="callout"><strong>✕ Discard · try again</strong> clears the preview and returns to State 1 — edit the description and generate again.</div>
+  </div>
+
+  <div class="connector">→</div>
+
+  <!-- ── State 4: Approved ── -->
+  <div class="state">
+    <div class="state-label"><div class="sn">4</div>Approved — ready to save</div>
+    <div class="panel">
+      <div class="ph">
+        <div class="ph-title">🌉 Suspension Bridge</div>
+        <div class="ph-meta">landmarks · <span class="rarity rarity-r">Rare</span></div>
+      </div>
+      <div class="pb">
+        <div class="field-grid" style="margin-bottom:6px;">
+          <div class="field"><div class="field-label">Name</div><div class="field-value">Suspension Bridge</div></div>
+          <div class="field"><div class="field-label">Category</div><div class="field-value">landmarks</div></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Default Rarity</div>
+          <div class="chips"><div class="chip">V.Common</div><div class="chip">Common</div><div class="chip">Uncommon</div><div class="chip chip-r">Rare ✓</div><div class="chip">V.Rare</div></div>
+        </div>
+
+        <div class="sl">Description</div>
+        <div class="field" style="margin-bottom:8px;">
+          <div class="field-value" style="font-size:11px;">A large suspension bridge with tall steel towers and long hanging cables spanning a wide river gorge. Full structure visible.</div>
+        </div>
+
+        <div class="sl">Image</div>
+        <div class="img-section">
+          <div style="display:flex;gap:10px;align-items:center;">
+            <div class="img-box img-approved">🌉</div>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px;">✓ Image approved</div>
+              <button class="btn btn-ghost btn-sm">❆ Generate Again</button>
+            </div>
+          </div>
+          <div class="style-note">Prompt sent to Gemini: <strong>description</strong> + style constant</div>
+        </div>
+      </div>
+      <div class="pf">
+        <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(200,64,64,0.3);margin-right:auto;">🗑 Delete</button>
+        <button class="btn btn-ghost btn-sm">Cancel</button>
+        <button class="btn btn-green btn-sm">Save Changes</button>
+      </div>
+    </div>
+    <div class="callout">Save Changes is now active. <strong>Generate Again</strong> goes back to State 2 — no prompt editor, just fires immediately with the current description.</div>
+  </div>
+
+</div>
+
+</body>
+</html>
