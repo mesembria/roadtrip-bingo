@@ -185,79 +185,83 @@ final class SquarePoolTests: XCTestCase {
                     category: .vehicles, rarity: rarity)
     }
 
-    // Helper: make a TilePack with explicit overrides, exclusions, and exclusive tiles
-    private func pack(id: String = "test", overrides: [String: SquareRarity] = [:],
-                      excluded: [String] = [], tiles: [BingoSquare] = []) -> TilePack {
-        TilePack(id: id, name: id, description: "", imageName: "",
-                 tiles: tiles, rarityOverrides: overrides, excludedTileIDs: excluded)
+    // Helper: make a TilePack with explicit {id, rarity} tile refs
+    private func pack(id: String = "test", tileRefs: [(String, SquareRarity)] = []) -> TilePack {
+        let refs = tileRefs.map { PackTileRef(id: $0.0, rarity: $0.1) }
+        return TilePack(id: id, name: id, description: "", imageName: "", tiles: refs)
     }
 
     func test_buildPool_emptyPacksReturnsBaseUnchanged() {
-        let base = [square("00000000-0000-0000-0000-000000000001", rarity: .common)]
+        let id1 = "00000000-0000-0000-0000-000000000001"
+        let base = [square(id1, rarity: .common)]
         let result = SquarePool.buildPool(base: base, activePacks: [])
         XCTAssertEqual(result.count, 1)
         XCTAssertEqual(result[0].rarity, .common)
     }
 
-    func test_buildPool_appliesRarityOverride() {
-        let tractorID = "4A495FE0-B728-477D-8863-FD00E9140BB6"
-        let base = [square(tractorID, rarity: .uncommon, text: "Tractor")]
-        let farmPack = pack(overrides: [tractorID: .veryCommon])
-        let result = SquarePool.buildPool(base: base, activePacks: [farmPack])
-        XCTAssertEqual(result.first?.rarity, .veryCommon)
+    func test_buildPool_onlyIncludesReferencedTiles() {
+        let id1 = "00000000-0000-0000-0000-000000000001"
+        let id2 = "00000000-0000-0000-0000-000000000002"
+        let id3 = "00000000-0000-0000-0000-000000000003"
+        let base = [
+            square(id1, rarity: .common, text: "A"),
+            square(id2, rarity: .common, text: "B"),
+            square(id3, rarity: .common, text: "C"),
+        ]
+        let p = pack(tileRefs: [(id1, .common), (id3, .common)])
+        let result = SquarePool.buildPool(base: base, activePacks: [p])
+        XCTAssertEqual(result.count, 2)
+        XCTAssertTrue(result.contains { $0.text == "A" })
+        XCTAssertTrue(result.contains { $0.text == "C" })
+        XCTAssertFalse(result.contains { $0.text == "B" },
+                       "Tile not in pack's refs must not appear in pool")
     }
 
-    func test_buildPool_mostCommonWinsWhenTwoPacksOverrideSameTile() {
+    func test_buildPool_appliesPackRarity() {
+        let tractorID = "4A495FE0-B728-477D-8863-FD00E9140BB6"
+        let base = [square(tractorID, rarity: .uncommon, text: "Tractor")]
+        let farmPack = pack(tileRefs: [(tractorID, .veryCommon)])
+        let result = SquarePool.buildPool(base: base, activePacks: [farmPack])
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result.first?.rarity, .veryCommon,
+                       "Pack-specific rarity should override tile's default rarity")
+    }
+
+    func test_buildPool_sameRarityReturnsSameTileObject() {
+        // When pack rarity == tile's default rarity, the original BingoSquare is returned
+        let id = "4A495FE0-B728-477D-8863-FD00E9140BB6"
+        let base = [square(id, rarity: .common, text: "Tractor")]
+        let p = pack(tileRefs: [(id, .common)])
+        let result = SquarePool.buildPool(base: base, activePacks: [p])
+        XCTAssertEqual(result.first?.text, "Tractor")
+        XCTAssertEqual(result.first?.rarity, .common)
+    }
+
+    func test_buildPool_mostCommonWinsWhenTwoPacksReferSameTile() {
         let id = "4A495FE0-B728-471D-8863-FD00E9140BB6"
         let base = [square(id, rarity: .uncommon)]
-        let pack1 = pack(id: "a", overrides: [id: .common])
-        let pack2 = pack(id: "b", overrides: [id: .veryCommon])
+        let pack1 = pack(id: "a", tileRefs: [(id, .common)])
+        let pack2 = pack(id: "b", tileRefs: [(id, .veryCommon)])
         let result = SquarePool.buildPool(base: base, activePacks: [pack1, pack2])
         XCTAssertEqual(result.first?.rarity, .veryCommon,
                        "veryCommon should beat common under most-common-wins")
     }
 
-    func test_buildPool_excludesTileFromAnyActivePack() {
-        let excludedID = "3DE3F367-3105-4F8B-A89D-2F134E21D01D"
-        let base = [
-            square(excludedID, rarity: .veryCommon, text: "Subway"),
-            square("11111111-1111-1111-1111-111111111111", rarity: .common, text: "Other")
-        ]
-        let p = pack(excluded: [excludedID])
+    func test_buildPool_unknownRefIDIsIgnored() {
+        let validID = "00000000-0000-0000-0000-000000000001"
+        let base = [square(validID, rarity: .common)]
+        let p = pack(tileRefs: [(validID, .common), ("not-a-uuid", .rare)])
         let result = SquarePool.buildPool(base: base, activePacks: [p])
-        XCTAssertFalse(result.contains { $0.id.uuidString == excludedID })
-        XCTAssertEqual(result.count, 1)
-        XCTAssertEqual(result[0].text, "Other")
+        XCTAssertEqual(result.count, 1, "Malformed UUID in pack ref should be silently ignored")
     }
 
-    func test_buildPool_appendsExclusiveTiles() {
-        let base = [square("11111111-1111-1111-1111-111111111111", rarity: .common)]
-        let exclusive = BingoSquare(id: UUID(), text: "Combine Harvester", emoji: nil,
-                                    category: .vehicles, rarity: .veryCommon)
-        let p = pack(tiles: [exclusive])
+    func test_buildPool_refToNonExistentTileIsIgnored() {
+        let existingID = "00000000-0000-0000-0000-000000000001"
+        let missingID  = "00000000-0000-0000-0000-000000000099"
+        let base = [square(existingID, rarity: .common)]
+        let p = pack(tileRefs: [(existingID, .common), (missingID, .rare)])
         let result = SquarePool.buildPool(base: base, activePacks: [p])
-        XCTAssertEqual(result.count, 2)
-        XCTAssertTrue(result.contains { $0.text == "Combine Harvester" })
-    }
-
-    func test_buildPool_exclusionAndOverrideAreCombined() {
-        let excludedID = "3DE3F367-3105-4F8B-A89D-2F134E21D01D"
-        let overriddenID = "4A495FE0-B728-471D-8863-FD00E9140BB6"
-        let base = [
-            square(excludedID, rarity: .veryCommon, text: "Subway"),
-            square(overriddenID, rarity: .uncommon, text: "Tractor")
-        ]
-        let p = pack(overrides: [overriddenID: .veryCommon], excluded: [excludedID])
-        let result = SquarePool.buildPool(base: base, activePacks: [p])
-        XCTAssertEqual(result.count, 1)
-        XCTAssertEqual(result[0].text, "Tractor")
-        XCTAssertEqual(result[0].rarity, .veryCommon)
-    }
-
-    func test_buildPool_withRealBasePool_doesNotShrinkBelowUsableSize() {
-        let base = SquarePool.load()
-        // With no packs: pool should be unchanged
-        let result = SquarePool.buildPool(base: base, activePacks: [])
-        XCTAssertEqual(result.count, base.count)
+        XCTAssertEqual(result.count, 1,
+                       "Ref to a tile not in base should be silently ignored")
     }
 }

@@ -102,42 +102,38 @@ enum SquarePool {
         return w
     }
 
-    /// Combines the base pool with active packs:
-    /// 1. Removes base tiles excluded by any active pack (union of all exclusions).
-    /// 2. Applies rarity overrides with most-common-wins when packs conflict.
-    /// 3. Appends pack-exclusive tiles from all active packs.
+    /// Combines the base pool with a set of active packs.
     ///
-    /// When `activePacks` is empty, returns `base` unmodified.
+    /// Each pack carries an explicit, curated tile list as `{id, rarity}` refs.
+    /// A tile must be referenced by at least one active pack to appear in the result;
+    /// tiles in `base` but not referenced by any pack are excluded.
+    ///
+    /// When two active packs reference the same tile with different rarities,
+    /// the most-common rarity wins (most-common-wins rule).
+    ///
+    /// When `activePacks` is empty, returns `base` unmodified (base game with no pack active).
     static func buildPool(base: [BingoSquare], activePacks: [TilePack]) -> [BingoSquare] {
         guard !activePacks.isEmpty else { return base }
 
-        // 1. Build exclusion set from all active packs
-        let excludedIDs = Set(activePacks.flatMap { $0.excludedTileIDs }
-                                         .compactMap { UUID(uuidString: $0) })
+        // Build a fast lookup: UUID → BingoSquare
+        let baseByID = Dictionary(uniqueKeysWithValues: base.map { ($0.id, $0) })
 
-        // 2. Build override map: UUID → most-common rarity across all active packs
-        var overrideMap: [UUID: SquareRarity] = [:]
+        // Resolve all tile refs: UUID → most-common rarity across all active packs
+        var resolved: [UUID: SquareRarity] = [:]
         for pack in activePacks {
-            for (idString, rarity) in pack.rarityOverrides {
-                guard let id = UUID(uuidString: idString) else { continue }
-                overrideMap[id] = overrideMap[id].map { mostCommon($0, rarity) } ?? rarity
+            for ref in pack.tiles {
+                guard let id = UUID(uuidString: ref.id) else { continue }
+                resolved[id] = resolved[id].map { mostCommon($0, ref.rarity) } ?? ref.rarity
             }
         }
 
-        // 3. Filter exclusions and apply overrides to base tiles
-        let filteredBase: [BingoSquare] = base
-            .filter { !excludedIDs.contains($0.id) }
-            .map { square in
-                guard let newRarity = overrideMap[square.id] else { return square }
-                return BingoSquare(id: square.id, text: square.text, emoji: square.emoji,
-                                   category: square.category, rarity: newRarity)
-            }
-
-        // 4. Append exclusive tiles from all active packs (deduplicated by UUID)
-        var seenIDs = Set(filteredBase.map(\.id))
-        let exclusiveTiles = activePacks.flatMap { $0.tiles }.filter { seenIDs.insert($0.id).inserted }
-
-        return filteredBase + exclusiveTiles
+        // Map each resolved ref to a BingoSquare, applying pack rarity when different
+        return resolved.compactMap { id, rarity in
+            guard let tile = baseByID[id] else { return nil }
+            if tile.rarity == rarity { return tile }
+            return BingoSquare(id: tile.id, text: tile.text, emoji: tile.emoji,
+                               category: tile.category, rarity: rarity)
+        }
     }
 
     /// Returns the rarity that is further toward veryCommon.
