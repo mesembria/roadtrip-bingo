@@ -6,100 +6,75 @@
   "tiles": [
     {
       "id": "A567E170-5E12-459A-B3E7-A552CB7D7388",
-      "text": "State Capitol",
-      "emoji": "🏛️",
-      "category": "landmarks",
-      "rarity": "veryRare",
-      "description": "A grand state capitol building with a large golden dome and tall stone columns out front"
+      "rarity": "veryRare"
     },
     {
       "id": "6213065F-B829-37B8-B10C-85A97907D061",
-      "text": "Yellow Taxi",
-      "emoji": "🚕",
-      "category": "vehicles",
-      "rarity": "uncommon",
-      "description": "A yellow New York-style taxi cab with a rooftop taxi sign driving on a city street"
+      "rarity": "common"
     },
     {
       "id": "20D6D1E7-BA9F-3471-B7EB-A157D72C7244",
-      "text": "Skyscraper",
-      "emoji": "🏙️",
-      "category": "landmarks",
-      "rarity": "veryCommon",
-      "description": "Gleaming glass and steel skyscraper towers clustered together in a city skyline"
+      "rarity": "veryCommon"
     },
     {
       "id": "A60758E5-C8CE-3DE2-BAE7-8993CD7F963A",
-      "text": "Street Food Cart",
-      "emoji": "🌭",
-      "category": "food",
-      "rarity": "uncommon",
-      "description": "A food cart vendor with a colorful umbrella selling hot dogs or pretzels on a city sidewalk"
+      "rarity": "uncommon"
     },
     {
       "id": "0ADD601C-7BE3-3CC8-A5B2-0CE9C608CC57",
-      "text": "One-Way Street Sign",
-      "emoji": "↗️",
-      "category": "signs",
-      "rarity": "common",
-      "description": "A white rectangular road sign with a bold black arrow and the words 'ONE WAY'"
+      "rarity": "common"
     },
     {
       "id": "E85E47BC-8DFA-3E6B-BEF1-26FB174F1C90",
-      "text": "Parking Garage",
-      "emoji": "🅿️",
-      "category": "landmarks",
-      "rarity": "common",
-      "description": "A multi-story concrete parking garage with cars visible on each open floor level"
+      "rarity": "common"
     },
     {
       "id": "C0F193C0-8F50-3677-930B-2DBE16ADC811",
-      "text": "City Mural",
-      "emoji": "🎨",
-      "category": "landmarks",
-      "rarity": "uncommon",
-      "description": "A large colorful painted mural covering the entire side of a city building"
+      "rarity": "uncommon"
     },
     {
       "id": "798C809A-F953-397E-9DC0-9FEAA60276CE",
-      "text": "Subway Entrance",
-      "emoji": "🚇",
-      "category": "landmarks",
-      "rarity": "uncommon",
-      "description": "A set of stairs leading underground with a green metal subway entrance sign above"
+      "rarity": "uncommon"
     },
     {
       "id": "66852A88-CC90-3CC3-BF71-2A993BFAEEFA",
-      "text": "Bike Share Station",
-      "emoji": "🚲",
-      "category": "landmarks",
-      "rarity": "common",
-      "description": "A row of identical bikes docked in a bike share station on a city sidewalk"
+      "rarity": "common"
+    },
+    {
+      "id": "170DDCD4-5B1C-4A27-AF08-3EFE0F723A94",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "537CBB6C-15E0-49AE-A2C9-7F4E5D0804F2",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "F50FE702-488F-44D8-9173-D2BFDA251793",
+      "rarity": "common"
+    },
+    {
+      "id": "686F9B09-BB0F-4890-A32D-1EAE02656756",
+      "rarity": "common"
+    },
+    {
+      "id": "6296D382-C8DD-406B-92FA-D53A490DCCB2",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "D598618B-F39A-4D8D-B456-58F75264ECE9",
+      "rarity": "common"
+    },
+    {
+      "id": "A4817B0E-0016-49C9-B685-4A1B0F29EA81",
+      "rarity": "common"
+    },
+    {
+      "id": "3DE3F367-3105-4F8B-A89D-2F134E21D01D",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "B23F16C4-D19A-4D6C-A61A-3D6A65E86DE1",
+      "rarity": "rare"
     }
-  ],
-  "rarityOverrides": {
-    "170DDCD4-5B1C-4A27-AF08-3EFE0F723A94": "veryCommon",
-    "537CBB6C-15E0-49AE-A2C9-7F4E5D0804F2": "veryCommon",
-    "F50FE702-488F-44D8-9173-D2BFDA251793": "common",
-    "686F9B09-BB0F-4890-A32D-1EAE02656756": "common",
-    "6296D382-C8DD-406B-92FA-D53A490DCCB2": "veryCommon",
-    "D598618B-F39A-4D8D-B456-58F75264ECE9": "common",
-    "A4817B0E-0016-49C9-B685-4A1B0F29EA81": "veryCommon",
-    "3DE3F367-3105-4F8B-A89D-2F134E21D01D": "veryCommon",
-    "B23F16C4-D19A-4D6C-A61A-3D6A65E86DE1": "rare",
-    "7300A8FD-19F6-4524-99E8-E87FDFA04005": "veryRare",
-    "621A699E-7B91-46C8-AB53-BBFB2E21BE77": "veryRare",
-    "0C4928A8-0141-4F56-B187-7D4F7F659AA7": "veryRare"
-  },
-  "excludedTileIDs": [
-    "4A495FE0-B728-477D-8863-FD00E9140BB6",
-    "725B6E6E-33F5-413E-831B-1B0A79B00A99",
-    "1532CC43-DDA7-400A-BFD0-0ADD8874D565",
-    "3055B218-5E2B-4574-A83B-9EDD80E79E8F",
-    "2CC48DD8-1D89-4F17-9E5C-9ABB1571082A",
-    "931D476C-1FF5-4214-B20F-CEBF7B299C86",
-    "3F4CEAFE-E45F-4D18-846A-4F5FE6EF9E59",
-    "A4636DA8-1049-4F64-81E4-6DFBED0AD14E",
-    "0699DCDE-E093-4EFA-9EB6-7EA71DA6C220"
   ]
 }

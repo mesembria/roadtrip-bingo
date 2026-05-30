@@ -6,75 +6,67 @@
   "tiles": [
     {
       "id": "F1A00001-0000-0000-0000-000000000010",
-      "text": "Zigzag Mountain Road",
-      "emoji": "🛣️",
-      "category": "landmarks",
-      "rarity": "common",
-      "description": "A steep mountain road with sharp hairpin switchback turns zigzagging up a rocky slope"
+      "rarity": "common"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000011",
-      "text": "Mountain Stream",
-      "emoji": "💧",
-      "category": "nature",
-      "rarity": "common",
-      "description": "A clear cold mountain stream tumbling over mossy rocks through a pine forest"
+      "rarity": "common"
     },
     {
       "id": "A2C0272D-0B98-3147-B23F-8D25A6230917",
-      "text": "Waterfall by Road",
-      "emoji": "💦",
-      "category": "nature",
-      "rarity": "uncommon",
-      "description": "A waterfall spilling down a rocky cliff face right beside a narrow mountain road"
+      "rarity": "uncommon"
     },
     {
       "id": "1AE6E43B-029D-3776-8BE2-29B18AB4D903",
-      "text": "Mountain Goat",
-      "emoji": "🐐",
-      "category": "nature",
-      "rarity": "rare",
-      "description": "A white mountain goat with short curved horns standing on a narrow rocky cliff ledge"
+      "rarity": "veryRare"
     },
     {
       "id": "DC5571A7-8015-37E7-918F-10C9ED873906",
-      "text": "Snowplow",
-      "emoji": "❄️",
-      "category": "vehicles",
-      "rarity": "uncommon",
-      "description": "An orange snowplow truck pushing a large wall of snow off a mountain road"
+      "rarity": "uncommon"
     },
     {
       "id": "96FBDFB3-BC29-3026-B150-7A28B1EDC3B8",
-      "text": "Alpine Meadow",
-      "emoji": "🌄",
-      "category": "nature",
-      "rarity": "common",
-      "description": "A wide open mountain meadow full of colorful wildflowers with snowy peaks in the background"
+      "rarity": "rare"
     },
     {
       "id": "B360FA15-6DA3-38B1-91F9-1EB84E03C09B",
-      "text": "Ski Slope Visible",
-      "emoji": "⛷️",
-      "category": "landmarks",
-      "rarity": "uncommon",
-      "description": "A wide ski run cut as a clear stripe through pine trees on a mountain slope, seen from a distance"
+      "rarity": "uncommon"
+    },
+    {
+      "id": "1CA02B04-B431-467D-A705-D64A1CA3D9F7",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "3123E8B9-FD3E-4DC4-A370-4E1E13F95F40",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "60F03332-B413-4CBF-83C8-A65B266C65D0",
+      "rarity": "common"
+    },
+    {
+      "id": "87D08710-197C-4864-BE1A-C03FA82435E6",
+      "rarity": "common"
+    },
+    {
+      "id": "05150C84-9A42-4F02-9FA8-685C4881A307",
+      "rarity": "rare"
+    },
+    {
+      "id": "75077334-D3F1-40CA-B3C2-E8481BE4EAB6",
+      "rarity": "uncommon"
+    },
+    {
+      "id": "321FA7B9-C0A4-42FD-8AB8-F0A3CB768041",
+      "rarity": "common"
+    },
+    {
+      "id": "B492D74A-9B0D-4149-AD42-C6C720808A22",
+      "rarity": "common"
+    },
+    {
+      "id": "80067278-3DC2-425E-BD95-DCD19E535633",
+      "rarity": "common"
     }
-  ],
-  "rarityOverrides": {
-    "1CA02B04-B431-467D-A705-D64A1CA3D9F7": "veryCommon",
-    "3123E8B9-FD3E-4DC4-A370-4E1E13F95F40": "veryCommon",
-    "60F03332-B413-4CBF-83C8-A65B266C65D0": "common",
-    "87D08710-197C-4864-BE1A-C03FA82435E6": "common",
-    "05150C84-9A42-4F02-9FA8-685C4881A307": "rare",
-    "75077334-D3F1-40CA-B3C2-E8481BE4EAB6": "uncommon",
-    "321FA7B9-C0A4-42FD-8AB8-F0A3CB768041": "common",
-    "B492D74A-9B0D-4149-AD42-C6C720808A22": "common",
-    "80067278-3DC2-425E-BD95-DCD19E535633": "common"
-  },
-  "excludedTileIDs": [
-    "3DE3F367-3105-4F8B-A89D-2F134E21D01D",
-    "1532CC43-DDA7-400A-BFD0-0ADD8874D565",
-    "3055B218-5E2B-4574-A83B-9EDD80E79E8F"
   ]
 }

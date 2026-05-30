@@ -6,47 +6,43 @@
   "tiles": [
     {
       "id": "F1A00001-0000-0000-0000-000000000020",
-      "text": "Surf Shop",
-      "emoji": "🏄",
-      "category": "landmarks",
-      "rarity": "common",
-      "description": "A colorful surf shop with surfboards in every color leaning against the outside walls"
+      "rarity": "common"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000021",
-      "text": "Lifeguard Tower",
-      "emoji": "🚨",
-      "category": "landmarks",
-      "rarity": "common",
-      "description": "A tall wooden lifeguard tower on a sandy beach with a red flag on top and an ocean view"
+      "rarity": "common"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000022",
-      "text": "Seagull Flock",
-      "emoji": "🐦",
-      "category": "nature",
-      "rarity": "veryCommon",
-      "description": "A large flock of white and gray seagulls swooping low over a sandy beach or shoreline"
+      "rarity": "veryCommon"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000023",
-      "text": "Pier",
-      "emoji": "🎣",
-      "category": "landmarks",
-      "rarity": "common",
-      "description": "A long wooden pier stretching out over calm blue water with people fishing from the end"
+      "rarity": "common"
+    },
+    {
+      "id": "D598618B-F39A-4D8D-B456-58F75264ECE9",
+      "rarity": "common"
+    },
+    {
+      "id": "1FA254CD-692C-47EC-9716-44C1712F42F3",
+      "rarity": "common"
+    },
+    {
+      "id": "E044FC0C-DE73-4F07-9812-45FE6AA69E63",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "80067278-3DC2-425E-BD95-DCD19E535633",
+      "rarity": "common"
+    },
+    {
+      "id": "3EC043CB-6069-4CFB-9F1E-73068068A53C",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "CE3A8924-5C4F-499C-BA33-322CCAF2593B",
+      "rarity": "veryCommon"
     }
-  ],
-  "rarityOverrides": {
-    "D598618B-F39A-4D8D-B456-58F75264ECE9": "common",
-    "1FA254CD-692C-47EC-9716-44C1712F42F3": "common",
-    "E044FC0C-DE73-4F07-9812-45FE6AA69E63": "veryCommon",
-    "80067278-3DC2-425E-BD95-DCD19E535633": "common",
-    "3EC043CB-6069-4CFB-9F1E-73068068A53C": "veryCommon",
-    "CE3A8924-5C4F-499C-BA33-322CCAF2593B": "veryCommon"
-  },
-  "excludedTileIDs": [
-    "1CA02B04-B431-467D-A705-D64A1CA3D9F7",
-    "4A495FE0-B728-477D-8863-FD00E9140BB6"
   ]
 }

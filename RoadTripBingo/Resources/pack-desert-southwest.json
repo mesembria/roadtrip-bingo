@@ -6,66 +6,55 @@
   "tiles": [
     {
       "id": "F1A00001-0000-0000-0000-000000000030",
-      "text": "Saguaro Cactus",
-      "emoji": "🌵",
-      "category": "nature",
-      "rarity": "veryCommon",
-      "description": "A very tall green saguaro cactus with two arms curving upward against a blazing orange sky"
+      "rarity": "veryCommon"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000031",
-      "text": "Trading Post Sign",
-      "emoji": "🪶",
-      "category": "signs",
-      "rarity": "uncommon",
-      "description": "A rustic weathered wooden roadside sign for a Native American trading post with painted symbols"
+      "rarity": "uncommon"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000032",
-      "text": "Dry Riverbed",
-      "emoji": "🏜️",
-      "category": "nature",
-      "rarity": "common",
-      "description": "A wide sandy dry riverbed with smooth rounded rocks and no water, running through desert scrub"
+      "rarity": "common"
     },
     {
       "id": "B957584E-97A2-4DBB-B421-A80D1832D7C5",
-      "text": "Dust Devil",
-      "emoji": "🌀",
-      "category": "weather",
-      "rarity": "rare",
-      "description": "A spinning column of dust and debris swirling upward like a small tornado on a flat desert plain"
+      "rarity": "rare"
     },
     {
       "id": "EFDF3832-1699-449C-A7B5-124E44366CE9",
-      "text": "Dust Storm",
-      "emoji": "🌪️",
-      "category": "weather",
-      "rarity": "veryRare",
-      "description": "A massive brown wall of blowing dust called a haboob rolling across a desert landscape"
+      "rarity": "veryRare"
     },
     {
       "id": "7CBDA785-2C75-4C5A-8599-F992A1A8FDAF",
-      "text": "Ghost Town",
-      "emoji": "👻",
-      "category": "landmarks",
-      "rarity": "veryRare",
-      "description": "Abandoned wooden buildings with broken windows and a dusty empty main street"
+      "rarity": "veryRare"
+    },
+    {
+      "id": "65FAFD7F-384F-43B2-B90A-300A844F79D0",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "B7ED7D37-B022-45D6-8FFE-B8FA780B6684",
+      "rarity": "common"
+    },
+    {
+      "id": "944B6E26-F677-455F-B087-9D883297CF5B",
+      "rarity": "common"
+    },
+    {
+      "id": "E044FC0C-DE73-4F07-9812-45FE6AA69E63",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "75077334-D3F1-40CA-B3C2-E8481BE4EAB6",
+      "rarity": "uncommon"
+    },
+    {
+      "id": "C2738543-1B62-4D94-A914-3ECF040D81D0",
+      "rarity": "common"
+    },
+    {
+      "id": "BA705AAF-0D8B-43EE-8DA9-476B3E5A97D0",
+      "rarity": "veryCommon"
     }
-  ],
-  "rarityOverrides": {
-    "65FAFD7F-384F-43B2-B90A-300A844F79D0": "veryCommon",
-    "B7ED7D37-B022-45D6-8FFE-B8FA780B6684": "common",
-    "944B6E26-F677-455F-B087-9D883297CF5B": "common",
-    "E044FC0C-DE73-4F07-9812-45FE6AA69E63": "veryCommon",
-    "75077334-D3F1-40CA-B3C2-E8481BE4EAB6": "uncommon",
-    "C2738543-1B62-4D94-A914-3ECF040D81D0": "common",
-    "BA705AAF-0D8B-43EE-8DA9-476B3E5A97D0": "veryCommon"
-  },
-  "excludedTileIDs": [
-    "1CA02B04-B431-467D-A705-D64A1CA3D9F7",
-    "3DE3F367-3105-4F8B-A89D-2F134E21D01D",
-    "3055B218-5E2B-4574-A83B-9EDD80E79E8F",
-    "1532CC43-DDA7-400A-BFD0-0ADD8874D565"
   ]
 }

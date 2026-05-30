@@ -6,51 +6,63 @@
   "tiles": [
     {
       "id": "F1A00001-0000-0000-0000-000000000001",
-      "text": "Combine Harvester",
-      "emoji": "🌾",
-      "category": "vehicles",
-      "rarity": "veryCommon",
-      "description": "A large yellow combine harvester cutting through a golden wheat or corn field"
+      "rarity": "veryCommon"
     },
     {
       "id": "F1A00001-0000-0000-0000-000000000002",
-      "text": "Giant Circular Sprinkler",
-      "emoji": "💧",
-      "category": "landmarks",
-      "rarity": "common",
-      "description": "A huge center-pivot irrigation system making a perfect green circle in a dry brown field, seen from above"
+      "rarity": "common"
     },
     {
       "id": "FA75C56E-321A-4958-9F9A-050CA316AB90",
-      "text": "Pier",
-      "emoji": "🎣",
-      "category": "landmarks",
-      "rarity": "common",
-      "description": "A small wooden dock extending out over a quiet farm pond surrounded by fields"
+      "rarity": "common"
     },
     {
       "id": "A14147C1-EDE5-4762-9302-0D4EEE5E9E2D",
-      "text": "Grain Silo",
-      "emoji": "🏠",
-      "category": "landmarks",
-      "rarity": "common",
-      "description": "A tall round silver metal grain silo standing beside a red barn on a flat farm"
+      "rarity": "common"
+    },
+    {
+      "id": "4A495FE0-B728-477D-8863-FD00E9140BB6",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "2AB6C54B-DEAD-401A-BCE8-B5E4F50AE481",
+      "rarity": "common"
+    },
+    {
+      "id": "744CE9F9-887F-460D-B022-262622D6BAB1",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "725B6E6E-33F5-413E-831B-1B0A79B00A99",
+      "rarity": "common"
+    },
+    {
+      "id": "814EBF76-AD02-4C8D-9943-DC94892B3B1D",
+      "rarity": "common"
+    },
+    {
+      "id": "BF9F37F8-B798-41D5-9669-9B55BC69A4F1",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "E17D0F7E-2FC8-489F-84F5-4CE627C31BE0",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "E7AA2D29-1891-4662-9FA3-8E021212A14A",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "6DA38EF8-1586-4C66-A554-EC4E49CBE8F1",
+      "rarity": "veryCommon"
+    },
+    {
+      "id": "507FA95C-5CEB-40D3-B4E2-EEC40DDE2135",
+      "rarity": "uncommon"
+    },
+    {
+      "id": "621A699E-7B91-46C8-AB53-BBFB2E21BE77",
+      "rarity": "veryCommon"
     }
-  ],
-  "rarityOverrides": {
-    "4A495FE0-B728-477D-8863-FD00E9140BB6": "veryCommon",
-    "2AB6C54B-DEAD-401A-BCE8-B5E4F50AE481": "common",
-    "744CE9F9-887F-460D-B022-262622D6BAB1": "veryCommon",
-    "725B6E6E-33F5-413E-831B-1B0A79B00A99": "common",
-    "814EBF76-AD02-4C8D-9943-DC94892B3B1D": "common",
-    "BF9F37F8-B798-41D5-9669-9B55BC69A4F1": "veryCommon",
-    "E17D0F7E-2FC8-489F-84F5-4CE627C31BE0": "veryCommon",
-    "E7AA2D29-1891-4662-9FA3-8E021212A14A": "veryCommon",
-    "6DA38EF8-1586-4C66-A554-EC4E49CBE8F1": "veryCommon",
-    "507FA95C-5CEB-40D3-B4E2-EEC40DDE2135": "uncommon",
-    "621A699E-7B91-46C8-AB53-BBFB2E21BE77": "veryCommon"
-  },
-  "excludedTileIDs": [
-    "3DE3F367-3105-4F8B-A89D-2F134E21D01D"
   ]
 }
