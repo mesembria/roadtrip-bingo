@@ -8,6 +8,7 @@ Opens a browser UI for managing tiles in squares.json and TileImages/.
 import base64, json, os, sys, uuid, webbrowser
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 try:
     import requests
@@ -1717,7 +1718,6 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             pack_id = path[len("/api/packs/"):]
             self._handle_get_pack(pack_id)
         elif path == "/api/description-prefill":
-            from urllib.parse import parse_qs, urlparse
             qs = parse_qs(urlparse(self.path).query)
             name     = qs.get("name",     [""])[0]
             category = qs.get("category", [""])[0]
@@ -1800,7 +1800,7 @@ class TileManagerHandler(BaseHTTPRequestHandler):
                 self.send_error_json(404, f"Tile {body['tile_id']!r} not found")
                 return
             prompt = build_prompt(tile)
-        elif "description" in body:
+        elif body.get("description"):
             prompt = build_prompt({
                 "description": body["description"],
                 "text": body.get("name", ""),
@@ -1890,16 +1890,14 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             return
         save_tiles(new_tiles)
         # Remove from all packs that reference this tile
-        for path in sorted(PACKS_DIR.glob("pack-*.json")):
+        for pack_path in sorted(PACKS_DIR.glob("pack-*.json")):
+            pack_id = pack_path.stem[len("pack-"):]   # e.g. "pack-mountains" → "mountains"
             try:
-                with open(path, encoding="utf-8") as f:
-                    pack = json.load(f)
+                pack = load_pack(pack_id)
                 original_count = len(pack.get("tiles", []))
                 pack["tiles"] = [r for r in pack.get("tiles", []) if r["id"] != tile_id]
                 if len(pack["tiles"]) < original_count:
-                    with open(path, "w", encoding="utf-8") as f:
-                        json.dump(pack, f, indent=2, sort_keys=False, ensure_ascii=False)
-                        f.write("\n")
+                    save_pack(pack_id, pack)
             except Exception:
                 pass
         img = image_path(tile_id)

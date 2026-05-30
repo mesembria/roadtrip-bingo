@@ -46,6 +46,7 @@ def test_build_prompt_strips_trailing_period_from_description():
     tile = {"text": "Semi Truck", "category": "vehicles", "description": "A red truck."}
     result = tm.build_prompt(tile)
     assert "A red truck.." not in result
+    assert result.startswith("A red truck.")  # exactly one trailing period
 
 
 def test_build_prompt_capitalises_first_letter():
@@ -233,3 +234,91 @@ def test_generate_image_passes_api_key_in_url():
         tm.generate_image("prompt", "my-secret-key")
     called_url = mock_post.call_args.args[0]
     assert "my-secret-key" in called_url
+
+
+# ── Handler logic integration tests ───────────────────────────────────────────
+
+def test_delete_tile_removes_from_pack(tmp_path):
+    """Deleting a tile should remove its ref from all packs."""
+    tiles = [{"id": "DEL-001", "text": "Thing", "emoji": "🎯",
+              "category": "nature", "rarity": "common"}]
+    pack_data = {"id": "test", "name": "Test", "description": "",
+                 "imageName": "pack-test",
+                 "tiles": [{"id": "DEL-001", "rarity": "common"},
+                            {"id": "KEEP-001", "rarity": "rare"}]}
+    (tmp_path / "squares.json").write_text(json.dumps(tiles))
+    (tmp_path / "pack-test.json").write_text(json.dumps(pack_data))
+
+    with patch.object(tm, "SQUARES_JSON", tmp_path / "squares.json"), \
+         patch.object(tm, "PACKS_DIR", tmp_path), \
+         patch.object(tm, "TILE_IMAGES", tmp_path):
+        # Simulate the cascade delete logic
+        tile_id = "DEL-001"
+        loaded = tm.load_tiles()
+        new_tiles = [t for t in loaded if t["id"] != tile_id]
+        tm.save_tiles(new_tiles)
+        for pack_path in sorted(tmp_path.glob("pack-*.json")):
+            pack_id = pack_path.stem[len("pack-"):]
+            pack = tm.load_pack(pack_id)
+            orig = len(pack.get("tiles", []))
+            pack["tiles"] = [r for r in pack["tiles"] if r["id"] != tile_id]
+            if len(pack["tiles"]) < orig:
+                tm.save_pack(pack_id, pack)
+
+    result_tiles = json.loads((tmp_path / "squares.json").read_text())
+    assert len(result_tiles) == 0
+
+    result_pack = json.loads((tmp_path / "pack-test.json").read_text())
+    ref_ids = {r["id"] for r in result_pack["tiles"]}
+    assert "DEL-001" not in ref_ids
+    assert "KEEP-001" in ref_ids
+
+
+def test_tiles_not_in_pack_filters_correctly(tmp_path):
+    """tiles-not-in-pack should return only tiles not already in the pack."""
+    tiles = [
+        {"id": "AAA", "text": "In Pack", "emoji": "✅", "category": "nature", "rarity": "common"},
+        {"id": "BBB", "text": "Not In Pack", "emoji": "❌", "category": "nature", "rarity": "rare"},
+    ]
+    pack_data = {"id": "test", "name": "Test", "description": "", "imageName": "",
+                 "tiles": [{"id": "AAA", "rarity": "common"}]}
+    (tmp_path / "squares.json").write_text(json.dumps(tiles))
+    (tmp_path / "pack-test.json").write_text(json.dumps(pack_data))
+
+    with patch.object(tm, "SQUARES_JSON", tmp_path / "squares.json"), \
+         patch.object(tm, "PACKS_DIR", tmp_path):
+        pack = tm.load_pack("test")
+        pack_tile_ids = {ref["id"] for ref in pack.get("tiles", [])}
+        all_tiles = tm.load_tiles()
+        available = [t for t in all_tiles if t["id"] not in pack_tile_ids]
+
+    assert len(available) == 1
+    assert available[0]["id"] == "BBB"
+
+
+def test_add_tile_to_pack_via_membership(tmp_path):
+    """Adding a tile with packMembership should update the pack file."""
+    pack_data = {"id": "test", "name": "Test", "description": "", "imageName": "",
+                 "tiles": []}
+    (tmp_path / "squares.json").write_text("[]")
+    (tmp_path / "pack-test.json").write_text(json.dumps(pack_data))
+
+    new_tile_id = "NEW-TILE-001"
+    with patch.object(tm, "SQUARES_JSON", tmp_path / "squares.json"), \
+         patch.object(tm, "PACKS_DIR", tmp_path), \
+         patch.object(tm, "TILE_IMAGES", tmp_path):
+        # Simulate add_tile packMembership logic
+        tiles = tm.load_tiles()
+        tiles.append({"id": new_tile_id, "text": "New", "category": "vehicles", "rarity": "common"})
+        tm.save_tiles(tiles)
+        # Apply memberships
+        for membership in [{"packId": "test", "rarity": "veryCommon"}]:
+            pack = tm.load_pack(membership["packId"])
+            pack.setdefault("tiles", []).append({"id": new_tile_id, "rarity": membership["rarity"]})
+            tm.save_pack(membership["packId"], pack)
+
+    result_pack = json.loads((tmp_path / "pack-test.json").read_text())
+    ref_ids = [r["id"] for r in result_pack["tiles"]]
+    assert new_tile_id in ref_ids
+    ref = next(r for r in result_pack["tiles"] if r["id"] == new_tile_id)
+    assert ref["rarity"] == "veryCommon"
