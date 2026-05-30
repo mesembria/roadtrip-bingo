@@ -340,7 +340,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 
 /* ── Add-tile picker overlay ── */
 .picker-overlay { position: fixed; inset: 0; background: rgba(13,13,11,0.7); z-index: 100; display: flex; align-items: flex-start; justify-content: flex-end; }
-.picker-panel { width: 420px; height: 100%; background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.picker-panel { width: 420px; height: 100%; background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; animation: slideInRight 0.2s ease; }
+@keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
 .picker-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
 .picker-title { font-family: var(--font-display); font-size: 14px; color: var(--amber); }
 .picker-search { padding: 8px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
@@ -683,8 +684,9 @@ function renderDetailPanel() {
 
   const fieldsReady = S.isNewTile ? (S.edit.name && S.edit.category) : true;
 
+  const imgSectionStyle = (!fieldsReady) ? ' style="opacity:0.4;pointer-events:none"' : '';
   body.innerHTML = `
-    <div class="image-section">
+    <div class="image-section"${imgSectionStyle}>
       ${renderImageSection(fieldsReady)}
     </div>
     <div class="meta-section">
@@ -725,6 +727,13 @@ function renderImageSection(fieldsReady) {
           <button class="approve-btn" id="approve-btn">&#x2713; Use This Image</button>
           <button class="discard-btn" id="discard-btn">&#x2715; Discard</button>
         </div>
+      </div>`;
+  } else if (S.imgState === 'idle' && S.pendingB64 && S.isNewTile) {
+    // New tile with an approved image staged — show it
+    boxInner = `<img src="data:image/png;base64,${S.pendingB64}" alt="Staged image" style="width:100%;height:100%;object-fit:cover;display:block">
+      <div class="image-box-footer">
+        <span style="font-size:10px;color:var(--green)">Image staged ✓</span>
+        <button class="gen-btn" id="gen-btn" ${genDisabled}>❆ Generate Again</button>
       </div>`;
   } else if (imgUrl && !S.isNewTile) {
     boxInner = `<img src="${imgUrl}" alt="Tile image" onerror="this.parentElement.innerHTML='<div class=image-placeholder>No image</div>'">
