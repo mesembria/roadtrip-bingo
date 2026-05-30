@@ -889,9 +889,10 @@ function showPackPromptEditor() {
     if (ph)  { ph.style.display = ''; }
   }
   if (!window._packLastPrompt) {
+    const descEl = document.getElementById('pack-field-description');
     window._packLastPrompt = buildPrompt({
       text:        document.getElementById('pack-field-name').value.trim() || 'a tile',
-      description: (document.getElementById('pack-field-description') || {}).value || '',
+      description: descEl ? descEl.value.trim() : '',
       category:    document.getElementById('pack-field-category').value,
     });
   }
