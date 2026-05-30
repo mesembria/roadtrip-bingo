@@ -108,15 +108,12 @@ enum SquarePool {
     /// A tile must be referenced by at least one active pack to appear in the result;
     /// tiles in `base` but not referenced by any pack are excluded.
     ///
-    /// When two active packs reference the same tile with different rarities,
+    /// Tiles are returned in the same order as `base`. When two active packs reference the same tile with different rarities,
     /// the most-common rarity wins (most-common-wins rule).
     ///
     /// When `activePacks` is empty, returns `base` unmodified (base game with no pack active).
     static func buildPool(base: [BingoSquare], activePacks: [TilePack]) -> [BingoSquare] {
         guard !activePacks.isEmpty else { return base }
-
-        // Build a fast lookup: UUID → BingoSquare
-        let baseByID = Dictionary(uniqueKeysWithValues: base.map { ($0.id, $0) })
 
         // Resolve all tile refs: UUID → most-common rarity across all active packs
         var resolved: [UUID: SquareRarity] = [:]
@@ -127,9 +124,10 @@ enum SquarePool {
             }
         }
 
-        // Map each resolved ref to a BingoSquare, applying pack rarity when different
-        return resolved.compactMap { id, rarity in
-            guard let tile = baseByID[id] else { return nil }
+        // Map each tile in base (preserving order) to the pack-resolved rarity.
+        // Tiles not referenced by any pack are excluded.
+        return base.compactMap { tile in
+            guard let rarity = resolved[tile.id] else { return nil }
             if tile.rarity == rarity { return tile }
             return BingoSquare(id: tile.id, text: tile.text, emoji: tile.emoji,
                                category: tile.category, rarity: rarity)
