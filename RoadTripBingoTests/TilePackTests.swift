@@ -3,7 +3,7 @@ import XCTest
 
 final class TilePackTests: XCTestCase {
 
-    // Minimal valid pack JSON — mirrors the real pack file format
+    // New pack JSON format: tiles are {id, rarity} refs only
     private let farmJSON = """
     {
       "id": "farm-country",
@@ -11,19 +11,8 @@ final class TilePackTests: XCTestCase {
       "description": "Hay bales, open fields, livestock.",
       "imageName": "pack-farm-country",
       "tiles": [
-        {
-          "id": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
-          "text": "Combine Harvester",
-          "emoji": "🌾",
-          "category": "vehicles",
-          "rarity": "veryCommon"
-        }
-      ],
-      "rarityOverrides": {
-        "4A495FE0-B728-477D-8863-FD00E9140BB6": "veryCommon"
-      },
-      "excludedTileIDs": [
-        "3DE3F367-3105-4F8B-A89D-2F134E21D01D"
+        {"id": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA", "rarity": "veryCommon"},
+        {"id": "4A495FE0-B728-477D-8863-FD00E9140BB6", "rarity": "common"}
       ]
     }
     """
@@ -34,21 +23,13 @@ final class TilePackTests: XCTestCase {
         XCTAssertEqual(pack.name, "Farm Country")
     }
 
-    func test_decode_parsesExclusiveTiles() throws {
+    func test_decode_parsesTileRefs() throws {
         let pack = try JSONDecoder().decode(TilePack.self, from: Data(farmJSON.utf8))
-        XCTAssertEqual(pack.tiles.count, 1)
-        XCTAssertEqual(pack.tiles[0].text, "Combine Harvester")
+        XCTAssertEqual(pack.tiles.count, 2)
+        XCTAssertEqual(pack.tiles[0].id, "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")
         XCTAssertEqual(pack.tiles[0].rarity, .veryCommon)
-    }
-
-    func test_decode_parsesRarityOverrides() throws {
-        let pack = try JSONDecoder().decode(TilePack.self, from: Data(farmJSON.utf8))
-        XCTAssertEqual(pack.rarityOverrides["4A495FE0-B728-477D-8863-FD00E9140BB6"], .veryCommon)
-    }
-
-    func test_decode_parsesExcludedTileIDs() throws {
-        let pack = try JSONDecoder().decode(TilePack.self, from: Data(farmJSON.utf8))
-        XCTAssertEqual(pack.excludedTileIDs, ["3DE3F367-3105-4F8B-A89D-2F134E21D01D"])
+        XCTAssertEqual(pack.tiles[1].id, "4A495FE0-B728-477D-8863-FD00E9140BB6")
+        XCTAssertEqual(pack.tiles[1].rarity, .common)
     }
 
     func test_decode_emptyPackIsValid() throws {
@@ -58,15 +39,16 @@ final class TilePackTests: XCTestCase {
           "name": "Empty",
           "description": "Nothing.",
           "imageName": "pack-empty",
-          "tiles": [],
-          "rarityOverrides": {},
-          "excludedTileIDs": []
+          "tiles": []
         }
         """
         let pack = try JSONDecoder().decode(TilePack.self, from: Data(json.utf8))
         XCTAssertEqual(pack.id, "empty")
         XCTAssertTrue(pack.tiles.isEmpty)
-        XCTAssertTrue(pack.rarityOverrides.isEmpty)
-        XCTAssertTrue(pack.excludedTileIDs.isEmpty)
+    }
+
+    func test_decode_setsDescription() throws {
+        let pack = try JSONDecoder().decode(TilePack.self, from: Data(farmJSON.utf8))
+        XCTAssertEqual(pack.description, "Hay bales, open fields, livestock.")
     }
 }
