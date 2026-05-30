@@ -81,19 +81,26 @@ def migrate_pack(pack_data: dict, base_ids: set[str]) -> tuple[dict, list[dict]]
     new_tile_refs: list[dict] = []
 
     # Process exclusive tiles (tiles with 'text' key)
+    rarity_overrides = pack_data.get("rarityOverrides", {})
+    ref_ids_from_tiles: set[str] = set()
     for tile in pack_data.get("tiles", []):
         tile_id = tile["id"]
-        rarity = tile.get("rarity", "common")
+        # If an override exists for this tile, let the override rarity win
+        rarity = rarity_overrides.get(tile_id, tile.get("rarity", "common"))
         # Promote to squares.json if not already in base
         if tile_id not in base_ids:
             promoted_tiles.append(tile)
             promoted_ids.add(tile_id)
         # Always add as ref in the pack
         new_tile_refs.append({"id": tile_id, "rarity": rarity})
+        ref_ids_from_tiles.add(tile_id)
 
-    # Process rarity overrides — only include if tile is in base or just promoted
+    # Process rarity overrides — only include if tile is in base or just promoted,
+    # and skip any tile already added from the tiles[] loop (prevents duplicates)
     known_ids = base_ids | promoted_ids
-    for tile_id, rarity in pack_data.get("rarityOverrides", {}).items():
+    for tile_id, rarity in rarity_overrides.items():
+        if tile_id in ref_ids_from_tiles:
+            continue  # Already added with override rarity applied above
         if tile_id in known_ids:
             new_tile_refs.append({"id": tile_id, "rarity": rarity})
 

@@ -1,4 +1,5 @@
-import json, sys
+import json
+import sys
 from pathlib import Path
 from unittest.mock import patch
 import pytest
@@ -112,6 +113,41 @@ def test_migrate_pack_already_new_format_is_identity():
     assert result_pack == new_format
     assert promoted == []
 
+def test_migrate_pack_no_duplicate_when_tile_in_both_tiles_and_rarityOverrides():
+    """A tile UUID in both tiles[] and rarityOverrides must appear exactly once.
+    The override rarity should win."""
+    dual_pack = {
+        "id": "dual-pack",
+        "name": "Dual Pack",
+        "description": "Tests dual-tile scenario.",
+        "imageName": "pack-dual",
+        "tiles": [
+            {
+                "id": "DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD",
+                "text": "Windmill",
+                "emoji": "💨",
+                "category": "landmarks",
+                "rarity": "common",
+            }
+        ],
+        "rarityOverrides": {
+            "DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD": "rare",  # same tile, different rarity
+        },
+    }
+    new_pack, promoted = mp.migrate_pack(dual_pack, set())
+
+    # Tile must appear exactly once
+    ids_in_refs = [t["id"] for t in new_pack["tiles"]]
+    assert ids_in_refs.count("DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD") == 1
+
+    # Override rarity must win
+    ref = next(t for t in new_pack["tiles"] if t["id"] == "DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD")
+    assert ref["rarity"] == "rare"
+
+    # Tile should be promoted to squares.json since it wasn't in base_ids
+    assert len(promoted) == 1
+    assert promoted[0]["id"] == "DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD"
+
 
 # run_migration integration
 def test_run_migration_writes_new_format(tmp_path):
@@ -144,18 +180,35 @@ def test_run_migration_writes_new_format(tmp_path):
     assert len(result_squares) == 2
 
 def test_run_migration_idempotent(tmp_path):
-    new_format = {"id": "done", "name": "Done", "description": ".", "imageName": "x",
-                  "tiles": [{"id": "SOME-ID", "rarity": "common"}]}
-    (tmp_path / "squares.json").write_text("[]")
-    (tmp_path / "pack-done.json").write_text(json.dumps(new_format))
+    """Run migration on an old-format pack, then run again — output must be unchanged."""
+    squares = [{"id": "BASE-IDEM", "text": "Highway Sign", "emoji": "🛣️",
+                "category": "roads", "rarity": "common"}]
+    pack_data = {
+        "id": "idem-pack", "name": "Idempotent Pack", "description": "Test.", "imageName": "pack-idem",
+        "tiles": [{"id": "EXCL-IDEM", "text": "Barn", "emoji": "🏚️",
+                   "category": "farm", "rarity": "uncommon"}],
+        "rarityOverrides": {"BASE-IDEM": "veryCommon"},
+        "excludedTileIDs": [],
+    }
+    sq_path = tmp_path / "squares.json"
+    pk_path = tmp_path / "pack-idem-pack.json"
+    sq_path.write_text(json.dumps(squares))
+    pk_path.write_text(json.dumps(pack_data))
 
-    with patch.object(mp, "SQUARES_JSON", tmp_path / "squares.json"), \
+    with patch.object(mp, "SQUARES_JSON", sq_path), \
          patch.object(mp, "PACKS_DIR", tmp_path):
+        # First pass: migrates old format
         mp.run_migration()
-        mp.run_migration()
+        pack_after_first = pk_path.read_text()
+        squares_after_first = sq_path.read_text()
 
-    result = json.loads((tmp_path / "pack-done.json").read_text())
-    assert result == new_format
+        # Second pass: already new format, nothing should change
+        mp.run_migration()
+        pack_after_second = pk_path.read_text()
+        squares_after_second = sq_path.read_text()
+
+    assert pack_after_second == pack_after_first, "Pack changed on second migration run"
+    assert squares_after_second == squares_after_first, "squares.json changed on second migration run"
 
 def test_run_migration_dry_run_does_not_write(tmp_path):
     pack_data = {
