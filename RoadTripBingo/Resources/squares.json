@@ -1196,192 +1196,192 @@
     "text": "Large Plane"
   },
   {
-    "id": "20A927BB-05D8-376D-AE8F-A90B52EE40C8",
-    "text": "License Plate from Another State",
+    "category": "vehicles",
     "emoji": "🪪",
-    "category": "vehicles",
-    "rarity": "veryCommon"
+    "id": "20A927BB-05D8-376D-AE8F-A90B52EE40C8",
+    "rarity": "veryCommon",
+    "text": "License Plate from Another State"
   },
   {
-    "id": "EAE4E491-F2D1-3CAD-AAAC-7BD22D9ADDF7",
-    "text": "Lifted Truck",
+    "category": "vehicles",
     "emoji": "🛻",
-    "category": "vehicles",
-    "rarity": "common"
+    "id": "EAE4E491-F2D1-3CAD-AAAC-7BD22D9ADDF7",
+    "rarity": "common",
+    "text": "Lifted Truck"
   },
   {
-    "id": "6000EE0A-EC7E-3B46-85A0-13219E8161E2",
-    "text": "Golf Cart on Street",
+    "category": "vehicles",
     "emoji": "⛳",
-    "category": "vehicles",
-    "rarity": "uncommon"
+    "id": "6000EE0A-EC7E-3B46-85A0-13219E8161E2",
+    "rarity": "uncommon",
+    "text": "Golf Cart on Street"
   },
   {
-    "id": "CA2AB532-9234-3BF6-A9D9-BC4EBC5D11FF",
-    "text": "Military Convoy",
+    "category": "vehicles",
     "emoji": "🪖",
-    "category": "vehicles",
-    "rarity": "rare"
+    "id": "CA2AB532-9234-3BF6-A9D9-BC4EBC5D11FF",
+    "rarity": "rare",
+    "text": "Military Convoy"
   },
   {
-    "id": "E7462975-1FDB-3F94-AC1D-58582450B7AA",
-    "text": "Converted School Bus RV",
+    "category": "vehicles",
     "emoji": "🚌",
-    "category": "vehicles",
-    "rarity": "rare"
+    "id": "E7462975-1FDB-3F94-AC1D-58582450B7AA",
+    "rarity": "rare",
+    "text": "Converted School Bus RV"
   },
   {
-    "id": "508ACF2E-4908-3685-B1C8-2C09D1B27A8E",
-    "text": "Electric Car at Charging Station",
+    "category": "vehicles",
     "emoji": "⚡",
-    "category": "vehicles",
-    "rarity": "uncommon"
+    "id": "508ACF2E-4908-3685-B1C8-2C09D1B27A8E",
+    "rarity": "uncommon",
+    "text": "Electric Car at Charging Station"
   },
   {
-    "id": "7FB6AACA-0113-3B01-9404-EDECCBF8754C",
-    "text": "Tumbleweed",
+    "category": "nature",
     "emoji": "🌾",
-    "category": "nature",
-    "rarity": "common"
+    "id": "7FB6AACA-0113-3B01-9404-EDECCBF8754C",
+    "rarity": "common",
+    "text": "Tumbleweed"
   },
   {
-    "id": "5614C234-67B9-3416-873F-92CFE4975D44",
-    "text": "Armadillo",
+    "category": "nature",
     "emoji": "🐾",
-    "category": "nature",
-    "rarity": "uncommon"
+    "id": "5614C234-67B9-3416-873F-92CFE4975D44",
+    "rarity": "uncommon",
+    "text": "Armadillo"
   },
   {
-    "id": "EB0AD8DB-A599-37B7-BFCF-44EB7BE105B8",
-    "text": "Vultures Circling",
+    "category": "nature",
     "emoji": "🦅",
-    "category": "nature",
-    "rarity": "uncommon"
+    "id": "EB0AD8DB-A599-37B7-BFCF-44EB7BE105B8",
+    "rarity": "uncommon",
+    "text": "Vultures Circling"
   },
   {
-    "id": "BC52173A-B9F4-3C6E-82FA-60E7FF155F96",
-    "text": "Wild Horses",
+    "category": "nature",
     "emoji": "🐎",
-    "category": "nature",
-    "rarity": "rare"
+    "id": "BC52173A-B9F4-3C6E-82FA-60E7FF155F96",
+    "rarity": "rare",
+    "text": "Wild Horses"
   },
   {
-    "id": "72CFDB3B-2AB7-39DA-9F52-22F2D3B04511",
-    "text": "Alligator",
+    "category": "nature",
     "emoji": "🐊",
-    "category": "nature",
-    "rarity": "rare"
+    "id": "72CFDB3B-2AB7-39DA-9F52-22F2D3B04511",
+    "rarity": "rare",
+    "text": "Alligator"
   },
   {
-    "id": "FF64E7F2-26B5-3CB5-9635-3D4009CE5B0A",
-    "text": "Roadrunner",
+    "category": "nature",
     "emoji": "🐦",
-    "category": "nature",
-    "rarity": "rare"
+    "id": "FF64E7F2-26B5-3CB5-9635-3D4009CE5B0A",
+    "rarity": "rare",
+    "text": "Roadrunner"
   },
   {
-    "id": "A428A43F-2475-38C8-B037-4798F1191056",
-    "text": "Giant Roadside Statue",
+    "category": "landmarks",
     "emoji": "🗿",
-    "category": "landmarks",
-    "rarity": "uncommon"
+    "id": "A428A43F-2475-38C8-B037-4798F1191056",
+    "rarity": "uncommon",
+    "text": "Giant Roadside Statue"
   },
   {
-    "id": "435CFB62-75BB-3ADA-A4BF-97FC01AA5E87",
-    "text": "Abandoned Building",
+    "category": "landmarks",
     "emoji": "🏚️",
-    "category": "landmarks",
-    "rarity": "common"
+    "id": "435CFB62-75BB-3ADA-A4BF-97FC01AA5E87",
+    "rarity": "common",
+    "text": "Abandoned Building"
   },
   {
-    "id": "4F969C82-F7E7-313B-AF55-624D19BB1A75",
-    "text": "Rock Tunnel",
+    "category": "landmarks",
     "emoji": "⛰️",
-    "category": "landmarks",
-    "rarity": "uncommon"
+    "id": "4F969C82-F7E7-313B-AF55-624D19BB1A75",
+    "rarity": "uncommon",
+    "text": "Rock Tunnel"
   },
   {
-    "id": "1D810558-8870-3535-80AE-53575737D471",
-    "text": "Rest Stop Playground",
+    "category": "landmarks",
     "emoji": "🛝",
-    "category": "landmarks",
-    "rarity": "uncommon"
+    "id": "1D810558-8870-3535-80AE-53575737D471",
+    "rarity": "uncommon",
+    "text": "Rest Stop Playground"
   },
   {
-    "id": "14E85104-6013-3C95-84F2-F75E602B93ED",
-    "text": "Buc-ee's",
+    "category": "food",
     "emoji": "🦫",
-    "category": "food",
-    "rarity": "uncommon"
+    "id": "14E85104-6013-3C95-84F2-F75E602B93ED",
+    "rarity": "uncommon",
+    "text": "Buc-ee's"
   },
   {
-    "id": "6EFCF38E-E745-36C1-9167-0B7EBFC7B00B",
-    "text": "Fireworks Superstore",
+    "category": "food",
     "emoji": "🎆",
-    "category": "food",
-    "rarity": "common"
+    "id": "6EFCF38E-E745-36C1-9167-0B7EBFC7B00B",
+    "rarity": "common",
+    "text": "Fireworks Superstore"
   },
   {
-    "id": "BB4DD049-66DD-3E9E-A8C5-CA75FB39B317",
-    "text": "Sonic Drive-In",
+    "category": "food",
     "emoji": "🥤",
-    "category": "food",
-    "rarity": "uncommon"
+    "id": "BB4DD049-66DD-3E9E-A8C5-CA75FB39B317",
+    "rarity": "uncommon",
+    "text": "Sonic Drive-In"
   },
   {
-    "id": "F9C61F3C-93EE-308F-8901-CB5D07F9AEAC",
-    "text": "In-N-Out Burger",
+    "category": "food",
     "emoji": "🍔",
-    "category": "food",
-    "rarity": "uncommon"
+    "id": "F9C61F3C-93EE-308F-8901-CB5D07F9AEAC",
+    "rarity": "uncommon",
+    "text": "In-N-Out Burger"
   },
   {
+    "category": "food",
+    "emoji": "⛽",
     "id": "64300F49-5488-3674-8B12-1AEE577971AF",
-    "text": "Pilot / Love's Truck Stop",
-    "emoji": "⛽",
-    "category": "food",
-    "rarity": "common"
+    "rarity": "common",
+    "text": "Pilot / Love's Truck Stop"
   },
   {
-    "id": "3E9570E3-459A-3C2D-8226-E36AD595D8A4",
-    "text": "Roadside Souvenir Shop",
+    "category": "food",
     "emoji": "🛍️",
-    "category": "food",
-    "rarity": "common"
+    "id": "3E9570E3-459A-3C2D-8226-E36AD595D8A4",
+    "rarity": "common",
+    "text": "Roadside Souvenir Shop"
   },
   {
-    "id": "84ED3979-D624-3AB3-938E-B25330C459A4",
-    "text": "Funny Town Name Sign",
+    "category": "signs",
     "emoji": "🪧",
-    "category": "signs",
-    "rarity": "uncommon"
+    "id": "84ED3979-D624-3AB3-938E-B25330C459A4",
+    "rarity": "uncommon",
+    "text": "Funny Town Name Sign"
   },
   {
-    "id": "348BCF77-2B49-30ED-A0BE-03F2BBA04CE5",
-    "text": "Radar Speed Sign",
+    "category": "signs",
     "emoji": "📡",
-    "category": "signs",
-    "rarity": "common"
+    "id": "348BCF77-2B49-30ED-A0BE-03F2BBA04CE5",
+    "rarity": "common",
+    "text": "Radar Speed Sign"
   },
   {
-    "id": "D62EEA67-E90F-3918-8CB5-D9DACAC5A70D",
-    "text": "Next Gas Sign",
+    "category": "signs",
     "emoji": "⛽",
-    "category": "signs",
-    "rarity": "common"
+    "id": "D62EEA67-E90F-3918-8CB5-D9DACAC5A70D",
+    "rarity": "common",
+    "text": "Next Gas Sign"
   },
   {
-    "id": "02E74882-80DC-3850-8D78-01A503B62084",
-    "text": "Amber Alert Highway Sign",
+    "category": "signs",
     "emoji": "⚠️",
-    "category": "signs",
-    "rarity": "uncommon"
+    "id": "02E74882-80DC-3850-8D78-01A503B62084",
+    "rarity": "uncommon",
+    "text": "Amber Alert Highway Sign"
   },
   {
-    "id": "BCA3B438-CE22-3867-815D-74B04002D7AD",
-    "text": "Corn Maze Sign",
-    "emoji": "🌽",
     "category": "signs",
-    "rarity": "rare"
+    "emoji": "🌽",
+    "id": "BCA3B438-CE22-3867-815D-74B04002D7AD",
+    "rarity": "rare",
+    "text": "Corn Maze Sign"
   }
 ]

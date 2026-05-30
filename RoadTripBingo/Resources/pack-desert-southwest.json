@@ -24,14 +24,33 @@
       "emoji": "🏜️",
       "category": "nature",
       "rarity": "common"
+    },
+    {
+      "id": "B957584E-97A2-4DBB-B421-A80D1832D7C5",
+      "text": "Dust Devil",
+      "emoji": "🌀",
+      "category": "weather",
+      "rarity": "rare"
+    },
+    {
+      "id": "EFDF3832-1699-449C-A7B5-124E44366CE9",
+      "text": "Dust Storm",
+      "emoji": "🌪️",
+      "category": "weather",
+      "rarity": "veryRare"
+    },
+    {
+      "id": "7CBDA785-2C75-4C5A-8599-F992A1A8FDAF",
+      "text": "Ghost Town",
+      "emoji": "👻",
+      "category": "landmarks",
+      "rarity": "veryRare"
     }
   ],
   "rarityOverrides": {
     "65FAFD7F-384F-43B2-B90A-300A844F79D0": "veryCommon",
-    "B957584E-97A2-4DBB-B421-A80D1832D7C5": "common",
     "B7ED7D37-B022-45D6-8FFE-B8FA780B6684": "common",
     "944B6E26-F677-455F-B087-9D883297CF5B": "common",
-    "EFDF3832-1699-449C-A7B5-124E44366CE9": "uncommon",
     "E044FC0C-DE73-4F07-9812-45FE6AA69E63": "veryCommon",
     "75077334-D3F1-40CA-B3C2-E8481BE4EAB6": "uncommon",
     "C2738543-1B62-4D94-A914-3ECF040D81D0": "common",
@@ -39,8 +58,6 @@
   },
   "excludedTileIDs": [
     "1CA02B04-B431-467D-A705-D64A1CA3D9F7",
-    "FA75C56E-321A-4958-9F9A-050CA316AB90",
-    "A14147C1-EDE5-4762-9302-0D4EEE5E9E2D",
     "3DE3F367-3105-4F8B-A89D-2F134E21D01D",
     "3055B218-5E2B-4574-A83B-9EDD80E79E8F",
     "1532CC43-DDA7-400A-BFD0-0ADD8874D565"
