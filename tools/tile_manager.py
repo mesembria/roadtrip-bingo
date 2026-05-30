@@ -65,19 +65,27 @@ PACKS_METADATA: list[dict] = []
 def build_prompt(tile: dict) -> str:
     """Build the Gemini image generation prompt for a tile.
 
-    Uses tile['description'] as the subject phrase if present, non-empty, and
-    non-trivial (not composed entirely of punctuation); falls back to tile['text']
-    (the tile name) otherwise.
-    STYLE is always appended; CATEGORY_HINTS adds a layout hint per category.
+    Subject: tile['description'] if present/non-trivial, else tile['text'].
+    CATEGORY_HINTS are NOT used at generation time (only for UI description pre-fill).
+    STYLE is always appended — it is never shown in the UI.
     """
     raw = (tile.get("description") or "").rstrip(".")
-    subject = raw if raw.strip() else tile["text"]
-    category = tile.get("category", "")
-    hint = CATEGORY_HINTS.get(category, "")
+    subject = raw if raw.strip() else tile.get("text", "")
     subject_clean = subject.rstrip(".")
-    subject_cap = (subject_clean[0].upper() + subject_clean[1:]) if subject_clean else subject
-    parts = [f"{subject_cap}.", hint, STYLE]
-    return " ".join(p for p in parts if p).strip()
+    subject_cap = (subject_clean[0].upper() + subject_clean[1:]) if subject_clean else subject_clean
+    return f"{subject_cap}. {STYLE}"
+
+
+def description_prefill(name: str, category: str) -> str:
+    """Pre-fill text for the description field on a new tile.
+
+    Combines the tile name with a category-specific layout hint.
+    Used only by the UI — NOT used at image generation time.
+    """
+    hint = CATEGORY_HINTS.get(category, "")
+    if hint:
+        return f"{name}. {hint}"
+    return f"{name}."
 
 
 # ── File I/O ─────────────────────────────────────────────────────────────────
@@ -122,12 +130,10 @@ def discover_packs() -> list[dict]:
             with open(path, encoding="utf-8") as f:
                 data = json.load(f)
             packs.append({
-                "id":            data["id"],
-                "name":          data["name"],
-                "description":   data.get("description", ""),
-                "tileCount":     len(data.get("tiles", [])),
-                "overrideCount": len(data.get("rarityOverrides", {})),
-                "excludedCount": len(data.get("excludedTileIDs", [])),
+                "id":          data["id"],
+                "name":        data["name"],
+                "description": data.get("description", ""),
+                "tileCount":   len(data.get("tiles", [])),
             })
         except (json.JSONDecodeError, KeyError) as exc:
             print(f"   ⚠  Skipping {path.name}: {exc}", file=sys.stderr)
@@ -1694,7 +1700,7 @@ class TileManagerHandler(BaseHTTPRequestHandler):
     # ── Routing ───────────────────────────────────────────────────────────────
 
     def do_GET(self):
-        path = self.path.split("?")[0]  # strip query string
+        path = self.path.split("?")[0]
         if path in ("/", "/index.html"):
             self._serve_ui()
         elif path == "/api/tiles":
@@ -1703,9 +1709,19 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             self._serve_image(path[len("/api/image/"):])
         elif path == "/api/packs":
             self._handle_list_packs()
+        # Specific pack sub-routes BEFORE the generic /api/packs/<id> handler
+        elif path.startswith("/api/packs/") and path.endswith("/tiles-not-in-pack"):
+            pack_id = path[len("/api/packs/"):-len("/tiles-not-in-pack")]
+            self._handle_tiles_not_in_pack(pack_id)
         elif path.startswith("/api/packs/"):
             pack_id = path[len("/api/packs/"):]
             self._handle_get_pack(pack_id)
+        elif path == "/api/description-prefill":
+            from urllib.parse import parse_qs, urlparse
+            qs = parse_qs(urlparse(self.path).query)
+            name     = qs.get("name",     [""])[0]
+            category = qs.get("category", [""])[0]
+            self.send_json({"prefill": description_prefill(name, category)})
         else:
             self.send_error_json(404, "Not found")
 
@@ -1718,18 +1734,6 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         elif path.startswith("/api/tiles/") and path.endswith("/image"):
             tile_id = path[len("/api/tiles/"):-len("/image")]
             self._handle_save_image(tile_id)
-        elif path.startswith("/api/packs/"):
-            pack_path = path[len("/api/packs/"):]
-            if pack_path.endswith("/tiles"):
-                pack_id = pack_path[: -len("/tiles")]
-                self._handle_add_pack_tile(pack_id)
-            elif "/tiles/" in pack_path and pack_path.endswith("/image"):
-                parts = pack_path.split("/tiles/", 1)
-                pack_id = parts[0]
-                tile_id = parts[1][: -len("/image")]
-                self._handle_save_pack_tile_image(pack_id, tile_id)
-            else:
-                self.send_error_json(404, "Not found")
         else:
             self.send_error_json(404, "Not found")
 
@@ -1755,12 +1759,12 @@ class TileManagerHandler(BaseHTTPRequestHandler):
     # ── Handlers ─────────────────────────────────────────────────────────────
 
     def _serve_ui(self):
-        # Inject runtime config into the HTML so JS knows categories/rarities
         html = HTML_APP.replace(
             "/* __INJECT__ */",
             f"const CATEGORIES = {json.dumps(CATEGORIES)};\n"
             f"    const RARITIES = {json.dumps(RARITIES)};\n"
-            f"    const PACKS_META = {json.dumps(PACKS_METADATA)};",
+            f"    const PACKS_META = {json.dumps(PACKS_METADATA)};\n"
+            f"    const CATEGORY_HINTS_MAP = {json.dumps(CATEGORY_HINTS)};",
         ).encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -1788,9 +1792,21 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             )
             return
         body = self.read_json_body()
-        prompt = body.get("prompt", "").strip()
-        if not prompt:
-            self.send_error_json(400, "prompt is required")
+        # Accepts {tile_id} for saved tiles or {description, name} for unsaved tiles
+        if "tile_id" in body:
+            tiles = load_tiles()
+            tile = next((t for t in tiles if t["id"] == body["tile_id"]), None)
+            if not tile:
+                self.send_error_json(404, f"Tile {body['tile_id']!r} not found")
+                return
+            prompt = build_prompt(tile)
+        elif "description" in body:
+            prompt = build_prompt({
+                "description": body["description"],
+                "text": body.get("name", ""),
+            })
+        else:
+            self.send_error_json(400, "tile_id or description is required")
             return
         try:
             image_b64 = generate_image(prompt, self.api_key)
@@ -1819,6 +1835,18 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         save_tiles(tiles)
         if "image_b64" in body:
             save_image(new_id, body["image_b64"])
+        # Add to packs: [{packId, rarity}]
+        for membership in body.get("packMembership", []):
+            pack_id = membership.get("packId")
+            rarity  = membership.get("rarity", body["rarity"])
+            if not pack_id:
+                continue
+            try:
+                pack = load_pack(pack_id)
+            except FileNotFoundError:
+                continue
+            pack.setdefault("tiles", []).append({"id": new_id, "rarity": rarity})
+            save_pack(pack_id, pack)
         self.send_json(tile, 201)
 
     def _handle_update_tile(self, tile_id: str):
@@ -1828,10 +1856,28 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             if tile["id"] == tile_id:
                 allowed = {"text", "category", "rarity", "description"}
                 tile.update({k: v for k, v in body.items() if k in allowed})
-                # Remove description key entirely when client sends empty string
                 if "description" in tile and not tile["description"]:
                     del tile["description"]
                 save_tiles(tiles)
+                # Apply pack membership changes: [{packId, action, rarity?}]
+                # action: 'add' | 'remove'
+                for change in body.get("packMembership", []):
+                    pack_id = change.get("packId")
+                    action  = change.get("action")
+                    if not pack_id or action not in ("add", "remove"):
+                        continue
+                    try:
+                        pack = load_pack(pack_id)
+                    except FileNotFoundError:
+                        continue
+                    if action == "add":
+                        rarity = change.get("rarity", tile["rarity"])
+                        # Remove existing ref for this tile if present, then add
+                        pack["tiles"] = [r for r in pack.get("tiles", []) if r["id"] != tile_id]
+                        pack["tiles"].append({"id": tile_id, "rarity": rarity})
+                    else:  # remove
+                        pack["tiles"] = [r for r in pack.get("tiles", []) if r["id"] != tile_id]
+                    save_pack(pack_id, pack)
                 self.send_json(tile)
                 return
         self.send_error_json(404, f"Tile {tile_id} not found")
@@ -1843,6 +1889,19 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             self.send_error_json(404, f"Tile {tile_id} not found")
             return
         save_tiles(new_tiles)
+        # Remove from all packs that reference this tile
+        for path in sorted(PACKS_DIR.glob("pack-*.json")):
+            try:
+                with open(path, encoding="utf-8") as f:
+                    pack = json.load(f)
+                original_count = len(pack.get("tiles", []))
+                pack["tiles"] = [r for r in pack.get("tiles", []) if r["id"] != tile_id]
+                if len(pack["tiles"]) < original_count:
+                    with open(path, "w", encoding="utf-8") as f:
+                        json.dump(pack, f, indent=2, sort_keys=False, ensure_ascii=False)
+                        f.write("\n")
+            except Exception:
+                pass
         img = image_path(tile_id)
         if img.exists():
             img.unlink()
@@ -1874,6 +1933,20 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         except FileNotFoundError:
             self.send_error_json(404, f"Pack {pack_id!r} not found")
 
+    def _handle_tiles_not_in_pack(self, pack_id: str):
+        if "/" in pack_id:
+            self.send_error_json(404, "Not found")
+            return
+        try:
+            pack = load_pack(pack_id)
+        except FileNotFoundError:
+            self.send_error_json(404, f"Pack {pack_id!r} not found")
+            return
+        pack_tile_ids = {ref["id"] for ref in pack.get("tiles", [])}
+        all_tiles = load_tiles()
+        available = [t for t in all_tiles if t["id"] not in pack_tile_ids]
+        self.send_json(available)
+
     def _handle_put_pack(self, pack_id: str):
         if "/" in pack_id:
             self.send_error_json(404, "Not found")
@@ -1883,14 +1956,13 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         except Exception:
             self.send_error_json(400, "Invalid JSON body")
             return
-        for field in ("id", "name", "tiles", "rarityOverrides", "excludedTileIDs"):
+        for field in ("id", "name", "tiles"):
             if field not in body:
                 self.send_error_json(400, f"Missing required field: {field!r}")
                 return
         if body["id"] != pack_id:
             self.send_error_json(400, "Pack 'id' in body does not match URL")
             return
-        # Ensure pack file already exists — pack files are pre-bundled, not created here.
         pack_path = PACKS_DIR / f"pack-{pack_id}.json"
         if not pack_path.exists():
             self.send_error_json(404, f"Pack {pack_id!r} not found")
@@ -1898,65 +1970,6 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         save_pack(pack_id, body)
         self.send_json({"saved": pack_id})
 
-    def _handle_add_pack_tile(self, pack_id: str):
-        if "/" in pack_id:
-            self.send_error_json(404, "Not found")
-            return
-        try:
-            pack = load_pack(pack_id)
-        except FileNotFoundError:
-            self.send_error_json(404, f"Pack {pack_id!r} not found")
-            return
-        try:
-            body = self.read_json_body()
-        except Exception:
-            self.send_error_json(400, "Invalid JSON body")
-            return
-        required = {"text", "emoji", "category", "rarity"}
-        missing = required - body.keys()
-        if missing:
-            self.send_error_json(400, f"Missing fields: {', '.join(sorted(missing))}")
-            return
-        # Preserve provided UUID (Move from Base preserves the original tile ID).
-        tile_id = body.get("id") or str(uuid.uuid4()).upper()
-        tile = {
-            "id":       tile_id,
-            "text":     body["text"],
-            "emoji":    body["emoji"],
-            "category": body["category"],
-            "rarity":   body["rarity"],
-        }
-        if body.get("description"):
-            tile["description"] = body["description"]
-        pack.setdefault("tiles", []).append(tile)
-        save_pack(pack_id, pack)
-        if "image_b64" in body:
-            save_image(tile_id, body["image_b64"])
-        self.send_json(tile, 201)
-
-    def _handle_save_pack_tile_image(self, pack_id: str, tile_id: str):
-        if "/" in pack_id or "/" in tile_id:
-            self.send_error_json(404, "Not found")
-            return
-        try:
-            pack = load_pack(pack_id)
-        except FileNotFoundError:
-            self.send_error_json(404, f"Pack {pack_id!r} not found")
-            return
-        if not any(t["id"] == tile_id for t in pack.get("tiles", [])):
-            self.send_error_json(404, f"Tile {tile_id!r} not in pack {pack_id!r}")
-            return
-        try:
-            body = self.read_json_body()
-        except Exception:
-            self.send_error_json(400, "Invalid JSON body")
-            return
-        image_b64 = body.get("image_b64", "")
-        if not image_b64:
-            self.send_error_json(400, "image_b64 is required")
-            return
-        save_image(tile_id, image_b64)
-        self.send_json({"saved": tile_id})
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
