@@ -849,6 +849,7 @@ function showExclusiveEditor(tile) {
         '<div class="section-label">Metadata</div>' +
         '<div style="display:flex;flex-direction:column;gap:12px">' +
           '<div class="field"><label class="field-label">Name</label><input class="field-input" id="pack-field-name" type="text" value="' + esc(tile.text || '') + '"></div>' +
+          '<div class="field"><label class="field-label">Image Description <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(optional — defaults to tile name)</span></label><textarea class="field-input" id="pack-field-description" rows="2" style="resize:vertical;font-size:13px;line-height:1.5" placeholder="e.g. A red Kenworth semi truck cab, side view, no trailer">' + esc(tile.description || '') + '</textarea></div>' +
           '<div class="field"><label class="field-label">Emoji</label><input class="field-input" id="pack-field-emoji" type="text" value="' + esc(tile.emoji || '') + '"></div>' +
           '<div class="fields-row">' +
             '<div class="field"><label class="field-label">Category</label><select class="field-input" id="pack-field-category" style="cursor:pointer">' +
@@ -888,9 +889,11 @@ function showPackPromptEditor() {
     if (ph)  { ph.style.display = ''; }
   }
   if (!window._packLastPrompt) {
-    const name = document.getElementById('pack-field-name').value.trim() || 'a tile';
-    const cat  = document.getElementById('pack-field-category').value;
-    window._packLastPrompt = buildPrompt(name, cat);
+    window._packLastPrompt = buildPrompt({
+      text:        document.getElementById('pack-field-name').value.trim() || 'a tile',
+      description: (document.getElementById('pack-field-description') || {}).value || '',
+      category:    document.getElementById('pack-field-category').value,
+    });
   }
   document.getElementById('pack-prompt-textarea').value = window._packLastPrompt;
   document.getElementById('pack-prompt-editor').classList.add('visible');
@@ -970,7 +973,10 @@ async function saveExclusiveTile(tileId) {
 
   if (!tileId) {
     // New exclusive tile — POST to server immediately
+    const descriptionEl = document.getElementById('pack-field-description');
+    const description = descriptionEl ? descriptionEl.value.trim() : '';
     const body = {text: name, emoji, category, rarity};
+    if (description) body.description = description;
     if (window._packPendingImageB64) body.image_b64 = window._packPendingImageB64;
     const r = await fetch('/api/packs/' + currentPackId + '/tiles', {
       method: 'POST',
@@ -989,7 +995,10 @@ async function saveExclusiveTile(tileId) {
     // Edit existing exclusive tile — update in-memory; full pack saved on Save Pack
     const tile = (packData.tiles || []).find(t => t.id === tileId);
     if (!tile) { alert('Tile not found in pack — it may have been removed.'); return; }
+    const descEl = document.getElementById('pack-field-description');
+    const desc = descEl ? descEl.value.trim() : '';
     tile.text = name; tile.emoji = emoji; tile.category = category; tile.rarity = rarity;
+    if (desc) { tile.description = desc; } else { delete tile.description; }
     markDirty();
   }
   updatePackSummaryPanel();
