@@ -308,16 +308,17 @@ Unchanged from existing tool: dark Americana palette, Rye + Barlow Condensed fon
 
 ## Migration Script
 
-A one-time Python script (`tools/migrate_packs.py`) run before the new tool is used. It converts all `pack-*.json` files from the old format to the new format:
+A one-time Python script (`tools/migrate_packs.py`) run before the new tool is used. It converts all `pack-*.json` files from the old format to the new format, seeding each pack only with tiles that were explicitly configured in it — nothing is added implicitly.
 
-1. For each pack, read `rarityOverrides`, `excludedTileIDs`, and `tiles` (exclusives).
-2. Build the new `tiles` array:
-   - All base tiles from `squares.json` that are **not** in `excludedTileIDs` → add as `{id, rarity}`, using the `rarityOverrides` value if present, otherwise the tile's default rarity from `squares.json`.
-   - All existing exclusive tiles → first write their full metadata into `squares.json` (they become regular tiles), then add as `{id, rarity}`.
-3. Remove `rarityOverrides` and `excludedTileIDs` from the pack JSON.
-4. Write the updated pack JSON back to disk.
+For each pack:
 
-The script is idempotent (safe to run twice) and prints a summary of changes made per pack.
+1. **Exclusive tiles** (currently in the pack's `tiles` array) — move their full metadata into `squares.json` (they become regular tiles), then add `{id, rarity}` to the new tiles list.
+2. **Rarity-overridden base tiles** (currently in `rarityOverrides`) — add as `{id, rarity}` using the override rarity.
+3. **Everything else** — base tiles not in either list, and tiles in `excludedTileIDs`, are simply not added. Under the new model "not in the pack" is the natural default; excluded tiles need no special handling.
+
+Then remove `rarityOverrides` and `excludedTileIDs` from the pack JSON and write it back to disk.
+
+This results in lean, intentional starting points for each pack — typically a handful of tiles — ready to be fleshed out using the tile manager. The script is idempotent (safe to run twice) and prints a per-pack summary: tiles added, tiles dropped, exclusive tiles promoted to `squares.json`.
 
 ---
 
