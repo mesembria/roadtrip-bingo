@@ -1779,6 +1779,8 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             "category": body["category"],
             "rarity":   body["rarity"],
         }
+        if body.get("description"):
+            tile["description"] = body["description"]
         tiles = load_tiles()
         tiles.append(tile)
         save_tiles(tiles)
@@ -1791,8 +1793,11 @@ class TileManagerHandler(BaseHTTPRequestHandler):
         tiles = load_tiles()
         for tile in tiles:
             if tile["id"] == tile_id:
-                allowed = {"text", "category", "rarity"}
+                allowed = {"text", "category", "rarity", "description"}
                 tile.update({k: v for k, v in body.items() if k in allowed})
+                # Remove description key entirely when client sends empty string
+                if "description" in tile and not tile["description"]:
+                    del tile["description"]
                 save_tiles(tiles)
                 self.send_json(tile)
                 return
@@ -1888,6 +1893,8 @@ class TileManagerHandler(BaseHTTPRequestHandler):
             "category": body["category"],
             "rarity":   body["rarity"],
         }
+        if body.get("description"):
+            tile["description"] = body["description"]
         pack.setdefault("tiles", []).append(tile)
         save_pack(pack_id, pack)
         if "image_b64" in body:
