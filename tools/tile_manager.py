@@ -554,11 +554,13 @@ const CATEGORY_HINTS_JS = {
   food:      'Storefront or roadside view.',
   weather:   'Dramatic sky scene.',
 };
-const STYLE_JS = 'Flat vector illustration, clean thin outlines, bright colors. Plain solid white background — the illustration sits directly on white with absolutely no drop shadow, no border, no card, no frame, no vignette, no outline around the image edge. Square composition. No text, no labels, no letters.';
+const STYLE_JS = 'Flat vector illustration, clean thin outlines, bright but realistic colors. Use natural, true-to-life colors for each object and all parts should match the colors that object would actually have in real life. Plain solid white background — the illustration sits directly on white with absolutely no drop shadow, no border, no card, no frame, no vignette, no outline around the image edge. Square composition. No text, no labels, no letters.';
 
-function buildPrompt(name, category) {
-  const hint = CATEGORY_HINTS_JS[category] || '';
-  return ['A ' + name.toLowerCase() + '.', hint, STYLE_JS].filter(Boolean).join(' ').replace(/\\s+/g, ' ').trim();
+function buildPrompt(tile) {
+  const subject = (tile.description || tile.text || 'a tile').replace(/\\.+$/, '');
+  const subjectCap = subject.charAt(0).toUpperCase() + subject.slice(1);
+  const hint = CATEGORY_HINTS_JS[tile.category] || '';
+  return [subjectCap + '.', hint, STYLE_JS].filter(Boolean).join(' ').replace(/\\s+/g, ' ').trim();
 }
 
 // ── Init ────────────────────────────────────────────────────────────────────────────────
@@ -1482,9 +1484,11 @@ function showPromptEditor() {
   // Re-use the last prompt the user ran (or typed) so they can iterate on it.
   // Fall back to the auto-built prompt only on first open for this tile.
   if (!lastUsedPrompt) {
-    const name = document.getElementById('field-name').value.trim() || 'a tile';
-    const cat  = document.getElementById('field-category').value;
-    lastUsedPrompt = buildPrompt(name, cat);
+    lastUsedPrompt = buildPrompt({
+      text:        document.getElementById('field-name').value.trim() || 'a tile',
+      description: document.getElementById('field-description').value.trim(),
+      category:    document.getElementById('field-category').value,
+    });
   }
   document.getElementById('prompt-textarea').value = lastUsedPrompt;
   document.getElementById('prompt-editor').classList.add('visible');
