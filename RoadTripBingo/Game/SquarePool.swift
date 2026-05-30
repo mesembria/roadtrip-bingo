@@ -9,6 +9,16 @@ enum SquarePool {
         return squares
     }
 
+    /// Loads the base pack from `pack-base.json` in the main bundle.
+    /// Crashes if the file is missing or malformed — it is a required resource.
+    static func loadBasePack() -> TilePack {
+        guard let url = Bundle.main.url(forResource: "pack-base", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let pack = try? JSONDecoder().decode(TilePack.self, from: data)
+        else { fatalError("pack-base.json missing from bundle or malformed") }
+        return pack
+    }
+
     // Each player's 24 non-FREE squares are sampled from per-rarity buckets weighted by difficulty.
     // Non-overlap between players is best-effort; overlaps may occur when a rarity bucket runs thin.
     static func dealBoards(
@@ -102,16 +112,17 @@ enum SquarePool {
         return w
     }
 
-    /// Combines the base pool with a set of active packs.
+    /// Combines the master tile pool with a set of active packs.
     ///
     /// Each pack carries an explicit, curated tile list as `{id, rarity}` refs.
     /// A tile must be referenced by at least one active pack to appear in the result;
     /// tiles in `base` but not referenced by any pack are excluded.
     ///
-    /// Tiles are returned in the same order as `base`. When two active packs reference the same tile with different rarities,
-    /// the most-common rarity wins (most-common-wins rule).
+    /// Tiles are returned in the same order as `base`. When two active packs reference the same tile
+    /// with different rarities, the most-common rarity wins (most-common-wins rule).
     ///
-    /// When `activePacks` is empty, returns `base` unmodified (base game with no pack active).
+    /// Call sites must always supply at least one pack. When no named pack is active, pass
+    /// `[SquarePool.loadBasePack()]` so the base pack's curated tile list is used.
     static func buildPool(base: [BingoSquare], activePacks: [TilePack]) -> [BingoSquare] {
         guard !activePacks.isEmpty else { return base }
 

@@ -4,7 +4,8 @@ struct TilePacksView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) var dismiss
 
-    private let allPacks: [TilePack] = PackManager.loadAll()
+    // Base pack is excluded — it's not player-selectable; it's the implicit fallback pool.
+    private let allPacks: [TilePack] = PackManager.loadAll().filter { $0.id != "base" }
     private let basePool: [BingoSquare] = SquarePool.load()
 
     var body: some View {
@@ -70,7 +71,8 @@ struct TilePacksView: View {
     }
 
     private var activePool: [BingoSquare] {
-        let packs = allPacks.filter { appState.activePackIDs.contains($0.id) }
+        let selected = allPacks.filter { appState.activePackIDs.contains($0.id) }
+        let packs = selected.isEmpty ? [SquarePool.loadBasePack()] : selected
         return SquarePool.buildPool(base: basePool, activePacks: packs)
     }
 

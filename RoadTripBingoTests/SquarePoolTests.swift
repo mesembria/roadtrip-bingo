@@ -191,6 +191,8 @@ final class SquarePoolTests: XCTestCase {
         return TilePack(id: id, name: id, description: "", imageName: "", tiles: refs)
     }
 
+    // Note: call sites always supply at least one pack (base pack as fallback).
+    // This tests the buildPool unit behaviour when given an empty list directly.
     func test_buildPool_emptyPacksReturnsBaseUnchanged() {
         let id1 = "00000000-0000-0000-0000-000000000001"
         let base = [square(id1, rarity: .common)]

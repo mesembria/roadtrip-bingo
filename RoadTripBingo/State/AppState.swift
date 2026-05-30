@@ -278,7 +278,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     private func dealAndLaunchRound(sendBoardsMessage: @escaping ([String: [BingoSquare]]) -> Void) {
         rollDailyChallengesIfNeeded()
         let baseTiles = SquarePool.load()
-        let activePacks = PackManager.packs(forIDs: activePackIDs)
+        let namedPacks = PackManager.packs(forIDs: activePackIDs)
+        let activePacks = namedPacks.isEmpty ? [SquarePool.loadBasePack()] : namedPacks
         let pool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks)
         let allNames = [playerName] + connectedPlayerNames
         let players = allNames.map { name -> (name: String, difficulty: BoardDifficulty) in
