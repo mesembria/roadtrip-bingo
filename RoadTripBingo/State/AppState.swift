@@ -337,7 +337,44 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         )
         evaluateChallenges(event: .roundEnded(context: endCtx))
         lastRoundWinner = playerName
+        if gameMode == .solo {
+            computeSoloScore()
+        }
         screen = .win(winnerName: playerName)
+    }
+
+    private func computeSoloScore() {
+        guard let board = localBoard else { return }
+
+        let elapsed = Date().timeIntervalSince(soloStartTime ?? Date())
+        let timeMultiplier = max(1.0, 2.0 - elapsed / 600.0)
+
+        let markedSquares = (0..<25)
+            .filter { board.isMarked(at: $0) }
+            .map { board.squares[$0] }
+        let rarityBonus = markedSquares
+            .filter { $0.id != BingoSquare.freeSquareID }
+            .reduce(0) { $0 + $1.rarity.scoreBonus }
+
+        let completedLineCount = GameEngine.completedLines(for: board).count
+        let extraLines = max(0, completedLineCount - 1)
+        let baseScore = tokensEarnedThisRound + (extraLines * 10) + rarityBonus
+        let soloScore = Int(Double(baseScore) * timeMultiplier)
+
+        lastSoloTokens = tokensEarnedThisRound
+        lastSoloRarityBonus = rarityBonus
+        lastSoloExtraLines = extraLines
+        lastSoloTimeMultiplier = timeMultiplier
+        lastSoloScore = soloScore
+        lastSoloIsNewBest = soloScore > soloPersonalBest
+        if lastSoloIsNewBest {
+            soloPersonalBest = soloScore
+        }
+    }
+
+    /// Exposed for unit testing only — wraps the private computeSoloScore().
+    func computeSoloScoreForTest() {
+        computeSoloScore()
     }
 
     func requestPlayAgain() {

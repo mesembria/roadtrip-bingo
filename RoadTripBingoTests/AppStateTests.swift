@@ -315,4 +315,82 @@ final class AppStateTests: XCTestCase {
         let state = AppState()
         XCTAssertEqual(state.tokensEarnedThisRound, 0)
     }
+
+    // MARK: - Solo score computation tests
+
+    private func makeSoloBoard() -> BingoBoard {
+        var squares: [BingoSquare] = []
+        for i in 0..<25 {
+            if i == 12 {
+                squares.append(BingoSquare.free)
+            } else {
+                squares.append(BingoSquare(
+                    id: UUID(),
+                    text: "Tile \(i)",
+                    emoji: "🚗",
+                    category: .vehicles,
+                    rarity: .common   // scoreBonus = 1 each
+                ))
+            }
+        }
+        return BingoBoard(squares: squares)
+    }
+
+    func test_computeSoloScore_allCommonTiles_noExtraLines_immediateWin() {
+        let state = AppState()
+        state.playerName = "Solo"
+        state.gameMode = .solo
+        state.soloStartTime = Date()   // t=0 → multiplier ≈ 2.0×
+
+        // Mark all tiles in row 0 (positions 0–4) to complete one line.
+        // tokensEarnedThisRound = 0 (earnTokens is private; not called here).
+        // rarityBonus: 5 common tiles × 1 = 5 (free square at 12 is excluded).
+        // extraLines = completedLines.count - 1 = 1 - 1 = 0.
+        // baseScore = 0 + 0 + 5 = 5. soloScore ≈ Int(5 * 2.0) = 10.
+        var board = makeSoloBoard()
+        for pos in 0..<5 { board.mark(at: pos) }
+        state.localBoard = board
+
+        state.computeSoloScoreForTest()
+
+        XCTAssertEqual(state.lastSoloRarityBonus, 5)
+        XCTAssertEqual(state.lastSoloExtraLines, 0)
+        XCTAssertGreaterThanOrEqual(state.lastSoloScore, 8)    // allow ≤1s elapsed
+        XCTAssertLessThanOrEqual(state.lastSoloScore, 12)
+    }
+
+    func test_computeSoloScore_newPersonalBest_setsFlag() {
+        let state = AppState()
+        state.playerName = "Solo"
+        state.gameMode = .solo
+        state.soloStartTime = Date()
+        state.soloPersonalBest = 0  // any score > 0 is a new best
+
+        var board = makeSoloBoard()
+        for pos in 0..<5 { board.mark(at: pos) }
+        state.localBoard = board
+        // tokensEarnedThisRound = 0, rarityBonus = 5, soloScore ≈ 10 — beats 0
+
+        state.computeSoloScoreForTest()
+
+        XCTAssertTrue(state.lastSoloIsNewBest)
+        XCTAssertGreaterThan(state.soloPersonalBest, 0)
+    }
+
+    func test_computeSoloScore_belowPersonalBest_doesNotSetFlag() {
+        let state = AppState()
+        state.playerName = "Solo"
+        state.gameMode = .solo
+        state.soloStartTime = Date()
+        state.soloPersonalBest = 9999
+
+        var board = makeSoloBoard()
+        for pos in 0..<5 { board.mark(at: pos) }
+        state.localBoard = board
+
+        state.computeSoloScoreForTest()
+
+        XCTAssertFalse(state.lastSoloIsNewBest)
+        XCTAssertEqual(state.soloPersonalBest, 9999)
+    }
 }
