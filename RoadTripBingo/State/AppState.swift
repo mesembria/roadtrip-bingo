@@ -178,6 +178,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         tokenBalances = [:]
         pendingToast = nil
         completedLine = nil
+        localBoard = nil
+        reserveSquares = []
         isHost = false
         playerDifficulties = [:]
         resetRound()
