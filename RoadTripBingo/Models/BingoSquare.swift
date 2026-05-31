@@ -6,6 +6,16 @@ enum SquareRarity: String, Codable, CaseIterable {
     case uncommon
     case rare
     case veryRare
+
+    var scoreBonus: Int {
+        switch self {
+        case .veryCommon: return 0
+        case .common:     return 1
+        case .uncommon:   return 2
+        case .rare:       return 4
+        case .veryRare:   return 7
+        }
+    }
 }
 
 enum SquareCategory: String, Codable, CaseIterable {

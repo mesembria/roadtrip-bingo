@@ -38,4 +38,24 @@ final class BingoSquareTests: XCTestCase {
         XCTAssertEqual(tile?.rarity, .veryCommon)
         XCTAssertEqual(tile?.category, .vehicles)
     }
+
+    func test_squareRarity_scoreBonus_veryCommon_isZero() {
+        XCTAssertEqual(SquareRarity.veryCommon.scoreBonus, 0)
+    }
+
+    func test_squareRarity_scoreBonus_common_isOne() {
+        XCTAssertEqual(SquareRarity.common.scoreBonus, 1)
+    }
+
+    func test_squareRarity_scoreBonus_uncommon_isTwo() {
+        XCTAssertEqual(SquareRarity.uncommon.scoreBonus, 2)
+    }
+
+    func test_squareRarity_scoreBonus_rare_isFour() {
+        XCTAssertEqual(SquareRarity.rare.scoreBonus, 4)
+    }
+
+    func test_squareRarity_scoreBonus_veryRare_isSeven() {
+        XCTAssertEqual(SquareRarity.veryRare.scoreBonus, 7)
+    }
 }
