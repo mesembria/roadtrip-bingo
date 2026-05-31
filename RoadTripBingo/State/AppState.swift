@@ -160,6 +160,66 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         screen = .lobby
     }
 
+    func startSoloGame() {
+        // Reset multiplayer state
+        multipeerSession?.disconnect()
+        multipeerSession = nil
+        connectedPlayerNames = []
+        foundGameNames = []
+        connectingToGame = nil
+        opponentBoards = [:]
+        opponentMarked = [:]
+        recentOpponentMarks = []
+        pruningTask?.cancel()
+        pruningTask = nil
+        lastRoundWinner = nil
+        consecutiveLosses = [:]
+        tokenBalance = 0
+        tokenBalances = [:]
+        pendingToast = nil
+        completedLine = nil
+        isHost = false
+        playerDifficulties = [:]
+        resetRound()
+
+        // Set solo mode and record start time
+        gameMode = .solo
+        soloStartTime = Date()
+
+        // Deal board
+        let baseTiles = SquarePool.load()
+        let namedPacks = PackManager.packs(forIDs: activePackIDs)
+        let activePacks = namedPacks.isEmpty ? [SquarePool.loadBasePack()] : namedPacks
+        let pool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks)
+        let players: [(name: String, difficulty: BoardDifficulty)] = [
+            (name: playerName, difficulty: playerDifficulty)
+        ]
+        let boards = SquarePool.dealBoards(for: players, handicapLevels: [:], from: pool)
+
+        if let mySquares = boards[playerName] {
+            localBoard = BingoBoard(squares: mySquares)
+        }
+
+        // Deal reserve (needed for upgradeTile power-ups)
+        let usedIDs = Set(boards.values.flatMap { $0 }.map(\.id))
+        let reserve = SquarePool.dealReserve(for: players, count: 6, excluding: usedIDs, from: pool)
+        reserveSquares = reserve[playerName] ?? []
+
+        // Solo-compatible modifier (excludes fogOfWar, shiftingTiles, shuffleBoard, sniper)
+        let modifier = soloRandomModifier()
+        activeModifier = modifier
+        initializeModifier(modifier)
+
+        earnTokens(2, reason: "Round start")
+        screen = .game
+    }
+
+    private func soloRandomModifier() -> RoundModifier {
+        var candidates: [RoundModifier] = [.hotStreak, .doubleDown, .noPowers]
+        candidates += PatternShape.allCases.map { .patternWin($0) }
+        return candidates.randomElement()!
+    }
+
     func inviteGame(named name: String) {
         connectingToGame = name
         multipeerSession?.invitePeer(named: name)
