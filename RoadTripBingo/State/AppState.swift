@@ -267,6 +267,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         tokenBalances = [:]
         pendingToast = nil
         resetRound()
+        soloStartTime = nil
         gameMode = .multiplayer
         // winHistory intentionally preserved
         screen = .home
@@ -323,7 +324,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         guard screen == .game, completedLine != nil else { return }
         earnTokens(5, reason: "BINGO!")   // win bonus
         multipeerSession?.send(.bingoAnnounced(byName: playerName))
-        winHistory[playerName, default: 0] += 1
+        if gameMode != .solo { winHistory[playerName, default: 0] += 1 }
         dailyState.winsToday += 1
         dailyState.roundsPlayedToday += 1
         dailyState.save()
