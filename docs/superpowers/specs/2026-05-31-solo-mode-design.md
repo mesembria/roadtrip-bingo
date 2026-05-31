@@ -23,19 +23,40 @@ enum GameMode: Equatable { case multiplayer, solo }
 |---|---|---|
 | `gameMode` | `@Published GameMode` | Defaults to `.multiplayer` |
 | `tokensEarnedThisRound` | `private(set) Int` | Gross tokens earned; incremented alongside `tokenBalance`. Reset each round. |
+| `soloStartTime` | `Date?` | Set in `startSoloGame()`; used to compute elapsed time at win. |
 | `soloPersonalBest` | `Int` | Persisted to UserDefaults key `"soloPersonalBest"` via `didSet` |
 | `lastSoloScore` | `@Published Int` | Set at win time; read by WinView |
 | `lastSoloIsNewBest` | `@Published Bool` | Set at win time; drives "New personal best!" animation |
+
+### `SquareRarity.scoreBonus`
+New computed property on `SquareRarity`:
+
+| Rarity | `scoreBonus` |
+|---|---|
+| `veryCommon` | 0 |
+| `common` | 1 |
+| `uncommon` | 2 |
+| `rare` | 4 |
+| `veryRare` | 7 |
 
 ### Solo score formula
 Computed at BINGO detection, before transitioning to `.win`:
 
 ```swift
-let extraLines = max(0, GameEngine.completedLines(for: board).count - 1)
-let soloScore  = tokensEarnedThisRound + extraLines * 10
+let elapsed         = Date().timeIntervalSince(soloStartTime ?? Date())
+let timeMultiplier  = max(1.0, 2.0 - elapsed / 600.0)   // 2.0× at t=0, 1.0× at t=10 min
+
+let markedSquares   = localBoard?.squares.filter { localBoard!.isMarked(at: $0) } ?? []
+let rarityBonus     = markedSquares
+                        .filter { $0.id != BingoSquare.freeSquareID }
+                        .reduce(0) { $0 + $1.rarity.scoreBonus }
+
+let extraLines      = max(0, GameEngine.completedLines(for: board).count - 1)
+let baseScore       = tokensEarnedThisRound + (extraLines * 10) + rarityBonus
+let soloScore       = Int(Double(baseScore) * timeMultiplier)
 ```
 
-Gross earnings are used (not net balance) so spending tokens on power-ups does not penalise the score. Challenge completions award tokens through the existing system and are naturally included. Each completed line beyond the winning BINGO scores +10 points.
+Gross earnings are used (not net balance) so spending tokens on power-ups does not penalise the score. Challenge completions award tokens through the existing system and are naturally included. The time multiplier is applied to the whole base score so both rare tiles and extra lines are rewarded more when found quickly. The free square is excluded from the rarity bonus.
 
 ---
 
@@ -118,15 +139,20 @@ All other challenges work as-is. Notable: `.speedDemon` ("mark 5 tiles before an
 
         Score Breakdown
   Tokens earned      42
+  Rarity bonus       14
   Extra lines  ×2    20
   ──────────────────────
-  Total              62
+  Base score         76
+          × 1.6×  (time)
+  ──────────────────────
+  Total             121
 
   ★ New personal best!     ← or "Your best: 87"
 ```
 
 - Header: Rye font, AmericanaTheme colours
-- Breakdown table: BarlowSemiBold
+- Breakdown rows: BarlowSemiBold
+- The time multiplier row is displayed as `× 1.6×  (time)` with one decimal place
 - "New personal best! 🏆" animates in with a brief scale pulse (`.scaleEffect` + `.animation`) when `lastSoloIsNewBest == true`
 
 **Personal best update** (in AppState at win time):
@@ -137,6 +163,12 @@ if soloScore > soloPersonalBest {
 }
 lastSoloScore = soloScore
 ```
+
+**Score component properties** stored on AppState for WinView to display without recomputing:
+- `lastSoloTokens: Int`
+- `lastSoloRarityBonus: Int`
+- `lastSoloExtraLines: Int`
+- `lastSoloTimeMultiplier: Double`
 
 ---
 
