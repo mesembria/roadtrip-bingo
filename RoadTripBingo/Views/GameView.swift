@@ -118,9 +118,11 @@ struct GameView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             bingoButton
-            OpponentMarkFeedView(marks: appState.recentOpponentMarks, isLandscape: false)
-                .padding(.horizontal, 16)
-                .frame(height: 90)
+            if appState.gameMode != .solo {
+                OpponentMarkFeedView(marks: appState.recentOpponentMarks, isLandscape: false)
+                    .padding(.horizontal, 16)
+                    .frame(height: 90)
+            }
             powerUpStrip(isVertical: false)
         }
         .padding(.vertical, 8)
@@ -159,7 +161,9 @@ struct GameView: View {
                         isVertical: true
                     )
                 }
-                OpponentMarkFeedView(marks: appState.recentOpponentMarks, isLandscape: true)
+                if appState.gameMode != .solo {
+                    OpponentMarkFeedView(marks: appState.recentOpponentMarks, isLandscape: true)
+                }
                 Spacer()
                 bingoButton
             }
