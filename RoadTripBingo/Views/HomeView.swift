@@ -211,6 +211,30 @@ struct HomeView: View {
                     .disabled(appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty)
                     .padding(.bottom, 20)
 
+                    Button(action: {
+                        guard !appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+                        appState.startSoloGame()
+                    }) {
+                        HStack {
+                            Text("Play Solo")
+                                .font(AmericanaTheme.barlowBold(18))
+                                .kerning(2)
+                            Spacer()
+                            Text("→").opacity(0.35)
+                        }
+                        .foregroundColor(AmericanaTheme.brown)
+                        .padding(14)
+                        .frame(maxWidth: .infinity)
+                        .background(AmericanaTheme.parchment)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 11)
+                                .strokeBorder(AmericanaTheme.brown.opacity(0.5), lineWidth: 2)
+                        )
+                        .cornerRadius(11)
+                    }
+                    .disabled(appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .padding(.bottom, 20)
+
                     Button {
                         showChallenges = true
                     } label: {
