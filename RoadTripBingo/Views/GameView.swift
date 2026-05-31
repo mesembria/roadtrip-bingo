@@ -247,6 +247,7 @@ struct GameView: View {
             tokenBalance: appState.tokenBalance,
             isVertical: isVertical,
             activeModifier: appState.activeModifier,
+            gameMode: appState.gameMode,
             onActivateRandom: { powerUp in
                 appState.activatePowerUp(powerUp)
                 powerUpTrigger = UUID()

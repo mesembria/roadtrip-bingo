@@ -4,6 +4,7 @@ struct PowerUpStripView: View {
     let tokenBalance: Int
     let isVertical: Bool
     let activeModifier: RoundModifier?
+    let gameMode: GameMode
     let onActivateRandom: (PowerUpType) -> Void
     let onRequestTargeted: (PowerUpType) -> Void
 
@@ -34,12 +35,19 @@ struct PowerUpStripView: View {
 
     private var noPowersActive: Bool { activeModifier == .noPowers }
 
-    private let items: [StripItem] = [
-        StripItem(iconName: "powerup-upgrade",  label: "Upgrade",   randomVariant: .upgradeTileRandom,    targetedVariant: .upgradeTileTargeted),
-        StripItem(iconName: "powerup-sabotage", label: "Sabotage",  randomVariant: .downgradeTileRandom,  targetedVariant: .downgradeTileTargeted),
-        StripItem(iconName: "powerup-freemark", label: "Free Mark", randomVariant: nil,                   targetedVariant: .freeMark),
-        StripItem(iconName: "powerup-erase",    label: "Erase",     randomVariant: .unmarkOpponentRandom, targetedVariant: .unmarkOpponentTargeted),
-    ]
+    private var allItems: [StripItem] {
+        [
+            StripItem(iconName: "powerup-upgrade",  label: "Upgrade",   randomVariant: .upgradeTileRandom,    targetedVariant: .upgradeTileTargeted),
+            StripItem(iconName: "powerup-sabotage", label: "Sabotage",  randomVariant: .downgradeTileRandom,  targetedVariant: .downgradeTileTargeted),
+            StripItem(iconName: "powerup-freemark", label: "Free Mark", randomVariant: nil,                   targetedVariant: .freeMark),
+            StripItem(iconName: "powerup-erase",    label: "Erase",     randomVariant: .unmarkOpponentRandom, targetedVariant: .unmarkOpponentTargeted),
+        ]
+    }
+
+    private var items: [StripItem] {
+        guard gameMode == .solo else { return allItems }
+        return allItems.filter { !$0.targetedVariant.affectsOpponent }
+    }
 
     @State private var showHelp = false
 
