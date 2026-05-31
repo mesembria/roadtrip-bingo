@@ -21,6 +21,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         didSet { UserDefaults.standard.set(playerName, forKey: "playerName") }
     }
 
+    // MARK: - Game Mode
+    @Published var gameMode: GameMode = .multiplayer
+
     // MARK: - Lobby
     @Published var isHost = false
     @Published var connectedPlayerNames: [String] = []
@@ -89,8 +92,27 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     @Published var dailyState: DailyState = DailyState.load()
 
+    // MARK: - Solo tracking
+    private(set) var tokensEarnedThisRound: Int = 0
+    var soloStartTime: Date? = nil
+
+    var soloPersonalBest: Int {
+        get { UserDefaults.standard.integer(forKey: "soloPersonalBest") }
+        set { UserDefaults.standard.set(newValue, forKey: "soloPersonalBest") }
+    }
+
+    @Published var lastSoloScore: Int = 0
+    @Published var lastSoloIsNewBest: Bool = false
+    @Published var lastSoloTokens: Int = 0
+    @Published var lastSoloRarityBonus: Int = 0
+    @Published var lastSoloExtraLines: Int = 0
+    @Published var lastSoloTimeMultiplier: Double = 1.0
+
     var activeChallenges: [DailyChallenge] {
-        dailyState.challengeTypes.map { DailyChallenge(type: $0) }
+        let excluded: Set<DailyChallengeType> = gameMode == .solo ? [.pacifist, .menace] : []
+        return dailyState.challengeTypes
+            .filter { !excluded.contains($0) }
+            .map { DailyChallenge(type: $0) }
     }
 
     // MARK: - Network
@@ -183,6 +205,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         tokenBalances = [:]
         pendingToast = nil
         resetRound()
+        gameMode = .multiplayer
         // winHistory intentionally preserved
         screen = .home
     }
@@ -419,6 +442,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     private func earnTokens(_ amount: Int, reason: String) {
         let effective = (activeModifier == .doubleDown) ? amount * 2 : amount
         tokenBalance += effective
+        tokensEarnedThisRound += effective
         pendingToast = ToastEvent(message: "+\(effective)🟡 \(reason)", style: .earn)
         multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
     }
@@ -441,6 +465,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         marksThisRound = 0
         attacksUsedThisRound = 0
         tokensSpentThisRound = 0
+        tokensEarnedThisRound = 0
         opponentMarkCountsThisRound = [:]
         fogOfWarHiddenPositions = []
         fogShiftCount = 0

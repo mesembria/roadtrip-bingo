@@ -273,4 +273,46 @@ final class AppStateTests: XCTestCase {
 
         XCTAssertEqual(state.tokenBalance, 0, "Bonus for another player must not credit local balance")
     }
+
+    func test_appState_defaultGameMode_isMultiplayer() {
+        let state = AppState()
+        XCTAssertEqual(state.gameMode, .multiplayer)
+    }
+
+    func test_activeChallenges_solo_excludesPacifistAndMenace() {
+        let state = AppState()
+        // Force a known challenge set that includes pacifist and menace
+        state.dailyState = DailyState(
+            date: DailyState.today(),
+            challengeTypes: [.pacifist, .menace, .winOne],
+            completedIDs: [],
+            winsToday: 0,
+            roundsPlayedToday: 0
+        )
+        state.gameMode = .solo
+        let ids = state.activeChallenges.map(\.type)
+        XCTAssertFalse(ids.contains(.pacifist))
+        XCTAssertFalse(ids.contains(.menace))
+        XCTAssertTrue(ids.contains(.winOne))
+    }
+
+    func test_activeChallenges_multiplayer_includesPacifistAndMenace() {
+        let state = AppState()
+        state.dailyState = DailyState(
+            date: DailyState.today(),
+            challengeTypes: [.pacifist, .menace, .winOne],
+            completedIDs: [],
+            winsToday: 0,
+            roundsPlayedToday: 0
+        )
+        state.gameMode = .multiplayer
+        let ids = state.activeChallenges.map(\.type)
+        XCTAssertTrue(ids.contains(.pacifist))
+        XCTAssertTrue(ids.contains(.menace))
+    }
+
+    func test_tokensEarnedThisRound_startsAtZero() {
+        let state = AppState()
+        XCTAssertEqual(state.tokensEarnedThisRound, 0)
+    }
 }
