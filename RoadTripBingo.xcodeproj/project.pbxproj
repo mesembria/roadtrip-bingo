@@ -78,6 +78,7 @@
 		3DE42D22EACE40998A5D0027 /* pack-mountains.json in Resources */ = {isa = PBXBuildFile; fileRef = F7435F2C02764EBFBC989AD8 /* pack-mountains.json */; };
 		2194A8C806B94EFB8924FB62 /* pack-beach-coast.json in Resources */ = {isa = PBXBuildFile; fileRef = 157DCF28288D46F4A6E595EC /* pack-beach-coast.json */; };
 		D6A274CFF01243079B46F993 /* pack-desert-southwest.json in Resources */ = {isa = PBXBuildFile; fileRef = FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */; };
+		B1C2D3E4F5A6000212345678 /* pack-base.json in Resources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A6000112345678 /* pack-base.json */; };
 		BB059CE4617C4E16B9757E14 /* TilePacksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868DF6E1D0F948B889A024AF /* TilePacksView.swift */; };
 /* End PBXBuildFile section */
 
@@ -173,6 +174,7 @@
 		F7435F2C02764EBFBC989AD8 /* pack-mountains.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-mountains.json; sourceTree = "<group>"; };
 		157DCF28288D46F4A6E595EC /* pack-beach-coast.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-beach-coast.json; sourceTree = "<group>"; };
 		FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-desert-southwest.json; sourceTree = "<group>"; };
+		B1C2D3E4F5A6000112345678 /* pack-base.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-base.json; sourceTree = "<group>"; };
 		868DF6E1D0F948B889A024AF /* TilePacksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilePacksView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -194,6 +196,7 @@
 				F7435F2C02764EBFBC989AD8 /* pack-mountains.json */,
 				157DCF28288D46F4A6E595EC /* pack-beach-coast.json */,
 				FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */,
+				B1C2D3E4F5A6000112345678 /* pack-base.json */,
 				5EEBCB9CB46045EB8FB122BC /* Interstate.jpg */,
 				653F985D32AF442EA13BA8C8 /* City.jpg */,
 				5D20E55C87C44A7D959E8555 /* Farm.jpg */,
@@ -424,6 +427,7 @@
 				3DE42D22EACE40998A5D0027 /* pack-mountains.json in Resources */,
 				2194A8C806B94EFB8924FB62 /* pack-beach-coast.json in Resources */,
 				D6A274CFF01243079B46F993 /* pack-desert-southwest.json in Resources */,
+				B1C2D3E4F5A6000212345678 /* pack-base.json in Resources */,
 				3D47EA3DA1524F70A5DA7523 /* Interstate.jpg in Resources */,
 				C96CA07BB7D042BDB3B5F735 /* City.jpg in Resources */,
 				43FDEDA164D445628C4FBF20 /* Farm.jpg in Resources */,
