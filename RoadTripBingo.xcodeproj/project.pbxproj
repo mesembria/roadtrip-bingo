@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0B659BDBDBA79256A60461F0 /* BoardDifficulty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */; };
+		A9B0C1D2E3F4000212345678 /* GameMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B0C1D2E3F4000112345678 /* GameMode.swift */; };
 		11821C18F0AD675F93EB6F90 /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF7153575DA260B1AB6678B /* AppStateTests.swift */; };
 		183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D16366F1525405AB2B03711 /* GameEngine.swift */; };
 		2E8B64CFB6574C864BB4D4B2 /* OpponentStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F48F6E5624B667D40564DF2 /* OpponentStripView.swift */; };
@@ -99,6 +100,7 @@
 		10D7079330D5309CC9B40FCD /* WinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinView.swift; sourceTree = "<group>"; };
 		1B185FB25828686F54F6EFC9 /* PowerUpType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerUpType.swift; sourceTree = "<group>"; };
 		1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardDifficulty.swift; sourceTree = "<group>"; };
+		A9B0C1D2E3F4000112345678 /* GameMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMode.swift; sourceTree = "<group>"; };
 		1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerMessage.swift; sourceTree = "<group>"; };
 		24F534579B9712082DB264D8 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		26CA225771BADF1C45329F34 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 				F2C3DF2FD55D24FDE3C8DDB8 /* BingoBoard.swift */,
 				A6FA963025C170363180C6E8 /* BingoSquare.swift */,
 				1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */,
+				A9B0C1D2E3F4000112345678 /* GameMode.swift */,
 				1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */,
 				1B185FB25828686F54F6EFC9 /* PowerUpType.swift */,
 				A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */,
@@ -463,6 +466,7 @@
 				ED0A27E6447052ED0FDA3AD9 /* BingoSquare.swift in Sources */,
 				88766EBA70426FB6DA55992C /* BingoSquareView.swift in Sources */,
 				0B659BDBDBA79256A60461F0 /* BoardDifficulty.swift in Sources */,
+				A9B0C1D2E3F4000212345678 /* GameMode.swift in Sources */,
 				8FB2A8F6DD2B692CA54FBC51 /* ConfettiView.swift in Sources */,
 				F4E182EC5AF674AA80E50C98 /* ContentView.swift in Sources */,
 				183B966CF0C56D20549EB191 /* GameEngine.swift in Sources */,
