@@ -276,7 +276,7 @@
     "description": "A bright full rainbow arching across a stormy sky over green fields",
     "emoji": "🌈",
     "id": "5700EA4F-7F21-45B2-8E93-40F7A151A255",
-    "rarity": "uncommon",
+    "rarity": "rare",
     "text": "Rainbow"
   },
   {
@@ -361,14 +361,6 @@
   },
   {
     "category": "nature",
-    "description": "A tall waterfall cascading down a rocky cliff into a mist-filled pool below",
-    "emoji": "💦",
-    "id": "0699DCDE-E093-4EFA-9EB6-7EA71DA6C220",
-    "rarity": "uncommon",
-    "text": "Waterfall"
-  },
-  {
-    "category": "nature",
     "description": "Rows of grapevines on a hillside with heavy clusters of purple grapes hanging down",
     "emoji": "🍇",
     "id": "589E9C4B-436E-4FBE-B190-069481BBA35A",
@@ -412,8 +404,8 @@
     "description": "A Subway sandwich restaurant with the yellow and green logo sign on the storefront",
     "emoji": "🥖",
     "id": "3DE3F367-3105-4F8B-A89D-2F134E21D01D",
-    "rarity": "veryCommon",
-    "text": "Subway"
+    "rarity": "uncommon",
+    "text": "Subway Car"
   },
   {
     "category": "food",
@@ -629,7 +621,7 @@
     "emoji": "👋",
     "id": "F417EFC2-7FCB-419E-B20D-369A7C900C98",
     "rarity": "uncommon",
-    "text": "Welcome Sign"
+    "text": "Town Welcome Sign"
   },
   {
     "category": "landmarks",
@@ -844,7 +836,7 @@
     "description": "A blazing orange and pink sunset spreading across a wide flat horizon with glowing clouds",
     "emoji": "🌅",
     "id": "5B2CADFC-84CF-437F-99AA-A0F270C804B3",
-    "rarity": "uncommon",
+    "rarity": "veryRare",
     "text": "Dramatic Sunset"
   },
   {
@@ -852,7 +844,7 @@
     "description": "A huge golden full moon sitting very low on the horizon, looking enormous above a flat landscape",
     "emoji": "🌕",
     "id": "9EE07CB2-390A-4CA2-90E3-0A49ECEBC1BF",
-    "rarity": "rare",
+    "rarity": "veryRare",
     "text": "Low-Hanging Moon"
   },
   {
@@ -1164,7 +1156,7 @@
     "description": "A large wild turkey with a fan-shaped tail and a red wattle walking through a field",
     "emoji": "🦃",
     "id": "E7A4CC7D-0154-4E54-8087-27370DC12F6A",
-    "rarity": "uncommon",
+    "rarity": "veryRare",
     "text": "Wild Turkey"
   },
   {
@@ -1332,7 +1324,7 @@
     "description": "A yellow warning sign showing the dark silhouette of a large elk with antlers",
     "emoji": "🦌",
     "id": "87D08710-197C-4864-BE1A-C03FA82435E6",
-    "rarity": "uncommon",
+    "rarity": "rare",
     "text": "Elk Crossing Sign"
   },
   {
@@ -1499,16 +1491,8 @@
     "description": "A giant Buc-ee's travel center with the cartoon smiling beaver mascot sign and dozens of fuel pumps",
     "emoji": "🦫",
     "id": "14E85104-6013-3C95-84F2-F75E602B93ED",
-    "rarity": "uncommon",
+    "rarity": "rare",
     "text": "Buc-ee's"
-  },
-  {
-    "category": "food",
-    "description": "A large roadside store with a huge red and yellow 'Fireworks Superstore' sign and banners",
-    "emoji": "🎆",
-    "id": "6EFCF38E-E745-36C1-9167-0B7EBFC7B00B",
-    "rarity": "common",
-    "text": "Fireworks Superstore"
   },
   {
     "category": "food",
@@ -1568,14 +1552,6 @@
   },
   {
     "category": "signs",
-    "description": "A large orange electronic highway message board displaying an Amber Alert with a vehicle description",
-    "emoji": "⚠️",
-    "id": "02E74882-80DC-3850-8D78-01A503B62084",
-    "rarity": "uncommon",
-    "text": "Amber Alert Highway Sign"
-  },
-  {
-    "category": "signs",
     "description": "A hand-painted wooden sign advertising a fall corn maze at a nearby farm, with a corn design",
     "emoji": "🌽",
     "id": "BCA3B438-CE22-3867-815D-74B04002D7AD",
@@ -1587,7 +1563,7 @@
     "description": "A colorful surf shop with surfboards in every color leaning against the outside walls",
     "emoji": "🏄",
     "id": "F1A00001-0000-0000-0000-000000000020",
-    "rarity": "common",
+    "rarity": "uncommon",
     "text": "Surf Shop"
   },
   {
@@ -1687,14 +1663,6 @@
     "text": "Bike Share Station"
   },
   {
-    "category": "nature",
-    "description": "A very tall green saguaro cactus with two arms curving upward against a blazing orange sky",
-    "emoji": "🌵",
-    "id": "F1A00001-0000-0000-0000-000000000030",
-    "rarity": "veryCommon",
-    "text": "Saguaro Cactus"
-  },
-  {
     "category": "signs",
     "description": "A rustic weathered wooden roadside sign for a Native American trading post with painted symbols",
     "emoji": "🪶",
@@ -1773,14 +1741,6 @@
     "id": "96794F0E-2FF3-49BB-A03A-FE760A8B728A",
     "rarity": "uncommon",
     "text": "Weigh Station"
-  },
-  {
-    "category": "landmarks",
-    "description": "Abandoned wooden buildings with broken windows and a dusty empty main street",
-    "emoji": "👻",
-    "id": "FD790CF8-9C74-489F-9B5D-61EA067469DD",
-    "rarity": "veryRare",
-    "text": "Ghost Town"
   },
   {
     "category": "signs",
@@ -1869,5 +1829,264 @@
     "id": "B360FA15-6DA3-38B1-91F9-1EB84E03C09B",
     "rarity": "uncommon",
     "text": "Ski Slope Visible"
+  },
+  {
+    "category": "signs",
+    "description": "A white rectangular speed limit sign with a large black number of 65 set on the backdrop of the highway",
+    "id": "6BED26A9-9030-4307-ADDC-49F67DF01C6C",
+    "rarity": "veryCommon",
+    "text": "Speed Limit 65 "
+  },
+  {
+    "category": "signs",
+    "description": "A small white rectangular highway mile marker sign as seen on interstates showing 67. Show the full sign on the side of the road. ",
+    "id": "F4FDF8AB-2772-442E-A2C6-681E89D1D3D3",
+    "rarity": "rare",
+    "text": "Mile Marker 67"
+  },
+  {
+    "category": "vehicles",
+    "description": "A cobalt blue full-size pickup truck with chrome trim and a clean open bed, seen from a three-quarter angle on a country road",
+    "id": "9B065D10-BFC4-4F13-B55E-4C381E93B5F1",
+    "rarity": "uncommon",
+    "text": "Blue Pickup Truck"
+  },
+  {
+    "category": "vehicles",
+    "description": "A Jeep Wrangler with no doors and no roof on a sunny day, passengers visible with wind-blown hair on a two-lane road",
+    "id": "F13130B6-F91E-4AB0-8F5E-0D78012FED10",
+    "rarity": "uncommon",
+    "text": "Jeep with Doors Off"
+  },
+  {
+    "category": "vehicles",
+    "description": "A cheerful round Volkswagen Beetle in bright yellow, seen from a three-quarter front angle showing its distinctive bug-eye headlights",
+    "id": "EE025CEB-CF0C-4B8B-B2C4-5DD5FABF484C",
+    "rarity": "uncommon",
+    "text": "VW Beetle"
+  },
+  {
+    "category": "vehicles",
+    "description": "A large orange U-Haul moving truck with a tall cargo box, a bicycle wheel poking out the slightly-open back door, on a highway",
+    "id": "49DCAF71-20F7-425E-83C3-BEA541E82C01",
+    "rarity": "common",
+    "text": "Moving Truck"
+  },
+  {
+    "category": "vehicles",
+    "description": "A huge white motorhome with a small hatchback on a flat tow bar trailing behind it on an open highway — the classic toad",
+    "id": "9811541E-7462-4E55-9D72-1EC50E853487",
+    "rarity": "uncommon",
+    "text": "RV Towing a Car"
+  },
+  {
+    "category": "vehicles",
+    "description": "A pickup truck towing a long white travel trailer with a rounded front, a bike rack on the back, and a small AC unit on the roof",
+    "id": "4A6F0A09-BEEE-4B22-9F08-DD3FA5E7861D",
+    "rarity": "common",
+    "text": "Camper Trailer"
+  },
+  {
+    "category": "vehicles",
+    "description": "A white semi truck with a shiny aluminum refrigerated trailer, the boxy refrigeration unit visible and humming on the front wall of the trailer",
+    "id": "8A6DDE7A-D898-4163-B368-7D8527BA7EDB",
+    "rarity": "common",
+    "text": "Refrigerated Semi Trailer"
+  },
+  {
+    "category": "vehicles",
+    "description": "A flatbed semi truck carrying an enormous piece of industrial machinery, flanked by two yellow OVERSIZE LOAD pilot cars with flashing amber lights",
+    "id": "02F27115-3015-4E82-8D0B-64793ADF6E5E",
+    "rarity": "rare",
+    "text": "Oversize Load"
+  },
+  {
+    "category": "vehicles",
+    "description": "A full-size sedan painted entirely bubblegum pink — hood, doors, roof, and bumpers all the same loud color — cruising on an ordinary highway among regular-colored cars",
+    "id": "391C52F2-7048-4306-A5DD-5B7E31F30754",
+    "rarity": "rare",
+    "text": "All-Pink Car"
+  },
+  {
+    "category": "vehicles",
+    "description": "A flatbed truck stacked three or four bales high with giant round hay bales wrapped in white plastic netting, slowly making its way down a country road",
+    "id": "6095A398-03E7-408D-872B-6F4CA92CF523",
+    "rarity": "uncommon",
+    "text": "Hay Bale Truck"
+  },
+  {
+    "category": "vehicles",
+    "description": "A retro Volkswagen van in a two-tone white-on-top and bright-blue-on-bottom paint scheme driving down a scenic highway",
+    "id": "43EFE221-9ED9-4310-8AD7-48D2E80EA9BD",
+    "rarity": "uncommon",
+    "text": "VW Microbus"
+  },
+  {
+    "category": "vehicles",
+    "description": "A motorcycle with an attached sidecar pod on the right side, a helmeted passenger visible inside the small compartment",
+    "id": "482FB7B8-8EE6-40A8-969B-59C5B3D277FF",
+    "rarity": "rare",
+    "text": "Motorcycle with Sidecar"
+  },
+  {
+    "category": "vehicles",
+    "description": "An extra-long semi truck hauling two full-length trailers connected end-to-end, its very long silhouette snaking down the highway",
+    "id": "CFBE92A6-A1F6-4D30-B44F-7CDFB5384CD1",
+    "rarity": "uncommon",
+    "text": "Semi with Double Trailers"
+  },
+  {
+    "category": "vehicles",
+    "description": "A state license plate with a custom personal message spelled out in letters — like SUNLVR or GOTHERE — instead of a random code",
+    "id": "12A965BC-8552-456E-90AF-0F6C857FF2A0",
+    "rarity": "uncommon",
+    "text": "Vanity Plate — Phrase"
+  },
+  {
+    "category": "vehicles",
+    "description": "A vanity license plate spelling out a real person's first name in full — like SARAH or MIKEJR — in bold block letters",
+    "id": "C2BCE873-5656-4822-B94C-FD561CEE650F",
+    "rarity": "uncommon",
+    "text": "Vanity Plate — Name"
+  },
+  {
+    "category": "vehicles",
+    "description": "A Hawaii state license plate featuring the state's distinctive pastel rainbow design, standing out among continental US plates",
+    "id": "9C3F7FB1-5250-481F-BA08-DA080930F4F5",
+    "rarity": "rare",
+    "text": "Hawaiian License Plate"
+  },
+  {
+    "category": "vehicles",
+    "description": "A Canadian province license plate from Ontario, British Columbia, or Quebec — clearly different colors, fonts, and format from any American state plate",
+    "id": "2471C006-1253-4783-B0D2-41AE387D3C85",
+    "rarity": "rare",
+    "text": "Canadian License Plate"
+  },
+  {
+    "category": "vehicles",
+    "description": "A license plate where you can spot three letters grouped consecutively — like ABC or XYZ — anywhere in the sequence",
+    "id": "CB459265-48C5-464C-BC93-0E1FA56736A1",
+    "rarity": "common",
+    "text": "Plate with 3 Letters in a Row"
+  },
+  {
+    "category": "vehicles",
+    "description": "A license plate where you can spot three digits grouped consecutively — like 123 or 456 — anywhere in the sequence",
+    "id": "3CDE83B2-AE06-430C-B480-40E5CFB51A8E",
+    "rarity": "common",
+    "text": "Plate with 3 Numbers in a Row"
+  },
+  {
+    "category": "vehicles",
+    "description": "A specialty license plate bearing a wildlife image, nature scene, or university logo — like a leaping dolphin, a mountain range, or a team mascot — instead of plain state text",
+    "id": "FA504171-203E-4FB2-A2BB-96B8F4EFF1D7",
+    "rarity": "uncommon",
+    "text": "Specialty / Scenic Plate"
+  },
+  {
+    "category": "landmarks",
+    "description": "A state police car with its red and blue lights flashing, parked directly behind a car pulled over on the highway shoulder, the driver visible through their window looking nervous",
+    "id": "8220E083-8E42-44FF-A985-1CA60FA75961",
+    "rarity": "uncommon",
+    "text": "Trooper Pulling Someone Over"
+  },
+  {
+    "category": "vehicles",
+    "description": "A car whose entire rear bumper is plastered with five or more colorful bumper stickers — vacation spots, funny sayings, opinions, and slogans all crowded together",
+    "id": "6ABE672F-877D-44D0-87D0-ED1876CC2A13",
+    "rarity": "common",
+    "text": "5+ Bumper Sticker Car"
+  },
+  {
+    "category": "vehicles",
+    "description": "A car sporting a Star Wars bumper sticker — a Rebel Alliance symbol, a Darth Vader helmet, or the words May the Force Be With You — visible on the rear of the car",
+    "id": "8170774F-790E-48F1-B6BE-2CBE00354839",
+    "rarity": "uncommon",
+    "text": "Star Wars Bumper Sticker"
+  },
+  {
+    "category": "vehicles",
+    "description": "The rear of a car bearing an uplifting bumper sticker about kindness — Be Kind, Spread Kindness, or Kindness is Free in cheerful colorful letters",
+    "id": "4154F951-8955-4AE1-B1AC-4F91CF49833C",
+    "rarity": "common",
+    "text": "Kindness Bumper Sticker"
+  },
+  {
+    "category": "vehicles",
+    "description": "A minivan with three suitcases, a duffel bag, and a bag of sports equipment crammed onto the roof rack, all held down with a web of bungee cords and rope",
+    "id": "68B1D9C5-D513-49B7-B5BC-5BC436A37618",
+    "rarity": "uncommon",
+    "text": "Luggage Piled on Roof Rack"
+  },
+  {
+    "category": "vehicles",
+    "description": "A sleek hard-shell black rooftop cargo carrier box mounted on the roof rails of a family SUV, bulging with gear for a long road trip",
+    "id": "9D79F99D-5077-4C25-A5DD-1B83877B1145",
+    "rarity": "common",
+    "text": "Rooftop Cargo Box"
+  },
+  {
+    "category": "landmarks",
+    "description": "Children in the back seat of a passing car pressing their noses flat against the window glass and making silly faces at your car as the vehicles drive side by side",
+    "id": "51132CE8-299E-4E53-B4A9-FD6265EFC423",
+    "rarity": "uncommon",
+    "text": "Kids Making Faces at You"
+  },
+  {
+    "category": "landmarks",
+    "description": "The passenger in the car next to yours completely asleep — head lolling against the window, mouth slightly open — while the driver carries on",
+    "id": "76D9D3D6-CD19-47A5-9895-442B3B0D92A7",
+    "rarity": "common",
+    "text": "Sleeping Passenger"
+  },
+  {
+    "category": "food",
+    "description": "Two or three kids at a folding table at the end of a driveway with a hand-drawn LEMONADE 50 cents sign, a big pitcher, and a stack of paper cups",
+    "id": "B2C2C8A7-9681-4917-9978-A0A051B20A3E",
+    "rarity": "uncommon",
+    "text": "Lemonade Stand"
+  },
+  {
+    "category": "vehicles",
+    "description": "A minivan or SUV with two or three bicycles mounted on a rear-hanging bike rack, handlebars and wheel rims jutting out the back",
+    "id": "D15D9B6D-AB4A-425A-8B2D-F919BE3008C8",
+    "rarity": "common",
+    "text": "Bikes on Rear Rack"
+  },
+  {
+    "category": "landmarks",
+    "description": "A car parked on the highway shoulder with its hood propped wide open and steam rising from the engine, the driver standing next to it with a phone to their ear",
+    "id": "08A6045A-0A6C-4CA4-945D-B23A697B6D07",
+    "rarity": "uncommon",
+    "text": "Broken-Down Car, Hood Up"
+  },
+  {
+    "category": "vehicles",
+    "description": "A car loaded so full of bags, pillows, boxes, and stuffed animals that you can barely see the passengers through the rear window",
+    "id": "B680DC17-B247-409A-8590-71132BA51CB5",
+    "rarity": "common",
+    "text": "Car Packed to the Ceiling"
+  },
+  {
+    "category": "nature",
+    "description": "A dog sitting in the back seat of a car, its face pressed against the side window glass from the inside, nose fogging up the glass as it watches the world go by",
+    "id": "F4F47AEE-19EB-4630-A6A0-BFCB228663DB",
+    "rarity": "common",
+    "text": "Dog in Car"
+  },
+  {
+    "category": "vehicles",
+    "description": "A pickup truck driving with a large American flag mounted in the truck bed, the flag billowing out nearly horizontal in the wind at highway speed",
+    "id": "9B64F835-F92E-4A5D-AE22-C323BED32157",
+    "rarity": "common",
+    "text": "Flags Flying from Truck Bed"
+  },
+  {
+    "category": "nature",
+    "description": "A happy dog on a leash at a highway rest area, straining excitedly toward a grassy patch while a sleepy traveler in pajama pants struggles to keep pace",
+    "id": "E2036612-8B10-4F94-B99D-B29FA56B4A30",
+    "rarity": "common",
+    "text": "Rest Stop Dog Walk"
   }
 ]
