@@ -24,6 +24,15 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     // MARK: - Game Mode
     @Published var gameMode: GameMode = .multiplayer
 
+    // MARK: - Game Type
+    @Published var gameType: GameType = {
+        guard let raw = UserDefaults.standard.string(forKey: "gameType"),
+              let gt = GameType(rawValue: raw) else { return .bingo }
+        return gt
+    }() {
+        didSet { UserDefaults.standard.set(gameType.rawValue, forKey: "gameType") }
+    }
+
     // MARK: - Lobby
     @Published var isHost = false
     @Published var connectedPlayerNames: [String] = []
@@ -95,6 +104,23 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     // MARK: - Solo tracking
     private(set) var tokensEarnedThisRound: Int = 0
     var soloStartTime: Date? = nil
+
+    // MARK: - Spotting Race
+    @Published var spottingRaceTiles: [SpottingRaceTile] = []
+    @Published var mySpottingScore: Int = 0
+    @Published var opponentSpottingScores: [String: Int] = [:]
+    @Published var spottingRoundEndTime: Date? = nil
+    /// Host-only draw queue. Peers never see this.
+    var tilePool: [BingoSquare] = []
+    var mySpottingClaimedCount: Int = 0
+    private var spottingTimerTask: Task<Void, Never>? = nil
+    /// Pending finalize tasks keyed by slot UUID (cancelled on undo).
+    private var softClaimTasks: [UUID: Task<Void, Never>] = [:]
+
+    var soloSpottingRaceBest: Int {
+        get { UserDefaults.standard.integer(forKey: "soloSpottingRaceBest") }
+        set { UserDefaults.standard.set(newValue, forKey: "soloSpottingRaceBest") }
+    }
 
     var soloPersonalBest: Int {
         get { UserDefaults.standard.integer(forKey: "soloPersonalBest") }
@@ -268,6 +294,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         pendingToast = nil
         resetRound()
         soloStartTime = nil
+        resetSpottingRound()
         gameMode = .multiplayer
         // winHistory intentionally preserved
         screen = .home
@@ -569,6 +596,19 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         opponentMarkCountsThisRound = [:]
         fogOfWarHiddenPositions = []
         fogShiftCount = 0
+    }
+
+    private func resetSpottingRound() {
+        spottingRaceTiles = []
+        mySpottingScore = 0
+        opponentSpottingScores = [:]
+        spottingRoundEndTime = nil
+        tilePool = []
+        mySpottingClaimedCount = 0
+        spottingTimerTask?.cancel()
+        spottingTimerTask = nil
+        softClaimTasks.values.forEach { $0.cancel() }
+        softClaimTasks = [:]
     }
 
     private func checkBonuses(for board: BingoBoard) {
