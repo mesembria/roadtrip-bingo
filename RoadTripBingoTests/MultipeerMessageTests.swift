@@ -163,6 +163,15 @@ final class MultipeerMessageTests: XCTestCase {
         XCTAssertEqual(tokens, 5)
     }
 
+    func test_hostLeft_roundtrip() throws {
+        let msg = MultipeerMessage.hostLeft
+        let decoded = try roundtrip(msg)
+        guard case .hostLeft = decoded else {
+            return XCTFail("Expected .hostLeft, got \(decoded)")
+        }
+        // No payload — existence of the case is the assertion
+    }
+
     func test_gameStarted_backwardCompat_missingActivePackIDsDecodesAsEmpty() throws {
         // Simulate a message from an older client that doesn't send activePackIDs
         let json = """

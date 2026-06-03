@@ -15,6 +15,7 @@ enum MultipeerMessage: Codable {
     case roundModifier(RoundModifier)
     case boardShuffled(byName: String, squares: [BingoSquare])
     case handicapBonus(toPlayer: String, tokens: Int)
+    case hostLeft
 
     // Spotting Race cases
     case lockTile(slotID: UUID, squareID: UUID, byName: String, timestamp: Date)
@@ -37,7 +38,7 @@ enum MultipeerMessage: Codable {
     private enum MessageType: String, Codable {
         case gameStarted, squareToggled, bingoAnnounced, playAgain, difficultyChosen
         case tokenEarned, powerUpUsed, reserveDealt
-        case roundModifier, boardShuffled, handicapBonus
+        case roundModifier, boardShuffled, handicapBonus, hostLeft
         case lockTile, releaseTile, claimTile, tileReplaced, spottingRoundEnded
     }
 
@@ -91,6 +92,8 @@ enum MultipeerMessage: Codable {
             try c.encode(MessageType.handicapBonus, forKey: .type)
             try c.encode(toPlayer, forKey: .handicapToPlayer)
             try c.encode(tokens, forKey: .handicapTokens)
+        case .hostLeft:
+            try c.encode(MessageType.hostLeft, forKey: .type)
         case .lockTile(let slotID, let squareID, let byName, let timestamp):
             try c.encode(MessageType.lockTile, forKey: .type)
             try c.encode(slotID, forKey: .slotID)
@@ -176,6 +179,8 @@ enum MultipeerMessage: Codable {
                 toPlayer: try c.decode(String.self, forKey: .handicapToPlayer),
                 tokens: try c.decode(Int.self, forKey: .handicapTokens)
             )
+        case .hostLeft:
+            self = .hostLeft
         case .lockTile:
             self = .lockTile(
                 slotID: try c.decode(UUID.self, forKey: .slotID),
