@@ -9,6 +9,7 @@ struct SpottingRaceView: View {
     @State private var activeToastID: UUID? = nil
     @State private var toastStyle: ToastStyle = .earn
     @State private var timerCancellable: AnyCancellable? = nil
+    @State private var showExitConfirm = false
 
     private let timerPublisher = Timer.publish(every: 1, on: .main, in: .common)
 
@@ -27,6 +28,20 @@ struct SpottingRaceView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 24)
                         .padding(.horizontal, 16)
+                }
+
+                // Exit button: top-right of the content area (right of the 180pt left sidebar)
+                VStack {
+                    HStack {
+                        Spacer().frame(width: 180)
+                        HStack {
+                            Spacer()
+                            exitButton
+                                .padding(.top, 12)
+                                .padding(.trailing, 12)
+                        }
+                    }
+                    Spacer()
                 }
 
                 // Toast overlay
@@ -59,6 +74,23 @@ struct SpottingRaceView: View {
                 guard activeToastID == id else { return }
                 withAnimation { toastMessage = nil }
             }
+        }
+        .alert("Exit Game?", isPresented: $showExitConfirm) {
+            Button("Exit Game", role: .destructive) {
+                if appState.isHost {
+                    appState.exitGame()
+                } else {
+                    appState.goHome()
+                }
+            }
+            Button("Keep Playing", role: .cancel) {}
+        } message: {
+            Text(exitConfirmMessage)
+        }
+        .alert("Game Ended", isPresented: $appState.gameEndedByHost) {
+            Button("OK") { appState.goHome() }
+        } message: {
+            Text("The host ended the game.")
         }
     }
 
@@ -174,5 +206,34 @@ struct SpottingRaceView: View {
             }
         }
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: tiles.map(\.id))
+    }
+
+    // MARK: - Exit button
+
+    private var exitButton: some View {
+        Button { showExitConfirm = true } label: {
+            Image(systemName: "xmark")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(.white.opacity(0.6))
+                .frame(width: 32, height: 32)
+                .background(Color.black.opacity(0.4))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(.white.opacity(0.15), lineWidth: 1)
+                )
+                .accessibilityLabel("Exit game")
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var exitConfirmMessage: String {
+        if appState.gameMode == .solo {
+            return "Your progress will be lost."
+        } else if appState.isHost {
+            return "You're the host. Leaving will end the game for all players."
+        } else {
+            return "You'll return to the home screen. The other players can keep going."
+        }
     }
 }
