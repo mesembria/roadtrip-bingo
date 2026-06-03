@@ -15,6 +15,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     // MARK: - Navigation
     @Published var screen: AppScreen = .home
+    @Published var gameEndedByHost: Bool = false
 
     // MARK: - Identity
     @Published var playerName: String {
@@ -412,6 +413,14 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         gameMode = .multiplayer
         // winHistory intentionally preserved
         screen = .home
+        gameEndedByHost = false
+    }
+
+    func exitGame() {
+        if isHost && multipeerSession != nil {
+            multipeerSession?.send(.hostLeft)
+        }
+        goHome()
     }
 
     // MARK: - Lobby (host only)
@@ -1369,6 +1378,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             lastRoundWinner = winner
             winHistory[winner, default: 0] += 1
             screen = .win(winnerName: winner)
+
+        case .hostLeft:
+            gameEndedByHost = true
         }
     }
 

@@ -393,4 +393,22 @@ final class AppStateTests: XCTestCase {
         XCTAssertFalse(state.lastSoloIsNewBest)
         XCTAssertEqual(state.soloPersonalBest, 9999)
     }
+
+    func test_hostLeft_message_setsGameEndedByHost() {
+        let state = AppState()
+        state.playerName = "Zoe"
+
+        state.multipeerSession(makeSession(), didReceive: .hostLeft, from: "Liam")
+
+        XCTAssertTrue(state.gameEndedByHost)
+    }
+
+    func test_goHome_resetsGameEndedByHost() {
+        let state = AppState()
+        state.gameEndedByHost = true
+
+        state.goHome()
+
+        XCTAssertFalse(state.gameEndedByHost)
+    }
 }
