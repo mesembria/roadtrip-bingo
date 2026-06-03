@@ -25,6 +25,11 @@ struct WinView: View {
         }
         .sensoryFeedback(.impact(weight: .heavy), trigger: didAppear)
         .onAppear { if isLocalWin { didAppear = true } }
+        .alert("Game Ended", isPresented: $appState.gameEndedByHost) {
+            Button("OK") { appState.goHome() }
+        } message: {
+            Text("The host ended the game.")
+        }
     }
 
     // MARK: - Multiplayer (original layout)

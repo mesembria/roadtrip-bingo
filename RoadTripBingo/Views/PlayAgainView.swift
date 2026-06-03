@@ -93,5 +93,10 @@ struct PlayAgainView: View {
                 }
             }.padding(48)
         }
+        .alert("Game Ended", isPresented: $appState.gameEndedByHost) {
+            Button("OK") { appState.goHome() }
+        } message: {
+            Text("The host ended the game.")
+        }
     }
 }
