@@ -11,7 +11,12 @@ struct ContentView: View {
             case .lobby:
                 LobbyView().transition(.opacity)
             case .game:
-                GameView().transition(.opacity)
+                switch appState.gameType {
+                case .bingo:
+                    GameView().transition(.opacity)
+                case .spottingRace:
+                    SpottingRaceView().transition(.opacity)
+                }
             case .win(let winnerName):
                 WinView(winnerName: winnerName).transition(.opacity)
             case .playAgain:

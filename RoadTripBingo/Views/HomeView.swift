@@ -114,6 +114,52 @@ struct HomeView: View {
         .rotationEffect(.degrees(4))
     }
 
+    // MARK: - Game mode picker
+
+    private var gameModePicker: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("GAME MODE")
+                .font(AmericanaTheme.barlowSemiBold(10))
+                .foregroundColor(AmericanaTheme.ink.opacity(0.40))
+                .kerning(3)
+                .padding(.bottom, 8)
+
+            HStack(spacing: 8) {
+                gameModeCard(title: "Classic Bingo", subtitle: "5×5 grid", type: .bingo)
+                gameModeCard(title: "Spotting Race", subtitle: "Time attack", type: .spottingRace)
+            }
+        }
+        .padding(.bottom, 24)
+    }
+
+    private func gameModeCard(title: String, subtitle: String, type: GameType) -> some View {
+        let selected = appState.gameType == type
+        return Button(action: { appState.gameType = type }) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(AmericanaTheme.barlowBold(14))
+                    .foregroundColor(selected ? .white : AmericanaTheme.ink)
+                Text(subtitle)
+                    .font(AmericanaTheme.barlowSemiBold(11))
+                    .foregroundColor(selected ? .white.opacity(0.70) : AmericanaTheme.ink.opacity(0.45))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12).padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 9)
+                    .fill(selected ? AmericanaTheme.green : Color.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 9)
+                            .strokeBorder(
+                                selected ? Color.clear : AmericanaTheme.ink.opacity(0.12),
+                                lineWidth: 1.5
+                            )
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
     // MARK: - Right panel (controls)
 
     private var rightPanel: some View {
@@ -141,6 +187,9 @@ struct HomeView: View {
                             .frame(height: 1)
                     }
                     .padding(.bottom, 28)
+
+                    // Game mode picker
+                    gameModePicker
 
                     // Name field
                     Text("YOUR NAME")
@@ -213,7 +262,11 @@ struct HomeView: View {
 
                     Button(action: {
                         guard !appState.playerName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-                        appState.startSoloGame()
+                        if appState.gameType == .spottingRace {
+                            appState.startSpottingRaceSolo()
+                        } else {
+                            appState.startSoloGame()
+                        }
                     }) {
                         HStack {
                             Text("Play Solo")
