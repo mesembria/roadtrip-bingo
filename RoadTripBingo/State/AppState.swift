@@ -776,6 +776,73 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         }
     }
 
+    /// Fires every second. Host-only (also used in solo).
+    /// Checks tile expiry and the round end condition.
+    private func startSpottingTimerLoop() {
+        spottingTimerTask?.cancel()
+        spottingTimerTask = Task { @MainActor [weak self] in
+            do {
+                while let self {
+                    try await Task.sleep(nanoseconds: 1_000_000_000)
+                    guard let self else { return }
+
+                    // Round end check
+                    if let endTime = self.spottingRoundEndTime, Date() >= endTime {
+                        self.endSpottingRound()
+                        return
+                    }
+
+                    // Tile expiry — only replace tiles that are not currently locked
+                    let now = Date()
+                    let expiredSlotIDs = self.spottingRaceTiles
+                        .filter { $0.lockedBy == nil && now >= $0.expiresAt }
+                        .map(\.id)
+                    for slotID in expiredSlotIDs {
+                        self.replaceSpottingSlot(slotID: slotID)
+                    }
+                }
+            } catch {
+                // Task cancelled — exit cleanly
+            }
+        }
+    }
+
+    private func endSpottingRound() {
+        spottingTimerTask?.cancel()
+        spottingTimerTask = nil
+        softClaimTasks.values.forEach { $0.cancel() }
+        softClaimTasks = [:]
+
+        if gameMode == .solo {
+            // base = total rarity score; multiplier rewards sustained engagement
+            let base = mySpottingScore
+            let multiplier = min(2.0, 1.0 + Double(mySpottingClaimedCount) / 20.0)
+            let finalScore = Int(Double(base) * multiplier)
+            let isNewBest = finalScore > soloSpottingRaceBest
+            if isNewBest { soloSpottingRaceBest = finalScore }
+
+            // Reuse lastSolo* published properties so WinView can read them
+            lastSoloScore = finalScore
+            lastSoloRarityBonus = base            // used as "Rarity score" in breakdown card
+            lastSoloTimeMultiplier = multiplier   // used as multiplier row
+            lastSoloTokens = mySpottingClaimedCount  // repurposed as "Tiles claimed"
+            lastSoloExtraLines = 0
+            lastSoloIsNewBest = isNewBest
+
+            screen = .win(winnerName: playerName)
+        } else {
+            // Host collects canonical scores and broadcasts final results
+            var allScores = opponentSpottingScores
+            allScores[playerName] = mySpottingScore
+            multipeerSession?.send(.spottingRoundEnded(scores: allScores))
+
+            let winner = allScores.max(by: { $0.value < $1.value })?.key ?? playerName
+            lastRoundWinner = winner
+            winHistory[winner, default: 0] += 1
+            screen = .win(winnerName: winner)
+        }
+    }
+
     private func checkBonuses(for board: BingoBoard) {
         for line in GameEngine.closeCallLines(for: board) {
             let id = line.map(String.init).joined(separator: ",")
