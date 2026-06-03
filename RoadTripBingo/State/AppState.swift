@@ -191,7 +191,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         // Deal board
         let baseTiles = SquarePool.load()
         let namedPacks = PackManager.packs(forIDs: activePackIDs)
-        let activePacks = namedPacks.isEmpty ? [SquarePool.loadBasePack()] : namedPacks
+        let activePacks = [SquarePool.loadBasePack()] + namedPacks
         let pool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks)
         let players: [(name: String, difficulty: BoardDifficulty)] = [
             (name: playerName, difficulty: playerDifficulty)
@@ -279,7 +279,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         guard isHost else { return }
         dealAndLaunchRound { [weak self] boards in
             self?.multipeerSession?.stopAdvertising()
-            self?.multipeerSession?.send(.gameStarted(boards: boards, activePackIDs: self?.activePackIDs ?? []))
+            self?.multipeerSession?.send(.gameStarted(boards: boards, activePackIDs: self?.activePackIDs ?? [], gameType: .bingo))
         }
     }
 
@@ -392,7 +392,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             }
         }
         dealAndLaunchRound { [weak self] boards in
-            self?.multipeerSession?.send(.playAgain(boards: boards, activePackIDs: self?.activePackIDs ?? []))
+            self?.multipeerSession?.send(.playAgain(boards: boards, activePackIDs: self?.activePackIDs ?? [], gameType: .bingo))
         }
     }
 
@@ -402,7 +402,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         rollDailyChallengesIfNeeded()
         let baseTiles = SquarePool.load()
         let namedPacks = PackManager.packs(forIDs: activePackIDs)
-        let activePacks = namedPacks.isEmpty ? [SquarePool.loadBasePack()] : namedPacks
+        let activePacks = [SquarePool.loadBasePack()] + namedPacks
         let pool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks)
         let allNames = [playerName] + connectedPlayerNames
         let players = allNames.map { name -> (name: String, difficulty: BoardDifficulty) in
@@ -805,7 +805,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func multipeerSession(_ session: MultipeerSession, didReceive message: MultipeerMessage, from peerName: String) {
         switch message {
-        case .gameStarted(let boards, let activePackIDs):
+        case .gameStarted(let boards, let activePackIDs, _):
             self.activePackIDs = activePackIDs
             rollDailyChallengesIfNeeded()
             if let mySquares = boards[playerName] {
@@ -858,7 +858,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             )
             evaluateChallenges(event: .roundEnded(context: endCtx))
 
-        case .playAgain(let boards, let activePackIDs):
+        case .playAgain(let boards, let activePackIDs, _):
             self.activePackIDs = activePackIDs
             rollDailyChallengesIfNeeded()
             if let mySquares = boards[playerName] {

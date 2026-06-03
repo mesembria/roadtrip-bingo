@@ -223,7 +223,7 @@ final class AppStateTests: XCTestCase {
             }
         }
         state.multipeerSession(makeSession(),
-            didReceive: .gameStarted(boards: boards),
+            didReceive: .gameStarted(boards: boards, activePackIDs: [], gameType: .bingo),
             from: "host")
 
         XCTAssertTrue(state.recentOpponentMarks.isEmpty)
