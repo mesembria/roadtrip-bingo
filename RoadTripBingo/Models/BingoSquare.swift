@@ -16,6 +16,28 @@ enum SquareRarity: String, Codable, CaseIterable {
         case .veryRare:   return 7
         }
     }
+
+    /// Points awarded in Spotting Race — tuned independently of Bingo's scoreBonus.
+    var spottingRaceScore: Int {
+        switch self {
+        case .veryCommon: return 1
+        case .common:     return 2
+        case .uncommon:   return 3
+        case .rare:       return 5
+        case .veryRare:   return 8
+        }
+    }
+
+    /// Weighted draw probability for the rolling tile pool (weights sum to 100).
+    var spottingRaceWeight: Int {
+        switch self {
+        case .veryCommon: return 25
+        case .common:     return 30
+        case .uncommon:   return 25
+        case .rare:       return 15
+        case .veryRare:   return 5
+        }
+    }
 }
 
 enum SquareCategory: String, Codable, CaseIterable {
