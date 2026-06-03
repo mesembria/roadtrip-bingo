@@ -80,6 +80,11 @@
 		D6A274CFF01243079B46F993 /* pack-desert-southwest.json in Resources */ = {isa = PBXBuildFile; fileRef = FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */; };
 		B1C2D3E4F5A6000212345678 /* pack-base.json in Resources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A6000112345678 /* pack-base.json */; };
 		BB059CE4617C4E16B9757E14 /* TilePacksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868DF6E1D0F948B889A024AF /* TilePacksView.swift */; };
+		AA112233445566770000AA02 /* GameType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA112233445566770000AA01 /* GameType.swift */; };
+		AA112233445566770000AA04 /* SpottingRaceTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA112233445566770000AA03 /* SpottingRaceTile.swift */; };
+		AA112233445566770000AA06 /* SpottingRaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA112233445566770000AA05 /* SpottingRaceView.swift */; };
+		AA112233445566770000AA08 /* SpottingRaceTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA112233445566770000AA07 /* SpottingRaceTileView.swift */; };
+		AA112233445566770000AA0A /* SpottingRaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA112233445566770000AA09 /* SpottingRaceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -176,6 +181,11 @@
 		FCCAB0AD99FD4291A42E0937 /* pack-desert-southwest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-desert-southwest.json; sourceTree = "<group>"; };
 		B1C2D3E4F5A6000112345678 /* pack-base.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pack-base.json; sourceTree = "<group>"; };
 		868DF6E1D0F948B889A024AF /* TilePacksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilePacksView.swift; sourceTree = "<group>"; };
+		AA112233445566770000AA01 /* GameType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameType.swift; sourceTree = "<group>"; };
+		AA112233445566770000AA03 /* SpottingRaceTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpottingRaceTile.swift; sourceTree = "<group>"; };
+		AA112233445566770000AA05 /* SpottingRaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpottingRaceView.swift; sourceTree = "<group>"; };
+		AA112233445566770000AA07 /* SpottingRaceTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpottingRaceTileView.swift; sourceTree = "<group>"; };
+		AA112233445566770000AA09 /* SpottingRaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpottingRaceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -232,6 +242,8 @@
 				B327C9A89D39424AB98C435B /* ModifierBadgeView.swift */,
 				00DC7407896F4B0896AF1ECC /* DailyChallengesView.swift */,
 				868DF6E1D0F948B889A024AF /* TilePacksView.swift */,
+				AA112233445566770000AA05 /* SpottingRaceView.swift */,
+				AA112233445566770000AA07 /* SpottingRaceTileView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -252,6 +264,7 @@
 				C665004862594F8EBE583F25 /* DailyChallengeTests.swift */,
 				5AD30B338815432DBCC24E19 /* TilePackTests.swift */,
 				ED8B3C528DD44CE5ACDFAE27 /* PackManagerTests.swift */,
+				AA112233445566770000AA09 /* SpottingRaceTests.swift */,
 			);
 			path = RoadTripBingoTests;
 			sourceTree = "<group>";
@@ -284,6 +297,8 @@
 				A6FA963025C170363180C6E8 /* BingoSquare.swift */,
 				1B55CD26B1D5762A768E5A3F /* BoardDifficulty.swift */,
 				A9B0C1D2E3F4000112345678 /* GameMode.swift */,
+				AA112233445566770000AA01 /* GameType.swift */,
+				AA112233445566770000AA03 /* SpottingRaceTile.swift */,
 				1CB39DF04A46173BE76AD0F0 /* MultipeerMessage.swift */,
 				1B185FB25828686F54F6EFC9 /* PowerUpType.swift */,
 				A1B2C3D4E5F60001A1B2C301 /* RecentMark.swift */,
@@ -456,6 +471,7 @@
 				2E44512547BF4FDE95754775 /* DailyChallengeTests.swift in Sources */,
 				75379BAEA2154490AD288F40 /* TilePackTests.swift in Sources */,
 				17DC606F455147F0A20C4EB7 /* PackManagerTests.swift in Sources */,
+				AA112233445566770000AA0A /* SpottingRaceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -503,6 +519,10 @@
 				205502691C6A41D3A44F0670 /* TilePack.swift in Sources */,
 				4DB4F5482E6347A0B875CDAF /* PackManager.swift in Sources */,
 				BB059CE4617C4E16B9757E14 /* TilePacksView.swift in Sources */,
+				AA112233445566770000AA02 /* GameType.swift in Sources */,
+				AA112233445566770000AA04 /* SpottingRaceTile.swift in Sources */,
+				AA112233445566770000AA06 /* SpottingRaceView.swift in Sources */,
+				AA112233445566770000AA08 /* SpottingRaceTileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
