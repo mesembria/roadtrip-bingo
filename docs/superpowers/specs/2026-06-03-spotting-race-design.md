@@ -111,13 +111,29 @@ When a slot needs refilling, a tile is drawn with weighted probability by rarity
 
 | Rarity | Weight | Score |
 |---|---|---|
-| Very Common | 25% | +0 pts |
-| Common | 30% | +1 pt |
-| Uncommon | 25% | +2 pts |
-| Rare | 15% | +4 pts |
-| Very Rare | 5% | +7 pts |
+| Very Common | 25% | +1 pt |
+| Common | 30% | +2 pts |
+| Uncommon | 25% | +3 pts |
+| Rare | 15% | +5 pts |
+| Very Rare | 5% | +8 pts |
 
-Weights are applied at draw time (weighted `randomElement`). No guaranteed slot reservation in MVP. Weights are easy to tune without architectural change.
+Every tile is worth claiming — Very Common is not zero. Scoring is implemented via a new `spottingRaceScore` computed property on `SquareRarity` (separate from the existing `scoreBonus` used by Classic Bingo solo scoring, keeping both modes independently tunable):
+
+```swift
+extension SquareRarity {
+    var spottingRaceScore: Int {
+        switch self {
+        case .veryCommon: return 1
+        case .common:     return 2
+        case .uncommon:   return 3
+        case .rare:       return 5
+        case .veryRare:   return 8
+        }
+    }
+}
+```
+
+Weights are applied at draw time (weighted `randomElement`). No guaranteed slot reservation in MVP. Weights and scores are easy to tune without architectural change.
 
 ---
 
@@ -200,10 +216,12 @@ All six states are documented in `docs/mockups/spotting-race-tile-states-v4.html
 
 ## Win Screen
 
-Reuses the existing `.win(winnerName:)` screen flow. A new branch in `WinView` for Spotting Race shows:
+Reuses the existing `.win(winnerName:)` screen flow and `WinView` layout pattern exactly — same structure as Classic Bingo today. A new branch in `WinView` for Spotting Race shows:
 
-- **Multiplayer:** "Time's Up!" heading, scores side-by-side with winner highlighted, tiles-claimed count, Play Again / Done buttons.
-- **Solo:** Score breakdown (tiles claimed × rarity bonus × multiplier), personal best comparison, Play Again / Done.
+- **Multiplayer:** "Time's Up!" heading. Scores displayed side-by-side with the winner's score highlighted (same visual treatment as the Bingo win screen). Tiles-claimed count shown beneath each score. **Play Again** button (host only, same gating as today). **Done** button returns to the home screen.
+- **Solo:** Score breakdown (tiles claimed, rarity bonus, multiplier) displayed in the same breakdown style as the existing solo Bingo result screen. Personal best comparison. **Play Again** and **Done** buttons.
+
+Navigation after the win screen is identical to Bingo: Play Again re-enters the lobby flow (multiplayer) or starts a fresh round immediately (solo); Done calls `goHome()`.
 
 ---
 
