@@ -11,7 +11,13 @@ struct WinView: View {
         ZStack {
             AmericanaTheme.gridBackground().ignoresSafeArea()
             if isLocalWin { ConfettiView() }
-            if appState.gameMode == .solo {
+            if appState.gameType == .spottingRace {
+                if appState.gameMode == .solo {
+                    spottingRaceSoloContent
+                } else {
+                    spottingRaceMultiplayerContent
+                }
+            } else if appState.gameMode == .solo {
                 soloContent
             } else {
                 multiplayerContent
@@ -102,6 +108,159 @@ struct WinView: View {
             }
         }
         .padding(48)
+    }
+
+    // MARK: - Spotting Race Solo
+
+    private var spottingRaceSoloContent: some View {
+        VStack(spacing: 28) {
+            Text("⏱️").font(.system(size: 96))
+
+            Text("TIME'S UP!")
+                .font(AmericanaTheme.rye(38))
+                .foregroundColor(AmericanaTheme.yellow)
+                .multilineTextAlignment(.center)
+
+            spottingRaceScoreBreakdownCard
+
+            personalBestBadge
+                .onAppear { if appState.lastSoloIsNewBest { pbPulse = true } }
+
+            VStack(spacing: 12) {
+                Button(action: { appState.startSpottingRaceSolo() }) {
+                    HStack {
+                        Text("Play Again")
+                            .font(AmericanaTheme.barlowBold(18)).kerning(2)
+                        Spacer()
+                        Text("→").opacity(0.5)
+                    }
+                    .foregroundColor(.white)
+                    .padding(16).frame(maxWidth: 360)
+                    .background(AmericanaTheme.green)
+                    .cornerRadius(11)
+                    .shadow(color: Color(red: 0.059, green: 0.208, blue: 0.094), radius: 0, x: 0, y: 4)
+                }
+
+                Button(action: { appState.goHome() }) {
+                    HStack {
+                        Text("Done")
+                            .font(AmericanaTheme.barlowBold(18)).kerning(2)
+                        Spacer()
+                        Text("→").opacity(0.35)
+                    }
+                    .foregroundColor(AmericanaTheme.brown)
+                    .padding(14).frame(maxWidth: 360)
+                    .background(AmericanaTheme.parchment)
+                    .overlay(RoundedRectangle(cornerRadius: 11).strokeBorder(AmericanaTheme.brown.opacity(0.5), lineWidth: 2))
+                    .cornerRadius(11)
+                }
+            }
+        }
+        .padding(48)
+    }
+
+    private var spottingRaceScoreBreakdownCard: some View {
+        VStack(spacing: 0) {
+            Text("SCORE BREAKDOWN")
+                .font(AmericanaTheme.barlowSemiBold(10))
+                .foregroundColor(AmericanaTheme.ink.opacity(0.40))
+                .kerning(3)
+                .padding(.bottom, 12)
+
+            scoreRow(label: "Tiles claimed", value: appState.lastSoloTokens)
+            scoreRow(label: "Rarity score", value: appState.lastSoloRarityBonus)
+
+            Divider().padding(.vertical, 8)
+
+            HStack {
+                Text("× \(String(format: "%.2f", appState.lastSoloTimeMultiplier))×  (volume)")
+                    .font(AmericanaTheme.barlowSemiBold(15))
+                    .foregroundColor(AmericanaTheme.ink.opacity(0.55))
+                Spacer()
+            }
+            .padding(.vertical, 2)
+
+            Divider().padding(.vertical, 8)
+
+            HStack {
+                Text("Total")
+                    .font(AmericanaTheme.barlowBold(17)).foregroundColor(AmericanaTheme.ink)
+                Spacer()
+                Text("\(appState.lastSoloScore)")
+                    .font(AmericanaTheme.barlowBold(24)).foregroundColor(AmericanaTheme.green)
+            }
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(Color.white)
+                .shadow(color: AmericanaTheme.shadow, radius: 8, x: 0, y: 4)
+        )
+        .frame(maxWidth: 360)
+    }
+
+    // MARK: - Spotting Race Multiplayer
+
+    private var spottingRaceMultiplayerContent: some View {
+        VStack(spacing: 32) {
+            Text("⏱️").font(.system(size: 96))
+
+            Text("TIME'S UP!")
+                .font(AmericanaTheme.rye(38))
+                .foregroundColor(AmericanaTheme.yellow)
+                .multilineTextAlignment(.center)
+
+            // Scores — local player first, then opponents sorted by score
+            HStack(spacing: 16) {
+                spottingScoreCard(
+                    name: appState.playerName,
+                    score: appState.mySpottingScore,
+                    isWinner: isLocalWin
+                )
+                ForEach(
+                    appState.opponentSpottingScores.sorted(by: { $0.value > $1.value }),
+                    id: \.key
+                ) { name, score in
+                    spottingScoreCard(
+                        name: name,
+                        score: score,
+                        isWinner: name == winnerName
+                    )
+                }
+            }
+
+            Button(action: { appState.screen = .playAgain }) {
+                Text("Continue →")
+                    .font(AmericanaTheme.barlowBold(17))
+                    .padding(.horizontal, 48).padding(.vertical, 16)
+                    .background(AmericanaTheme.green)
+                    .foregroundColor(.white)
+                    .cornerRadius(14)
+            }
+        }
+        .padding(48)
+    }
+
+    private func spottingScoreCard(name: String, score: Int, isWinner: Bool) -> some View {
+        VStack(spacing: 6) {
+            if isWinner { Text("🏆").font(.system(size: 28)) }
+            Text(name)
+                .font(AmericanaTheme.barlowBold(16))
+                .foregroundColor(AmericanaTheme.ink)
+            Text("\(score) pts")
+                .font(AmericanaTheme.rye(28))
+                .foregroundColor(isWinner ? AmericanaTheme.green : AmericanaTheme.ink.opacity(0.65))
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white)
+                .shadow(color: AmericanaTheme.shadow, radius: isWinner ? 10 : 4, x: 0, y: 3)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(isWinner ? AmericanaTheme.green : Color.clear, lineWidth: 2)
+                )
+        )
     }
 
     // MARK: - Score breakdown card
