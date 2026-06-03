@@ -805,7 +805,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func multipeerSession(_ session: MultipeerSession, didReceive message: MultipeerMessage, from peerName: String) {
         switch message {
-        case .gameStarted(let boards, let activePackIDs, _):
+        case .gameStarted(let boards, let activePackIDs, _): // TODO: gameType wired in Task 7
             self.activePackIDs = activePackIDs
             rollDailyChallengesIfNeeded()
             if let mySquares = boards[playerName] {
@@ -858,7 +858,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             )
             evaluateChallenges(event: .roundEnded(context: endCtx))
 
-        case .playAgain(let boards, let activePackIDs, _):
+        case .playAgain(let boards, let activePackIDs, _): // TODO: gameType wired in Task 7
             self.activePackIDs = activePackIDs
             rollDailyChallengesIfNeeded()
             if let mySquares = boards[playerName] {
