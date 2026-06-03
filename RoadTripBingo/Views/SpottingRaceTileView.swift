@@ -77,7 +77,7 @@ struct SpottingRaceTileView: View {
     var body: some View {
         VStack(spacing: 0) {
             imageZone
-                .frame(height: 130)
+                .frame(height: 220)
             labelBand
                 .frame(height: 52)
         }
