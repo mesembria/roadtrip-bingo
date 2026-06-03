@@ -246,7 +246,7 @@ struct SpottingRaceTileView: View {
                     .fill(Color.white.opacity(0.15))
                 RoundedRectangle(cornerRadius: 2)
                     .fill(isPaused ? barColor.opacity(0.50) : barColor)
-                    .frame(width: geo.size.width * (isPaused ? fraction : fraction))
+                    .frame(width: geo.size.width * fraction)
             }
         }
         .frame(height: 3)
