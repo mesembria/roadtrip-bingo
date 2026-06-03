@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotting Race — Tile States v5</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rye&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,600&family=Courier+Prime:wght@400;700&display=swap');
+
+:root {
+  --ink:       #100a04;
+  --paper:     #f5e8cc;
+  --parchment: #e8d5a8;
+  --rust:      #8b2e0a;
+  --gold:      #c8860a;
+  --sage:      #1a5c33;
+  --sage-hi:   #27ae60;
+  --asphalt:   #0d0904;
+  --dark-wood: #1a1008;
+  --cream:     #faf5ec;
+
+  /* Rarity dot colours — same as before, but now dots only */
+  --vc: #888888;
+  --c:  #3d8b3d;
+  --u:  #2255a8;
+  --r:  #7b3fb5;
+  --vr: #c85a00;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--asphalt);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  font-family: 'Barlow Condensed', sans-serif;
+  color: var(--paper);
+  min-height: 100vh;
+  padding: 48px 32px 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+}
+
+/* ─── PAGE HEADER ─────────────────────────────────────── */
+.page-title {
+  font-family: 'Rye', serif;
+  font-size: 20px;
+  letter-spacing: 0.14em;
+  color: var(--paper);
+  text-align: center;
+  text-shadow: 0 0 40px rgba(200,134,10,0.2);
+}
+.page-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.6;
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* ─── SECTION CHROME ─────────────────────────────────── */
+.section {
+  width: 100%;
+  max-width: 1060px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.sec-head {
+  border-bottom: 1px solid rgba(200,134,10,0.18);
+  padding-bottom: 11px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.sec-num   { font-family: 'Courier Prime', monospace; font-size: 10px; color: var(--gold); opacity: 0.45; letter-spacing: 0.06em; }
+.sec-title { font-size: 14px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--paper); opacity: 0.85; }
+.sec-note  { font-size: 11px; font-style: italic; color: rgba(245,232,204,0.35); margin-left: auto; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   TILE CARD
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.tile {
+  width: 145px;
+  border-radius: 13px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 0 1.5px rgba(200,134,10,0.28), 0 5px 18px rgba(0,0,0,0.65);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.12s ease;
+  flex-shrink: 0;
+  user-select: none;
+}
+.tile:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 0 0 1.5px rgba(200,134,10,0.55), 0 10px 28px rgba(0,0,0,0.75);
+}
+
+/* ── Image zone ── */
+.tile-image {
+  height: 100px;
+  background: var(--cream);
+  background-image:
+    radial-gradient(ellipse at 30% 80%, rgba(200,134,10,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 75% 15%, rgba(139,46,10,0.04) 0%, transparent 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.25s, filter 0.25s;
+}
+
+.tile-emoji {
+  font-size: 40px;
+  line-height: 1;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.12));
+  transition: transform 0.15s;
+}
+.tile:hover .tile-emoji { transform: scale(1.1); }
+
+/* ── Rarity dots — top-left of image zone ── */
+.rarity-dots {
+  position: absolute;
+  top: 7px;
+  left: 8px;
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  z-index: 5;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  flex-shrink: 0;
+}
+/* 1 dot */
+.tile.vc .dot { background: var(--vc); }
+/* 2 dots */
+.tile.c  .dot { background: var(--c); }
+/* 3 dots */
+.tile.u  .dot { background: var(--u); }
+/* 4 dots */
+.tile.r  .dot { background: var(--r); }
+/* 5 dots */
+.tile.vr .dot { background: var(--vr); }
+
+/* Point value — top-right of image zone */
+.pts-val {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(26,10,4,0.35);
+  z-index: 5;
+  line-height: 1;
+}
+
+/* ── Label band ── */
+.tile-band {
+  background: var(--dark-wood);
+  background-image: repeating-linear-gradient(
+    90deg, transparent 0, transparent 11px,
+    rgba(255,255,255,0.013) 11px, rgba(255,255,255,0.013) 12px
+  );
+  border-top: 1px solid rgba(200,134,10,0.22);
+  padding: 9px 10px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: background 0.25s;
+  min-height: 52px;
+}
+.tile-name {
+  font-family: 'Rye', serif;
+  font-size: 10.5px;
+  color: var(--paper);
+  text-align: center;
+  line-height: 1.25;
+  letter-spacing: 0.025em;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+  transition: color 0.2s, opacity 0.2s;
+}
+
+/* Fuse bar */
+.fuse-track {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 0;
+  overflow: hidden;
+}
+.fuse-fill {
+  height: 100%;
+  transition: background 0.4s;
+}
+.fuse-fill.ok     { background: linear-gradient(90deg, rgba(200,134,10,0.4), var(--gold)); box-shadow: 0 0 6px rgba(200,134,10,0.6); }
+.fuse-fill.warn   { background: linear-gradient(90deg, rgba(180,60,0,0.6), #e05c00); box-shadow: 0 0 8px rgba(224,92,0,0.8); }
+.fuse-fill.danger { background: linear-gradient(90deg, rgba(160,0,0,0.7), #e74c3c); box-shadow: 0 0 10px rgba(231,76,60,1); animation: fuse-burn 0.35s ease-in-out infinite alternate; }
+@keyframes fuse-burn {
+  from { box-shadow: 0 0 6px rgba(231,76,60,0.7); }
+  to   { box-shadow: 0 0 14px rgba(255,80,50,1); }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   STATES
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* ── SOFT-CLAIM: you ── */
+.tile.soft-mine .tile-image { background: linear-gradient(145deg, #dbf5e8, #c2f0d8); }
+.tile.soft-mine .tile-band  { background: #071c0f; background-image: none; }
+.tile.soft-mine .tile-name  { color: #7de8a8; }
+
+.soft-mine-ring {
+  position: absolute; top: 6px; right: 8px;
+  width: 26px; height: 26px; z-index: 25; /* above stamp z-index:15 */
+}
+.soft-mine-ring svg { transform: rotate(-90deg); display: block; }
+.ring-num {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px; font-weight: 700; color: var(--sage);
+}
+.undo-label {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #a8f0c0;
+  border: 1px solid rgba(168,240,192,0.3); border-radius: 20px;
+  padding: 2px 10px; margin-top: 1px; line-height: 1.5;
+}
+
+/* ── SOFT-CLAIM: opponent — prominent image-zone overlay ── */
+.tile.soft-theirs { cursor: not-allowed; }
+.tile.soft-theirs:hover { transform: none; box-shadow: 0 0 0 1.5px rgba(200,134,10,0.28), 0 5px 18px rgba(0,0,0,0.65); }
+.tile.soft-theirs .tile-image { filter: brightness(0.55) saturate(0.3); }
+.tile.soft-theirs .tile-band  { background: #161616; background-image: none; }
+.tile.soft-theirs .tile-name  { color: rgba(245,232,204,0.4); font-style: italic; font-size: 9.5px; }
+
+/* Full image-zone overlay for opponent lock */
+.opp-lock-overlay {
+  position: absolute; inset: 0; z-index: 15;
+  background: rgba(10, 6, 2, 0.72);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+}
+.opp-lock-icon { font-size: 20px; line-height: 1; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.6)); }
+.opp-lock-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700; font-size: 14px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: rgba(245,232,204,0.92);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+}
+.opp-lock-sub {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(245,232,204,0.4);
+}
+
+/* ── CLAIMED: you ── */
+.tile.claimed-mine .tile-image { background: linear-gradient(145deg, #d0f0e0, #b8e8cc); }
+.tile.claimed-mine .tile-band  { background: #071c0f; background-image: none; }
+.tile.claimed-mine .tile-name  { color: rgba(168,240,192,0.5); }
+
+/* ── CLAIMED: opponent ── */
+.tile.claimed-theirs             { opacity: 0.88; }
+.tile.claimed-theirs .tile-image { background: linear-gradient(145deg, #fef0c8, #fde090); filter: brightness(0.92); }
+.tile.claimed-theirs .tile-band  { background: #241200; background-image: none; }
+.tile.claimed-theirs .tile-name  { color: rgba(255,220,130,0.5); }
+
+/* ── Rubber stamp ── */
+.stamp-wrap {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 15; pointer-events: none;
+}
+.stamp {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  width: 82px; height: 82px; border-radius: 50%; border: 3px solid;
+  gap: 0;
+}
+.stamp.mine {
+  border-color: var(--sage-hi);
+  background: rgba(10, 50, 25, 0.9);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.4), 0 0 0 1.5px rgba(39,174,96,0.4);
+  transform: rotate(-12deg);
+  animation: stamp-drop-mine 0.22s cubic-bezier(0.22,1,0.36,1) both;
+}
+.stamp.theirs {
+  border-color: var(--gold);
+  background: rgba(60, 35, 0, 0.9);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.4), 0 0 0 1.5px rgba(200,134,10,0.4);
+  transform: rotate(9deg);
+  animation: stamp-drop-theirs 0.22s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes stamp-drop-mine   { from { transform: rotate(-12deg) scale(2); opacity: 0; } to { transform: rotate(-12deg) scale(1); opacity: 1; } }
+@keyframes stamp-drop-theirs { from { transform: rotate(9deg)   scale(2); opacity: 0; } to { transform: rotate(9deg)   scale(1); opacity: 1; } }
+
+.stamp-word  { font-family: 'Barlow Condensed'; font-weight: 900; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; line-height: 1; }
+.stamp-score { font-family: 'Rye', serif; font-size: 17px; line-height: 1.15; }
+.stamp-name  { font-size: 8px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1; margin-top: 1px; }
+.stamp.mine  .stamp-word  { color: #a8f0c0; }
+.stamp.mine  .stamp-score { color: #7de8a8; }
+.stamp.mine  .stamp-name  { color: rgba(168,240,192,0.65); }
+.stamp.theirs .stamp-word  { color: #ffe090; }
+.stamp.theirs .stamp-score { color: #ffd060; }
+.stamp.theirs .stamp-name  { color: rgba(255,220,130,0.65); }
+
+/* ── DENIED: solid red overlay, white X ── */
+.tile.denied .tile-image { background: var(--cream); }
+.tile.denied .tile-band  { background: #3a0a0a; background-image: none; border-top-color: rgba(231,76,60,0.4); }
+.tile.denied .tile-name  { color: rgba(255,160,160,0.7); letter-spacing: 0.12em; text-transform: uppercase; }
+
+.deny-overlay {
+  position: absolute; inset: 0; z-index: 15;
+  background: rgba(192, 30, 10, 0.85);   /* solid red — no blending into image */
+  display: flex; align-items: center; justify-content: center;
+  animation: deny-flash 0.15s ease-in-out 3;
+}
+.deny-x {
+  font-size: 52px; font-weight: 900; color: white; line-height: 1;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  /* white on red — unambiguous */
+}
+@keyframes deny-flash { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* ── EXPIRING ── */
+.tile.expiring { animation: expire-ring 0.85s ease-in-out infinite; }
+@keyframes expire-ring {
+  0%,100% { box-shadow: 0 0 0 1.5px rgba(200,134,10,0.28), 0 5px 18px rgba(0,0,0,0.65); }
+  50%      { box-shadow: 0 0 0 2.5px rgba(231,76,60,0.8),  0 5px 20px rgba(231,76,60,0.3); }
+}
+
+/* ── INCOMING ── */
+.tile.incoming { animation: tile-arrive 0.38s cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes tile-arrive {
+  from { opacity: 0; transform: translateY(22px) scale(0.86); filter: brightness(1.4); }
+  to   { opacity: 1; transform: translateY(0) scale(1);        filter: brightness(1); }
+}
+
+/* ── Interactive demo: fade-out before replacement ── */
+.tile.leaving {
+  animation: tile-leave 0.3s ease-in forwards;
+}
+@keyframes tile-leave {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.88) translateY(-8px); }
+}
+
+/* ─── LAYOUT ────────────────────────────────────────── */
+.tile-row { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: flex-end; }
+.tile-col  { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.col-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(245,232,204,0.38); text-align: center; max-width: 145px; }
+.col-note  { font-size: 9.5px; color: rgba(245,232,204,0.2); text-align: center; max-width: 145px; line-height: 1.45; margin-top: -5px; }
+
+/* ─── GAME SCREEN ────────────────────────────────────── */
+.game-screen {
+  width: 960px; height: 570px;
+  border-radius: 20px; overflow: hidden;
+  display: flex; flex-direction: column;
+  box-shadow: 0 0 0 2px rgba(200,134,10,0.28), 0 20px 56px rgba(0,0,0,0.85);
+}
+.gs-header {
+  height: 84px; flex-shrink: 0;
+  background: #0f0904;
+  background-image: repeating-linear-gradient(180deg, transparent 0, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px);
+  border-bottom: 2.5px solid var(--gold);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
+  position: relative;
+}
+.gs-header::before {
+  content: '';
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+  width: 1px; height: 40px;
+  background: repeating-linear-gradient(180deg, rgba(200,134,10,0.3) 0, rgba(200,134,10,0.3) 7px, transparent 7px, transparent 13px);
+}
+.score-block { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 110px; }
+.score-who   { font-size: 9px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(245,232,204,0.4); }
+.score-val   { font-family: 'Rye', serif; font-size: 38px; color: var(--paper); line-height: 1; text-shadow: 0 0 24px rgba(200,134,10,0.25); }
+.score-val.opp { color: var(--gold); }
+
+.timer-block { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.timer-dial  { position: relative; width: 68px; height: 68px; }
+.timer-dial svg { transform: rotate(-90deg); display: block; }
+.timer-val   { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Rye', serif; font-size: 17px; color: var(--paper); }
+.timer-label { font-size: 8px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(245,232,204,0.35); }
+
+.gs-body {
+  flex: 1;
+  background: var(--paper);
+  background-image: radial-gradient(ellipse at 50% 40%, rgba(200,134,10,0.05) 0%, transparent 65%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 16px 24px 18px; gap: 14px;
+}
+.live-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(2,1fr);
+  gap: 14px; width: 100%; max-width: 660px;
+}
+.live-grid .tile { width: 100%; min-height: 152px; }
+.live-grid .tile-image { height: 96px; }
+
+.toast {
+  background: rgba(13,9,4,0.94); border: 1px solid rgba(200,134,10,0.32); border-radius: 26px;
+  padding: 7px 20px; display: flex; align-items: center; gap: 9px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--paper);
+  box-shadow: 0 2px 14px rgba(0,0,0,0.55);
+}
+.toast-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 7px var(--gold); flex-shrink: 0; }
+
+/* ─── INTERACTIVE TRANSITION DEMO ───────────────────── */
+.demo-box {
+  border: 1px solid rgba(200,134,10,0.18); border-radius: 16px;
+  padding: 24px 28px; background: rgba(245,232,204,0.025);
+  display: flex; gap: 32px; align-items: flex-start;
+}
+.demo-tiles { display: flex; gap: 20px; align-items: flex-end; }
+.demo-info  { flex: 1; display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+.demo-info h3 { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); opacity: 0.8; }
+.demo-info p  { font-size: 11px; font-weight: 600; color: rgba(245,232,204,0.6); line-height: 1.6; }
+
+.demo-step {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 10px; border-radius: 8px;
+  transition: background 0.2s;
+}
+.demo-step.active { background: rgba(200,134,10,0.1); }
+
+.step-num {
+  font-family: 'Courier Prime', monospace; font-size: 10px; font-weight: 700;
+  color: var(--gold); opacity: 0.5; flex-shrink: 0; padding-top: 1px;
+}
+.step-desc { font-size: 11px; font-weight: 600; color: rgba(245,232,204,0.65); line-height: 1.5; }
+.step-time { font-family: 'Courier Prime', monospace; font-size: 9px; color: rgba(200,134,10,0.5); margin-top: 1px; }
+
+.demo-btn {
+  margin-top: 4px;
+  background: var(--rust); color: var(--paper);
+  border: none; border-radius: 8px;
+  padding: 10px 20px; font-family: 'Barlow Condensed'; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.demo-btn:hover  { background: #a03810; }
+.demo-btn:active { transform: scale(0.97); }
+
+.demo-status {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(245,232,204,0.3); font-style: italic;
+}
+
+/* ─── TIMELINES ──────────────────────────────────────── */
+.timeline { width: 100%; max-width: 960px; border: 1px solid rgba(200,134,10,0.16); border-radius: 14px; padding: 20px 24px 22px; background: rgba(245,232,204,0.025); display: flex; flex-direction: column; gap: 16px; }
+.tl-title { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); opacity: 0.75; }
+.tl-row   { display: flex; align-items: flex-start; }
+.tl-step  { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+.tl-step:not(:last-child)::after { content: ''; position: absolute; top: 17px; left: 50%; right: -50%; height: 1px; background: rgba(200,134,10,0.2); z-index: 0; }
+.tl-dot   { width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(200,134,10,0.35); background: rgba(16,10,4,0.92); display: flex; align-items: center; justify-content: center; font-size: 15px; z-index: 1; flex-shrink: 0; }
+.tl-time  { font-family: 'Courier Prime', monospace; font-size: 9px; color: rgba(200,134,10,0.55); margin-top: 6px; letter-spacing: 0.04em; }
+.tl-you   { font-size: 10px; font-weight: 600; color: rgba(245,232,204,0.72); text-align: center; line-height: 1.45; padding: 4px 6px 0; max-width: 130px; }
+.tl-peer  { font-size: 9px; font-style: italic; color: rgba(200,134,10,0.5); text-align: center; line-height: 1.4; padding: 4px 6px 0; max-width: 130px; border-top: 1px dashed rgba(200,134,10,0.18); margin-top: 4px; padding-top: 4px; }
+
+</style>
+</head>
+<body>
+
+<div>
+  <div class="page-title">Spotting Race · Tile States v4</div>
+  <div class="page-kicker">Dots · Overlay Lock · Solid Deny · Transition Demo</div>
+</div>
+
+
+<!-- ═══ 01 · STATE CATALOGUE ══════════════════════════════════ -->
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <span class="sec-title">Your View — All States</span>
+    <span class="sec-note">Rarity dots bottom-left · points value bottom-right</span>
+  </div>
+
+  <div class="tile-row">
+
+    <!-- UNCLAIMED -->
+    <div class="tile-col">
+      <div class="tile r">
+        <div class="tile-image">
+          <div class="tile-emoji">🦅</div>
+          <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="pts-val">+4</div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Bald Eagle</div>
+          <div class="fuse-track"><div class="fuse-fill ok" style="width:68%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Unclaimed</div>
+      <div class="col-note">Normal state. Fuse ticking.</div>
+    </div>
+
+    <!-- SOFT-CLAIM: you — stamp drops immediately, undo in band -->
+    <div class="tile-col">
+      <div class="tile r soft-mine">
+        <div class="tile-image">
+          <div class="tile-emoji">🦅</div>
+          <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <!-- countdown ring stays top-right, sits above the stamp -->
+          <div class="soft-mine-ring">
+            <svg width="26" height="26" viewBox="0 0 26 26">
+              <circle cx="13" cy="13" r="10" fill="none" stroke="rgba(39,174,96,0.2)" stroke-width="2.5"/>
+              <circle cx="13" cy="13" r="10" fill="none" stroke="#27ae60" stroke-width="2.5"
+                stroke-dasharray="62.8" stroke-dashoffset="31" stroke-linecap="round"/>
+            </svg>
+            <div class="ring-num">1s</div>
+          </div>
+          <!-- stamp drops immediately on tap -->
+          <div class="stamp-wrap">
+            <div class="stamp mine">
+              <div class="stamp-word">Spotted</div>
+              <div class="stamp-score">+4 pts</div>
+              <div class="stamp-name">You</div>
+            </div>
+          </div>
+        </div>
+        <div class="tile-band">
+          <div class="undo-label">↩ Undo</div>
+          <div class="fuse-track"><div class="fuse-fill ok" style="width:68%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Tapped · Undo Window</div>
+      <div class="col-note">Stamp drops on tap. Countdown ring top-right. Undo still live in band.</div>
+    </div>
+
+    <!-- CLAIMED: you -->
+    <div class="tile-col">
+      <div class="tile r claimed-mine" data-demo="mine">
+        <div class="tile-image">
+          <div class="tile-emoji">🦅</div>
+          <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="stamp-wrap">
+            <div class="stamp mine">
+              <div class="stamp-word">Spotted</div>
+              <div class="stamp-score">+4 pts</div>
+              <div class="stamp-name">You</div>
+            </div>
+          </div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Bald Eagle</div>
+        </div>
+      </div>
+      <div class="col-label">Claimed · You</div>
+      <div class="col-note">Green stamp −12°. Click to replay animation.</div>
+    </div>
+
+    <!-- SOFT-CLAIM: opponent — NOW with full overlay -->
+    <div class="tile-col">
+      <div class="tile r soft-theirs">
+        <div class="tile-image">
+          <div class="tile-emoji">🦅</div>
+          <!-- Full image-zone overlay — prominent, readable at a glance -->
+          <div class="opp-lock-overlay">
+            <div class="opp-lock-icon">🔒</div>
+            <div class="opp-lock-name">Sarah</div>
+            <div class="opp-lock-sub">Claiming…</div>
+          </div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Bald Eagle</div>
+          <div class="fuse-track"><div class="fuse-fill ok" style="width:68%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Opp. Soft-Claim</div>
+      <div class="col-note">Dark overlay + name + "Claiming…" Not tappable.</div>
+    </div>
+
+    <!-- CLAIMED: opponent -->
+    <div class="tile-col">
+      <div class="tile r claimed-theirs" data-demo="theirs">
+        <div class="tile-image">
+          <div class="tile-emoji">🦅</div>
+          <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="stamp-wrap">
+            <div class="stamp theirs">
+              <div class="stamp-word">Taken</div>
+              <div class="stamp-score">+4 pts</div>
+              <div class="stamp-name">Sarah</div>
+            </div>
+          </div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Bald Eagle</div>
+        </div>
+      </div>
+      <div class="col-label">Claimed · Opponent</div>
+      <div class="col-note">Amber stamp +9°. Click to replay.</div>
+    </div>
+
+    <!-- DENIED — solid red overlay -->
+    <div class="tile-col">
+      <div class="tile r denied">
+        <div class="tile-image">
+          <div class="tile-emoji">🦅</div>
+          <div class="deny-overlay"><div class="deny-x">✕</div></div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Already Taken</div>
+        </div>
+      </div>
+      <div class="col-label">Claim Denied</div>
+      <div class="col-note">Solid red overlay + white ✕. Unmissable.</div>
+    </div>
+
+    <!-- EXPIRING -->
+    <div class="tile-col">
+      <div class="tile r expiring">
+        <div class="tile-image">
+          <div class="tile-emoji">🦅</div>
+          <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="pts-val">+4</div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Bald Eagle</div>
+          <div class="fuse-track"><div class="fuse-fill danger" style="width:9%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Expiring · &lt;3s</div>
+      <div class="col-note">Red border pulse. Fuse near empty.</div>
+    </div>
+
+    <!-- INCOMING -->
+    <div class="tile-col">
+      <div class="tile u incoming">
+        <div class="tile-image">
+          <div class="tile-emoji">💈</div>
+          <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="pts-val">+2</div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Barber Pole</div>
+          <div class="fuse-track"><div class="fuse-fill ok" style="width:100%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">New Tile Arrives</div>
+      <div class="col-note">Slides up, full fuse.</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ 02 · RARITY DOT SYSTEM ════════════════════════════════ -->
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <span class="sec-title">Rarity Dot System</span>
+    <span class="sec-note">More dots = rarer · colours reinforce the signal</span>
+  </div>
+  <div class="tile-row">
+
+    <div class="tile-col">
+      <div class="tile vc">
+        <div class="tile-image">
+          <div class="tile-emoji">🌳</div>
+          <div class="rarity-dots"><div class="dot"></div></div>
+          <div class="pts-val">+0</div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Oak Tree</div>
+          <div class="fuse-track"><div class="fuse-fill ok" style="width:55%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Very Common</div>
+      <div class="col-note">1 grey dot · 0 pts</div>
+    </div>
+
+    <div class="tile-col">
+      <div class="tile c">
+        <div class="tile-image">
+          <div class="tile-emoji">🚧</div>
+          <div class="rarity-dots"><div class="dot"></div><div class="dot"></div></div>
+          <div class="pts-val">+1</div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Road Work Sign</div>
+          <div class="fuse-track"><div class="fuse-fill ok" style="width:72%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Common</div>
+      <div class="col-note">2 green dots · 1 pt</div>
+    </div>
+
+    <div class="tile-col">
+      <div class="tile u">
+        <div class="tile-image">
+          <div class="tile-emoji">💈</div>
+          <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="pts-val">+2</div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Barber Pole</div>
+          <div class="fuse-track"><div class="fuse-fill ok" style="width:45%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Uncommon</div>
+      <div class="col-note">3 blue dots · 2 pts</div>
+    </div>
+
+    <div class="tile-col">
+      <div class="tile r">
+        <div class="tile-image">
+          <div class="tile-emoji">🦅</div>
+          <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="pts-val">+4</div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Bald Eagle</div>
+          <div class="fuse-track"><div class="fuse-fill ok" style="width:68%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Rare</div>
+      <div class="col-note">4 purple dots · 4 pts</div>
+    </div>
+
+    <div class="tile-col">
+      <div class="tile vr">
+        <div class="tile-image">
+          <div class="tile-emoji">🌋</div>
+          <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="pts-val">+7</div>
+        </div>
+        <div class="tile-band">
+          <div class="tile-name">Volcano</div>
+          <div class="fuse-track"><div class="fuse-fill ok" style="width:82%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Very Rare</div>
+      <div class="col-note">5 orange dots · 7 pts</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ 03 · TRANSITION DEMO ══════════════════════════════════ -->
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <span class="sec-title">Claimed → Replacement Transition</span>
+    <span class="sec-note">Tap the button to see the full sequence live</span>
+  </div>
+
+  <div class="demo-box">
+    <div class="demo-tiles">
+      <!-- The tile that will animate through states -->
+      <div class="tile-col">
+        <div class="tile vr" id="transition-tile">
+          <div class="tile-image">
+            <div class="tile-emoji" id="tt-emoji">🌋</div>
+            <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <div class="pts-val" id="tt-pts">+7</div>
+            <div class="stamp-wrap" id="tt-stamp" style="display:none">
+              <div class="stamp mine" id="tt-stamp-inner">
+                <div class="stamp-word">Spotted</div>
+                <div class="stamp-score" id="tt-stamp-score">+7 pts</div>
+                <div class="stamp-name">You</div>
+              </div>
+            </div>
+          </div>
+          <div class="tile-band">
+            <div class="tile-name" id="tt-name">Volcano</div>
+            <div class="fuse-track"><div class="fuse-fill ok" id="tt-fuse" style="width:72%"></div></div>
+          </div>
+        </div>
+        <div class="col-label" id="tt-label">Normal</div>
+      </div>
+
+      <!-- Adjacent tile (unchanged, for context) -->
+      <div class="tile-col">
+        <div class="tile c">
+          <div class="tile-image">
+            <div class="tile-emoji">🚧</div>
+            <div class="rarity-dots"><div class="dot"></div><div class="dot"></div></div>
+            <div class="pts-val">+1</div>
+          </div>
+          <div class="tile-band">
+            <div class="tile-name">Road Work Sign</div>
+            <div class="fuse-track"><div class="fuse-fill warn" style="width:26%"></div></div>
+          </div>
+        </div>
+        <div class="col-label">Adjacent Tile</div>
+        <div class="col-note">(unchanged)</div>
+      </div>
+    </div>
+
+    <div class="demo-info">
+      <h3>Sequence Walkthrough</h3>
+
+      <div class="demo-step" id="ds-1">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-desc">Tap — stamp drops immediately. Undo chip in band. Countdown ring top-right.</div>
+          <div class="step-time">t = 0ms</div>
+        </div>
+      </div>
+      <div class="demo-step" id="ds-2">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-desc">Undo window expires — chip disappears, +7 pts locked in. Stamp stays.</div>
+          <div class="step-time">t = 2000ms</div>
+        </div>
+      </div>
+      <div class="demo-step" id="ds-3">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-desc">Stamp holds 2s — both players can see what was claimed and who got it</div>
+          <div class="step-time">t = 2000–4000ms</div>
+        </div>
+      </div>
+      <div class="demo-step" id="ds-4">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-desc">Tile fades out — new tile slides up with full fuse</div>
+          <div class="step-time">t = 4000ms+</div>
+        </div>
+      </div>
+
+      <button class="demo-btn" id="demo-run-btn" onclick="runTransitionDemo()">▶ Run Demo</button>
+      <div class="demo-status" id="demo-status">Click to watch the full sequence</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ 03b · OPPONENT PERSPECTIVE DEMO ════════════════════════ -->
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-num">03b</span>
+    <span class="sec-title">Opponent's View — What Sarah Sees When You Claim</span>
+    <span class="sec-note">Tap the button to watch the sequence from Sarah's device</span>
+  </div>
+
+  <div class="demo-box">
+    <div class="demo-tiles">
+      <div class="tile-col">
+        <div class="tile vr" id="opp-tile">
+          <div class="tile-image" id="opp-tile-image">
+            <div class="rarity-dots" id="opp-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <div class="pts-val" id="opp-pts">+7</div>
+            <div class="tile-emoji" id="opp-emoji">🌋</div>
+            <div class="opp-lock-overlay" id="opp-lock" style="display:none">
+              <div class="opp-lock-icon">🔒</div>
+              <div class="opp-lock-name">Philippe</div>
+              <div class="opp-lock-sub">Claiming…</div>
+            </div>
+            <div class="stamp-wrap" id="opp-stamp" style="display:none">
+              <div class="stamp theirs" id="opp-stamp-inner">
+                <div class="stamp-word">Taken</div>
+                <div class="stamp-score">+7 pts</div>
+                <div class="stamp-name">Philippe</div>
+              </div>
+            </div>
+          </div>
+          <div class="tile-band">
+            <div class="tile-name" id="opp-name">Volcano</div>
+            <div class="fuse-track"><div class="fuse-fill ok" id="opp-fuse" style="width:72%"></div></div>
+          </div>
+        </div>
+        <div class="col-label" id="opp-label">Normal · Claimable</div>
+      </div>
+
+      <!-- Adjacent unchanged tile for context -->
+      <div class="tile-col">
+        <div class="tile c">
+          <div class="tile-image">
+            <div class="rarity-dots"><div class="dot"></div><div class="dot"></div></div>
+            <div class="pts-val">+1</div>
+            <div class="tile-emoji">🚧</div>
+          </div>
+          <div class="tile-band">
+            <div class="tile-name">Road Work Sign</div>
+            <div class="fuse-track"><div class="fuse-fill warn" style="width:26%"></div></div>
+          </div>
+        </div>
+        <div class="col-label">Adjacent Tile</div>
+        <div class="col-note">(unchanged)</div>
+      </div>
+    </div>
+
+    <div class="demo-info">
+      <h3>From Sarah's Device</h3>
+
+      <div class="demo-step" id="ods-1">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-desc">Tile is normal — Sarah could tap it at any moment</div>
+          <div class="step-time">t = 0ms</div>
+        </div>
+      </div>
+      <div class="demo-step" id="ods-2">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-desc">Philippe taps on his device — lock overlay appears instantly on Sarah's screen</div>
+          <div class="step-time">t ≈ 20ms (network delivery)</div>
+        </div>
+      </div>
+      <div class="demo-step" id="ods-3">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-desc">2s undo window passes — amber "Taken" stamp drops in. Score header ticks up for Philippe.</div>
+          <div class="step-time">t = 2020ms</div>
+        </div>
+      </div>
+      <div class="demo-step" id="ods-4">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-desc">Stamp holds 2s so Sarah clearly sees who got it and what it was worth</div>
+          <div class="step-time">t = 2020–4020ms</div>
+        </div>
+      </div>
+      <div class="demo-step" id="ods-5">
+        <div class="step-num">5</div>
+        <div>
+          <div class="step-desc">Tile fades out — new tile slides in, claimable by either player</div>
+          <div class="step-time">t = 4020ms+</div>
+        </div>
+      </div>
+
+      <button class="demo-btn" id="opp-demo-btn" onclick="runOpponentDemo()">▶ Run Opponent Demo</button>
+      <div class="demo-status" id="opp-demo-status">Sarah's perspective — Philippe claims the Volcano</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ 04 · GAME SCREEN ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <span class="sec-title">In Context — Live Game Screen</span>
+  </div>
+
+  <div class="game-screen">
+    <div class="gs-header">
+      <div class="score-block">
+        <div class="score-who">Philippe</div>
+        <div class="score-val">14</div>
+      </div>
+      <div class="timer-block">
+        <div class="timer-dial">
+          <svg width="68" height="68" viewBox="0 0 68 68">
+            <circle cx="34" cy="34" r="27" fill="none" stroke="rgba(245,232,204,0.1)" stroke-width="4.5"/>
+            <circle cx="34" cy="34" r="27" fill="none" stroke="#f5e8cc" stroke-width="4.5"
+              stroke-dasharray="169.6" stroke-dashoffset="67" stroke-linecap="round"/>
+          </svg>
+          <div class="timer-val">1:28</div>
+        </div>
+        <div class="timer-label">Remaining</div>
+      </div>
+      <div class="score-block">
+        <div class="score-who">Sarah</div>
+        <div class="score-val opp">9</div>
+      </div>
+    </div>
+
+    <div class="gs-body">
+      <div class="live-grid">
+
+        <!-- Just claimed by you — stamp still visible -->
+        <div class="tile r claimed-mine">
+          <div class="tile-image">
+            <div class="tile-emoji">🦅</div>
+            <div class="stamp-wrap">
+              <div class="stamp mine">
+                <div class="stamp-word">Spotted</div>
+                <div class="stamp-score">+4 pts</div>
+                <div class="stamp-name">You</div>
+              </div>
+            </div>
+          </div>
+          <div class="tile-band"><div class="tile-name">Bald Eagle</div></div>
+        </div>
+
+        <!-- Very rare — race for it -->
+        <div class="tile vr">
+          <div class="tile-image">
+            <div class="tile-emoji">🌋</div>
+            <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <div class="pts-val">+7</div>
+          </div>
+          <div class="tile-band">
+            <div class="tile-name">Volcano</div>
+            <div class="fuse-track"><div class="fuse-fill ok" style="width:80%"></div></div>
+          </div>
+        </div>
+
+        <!-- Locked by Sarah — prominent overlay -->
+        <div class="tile u soft-theirs">
+          <div class="tile-image">
+            <div class="tile-emoji">💈</div>
+            <div class="opp-lock-overlay">
+              <div class="opp-lock-icon">🔒</div>
+              <div class="opp-lock-name">Sarah</div>
+              <div class="opp-lock-sub">Claiming…</div>
+            </div>
+          </div>
+          <div class="tile-band">
+            <div class="tile-name">Barber Pole</div>
+            <div class="fuse-track"><div class="fuse-fill ok" style="width:58%"></div></div>
+          </div>
+        </div>
+
+        <!-- Expiring -->
+        <div class="tile c expiring">
+          <div class="tile-image">
+            <div class="tile-emoji">🚧</div>
+            <div class="rarity-dots"><div class="dot"></div><div class="dot"></div></div>
+            <div class="pts-val">+1</div>
+          </div>
+          <div class="tile-band">
+            <div class="tile-name">Road Work Sign</div>
+            <div class="fuse-track"><div class="fuse-fill danger" style="width:9%"></div></div>
+          </div>
+        </div>
+
+        <!-- Normal -->
+        <div class="tile r">
+          <div class="tile-image">
+            <div class="tile-emoji">🌵</div>
+            <div class="rarity-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <div class="pts-val">+4</div>
+          </div>
+          <div class="tile-band">
+            <div class="tile-name">Saguaro Cactus</div>
+            <div class="fuse-track"><div class="fuse-fill warn" style="width:24%"></div></div>
+          </div>
+        </div>
+
+        <!-- Normal vc -->
+        <div class="tile vc">
+          <div class="tile-image">
+            <div class="tile-emoji">🌳</div>
+            <div class="rarity-dots"><div class="dot"></div></div>
+            <div class="pts-val">+0</div>
+          </div>
+          <div class="tile-band">
+            <div class="tile-name">Oak Tree</div>
+            <div class="fuse-track"><div class="fuse-fill ok" style="width:63%"></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="toast">
+        <div class="toast-dot"></div>
+        Sarah claimed 💈 Barber Pole · +2 pts
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// Replay stamp animation on click
+document.querySelectorAll('[data-demo]').forEach(tile => {
+  tile.addEventListener('click', () => {
+    const stamp = tile.querySelector('.stamp');
+    if (!stamp) return;
+    stamp.style.animation = 'none';
+    stamp.offsetHeight;
+    const cls = stamp.classList.contains('mine') ? 'stamp-drop-mine' : 'stamp-drop-theirs';
+    stamp.style.animation = `${cls} 0.22s cubic-bezier(0.22,1,0.36,1) both`;
+  });
+});
+
+// Shared replacement tiles pool
+const replacements = [
+  { emoji:'🏔️', pts:'+4', name:'Mountain Peak',    cls:'r', dots:4 },
+  { emoji:'🚂', pts:'+2', name:'Steam Train',      cls:'u', dots:3 },
+  { emoji:'🦌', pts:'+7', name:'White-tail Deer',  cls:'vr', dots:5 },
+  { emoji:'⛽', pts:'+1', name:'Gas Station',      cls:'c', dots:2 },
+];
+let replIdx = 0;
+
+function setStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById(`ds-${i}`).classList.toggle('active', i === n);
+  }
+}
+
+function runTransitionDemo() {
+  const btn    = document.getElementById('demo-run-btn');
+  const tile   = document.getElementById('transition-tile');
+  const status = document.getElementById('demo-status');
+  const label  = document.getElementById('tt-label');
+  const stamp  = document.getElementById('tt-stamp');
+  const stampInner = document.getElementById('tt-stamp-inner');
+  const fuse   = document.getElementById('tt-fuse');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Running…';
+
+  // Step 1: tap — stamp drops immediately + undo chip in band (0ms)
+  setStep(1);
+  status.textContent = 'Step 1 · Tap! Stamp drops immediately…';
+  tile.classList.remove('claimed-mine', 'incoming', 'soft-mine');
+  tile.classList.add('soft-mine');
+
+  // Show stamp right away
+  stamp.style.display = '';
+  stampInner.style.animation = 'none';
+  stampInner.offsetHeight;
+  stampInner.style.animation = 'stamp-drop-mine 0.22s cubic-bezier(0.22,1,0.36,1) both';
+
+  tile.querySelector('.tile-band').innerHTML =
+    '<div class="undo-label">↩ Undo</div>' +
+    '<div class="fuse-track"><div class="fuse-fill ok" style="width:68%"></div></div>';
+  label.textContent = 'Tapped · Undo Window';
+
+  // Step 2: undo window expires — chip gone, stamp stays, pts locked (2000ms)
+  setTimeout(() => {
+    setStep(2);
+    status.textContent = 'Step 2 · Undo expired — +7 pts locked in, stamp stays…';
+    tile.classList.remove('soft-mine');
+    tile.classList.add('claimed-mine');
+    tile.querySelector('.tile-band').innerHTML =
+      '<div class="tile-name">Volcano</div>';
+    label.textContent = 'Claimed — Locked In';
+  }, 2000);
+
+  // Step 3: stamp holds (2000–4000ms)
+  setTimeout(() => {
+    setStep(3);
+    status.textContent = 'Step 3 · Stamp holds 2s — both players can read it…';
+    label.textContent = 'Holding…';
+  }, 2300);
+
+  // Step 4a: tile leaves (4000ms)
+  setTimeout(() => {
+    setStep(4);
+    status.textContent = 'Step 4 · Tile fades out…';
+    tile.classList.add('leaving');
+    label.textContent = 'Leaving…';
+  }, 4000);
+
+  // Step 4b: new tile arrives (4350ms)
+  setTimeout(() => {
+    const next = replacements[replIdx % replacements.length];
+    replIdx++;
+
+    tile.classList.remove('claimed-mine', 'leaving', 'soft-mine', 'vc','c','u','r','vr');
+    tile.classList.add(next.cls, 'incoming');
+    stamp.style.display = 'none';
+
+    // rebuild dots
+    const dotsHTML = Array(next.dots).fill('<div class="dot"></div>').join('');
+
+    tile.querySelector('.tile-image').innerHTML =
+      `<div class="tile-emoji">${next.emoji}</div>` +
+      `<div class="rarity-dots">${dotsHTML}</div>` +
+      `<div class="pts-val">${next.pts}</div>` +
+      `<div class="stamp-wrap" id="tt-stamp" style="display:none">` +
+        `<div class="stamp mine" id="tt-stamp-inner">` +
+          `<div class="stamp-word">Spotted</div>` +
+          `<div class="stamp-score" id="tt-stamp-score">${next.pts} pts</div>` +
+          `<div class="stamp-name">You</div>` +
+        `</div></div>`;
+
+    tile.querySelector('.tile-band').innerHTML =
+      `<div class="tile-name">${next.name}</div>` +
+      `<div class="fuse-track"><div class="fuse-fill ok" style="width:100%"></div></div>`;
+
+    status.textContent = 'Step 4 · New tile arrives with full fuse ✓';
+    label.textContent = 'New Tile';
+    setStep(0);
+
+    // cleanup animation class
+    setTimeout(() => tile.classList.remove('incoming'), 400);
+
+    btn.disabled = false;
+    btn.textContent = '▶ Run Again';
+  }, 4350);
+}
+
+function setOppStep(n) {
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById(`ods-${i}`).classList.toggle('active', i === n);
+  }
+}
+
+let oppReplIdx = 2; // start offset so we get different tiles from the "your" demo
+
+function runOpponentDemo() {
+  const btn    = document.getElementById('opp-demo-btn');
+  const tile   = document.getElementById('opp-tile');
+  const lock   = document.getElementById('opp-lock');
+  const stamp  = document.getElementById('opp-stamp');
+  const stampI = document.getElementById('opp-stamp-inner');
+  const label  = document.getElementById('opp-label');
+  const status = document.getElementById('opp-demo-status');
+  const fuse   = document.getElementById('opp-fuse');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Running…';
+
+  // Reset to normal unclaimed state
+  tile.className = 'tile vr';
+  lock.style.display = 'none';
+  stamp.style.display = 'none';
+  tile.querySelector('.tile-image').style.filter = '';
+
+  // Step 1: Normal (brief pause so user sees it)
+  setOppStep(1);
+  status.textContent = 'Step 1 · Tile is claimable — Sarah could grab it…';
+  label.textContent = 'Normal · Claimable';
+
+  // Step 2: Lock appears (~20ms after Philippe taps — simulated as 800ms for demo readability)
+  setTimeout(() => {
+    setOppStep(2);
+    status.textContent = 'Step 2 · Philippe tapped — lock overlay appears instantly';
+    label.textContent = 'Locked · Philippe Claiming…';
+    tile.classList.add('soft-theirs');
+    tile.querySelector('.tile-image').style.filter = 'brightness(0.55) saturate(0.3)';
+    lock.style.display = 'flex';
+  }, 800);
+
+  // Step 3: Claim finalizes — amber stamp drops (2000ms after lock)
+  setTimeout(() => {
+    setOppStep(3);
+    status.textContent = 'Step 3 · Philippe confirmed — amber stamp drops';
+    label.textContent = 'Taken by Philippe';
+
+    tile.classList.remove('soft-theirs');
+    tile.classList.add('claimed-theirs');
+    tile.querySelector('.tile-image').style.filter = 'brightness(0.92)';
+    lock.style.display = 'none';
+
+    stamp.style.display = '';
+    stampI.style.animation = 'none';
+    stampI.offsetHeight;
+    stampI.style.animation = 'stamp-drop-theirs 0.22s cubic-bezier(0.22,1,0.36,1) both';
+  }, 2800);
+
+  // Step 4: Stamp holds — both players see it
+  setTimeout(() => {
+    setOppStep(4);
+    status.textContent = 'Step 4 · Stamp holds — Sarah can clearly see what Philippe got';
+    label.textContent = 'Stamp Visible · 2s Hold';
+  }, 3100);
+
+  // Step 5a: Tile leaves
+  setTimeout(() => {
+    setOppStep(5);
+    status.textContent = 'Step 5 · Tile fades out…';
+    tile.classList.add('leaving');
+    label.textContent = 'Leaving…';
+  }, 4800);
+
+  // Step 5b: New tile arrives
+  setTimeout(() => {
+    const next = replacements[oppReplIdx % replacements.length];
+    oppReplIdx++;
+
+    tile.className = `tile ${next.cls} incoming`;
+    lock.style.display = 'none';
+    stamp.style.display = 'none';
+
+    const dotsHTML = Array(next.dots).fill('<div class="dot"></div>').join('');
+    document.getElementById('opp-tile-image').innerHTML =
+      `<div class="rarity-dots">${dotsHTML}</div>` +
+      `<div class="pts-val">${next.pts}</div>` +
+      `<div class="tile-emoji">${next.emoji}</div>` +
+      `<div class="opp-lock-overlay" id="opp-lock" style="display:none">` +
+        `<div class="opp-lock-icon">🔒</div>` +
+        `<div class="opp-lock-name">Philippe</div>` +
+        `<div class="opp-lock-sub">Claiming…</div>` +
+      `</div>` +
+      `<div class="stamp-wrap" id="opp-stamp" style="display:none">` +
+        `<div class="stamp theirs" id="opp-stamp-inner">` +
+          `<div class="stamp-word">Taken</div>` +
+          `<div class="stamp-score">${next.pts} pts</div>` +
+          `<div class="stamp-name">Philippe</div>` +
+        `</div></div>`;
+
+    tile.querySelector('.tile-band').innerHTML =
+      `<div class="tile-name" id="opp-name">${next.name}</div>` +
+      `<div class="fuse-track"><div class="fuse-fill ok" id="opp-fuse" style="width:100%"></div></div>`;
+
+    label.textContent = 'New Tile · Claimable Again';
+    status.textContent = 'Step 5 · New tile in — race is back on ✓';
+    setOppStep(0);
+
+    setTimeout(() => tile.classList.remove('incoming'), 400);
+
+    btn.disabled = false;
+    btn.textContent = '▶ Run Again';
+  }, 5150);
+}
+</script>
+
+</body>
+</html>

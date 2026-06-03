@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotting Race — Tile States Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rye&family=Barlow:wght@400;600;700;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #2d1a0e;
+    font-family: 'Barlow', sans-serif;
+    color: #1a0e05;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px 48px;
+    gap: 40px;
+  }
+
+  h1 {
+    font-family: 'Rye', serif;
+    color: #f5e6c8;
+    font-size: 18px;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: rgba(245,230,200,0.5);
+    text-align: center;
+    max-width: 720px;
+    line-height: 1.6;
+    margin-top: -32px;
+  }
+
+  /* ── Section headers ── */
+  .section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 960px;
+  }
+
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(245,230,200,0.15);
+  }
+
+  .section-title {
+    font-family: 'Rye', serif;
+    color: #f5e6c8;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+
+  .section-note {
+    font-size: 11px;
+    color: rgba(245,230,200,0.45);
+    line-height: 1.5;
+  }
+
+  /* ── Tile grid row ── */
+  .tile-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .tile-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tile-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,230,200,0.5);
+    text-align: center;
+    max-width: 130px;
+  }
+
+  .tile-sublabel {
+    font-size: 10px;
+    color: rgba(245,230,200,0.35);
+    text-align: center;
+    max-width: 130px;
+    line-height: 1.4;
+    margin-top: -4px;
+  }
+
+  /* ── Base tile ── */
+  .tile {
+    width: 130px;
+    height: 130px;
+    background: white;
+    border-radius: 14px;
+    border: 2.5px solid #c8a97a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+  }
+
+  /* Rarity left bar */
+  .tile::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 14px 0 0 14px;
+  }
+  .tile.rare::before { background: #9b59b6; }
+  .tile.uncommon::before { background: #3b8fce; }
+  .tile.common::before { background: #5cb85c; }
+
+  .tile-img {
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  .tile-text {
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    color: #2d1a0e;
+    padding: 0 8px;
+    line-height: 1.25;
+  }
+
+  .rarity-badge {
+    position: absolute;
+    top: 6px; right: 7px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    border-radius: 4px;
+    color: white;
+  }
+  .tile.rare .rarity-badge { background: #9b59b6; }
+  .tile.uncommon .rarity-badge { background: #3b8fce; }
+  .tile.common .rarity-badge { background: #5cb85c; }
+
+  /* Expiry bar */
+  .expiry-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 5px;
+    background: rgba(0,0,0,0.07);
+    overflow: hidden;
+  }
+  .expiry-fill {
+    height: 100%;
+    border-radius: 0;
+    transition: width 1s linear;
+  }
+  .expiry-fill.ok      { background: #8b2e0a; }
+  .expiry-fill.warn    { background: #e67e22; }
+  .expiry-fill.danger  { background: #c0392b; }
+
+  /* ── STATE: Soft-claimed by YOU ── */
+  .tile.soft-mine {
+    border-color: #5cb85c;
+    background: #f0faf0;
+  }
+
+  .soft-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(92,184,92,0.12);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 10px;
+    gap: 4px;
+    border-radius: 12px;
+  }
+
+  /* Circular countdown ring inside tile */
+  .countdown-ring {
+    position: absolute;
+    top: 6px;
+    left: 7px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .countdown-ring svg {
+    transform: rotate(-90deg);
+  }
+
+  .countdown-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 900;
+    color: #2d6a2d;
+  }
+
+  .undo-chip {
+    background: #2d6a2d;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  /* ── STATE: Soft-claimed by OPPONENT (seen by you) ── */
+  .tile.soft-theirs {
+    border-color: #aaaaaa;
+    background: #f8f8f8;
+    opacity: 0.85;
+  }
+
+  .pending-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 10px;
+    border-radius: 12px;
+  }
+
+  .pending-chip {
+    background: rgba(80,80,80,0.75);
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  /* Lock icon */
+  .lock-icon {
+    position: absolute;
+    top: 7px; left: 8px;
+    font-size: 13px;
+    opacity: 0.5;
+  }
+
+  /* ── STATE: Finalized by YOU ── */
+  .tile.claimed-mine {
+    border-color: #27ae60;
+    background: #e8f5e9;
+  }
+
+  .claimed-mine-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(39,174,96,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+  }
+
+  .claimed-mine-badge {
+    font-family: 'Rye', serif;
+    font-size: 15px;
+    color: #1a6b3a;
+    text-shadow: 0 1px 3px rgba(255,255,255,0.6);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* ── STATE: Finalized by OPPONENT ── */
+  .tile.claimed-theirs {
+    border-color: #f0a500;
+    background: #fffbee;
+    opacity: 0.75;
+  }
+
+  .claimed-theirs-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(240,165,0,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+  }
+
+  .claimed-theirs-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: #7a5000;
+    text-align: center;
+    line-height: 1.4;
+    padding: 0 8px;
+  }
+
+  /* ── STATE: Expiring ── */
+  .tile.expiring {
+    border-color: #e74c3c;
+    animation: pulse-red 0.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0); }
+    50%       { box-shadow: 0 0 0 5px rgba(231,76,60,0.3); }
+  }
+
+  /* ── STATE: Denied (flash) ── */
+  .tile.denied {
+    border-color: #e74c3c;
+    background: #fff5f5;
+    animation: flash-deny 0.15s ease-in-out 3;
+  }
+
+  @keyframes flash-deny {
+    0%, 100% { background: white; }
+    50%       { background: #ffebee; }
+  }
+
+  .denied-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(231,76,60,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+  }
+
+  .denied-x {
+    font-size: 36px;
+    color: #c0392b;
+    opacity: 0.6;
+    font-weight: 900;
+  }
+
+  /* ── STATE: Incoming replacement (slide-in animation) ── */
+  .tile.incoming {
+    animation: slideUp 0.35s cubic-bezier(0.22,1,0.36,1) both;
+    background: #fffdf8;
+    border-color: #c8a97a;
+    border-style: dashed;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(18px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ── Timeline strip ── */
+  .timeline {
+    width: 100%;
+    max-width: 900px;
+    background: #f5e6c8;
+    border-radius: 14px;
+    border: 2px solid #8b5c2a;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .timeline-title {
+    font-family: 'Rye', serif;
+    font-size: 12px;
+    color: #8b2e0a;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .timeline-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .tl-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .tl-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    right: -50%;
+    height: 2px;
+    background: #c8a97a;
+    z-index: 0;
+  }
+
+  .tl-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    z-index: 1;
+    flex-shrink: 0;
+    border: 2px solid transparent;
+  }
+
+  .tl-dot.tap      { background: #fff3e0; border-color: #e67e22; }
+  .tl-dot.pending  { background: #e8f5e9; border-color: #27ae60; }
+  .tl-dot.finalize { background: #e8f5e9; border-color: #1a6b3a; }
+  .tl-dot.new      { background: #f5e6c8; border-color: #8b5c2a; }
+  .tl-dot.undo     { background: #ffebee; border-color: #e74c3c; }
+  .tl-dot.release  { background: #f5f5f5; border-color: #999; }
+
+  .tl-time {
+    font-size: 9px;
+    font-weight: 700;
+    color: #8b5c2a;
+    margin-top: 5px;
+    letter-spacing: 0.08em;
+  }
+
+  .tl-desc {
+    font-size: 10px;
+    color: #4a2c0a;
+    text-align: center;
+    line-height: 1.4;
+    padding: 0 4px;
+    margin-top: 3px;
+    max-width: 100px;
+  }
+
+  .tl-peer {
+    font-size: 9px;
+    color: #6b4226;
+    text-align: center;
+    font-style: italic;
+    margin-top: 2px;
+    padding: 0 4px;
+    max-width: 100px;
+    line-height: 1.3;
+  }
+
+  /* ── Two-perspective split ── */
+  .perspective-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    max-width: 960px;
+  }
+
+  .perspective-card {
+    flex: 1;
+    background: #f5e6c8;
+    border-radius: 14px;
+    border: 2px solid #8b5c2a;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .perspective-card h3 {
+    font-family: 'Rye', serif;
+    font-size: 11px;
+    color: #8b2e0a;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .perspective-card ul {
+    font-size: 11px;
+    color: #4a2c0a;
+    line-height: 1.8;
+    padding-left: 16px;
+  }
+
+  .chip {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: 0.06em;
+    vertical-align: middle;
+  }
+  .chip.green  { background: #27ae60; color: white; }
+  .chip.amber  { background: #e67e22; color: white; }
+  .chip.grey   { background: #888;    color: white; }
+  .chip.red    { background: #e74c3c; color: white; }
+</style>
+</head>
+<body>
+
+  <h1>Spotting Race · Tile States & Transitions</h1>
+  <p class="subtitle">All tile states from both the claiming player's and the opponent's perspective, plus sequence timelines for the two key scenarios.</p>
+
+  <!-- ═══════════════════════════════════ SECTION 1: State Catalogue ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">State Catalogue — Your View</div>
+      <div class="section-note">What you see on tiles in your own grid, in all possible states.</div>
+    </div>
+
+    <div class="tile-row">
+
+      <!-- 1. Normal / unclaimed -->
+      <div class="tile-col">
+        <div class="tile rare">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:68%"></div></div>
+        </div>
+        <div class="tile-label">Unclaimed</div>
+        <div class="tile-sublabel">Normal. Expiry bar counting down.</div>
+      </div>
+
+      <!-- 2. Soft-claimed by YOU -->
+      <div class="tile-col">
+        <div class="tile rare soft-mine">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="countdown-ring">
+            <svg width="22" height="22" viewBox="0 0 22 22">
+              <circle cx="11" cy="11" r="8" fill="none" stroke="rgba(39,174,96,0.2)" stroke-width="2.5"/>
+              <circle cx="11" cy="11" r="8" fill="none" stroke="#27ae60" stroke-width="2.5"
+                stroke-dasharray="50.3" stroke-dashoffset="25" stroke-linecap="round"/>
+            </svg>
+            <div class="countdown-ring-text">1s</div>
+          </div>
+          <div class="soft-overlay">
+            <div class="undo-chip">↩ Undo</div>
+          </div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:68%"></div></div>
+        </div>
+        <div class="tile-label">Soft-Claimed (You)</div>
+        <div class="tile-sublabel">Undo chip + 2s countdown ring. Expiry paused.</div>
+      </div>
+
+      <!-- 3. Finalized by YOU -->
+      <div class="tile-col">
+        <div class="tile rare claimed-mine">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="claimed-mine-overlay">
+            <div class="claimed-mine-badge">+4 pts ✓</div>
+          </div>
+        </div>
+        <div class="tile-label">Claimed (You)</div>
+        <div class="tile-sublabel">Green flash. Holds ~0.4s then replacement slides in.</div>
+      </div>
+
+      <!-- 4. Incoming replacement -->
+      <div class="tile-col">
+        <div class="tile uncommon incoming">
+          <span class="rarity-badge">Uncommon</span>
+          <div class="tile-img">💈</div>
+          <div class="tile-text">Barber Pole</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:100%"></div></div>
+        </div>
+        <div class="tile-label">New Tile (Slide-in)</div>
+        <div class="tile-sublabel">Slides up into the vacated slot. Full expiry bar.</div>
+      </div>
+
+      <!-- 5. Expiring (critical) -->
+      <div class="tile-col">
+        <div class="tile rare expiring">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="expiry-bar"><div class="expiry-fill danger" style="width:8%"></div></div>
+        </div>
+        <div class="tile-label">Expiring</div>
+        <div class="tile-sublabel">Red border pulse. &lt;3s left. Grab it or it's gone.</div>
+      </div>
+
+      <!-- 6. Denied -->
+      <div class="tile-col">
+        <div class="tile rare denied">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="denied-overlay">
+            <div class="denied-x">✕</div>
+          </div>
+        </div>
+        <div class="tile-label">Claim Denied</div>
+        <div class="tile-sublabel">Red ✕ flash (~0.4s). Opponent had it first.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ SECTION 2: Opponent's view ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">State Catalogue — Opponent's View of the Same Tile</div>
+      <div class="section-note">What the OTHER player sees on tiles they didn't claim.</div>
+    </div>
+
+    <div class="tile-row">
+
+      <!-- 1. Unclaimed (same) -->
+      <div class="tile-col">
+        <div class="tile rare">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:68%"></div></div>
+        </div>
+        <div class="tile-label">Unclaimed</div>
+        <div class="tile-sublabel">Identical to your view — still claimable.</div>
+      </div>
+
+      <!-- 2. Soft-claimed by YOU, seen by opponent -->
+      <div class="tile-col">
+        <div class="tile rare soft-theirs">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="lock-icon">🔒</div>
+          <div class="pending-overlay">
+            <div class="pending-chip">Philippe…</div>
+          </div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:68%"></div></div>
+        </div>
+        <div class="tile-label">Locked (Opp. Pending)</div>
+        <div class="tile-sublabel">Greyed out + lock. Not tappable. Opp. name shown.</div>
+      </div>
+
+      <!-- 3. Finalized by YOU, seen by opponent -->
+      <div class="tile-col">
+        <div class="tile rare claimed-theirs">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="claimed-theirs-overlay">
+            <div class="claimed-theirs-badge">Philippe<br>+4 pts</div>
+          </div>
+        </div>
+        <div class="tile-label">Claimed (Opponent)</div>
+        <div class="tile-sublabel">Amber flash + name. Holds ~0.4s, then new tile in.</div>
+      </div>
+
+      <!-- 4. Same incoming replacement (both see it) -->
+      <div class="tile-col">
+        <div class="tile uncommon incoming">
+          <span class="rarity-badge">Uncommon</span>
+          <div class="tile-img">💈</div>
+          <div class="tile-text">Barber Pole</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:100%"></div></div>
+        </div>
+        <div class="tile-label">New Tile (Both See)</div>
+        <div class="tile-sublabel">Host broadcasts replacement. Both devices animate it in.</div>
+      </div>
+
+      <!-- 5. Expiring (same) -->
+      <div class="tile-col">
+        <div class="tile rare expiring">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="expiry-bar"><div class="expiry-fill danger" style="width:8%"></div></div>
+        </div>
+        <div class="tile-label">Expiring (Both See)</div>
+        <div class="tile-sublabel">Both devices show the red pulse. Race is on.</div>
+      </div>
+
+      <!-- Undo released -->
+      <div class="tile-col">
+        <div class="tile rare">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:68%"></div></div>
+        </div>
+        <div class="tile-label">After Undo</div>
+        <div class="tile-sublabel">Returns to normal unclaimed. Expiry resumes. Lock lifts.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ SECTION 3: Timelines ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Sequence Timeline — Scenario A: Normal Claim</div>
+      <div class="section-note">You spot the Bald Eagle. You tap it. No conflict.</div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-title">Your device</div>
+      <div class="timeline-row">
+        <div class="tl-step">
+          <div class="tl-dot tap">👆</div>
+          <div class="tl-time">t = 0ms</div>
+          <div class="tl-desc">Tap. Tile enters soft-claim. Expiry pauses. Undo chip appears.</div>
+          <div class="tl-peer">Opponent: tile goes grey + lock + "Philippe…"</div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-dot pending">⏳</div>
+          <div class="tl-time">t = 2000ms</div>
+          <div class="tl-desc">Undo window expires. Claim finalizes. +4 pts. claimTile sent.</div>
+          <div class="tl-peer">Opponent receives claimTile. Score updates. Amber flash.</div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-dot finalize">✓</div>
+          <div class="tl-time">t = 2400ms</div>
+          <div class="tl-desc">Green flash plays (~0.4s). Tile ready to be replaced.</div>
+          <div class="tl-peer">Opponent: amber flash ends.</div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-dot new">🆕</div>
+          <div class="tl-time">t = 2400ms</div>
+          <div class="tl-desc">Host sends tileReplaced. New tile slides up into slot. Full expiry bar.</div>
+          <div class="tl-peer">Opponent: same new tile slides in simultaneously.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-title">Scenario B: You Undo</div>
+      <div class="timeline-row">
+        <div class="tl-step">
+          <div class="tl-dot tap">👆</div>
+          <div class="tl-time">t = 0ms</div>
+          <div class="tl-desc">Tap. Soft-claim. Tile locked locally. Expiry paused.</div>
+          <div class="tl-peer">Opponent: lock visible.</div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-dot undo">↩</div>
+          <div class="tl-time">t = 800ms</div>
+          <div class="tl-desc">Tap Undo. Soft-claim released. Tile returns to unclaimed.</div>
+          <div class="tl-peer">Opponent: lock lifts. Tile claimable again by either player.</div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-dot release">🔓</div>
+          <div class="tl-time">t = 800ms</div>
+          <div class="tl-desc">Expiry timer resumes from where it was paused.</div>
+          <div class="tl-peer">Opponent now has a shot at it.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-title">Scenario C: Conflict — Both Players Tap (~simultaneously)</div>
+      <div class="timeline-row">
+        <div class="tl-step">
+          <div class="tl-dot tap">👆</div>
+          <div class="tl-time">t = 0ms</div>
+          <div class="tl-desc">You tap. Your device: soft-claim + lock.</div>
+          <div class="tl-peer">Opponent taps at ~t+15ms. Their device: also tries soft-claim.</div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-dot pending">📡</div>
+          <div class="tl-time">t ≈ 20ms</div>
+          <div class="tl-desc">Your lock message arrives on opponent's device. Their soft-claim cancelled — denied flash (✕) shown.</div>
+          <div class="tl-peer">Your device gets opponent's message — already locked, ignored.</div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-dot finalize">✓</div>
+          <div class="tl-time">t = 2000ms</div>
+          <div class="tl-desc">Your claim finalizes normally. +4 pts.</div>
+          <div class="tl-peer">Opponent sees amber flash. No points.</div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-dot new">🆕</div>
+          <div class="tl-time">t = 2400ms</div>
+          <div class="tl-desc">New tile replaces slot for both players.</div>
+          <div class="tl-peer">Both back in the race.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════ SECTION 4: Perspective summary ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">At a Glance — What Each Player Sees Per State</div>
+    </div>
+    <div class="perspective-row">
+      <div class="perspective-card">
+        <h3>Your View</h3>
+        <ul>
+          <li>Unclaimed → normal tile, expiry bar live</li>
+          <li>You tap → green tint, undo chip, 2s ring</li>
+          <li>Finalized → <span class="chip green">+N pts ✓</span> green flash, tile held ~0.4s</li>
+          <li>Opp. pending → grey + 🔒 + their name, not tappable</li>
+          <li>Opp. finalized → <span class="chip amber">Sarah +4</span> amber flash, then gone</li>
+          <li>Conflict lost → <span class="chip red">✕</span> red flash, tile still locked by opp.</li>
+          <li>Expiring → red border pulse when &lt;3s left</li>
+          <li>New tile → slides up from bottom of slot</li>
+        </ul>
+      </div>
+      <div class="perspective-card">
+        <h3>Opponent's View (of your actions)</h3>
+        <ul>
+          <li>You tap → grey + 🔒 + your name immediately</li>
+          <li>You undo → lock lifts, tile back to normal</li>
+          <li>You finalize → <span class="chip amber">+N pts</span> amber flash, tile fades out</li>
+          <li>Expiry events → same as your view (host-driven)</li>
+          <li>New tile → same slide-in animation, same timing</li>
+          <li>No claim denied state for opponent — they just see the lock and know to move on</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:8px"></div>
+
+</body>
+</html>

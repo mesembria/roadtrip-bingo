@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotting Race — Tile States v2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rye&family=Barlow:wght@400;600;700;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #2d1a0e;
+    font-family: 'Barlow', sans-serif;
+    color: #1a0e05;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px 56px;
+    gap: 44px;
+  }
+
+  h1 {
+    font-family: 'Rye', serif;
+    color: #f5e6c8;
+    font-size: 17px;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  .page-note {
+    font-size: 11px;
+    color: rgba(245,230,200,0.45);
+    text-align: center;
+    max-width: 680px;
+    line-height: 1.6;
+    margin-top: -36px;
+  }
+
+  /* ── Section chrome ── */
+  .section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1020px;
+  }
+
+  .section-header {
+    width: 100%;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(245,230,200,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .section-title {
+    font-family: 'Rye', serif;
+    color: #f5e6c8;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+  }
+
+  .section-note {
+    font-size: 11px;
+    color: rgba(245,230,200,0.4);
+    line-height: 1.5;
+  }
+
+  .tile-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* ════════════════════════════════════════
+     TILE BASE
+     Two-zone layout:
+       • Image zone  — top, ~62% height, white
+       • Label band  — bottom, ~38% height, solid ink background
+     Rarity bar: left edge, full height
+     Expiry bar:  very bottom of label band
+  ════════════════════════════════════════ */
+
+  .tile {
+    width: 138px;
+    height: 150px;
+    border-radius: 14px;
+    border: 2.5px solid #c8a97a;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.08s, box-shadow 0.08s;
+  }
+
+  .tile:hover { transform: scale(1.03); box-shadow: 0 5px 18px rgba(0,0,0,0.35); }
+
+  /* Rarity left bar — sits over both zones via absolute */
+  .tile::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    z-index: 10;
+    border-radius: 14px 0 0 14px;
+  }
+  .tile.very-common::before { background: #aaaaaa; }
+  .tile.common::before      { background: #5cb85c; }
+  .tile.uncommon::before    { background: #3b8fce; }
+  .tile.rare::before        { background: #9b59b6; }
+  .tile.very-rare::before   { background: #e67e22; }
+
+  /* ── Image zone ── */
+  .tile-image-zone {
+    flex: 0 0 62%;
+    background: #faf5ec;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tile-emoji {
+    font-size: 38px;
+    line-height: 1;
+    user-select: none;
+  }
+
+  /* Rarity badge — lives inside image zone, top-right */
+  .rarity-badge {
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: white;
+    z-index: 5;
+  }
+  .tile.very-common .rarity-badge { background: #888; }
+  .tile.common .rarity-badge      { background: #5cb85c; }
+  .tile.uncommon .rarity-badge    { background: #3b8fce; }
+  .tile.rare .rarity-badge        { background: #9b59b6; }
+  .tile.very-rare .rarity-badge   { background: #e67e22; }
+
+  /* ── Label band ── */
+  .tile-label-band {
+    flex: 1;
+    background: #2d1a0e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px 5px;
+    position: relative;
+    gap: 0;
+  }
+
+  .tile-name {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #f5e6c8;
+    text-align: center;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    /* always on solid dark bg — always readable */
+  }
+
+  /* Expiry bar at the very bottom of the label band */
+  .expiry-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: rgba(245,230,200,0.08);
+  }
+  .expiry-fill {
+    height: 100%;
+  }
+  .expiry-fill.ok     { background: #8b5c2a; }
+  .expiry-fill.warn   { background: #e67e22; }
+  .expiry-fill.danger { background: #c0392b; }
+
+
+  /* ════════════════════════════════════════
+     STATE MODIFIERS
+  ════════════════════════════════════════ */
+
+  /* ── EXPIRING: pulsing red border ── */
+  .tile.state-expiring {
+    border-color: #e74c3c;
+    animation: pulse-border 0.9s ease-in-out infinite;
+  }
+  @keyframes pulse-border {
+    0%, 100% { box-shadow: 0 0 0 0   rgba(231,76,60,0); }
+    50%       { box-shadow: 0 0 0 5px rgba(231,76,60,0.35); }
+  }
+
+  /* ── SOFT-CLAIMED BY YOU ──
+     Image zone: subtle green wash
+     Label band: replaces tile name with undo chip + countdown
+  ── */
+  .tile.state-soft-mine {
+    border-color: #27ae60;
+  }
+
+  .tile.state-soft-mine .tile-image-zone {
+    background: #e8f7ee;
+  }
+
+  /* countdown ring in image zone top-left */
+  .countdown-wrap {
+    position: absolute;
+    top: 5px; left: 8px;
+    width: 24px; height: 24px;
+  }
+  .countdown-wrap svg { transform: rotate(-90deg); }
+  .countdown-num {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 900;
+    color: #1a6b3a;
+  }
+
+  .tile.state-soft-mine .tile-label-band {
+    background: #1a4d2e;
+  }
+
+  .undo-chip {
+    font-size: 10px;
+    font-weight: 700;
+    color: #a8f0c0;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── SOFT-CLAIMED BY OPPONENT ──
+     Image zone: greyed out + lock
+     Label band: shows opponent name + ellipsis
+  ── */
+  .tile.state-soft-theirs {
+    border-color: #888;
+    cursor: not-allowed;
+  }
+  .tile.state-soft-theirs:hover { transform: none; box-shadow: 0 3px 12px rgba(0,0,0,0.25); }
+
+  .tile.state-soft-theirs .tile-image-zone {
+    background: #e8e8e8;
+    filter: grayscale(0.5) brightness(0.9);
+  }
+
+  .lock-badge {
+    position: absolute;
+    top: 5px; left: 8px;
+    font-size: 13px;
+    opacity: 0.6;
+  }
+
+  .tile.state-soft-theirs .tile-label-band {
+    background: #3a3a3a;
+  }
+  .tile.state-soft-theirs .tile-name {
+    color: #aaa;
+    font-style: italic;
+  }
+
+  /* ── FINALIZED BY YOU ──
+     Image zone: green wash
+     Label band: green bg, "You · +N pts ✓"
+  ── */
+  .tile.state-claimed-mine {
+    border-color: #27ae60;
+  }
+
+  .tile.state-claimed-mine .tile-image-zone {
+    background: #d4f0e0;
+  }
+
+  .tile.state-claimed-mine .tile-label-band {
+    background: #1a6b3a;
+  }
+
+  .claim-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+  }
+
+  .claim-label .claimer {
+    font-size: 9px;
+    opacity: 0.75;
+    font-weight: 600;
+    display: block;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 1px;
+  }
+
+  .claim-label .pts {
+    font-family: 'Rye', serif;
+    font-size: 13px;
+    color: #a8f0c0;
+  }
+
+  /* ── FINALIZED BY OPPONENT ──
+     Image zone: amber wash + dim
+     Label band: amber bg, "[Name] · +N pts"
+  ── */
+  .tile.state-claimed-theirs {
+    border-color: #d4860a;
+    opacity: 0.88;
+  }
+
+  .tile.state-claimed-theirs .tile-image-zone {
+    background: #fef3d0;
+    filter: brightness(0.92);
+  }
+
+  .tile.state-claimed-theirs .tile-label-band {
+    background: #7a5000;
+  }
+
+  .tile.state-claimed-theirs .claim-label {
+    color: #ffe7a0;
+  }
+
+  .tile.state-claimed-theirs .claim-label .pts {
+    color: #ffe7a0;
+  }
+
+  /* ── CLAIM DENIED (flash state — shown as static snapshot here) ── */
+  .tile.state-denied {
+    border-color: #e74c3c;
+    animation: flash-deny 0.18s ease-in-out 3;
+  }
+  @keyframes flash-deny {
+    0%, 100% { background: white; }
+    50%       { background: #ffebee; }
+  }
+
+  .tile.state-denied .tile-image-zone {
+    background: #ffeaea;
+  }
+
+  .tile.state-denied .tile-label-band {
+    background: #7a1a1a;
+  }
+
+  .denied-icon {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 34px;
+    color: rgba(192,57,43,0.55);
+    pointer-events: none;
+  }
+
+  /* ── INCOMING replacement ── */
+  .tile.state-incoming {
+    border-style: dashed;
+    border-color: #8b5c2a;
+    animation: slide-in 0.35s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ════════════════════════════════════════
+     ANNOTATION LABELS
+  ════════════════════════════════════════ */
+  .tile-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .col-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(245,230,200,0.55);
+    text-align: center;
+    max-width: 138px;
+  }
+
+  .col-note {
+    font-size: 10px;
+    color: rgba(245,230,200,0.32);
+    text-align: center;
+    max-width: 138px;
+    line-height: 1.4;
+    margin-top: -4px;
+  }
+
+  /* ════════════════════════════════════════
+     GAME SCREEN CONTEXT — live 3×2 grid
+  ════════════════════════════════════════ */
+
+  .game-screen {
+    background: #f5e6c8;
+    border-radius: 18px;
+    width: 920px;
+    height: 560px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 3px solid #8b5c2a;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  .gs-header {
+    background: #8b2e0a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 22px;
+    flex-shrink: 0;
+  }
+
+  .score-block { display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .score-label { font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,230,200,0.6); }
+  .score-value { font-family: 'Rye', serif; font-size: 26px; color: #f5e6c8; line-height: 1; }
+  .score-value.opp { color: #ffd166; }
+
+  .timer-block { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .timer-ring { position: relative; width: 66px; height: 66px; }
+  .timer-ring svg { transform: rotate(-90deg); }
+  .timer-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Rye', serif; font-size: 17px; color: #f5e6c8; }
+  .timer-sub { font-size: 8px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,230,200,0.5); }
+
+  .gs-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 24px 20px;
+    gap: 16px;
+  }
+
+  .live-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 660px;
+  }
+
+  /* Stretch live grid tiles to fill grid cells */
+  .live-grid .tile {
+    width: 100%;
+    height: 100%;
+    min-height: 150px;
+  }
+
+  /* Toast strip */
+  .toast-strip {
+    background: rgba(45, 26, 14, 0.08);
+    border: 1px solid rgba(139,92,42,0.2);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b4226;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .toast-dot { width: 7px; height: 7px; border-radius: 50%; background: #d4860a; }
+
+  /* ════════════════════════════════════════
+     TIMELINES
+  ════════════════════════════════════════ */
+
+  .timeline {
+    width: 100%;
+    max-width: 920px;
+    background: #f5e6c8;
+    border-radius: 14px;
+    border: 2px solid #8b5c2a;
+    padding: 18px 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .tl-title { font-family: 'Rye', serif; font-size: 11px; color: #8b2e0a; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .tl-row { display: flex; align-items: flex-start; gap: 0; }
+
+  .tl-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  .tl-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 50%; right: -50%;
+    height: 2px;
+    background: #c8a97a;
+    z-index: 0;
+  }
+
+  .tl-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    z-index: 1;
+    flex-shrink: 0;
+  }
+  .tl-dot.a { background: #fff3e0; border-color: #e67e22; }
+  .tl-dot.b { background: #e8f5e9; border-color: #27ae60; }
+  .tl-dot.c { background: #e8f5e9; border-color: #1a6b3a; }
+  .tl-dot.d { background: #f5e6c8; border-color: #8b5c2a; }
+  .tl-dot.e { background: #ffebee; border-color: #e74c3c; }
+  .tl-dot.f { background: #f5f5f5; border-color: #888; }
+
+  .tl-time { font-size: 8.5px; font-weight: 700; color: #8b5c2a; margin-top: 5px; letter-spacing: 0.06em; }
+
+  .tl-you {
+    font-size: 10px; color: #2d1a0e; text-align: center;
+    line-height: 1.4; padding: 3px 4px 0; max-width: 120px;
+  }
+
+  .tl-peer {
+    font-size: 9px; color: #7a5000; text-align: center;
+    font-style: italic; line-height: 1.35;
+    padding: 2px 4px 0; max-width: 120px;
+    border-top: 1px dashed #c8a97a;
+    margin-top: 3px; padding-top: 3px;
+  }
+
+</style>
+</head>
+<body>
+
+<h1>Spotting Race · Tile States v2</h1>
+<p class="page-note">Redesigned with a split image / label-band layout. Text is always on solid background — no dark text over images. Claimed states are designed for name-always-present.</p>
+
+
+<!-- ════════════════════════════════════════
+     SECTION 1 — YOUR VIEW (all states)
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Your View — All States</div>
+    <div class="section-note">Tile name lives in the dark label band. Image zone is uncluttered. States modify band colour and content.</div>
+  </div>
+
+  <div class="tile-row">
+
+    <!-- UNCLAIMED / normal -->
+    <div class="tile-col">
+      <div class="tile rare">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-emoji">🦅</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="tile-name">Bald Eagle</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:68%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Unclaimed</div>
+      <div class="col-note">Normal. Expiry ticks down.</div>
+    </div>
+
+    <!-- SOFT-CLAIMED by you -->
+    <div class="tile-col">
+      <div class="tile rare state-soft-mine">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-emoji">🦅</div>
+          <div class="countdown-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9" fill="none" stroke="rgba(39,174,96,0.25)" stroke-width="2.5"/>
+              <circle cx="12" cy="12" r="9" fill="none" stroke="#27ae60" stroke-width="2.5"
+                stroke-dasharray="56.5" stroke-dashoffset="28" stroke-linecap="round"/>
+            </svg>
+            <div class="countdown-num">1s</div>
+          </div>
+        </div>
+        <div class="tile-label-band">
+          <div class="undo-chip">↩ Undo</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:68%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Soft-Claimed (You)</div>
+      <div class="col-note">Green band + Undo. Expiry paused.</div>
+    </div>
+
+    <!-- FINALIZED by you -->
+    <div class="tile-col">
+      <div class="tile rare state-claimed-mine">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-emoji">🦅</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="claim-label">
+            <span class="claimer">You</span>
+            <span class="pts">+4 pts ✓</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-label">Claimed (You)</div>
+      <div class="col-note">Green band. Holds ~0.4s, then new tile slides in.</div>
+    </div>
+
+    <!-- OPPONENT's pending — as seen by YOU -->
+    <div class="tile-col">
+      <div class="tile rare state-soft-theirs">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-emoji">🦅</div>
+          <div class="lock-badge">🔒</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="tile-name">Sarah…</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:68%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Opp. Soft-Claim</div>
+      <div class="col-note">Grey + lock. Shows opp. name. Not tappable.</div>
+    </div>
+
+    <!-- FINALIZED by opponent — as seen by YOU -->
+    <div class="tile-col">
+      <div class="tile rare state-claimed-theirs">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-emoji">🦅</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="claim-label">
+            <span class="claimer">Sarah</span>
+            <span class="pts">+4 pts</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-label">Claimed (Opponent)</div>
+      <div class="col-note">Amber band. Name always fits. Holds ~0.4s.</div>
+    </div>
+
+    <!-- DENIED -->
+    <div class="tile-col">
+      <div class="tile rare state-denied">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-emoji">🦅</div>
+          <div class="denied-icon">✕</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="tile-name">Bald Eagle</div>
+        </div>
+      </div>
+      <div class="col-label">Claim Denied</div>
+      <div class="col-note">Red ✕ flash ~0.4s. Opp. already had it.</div>
+    </div>
+
+    <!-- EXPIRING -->
+    <div class="tile-col">
+      <div class="tile rare state-expiring">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-emoji">🦅</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="tile-name">Bald Eagle</div>
+          <div class="expiry-bar"><div class="expiry-fill danger" style="width:8%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Expiring (&lt;3s)</div>
+      <div class="col-note">Red border pulse. Danger bar.</div>
+    </div>
+
+    <!-- INCOMING -->
+    <div class="tile-col">
+      <div class="tile uncommon state-incoming">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Uncommon</span>
+          <div class="tile-emoji">💈</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="tile-name">Barber Pole</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:100%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">New Tile</div>
+      <div class="col-note">Slides up into vacated slot. Full bar.</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     SECTION 2 — RARITY VARIATIONS (unclaimed)
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Rarity Colour System (Unclaimed)</div>
+    <div class="section-note">Left bar and badge signal rarity. Players learn to prioritise orange/purple tiles.</div>
+  </div>
+  <div class="tile-row">
+
+    <div class="tile-col">
+      <div class="tile very-common">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">V. Common</span>
+          <div class="tile-emoji">🌳</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="tile-name">Oak Tree</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:55%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Very Common</div>
+      <div class="col-note">+0 pts</div>
+    </div>
+
+    <div class="tile-col">
+      <div class="tile common">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Common</span>
+          <div class="tile-emoji">🚧</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="tile-name">Road Work Sign</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:72%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Common</div>
+      <div class="col-note">+1 pt</div>
+    </div>
+
+    <div class="tile-col">
+      <div class="tile uncommon">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Uncommon</span>
+          <div class="tile-emoji">💈</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="tile-name">Barber Pole</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:45%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Uncommon</div>
+      <div class="col-note">+2 pts</div>
+    </div>
+
+    <div class="tile-col">
+      <div class="tile rare">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">Rare</span>
+          <div class="tile-emoji">🦅</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="tile-name">Bald Eagle</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:68%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Rare</div>
+      <div class="col-note">+4 pts</div>
+    </div>
+
+    <div class="tile-col">
+      <div class="tile very-rare">
+        <div class="tile-image-zone">
+          <span class="rarity-badge">V. Rare</span>
+          <div class="tile-emoji">🌋</div>
+        </div>
+        <div class="tile-label-band">
+          <div class="tile-name">Volcano</div>
+          <div class="expiry-bar"><div class="expiry-fill ok" style="width:82%"></div></div>
+        </div>
+      </div>
+      <div class="col-label">Very Rare</div>
+      <div class="col-note">+7 pts</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     SECTION 3 — LIVE GAME SCREEN CONTEXT
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">In Context — Live Game Screen</div>
+    <div class="section-note">Mixed states: one tile just claimed by you, one locked by opponent, one expiring, three normal.</div>
+  </div>
+
+  <div class="game-screen">
+    <div class="gs-header">
+      <div class="score-block">
+        <div class="score-label">You · Philippe</div>
+        <div class="score-value">14</div>
+      </div>
+      <div class="timer-block">
+        <div class="timer-ring">
+          <svg width="66" height="66" viewBox="0 0 66 66">
+            <circle cx="33" cy="33" r="27" fill="none" stroke="rgba(245,230,200,0.15)" stroke-width="5"/>
+            <circle cx="33" cy="33" r="27" fill="none" stroke="#f5e6c8" stroke-width="5"
+              stroke-dasharray="169.6" stroke-dashoffset="67" stroke-linecap="round"/>
+          </svg>
+          <div class="timer-text">1:28</div>
+        </div>
+        <div class="timer-sub">Remaining</div>
+      </div>
+      <div class="score-block">
+        <div class="score-label">Sarah</div>
+        <div class="score-value opp">9</div>
+      </div>
+    </div>
+
+    <div class="gs-body">
+      <div class="live-grid">
+
+        <!-- Just claimed by you -->
+        <div class="tile rare state-claimed-mine">
+          <div class="tile-image-zone">
+            <span class="rarity-badge">Rare</span>
+            <div class="tile-emoji">🦅</div>
+          </div>
+          <div class="tile-label-band">
+            <div class="claim-label">
+              <span class="claimer">You</span>
+              <span class="pts">+4 pts ✓</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Normal -->
+        <div class="tile very-rare">
+          <div class="tile-image-zone">
+            <span class="rarity-badge">V. Rare</span>
+            <div class="tile-emoji">🌋</div>
+          </div>
+          <div class="tile-label-band">
+            <div class="tile-name">Volcano</div>
+            <div class="expiry-bar"><div class="expiry-fill ok" style="width:80%"></div></div>
+          </div>
+        </div>
+
+        <!-- Locked by Sarah -->
+        <div class="tile uncommon state-soft-theirs">
+          <div class="tile-image-zone">
+            <span class="rarity-badge">Uncommon</span>
+            <div class="tile-emoji">💈</div>
+            <div class="lock-badge">🔒</div>
+          </div>
+          <div class="tile-label-band">
+            <div class="tile-name">Sarah…</div>
+            <div class="expiry-bar"><div class="expiry-fill ok" style="width:58%"></div></div>
+          </div>
+        </div>
+
+        <!-- Expiring -->
+        <div class="tile common state-expiring">
+          <div class="tile-image-zone">
+            <span class="rarity-badge">Common</span>
+            <div class="tile-emoji">🚧</div>
+          </div>
+          <div class="tile-label-band">
+            <div class="tile-name">Road Work Sign</div>
+            <div class="expiry-bar"><div class="expiry-fill danger" style="width:9%"></div></div>
+          </div>
+        </div>
+
+        <!-- Normal -->
+        <div class="tile rare">
+          <div class="tile-image-zone">
+            <span class="rarity-badge">Rare</span>
+            <div class="tile-emoji">🌵</div>
+          </div>
+          <div class="tile-label-band">
+            <div class="tile-name">Saguaro Cactus</div>
+            <div class="expiry-bar"><div class="expiry-fill warn" style="width:24%"></div></div>
+          </div>
+        </div>
+
+        <!-- Normal -->
+        <div class="tile very-common">
+          <div class="tile-image-zone">
+            <span class="rarity-badge">V. Common</span>
+            <div class="tile-emoji">🌳</div>
+          </div>
+          <div class="tile-label-band">
+            <div class="tile-name">Oak Tree</div>
+            <div class="expiry-bar"><div class="expiry-fill ok" style="width:62%"></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Toast -->
+      <div class="toast-strip">
+        <div class="toast-dot"></div>
+        Sarah claimed 💈 Barber Pole · +2 pts
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     SECTION 4 — TIMELINES
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Sequence Timelines</div>
+    <div class="section-note">Italic line under each step = what the opponent's device shows at that moment.</div>
+  </div>
+
+  <!-- Scenario A: Normal claim -->
+  <div class="timeline">
+    <div class="tl-title">Scenario A — Normal Claim (no conflict)</div>
+    <div class="tl-row">
+      <div class="tl-step">
+        <div class="tl-dot a">👆</div>
+        <div class="tl-time">t = 0ms</div>
+        <div class="tl-you">Tap. Soft-claim. Green band + Undo. Expiry pauses. lockTile broadcast.</div>
+        <div class="tl-peer">Receives lockTile. Tile goes grey + 🔒 + "Philippe…"</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot b">⏳</div>
+        <div class="tl-time">t = 2000ms</div>
+        <div class="tl-you">Undo window expires. claimTile broadcast. +4 pts credited locally.</div>
+        <div class="tl-peer">Receives claimTile. Score header updates. Band goes amber "Philippe +4 pts".</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot c">✓</div>
+        <div class="tl-time">t ≈ 2400ms</div>
+        <div class="tl-you">Green flash fades. Tile slot ready for replacement.</div>
+        <div class="tl-peer">Amber flash fades.</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot d">🆕</div>
+        <div class="tl-time">t = 2400ms</div>
+        <div class="tl-you">Host sends tileReplaced. New tile slides up. Full expiry bar.</div>
+        <div class="tl-peer">Same message. Same animation. Both in sync.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario B: Undo -->
+  <div class="timeline">
+    <div class="tl-title">Scenario B — Accidental Tap, Undo Used</div>
+    <div class="tl-row">
+      <div class="tl-step">
+        <div class="tl-dot a">👆</div>
+        <div class="tl-time">t = 0ms</div>
+        <div class="tl-you">Tap. Soft-claim. lockTile broadcast.</div>
+        <div class="tl-peer">Sees lock. Tile grey + 🔒.</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot e">↩</div>
+        <div class="tl-time">t = 700ms</div>
+        <div class="tl-you">Tap Undo. releaseTile broadcast. Tile returns to normal. Expiry resumes.</div>
+        <div class="tl-peer">Receives releaseTile. Lock lifts. Tile claimable again.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario C: Conflict -->
+  <div class="timeline">
+    <div class="tl-title">Scenario C — Simultaneous Tap (conflict)</div>
+    <div class="tl-row">
+      <div class="tl-step">
+        <div class="tl-dot a">👆</div>
+        <div class="tl-time">t = 0ms</div>
+        <div class="tl-you">You tap. Soft-claim. lockTile(t=0) sent.</div>
+        <div class="tl-peer">Sarah taps at t≈12ms. Her lockTile(t=12) sent.</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot b">📡</div>
+        <div class="tl-time">t ≈ 25ms</div>
+        <div class="tl-you">Receive Sarah's lockTile. Already locked by you (t=0 &lt; t=12). Ignore.</div>
+        <div class="tl-peer">Receives your lockTile. Your t=0 beats her t=12. Her soft-claim cancelled → red ✕ flash, then tile shows "Philippe…".</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot c">✓</div>
+        <div class="tl-time">t = 2000ms</div>
+        <div class="tl-you">Claim finalizes. +4 pts. claimTile sent.</div>
+        <div class="tl-peer">Receives claimTile. Amber band "Philippe +4 pts".</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot d">🆕</div>
+        <div class="tl-time">t = 2400ms</div>
+        <div class="tl-you">New tile in.</div>
+        <div class="tl-peer">Same new tile in. Both back in the race.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="height:8px"></div>
+</body>
+</html>

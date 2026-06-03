@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotting Race — Concept Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rye&family=Barlow:wght@400;600;700;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #2d1a0e;
+    font-family: 'Barlow', sans-serif;
+    color: #1a0e05;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px;
+    gap: 24px;
+  }
+
+  h2 {
+    font-family: 'Rye', serif;
+    color: #f5e6c8;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    text-align: center;
+  }
+
+  /* ─── LANDSCAPE GAME SCREEN ─── */
+  .game-screen {
+    background: #f5e6c8;
+    border-radius: 18px;
+    width: 900px;
+    height: 580px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 3px solid #8b5c2a;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    position: relative;
+  }
+
+  /* Header bar */
+  .header {
+    background: #8b2e0a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    flex-shrink: 0;
+  }
+
+  .score-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+  }
+
+  .score-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,230,200,0.65);
+  }
+
+  .score-value {
+    font-family: 'Rye', serif;
+    font-size: 26px;
+    color: #f5e6c8;
+    line-height: 1;
+  }
+
+  .score-value.opponent {
+    color: #f9c74f;
+  }
+
+  /* Timer */
+  .timer-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .timer-ring {
+    position: relative;
+    width: 68px;
+    height: 68px;
+  }
+
+  .timer-ring svg {
+    transform: rotate(-90deg);
+  }
+
+  .timer-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Rye', serif;
+    font-size: 18px;
+    color: #f5e6c8;
+  }
+
+  .timer-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,230,200,0.65);
+    margin-top: 2px;
+  }
+
+  /* Body */
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 24px 20px;
+    gap: 14px;
+  }
+
+  /* Rolling queue indicator */
+  .queue-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8b5c2a;
+    opacity: 0.7;
+  }
+
+  .queue-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #8b5c2a;
+    opacity: 0.4;
+  }
+
+  .queue-dot.active {
+    opacity: 1;
+    background: #8b2e0a;
+  }
+
+  /* Tile grid */
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 14px;
+    width: 100%;
+    max-width: 680px;
+  }
+
+  .tile {
+    background: white;
+    border-radius: 12px;
+    border: 2.5px solid #c8a97a;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.08s, box-shadow 0.08s;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  .tile:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+
+  .tile:active {
+    transform: scale(0.97);
+  }
+
+  /* Rarity tint on left border */
+  .tile::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 12px 0 0 12px;
+  }
+
+  .tile.very-common::before { background: #aaaaaa; }
+  .tile.common::before { background: #5cb85c; }
+  .tile.uncommon::before { background: #3b8fce; }
+  .tile.rare::before { background: #9b59b6; }
+  .tile.very-rare::before { background: #e67e22; }
+
+  /* Expiry progress bar at bottom */
+  .tile-expiry {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+  }
+
+  .tile-expiry-fill {
+    height: 100%;
+    background: #8b2e0a;
+    transition: width 1s linear;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .tile-expiry-fill.warning {
+    background: #e67e22;
+  }
+
+  .tile-expiry-fill.critical {
+    background: #c0392b;
+  }
+
+  /* Tile image placeholder */
+  .tile-img {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    background: #f0e4cc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+
+  .tile-text {
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    color: #2d1a0e;
+    padding: 0 6px;
+    line-height: 1.25;
+    max-width: 100%;
+  }
+
+  /* Rarity badge */
+  .rarity-badge {
+    position: absolute;
+    top: 6px;
+    right: 7px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    border-radius: 4px;
+    color: white;
+  }
+
+  .tile.very-common .rarity-badge { background: #888; }
+  .tile.common .rarity-badge { background: #5cb85c; }
+  .tile.uncommon .rarity-badge { background: #3b8fce; }
+  .tile.rare .rarity-badge { background: #9b59b6; }
+  .tile.very-rare .rarity-badge { background: #e67e22; }
+
+  /* Claimed overlay */
+  .tile.claimed {
+    background: #e8f5e9;
+    border-color: #5cb85c;
+  }
+
+  .tile.claimed-opponent {
+    background: #fff8e1;
+    border-color: #f9c74f;
+    opacity: 0.6;
+  }
+
+  .claimed-banner {
+    position: absolute;
+    inset: 0;
+    background: rgba(92, 184, 92, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+  }
+
+  .claimed-banner-text {
+    font-family: 'Rye', serif;
+    font-size: 14px;
+    color: #2d6a2d;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+  }
+
+  .claimed-opp-banner {
+    position: absolute;
+    inset: 0;
+    background: rgba(249, 199, 79, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+  }
+
+  .claimed-opp-banner-text {
+    font-family: 'Rye', serif;
+    font-size: 12px;
+    color: #7a5900;
+  }
+
+  /* Points pop — floats up when claimed */
+  .points-pop {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Rye', serif;
+    font-size: 16px;
+    color: #2d6a2d;
+    animation: floatUp 1.2s ease-out forwards;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  @keyframes floatUp {
+    0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-40px); }
+  }
+
+  /* New tile slide-in animation indicator */
+  .tile.new-tile {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.92); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ─── STATES PANEL (side annotations) ─── */
+  .states-panel {
+    width: 900px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .state-card {
+    flex: 1;
+    background: #f5e6c8;
+    border-radius: 12px;
+    border: 2px solid #8b5c2a;
+    padding: 12px 16px;
+  }
+
+  .state-card h3 {
+    font-family: 'Rye', serif;
+    font-size: 11px;
+    color: #8b2e0a;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .state-card p {
+    font-size: 11px;
+    color: #4a2c0a;
+    line-height: 1.5;
+  }
+
+  .state-card ul {
+    font-size: 11px;
+    color: #4a2c0a;
+    line-height: 1.7;
+    padding-left: 16px;
+  }
+
+  .color-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  /* ─── HOME SCREEN MOCKUP ─── */
+  .home-screen {
+    background: #f5e6c8;
+    border-radius: 18px;
+    width: 900px;
+    height: 320px;
+    display: flex;
+    overflow: hidden;
+    border: 3px solid #8b5c2a;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  .home-left {
+    flex: 1;
+    background: linear-gradient(135deg, #4a2c0a 0%, #8b2e0a 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    gap: 8px;
+  }
+
+  .home-logo {
+    font-family: 'Rye', serif;
+    font-size: 28px;
+    color: #f5e6c8;
+    text-align: center;
+    line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+
+  .home-subtitle {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,230,200,0.6);
+  }
+
+  .home-right {
+    flex: 0 0 400px;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .home-section-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #8b5c2a;
+    opacity: 0.7;
+    margin-bottom: 2px;
+  }
+
+  .home-mode-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .mode-btn {
+    flex: 1;
+    border: 2.5px solid #8b5c2a;
+    border-radius: 12px;
+    padding: 14px 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: white;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .mode-btn.selected {
+    border-color: #8b2e0a;
+    background: #fff3e0;
+    box-shadow: 0 0 0 2px rgba(139,46,10,0.2);
+  }
+
+  .mode-btn .mode-icon { font-size: 24px; }
+  .mode-btn .mode-name {
+    font-family: 'Rye', serif;
+    font-size: 11px;
+    color: #2d1a0e;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .mode-btn .mode-desc {
+    font-size: 9px;
+    color: #6b4226;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .selected-check {
+    position: absolute;
+    top: 6px; right: 8px;
+    font-size: 14px;
+  }
+
+  .divider {
+    height: 1px;
+    background: #c8a97a;
+    opacity: 0.5;
+  }
+
+  .action-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .action-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: 10px;
+    font-family: 'Rye', serif;
+    font-size: 12px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.12s;
+  }
+
+  .action-btn.primary {
+    background: #8b2e0a;
+    color: #f5e6c8;
+  }
+
+  .action-btn.secondary {
+    background: white;
+    color: #2d1a0e;
+    border: 2px solid #8b5c2a;
+  }
+
+  /* ─── WIN SCREEN ─── */
+  .win-screen {
+    background: #f5e6c8;
+    border-radius: 18px;
+    width: 900px;
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    border: 3px solid #8b5c2a;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    padding: 24px;
+  }
+
+  .win-title {
+    font-family: 'Rye', serif;
+    font-size: 32px;
+    color: #8b2e0a;
+    text-shadow: 2px 2px 0 rgba(139,46,10,0.2);
+  }
+
+  .win-scores {
+    display: flex;
+    gap: 32px;
+    align-items: flex-end;
+  }
+
+  .win-score-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .win-score-block.winner .win-score-num {
+    font-size: 52px;
+    color: #8b2e0a;
+  }
+
+  .win-score-num {
+    font-family: 'Rye', serif;
+    font-size: 36px;
+    color: #6b4226;
+    line-height: 1;
+  }
+
+  .win-score-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #4a2c0a;
+  }
+
+  .win-tiles-claimed {
+    font-size: 12px;
+    color: #6b4226;
+    font-weight: 600;
+  }
+
+  .win-vs {
+    font-family: 'Rye', serif;
+    font-size: 18px;
+    color: #c8a97a;
+    align-self: center;
+    padding-bottom: 12px;
+  }
+
+  .win-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .win-btn {
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-family: 'Rye', serif;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+  }
+
+  .win-btn.primary { background: #8b2e0a; color: #f5e6c8; }
+  .win-btn.secondary { background: white; color: #2d1a0e; border: 2px solid #8b5c2a; }
+
+  /* ─── SECTION DIVIDERS ─── */
+  .section-title {
+    font-family: 'Rye', serif;
+    color: #f5e6c8;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  .section-note {
+    font-size: 11px;
+    color: rgba(245,230,200,0.55);
+    text-align: center;
+    max-width: 700px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+  <h2>Road Trip Bingo — Spotting Race Mode · Concept Mockup</h2>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="section-title">1. Home Screen — Game Mode Selection</div>
+  <div class="section-note">Mode picker appears above the solo/multiplayer buttons. Selecting a mode persists; buttons below adapt to it.</div>
+
+  <div class="home-screen">
+    <div class="home-left">
+      <div class="home-logo">Road Trip<br>Bingo</div>
+      <div class="home-subtitle">Family Edition</div>
+    </div>
+    <div class="home-right">
+      <div class="home-section-label">Game Mode</div>
+      <div class="home-mode-row">
+        <div class="mode-btn">
+          <div class="mode-icon">🟩</div>
+          <div class="mode-name">Classic Bingo</div>
+          <div class="mode-desc">Your own board. Complete a line.</div>
+        </div>
+        <div class="mode-btn selected">
+          <div class="selected-check">✓</div>
+          <div class="mode-icon">⚡</div>
+          <div class="mode-name">Spotting Race</div>
+          <div class="mode-desc">Same tiles. First to tap wins points.</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="home-section-label">Play</div>
+      <div class="action-row">
+        <button class="action-btn primary">Solo</button>
+        <button class="action-btn secondary">Create Game</button>
+        <button class="action-btn secondary">Join Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="section-title">2. Spotting Race Game Screen (Multiplayer)</div>
+  <div class="section-note">Landscape. 6 tiles in a 3×2 grid. Each tile has a per-tile expiry bar. Rarity color-coded on the left edge. Timer and scores in the header.</div>
+
+  <div class="game-screen">
+    <!-- Header -->
+    <div class="header">
+      <div class="score-block">
+        <div class="score-label">You (Philippe)</div>
+        <div class="score-value">14 pts</div>
+      </div>
+
+      <div class="timer-block">
+        <div class="timer-ring">
+          <svg width="68" height="68" viewBox="0 0 68 68">
+            <circle cx="34" cy="34" r="28" fill="none" stroke="rgba(245,230,200,0.15)" stroke-width="5"/>
+            <circle cx="34" cy="34" r="28" fill="none" stroke="#f5e6c8" stroke-width="5"
+              stroke-dasharray="175.9"
+              stroke-dashoffset="70.4"
+              stroke-linecap="round"/>
+          </svg>
+          <div class="timer-text">1:28</div>
+        </div>
+        <div class="timer-label">Remaining</div>
+      </div>
+
+      <div class="score-block">
+        <div class="score-label">Opponent</div>
+        <div class="score-value opponent">9 pts</div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+      <div class="tile-grid">
+
+        <!-- Tile 1: Just claimed by you -->
+        <div class="tile common claimed">
+          <div class="tile-img">🚛</div>
+          <div class="tile-text">Semi Truck</div>
+          <div class="rarity-badge">Common</div>
+          <div class="claimed-banner">
+            <div class="claimed-banner-text">+1 pt ✓</div>
+          </div>
+          <div class="tile-expiry"><div class="tile-expiry-fill" style="width:0%"></div></div>
+        </div>
+
+        <!-- Tile 2: Very rare, 80% time left -->
+        <div class="tile very-rare">
+          <div class="tile-img">🦅</div>
+          <div class="tile-text">Bald Eagle</div>
+          <div class="rarity-badge">Very Rare</div>
+          <div class="tile-expiry"><div class="tile-expiry-fill" style="width:80%"></div></div>
+        </div>
+
+        <!-- Tile 3: Uncommon, 50% time left -->
+        <div class="tile uncommon">
+          <div class="tile-img">💈</div>
+          <div class="tile-text">Barber Pole</div>
+          <div class="rarity-badge">Uncommon</div>
+          <div class="tile-expiry"><div class="tile-expiry-fill" style="width:50%"></div></div>
+        </div>
+
+        <!-- Tile 4: Common, nearly expired (critical) -->
+        <div class="tile common">
+          <div class="tile-img">🚧</div>
+          <div class="tile-text">Road Work Sign</div>
+          <div class="rarity-badge">Common</div>
+          <div class="tile-expiry"><div class="tile-expiry-fill warning" style="width:15%"></div></div>
+        </div>
+
+        <!-- Tile 5: Claimed by opponent -->
+        <div class="tile rare claimed-opponent">
+          <div class="tile-img">🌵</div>
+          <div class="tile-text">Saguaro Cactus</div>
+          <div class="rarity-badge">Rare</div>
+          <div class="claimed-opp-banner">
+            <div class="claimed-opp-banner-text">Taken +4 pts</div>
+          </div>
+          <div class="tile-expiry"><div class="tile-expiry-fill" style="width:0%"></div></div>
+        </div>
+
+        <!-- Tile 6: Very common, 65% time left -->
+        <div class="tile very-common">
+          <div class="tile-img">🌳</div>
+          <div class="tile-text">Oak Tree</div>
+          <div class="rarity-badge">V. Common</div>
+          <div class="tile-expiry"><div class="tile-expiry-fill" style="width:65%"></div></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Annotations -->
+  <div class="states-panel">
+    <div class="state-card">
+      <h3>Rarity Color Key</h3>
+      <ul>
+        <li><span class="color-dot" style="background:#aaa"></span>Very Common — 0 pts</li>
+        <li><span class="color-dot" style="background:#5cb85c"></span>Common — +1 pt</li>
+        <li><span class="color-dot" style="background:#3b8fce"></span>Uncommon — +2 pts</li>
+        <li><span class="color-dot" style="background:#9b59b6"></span>Rare — +4 pts</li>
+        <li><span class="color-dot" style="background:#e67e22"></span>Very Rare — +7 pts</li>
+      </ul>
+    </div>
+    <div class="state-card">
+      <h3>Tile States</h3>
+      <ul>
+        <li>Green tint — you claimed it</li>
+        <li>Yellow tint — opponent claimed it (fades out, new tile queues in)</li>
+        <li>Red expiry bar — tile about to rotate out</li>
+        <li>Orange expiry bar — 25% time left (warning)</li>
+        <li>Claim denied flash — red border pulse if both tap at once</li>
+      </ul>
+    </div>
+    <div class="state-card">
+      <h3>Rolling Window Logic</h3>
+      <p>Tiles age off oldest-first. When a tile is claimed or expires, a new one slides into its slot immediately. Six slots are always populated (or fewer if pool is small).</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="section-title">3. Win Screen (Time's Up)</div>
+  <div class="section-note">Similar feel to the existing WinView but score-breakdown focused rather than BINGO-announcement.</div>
+
+  <div class="win-screen">
+    <div class="win-title">⏱ Time's Up!</div>
+    <div class="win-scores">
+      <div class="win-score-block">
+        <div class="win-score-name">Opponent</div>
+        <div class="win-score-num">9</div>
+        <div class="win-tiles-claimed">6 tiles</div>
+      </div>
+      <div class="win-vs">vs</div>
+      <div class="win-score-block winner">
+        <div class="win-score-name">Philippe 🏆</div>
+        <div class="win-score-num">14</div>
+        <div class="win-tiles-claimed">11 tiles</div>
+      </div>
+    </div>
+    <div class="win-actions">
+      <button class="win-btn primary">Play Again</button>
+      <button class="win-btn secondary">Done</button>
+    </div>
+  </div>
+
+  <div style="height:24px"></div>
+
+</body>
+</html>
