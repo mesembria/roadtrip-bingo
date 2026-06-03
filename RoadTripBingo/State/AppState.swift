@@ -1294,6 +1294,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
         case .lockTile(let slotID, let squareID, let byName, let timestamp):
             guard let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID && $0.square.id == squareID }) else { return }
+            guard spottingRaceTiles[idx].claimedBy == nil else { return }
             if spottingRaceTiles[idx].lockedBy == playerName,
                let myTimestamp = spottingRaceTiles[idx].lockTimestamp {
                 if myTimestamp <= timestamp {
@@ -1319,8 +1320,8 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
                 spottingRaceTiles[idx].lockTimestamp = nil
             }
 
-        case .claimTile(let slotID, _, let byName, _):
-            if let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID }) {
+        case .claimTile(let slotID, let squareID, let byName, _):
+            if let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID && $0.square.id == squareID }) {
                 let score = spottingRaceTiles[idx].square.rarity.spottingRaceScore
                 let tileName = spottingRaceTiles[idx].square.text
                 let emoji = spottingRaceTiles[idx].square.emoji ?? "📍"
