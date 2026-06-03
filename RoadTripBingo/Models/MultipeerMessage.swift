@@ -15,7 +15,7 @@ enum MultipeerMessage: Codable {
     case roundModifier(RoundModifier)
     case boardShuffled(byName: String, squares: [BingoSquare])
     case handicapBonus(toPlayer: String, tokens: Int)
-    case hostLeft
+    case hostLeft   // no payload; host-only, sent before disconnecting
 
     // Spotting Race cases
     case lockTile(slotID: UUID, squareID: UUID, byName: String, timestamp: Date)
