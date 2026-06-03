@@ -263,6 +263,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         localBoard = nil
         reserveSquares = []
         playerDifficulties = [:]
+        soloStartTime = nil
         resetRound()
         resetSpottingRound()
 
@@ -298,9 +299,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         let baseTiles = SquarePool.load()
         let namedPacks = PackManager.packs(forIDs: activePackIDs)
         let activePacks = [SquarePool.loadBasePack()] + namedPacks
-        tilePool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks).shuffled()
 
         resetSpottingRound()
+        tilePool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks).shuffled()
         opponentSpottingScores = Dictionary(
             uniqueKeysWithValues: connectedPlayerNames.map { ($0, 0) }
         )
@@ -334,9 +335,9 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         let baseTiles = SquarePool.load()
         let namedPacks = PackManager.packs(forIDs: activePackIDs)
         let activePacks = [SquarePool.loadBasePack()] + namedPacks
-        tilePool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks).shuffled()
 
         resetSpottingRound()
+        tilePool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks).shuffled()
         opponentSpottingScores = Dictionary(
             uniqueKeysWithValues: connectedPlayerNames.map { ($0, 0) }
         )
