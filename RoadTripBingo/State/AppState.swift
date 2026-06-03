@@ -843,6 +843,73 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         }
     }
 
+    /// Called when the local player taps a tile. Starts the 2-second soft-claim window.
+    func tapSpottingTile(slotID: UUID) {
+        guard screen == .game, gameType == .spottingRace else { return }
+        guard let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID }) else { return }
+        let tile = spottingRaceTiles[idx]
+        guard tile.lockedBy == nil, tile.claimedBy == nil else { return }
+
+        let myTimestamp = Date()
+        spottingRaceTiles[idx].lockedBy = playerName
+        spottingRaceTiles[idx].lockTimestamp = myTimestamp
+
+        multipeerSession?.send(.lockTile(
+            slotID: slotID,
+            squareID: tile.square.id,
+            byName: playerName,
+            timestamp: myTimestamp
+        ))
+
+        // After 2 seconds, finalize the claim
+        let task = Task { @MainActor [weak self] in
+            do {
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+                self?.finalizeSpottingClaim(slotID: slotID)
+            } catch {
+                // Cancelled by undo
+            }
+        }
+        softClaimTasks[slotID] = task
+    }
+
+    /// Called when the local player taps Undo during the soft-claim window.
+    func undoSpottingClaim(slotID: UUID) {
+        softClaimTasks[slotID]?.cancel()
+        softClaimTasks.removeValue(forKey: slotID)
+        guard let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID }) else { return }
+        spottingRaceTiles[idx].lockedBy = nil
+        spottingRaceTiles[idx].lockTimestamp = nil
+        multipeerSession?.send(.releaseTile(slotID: slotID, byName: playerName))
+    }
+
+    private func finalizeSpottingClaim(slotID: UUID) {
+        softClaimTasks.removeValue(forKey: slotID)
+        guard let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID }) else { return }
+        let tile = spottingRaceTiles[idx]
+        // Guard: ownership may have flipped if a race was lost between lock and finalize
+        guard tile.lockedBy == playerName else { return }
+
+        spottingRaceTiles[idx].claimedBy = playerName
+        mySpottingScore += tile.square.rarity.spottingRaceScore
+        mySpottingClaimedCount += 1
+
+        multipeerSession?.send(.claimTile(
+            slotID: slotID,
+            squareID: tile.square.id,
+            byName: playerName,
+            timestamp: tile.lockTimestamp ?? Date()
+        ))
+
+        // Host queues replacement after 2-second stamp hold
+        if isHost {
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
+                self?.replaceSpottingSlot(slotID: slotID)
+            }
+        }
+    }
+
     private func checkBonuses(for board: BingoBoard) {
         for line in GameEngine.closeCallLines(for: board) {
             let id = line.map(String.init).joined(separator: ",")
@@ -1077,25 +1144,36 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func multipeerSession(_ session: MultipeerSession, didReceive message: MultipeerMessage, from peerName: String) {
         switch message {
-        case .gameStarted(let boards, let activePackIDs, _): // TODO: gameType wired in Task 7
+        case .gameStarted(let boards, let activePackIDs, let gameType):
+            self.gameType = gameType
             self.activePackIDs = activePackIDs
             rollDailyChallengesIfNeeded()
-            if let mySquares = boards[playerName] {
-                localBoard = BingoBoard(squares: mySquares)
-            }
-            opponentBoards = [:]
-            opponentMarked = [:]
             recentOpponentMarks = []
             pruningTask?.cancel()
             pruningTask = nil
-            for (name, squares) in boards where name != playerName {
-                opponentBoards[name] = squares
-                opponentMarked[name] = [BingoSquare.freeSquareID]
-            }
-            completedLine = nil
-            resetRound()
             multipeerSession?.stopBrowsing()
-            earnTokens(2, reason: "Round start")   // round-start bonus for joiner
+
+            if gameType == .spottingRace {
+                resetSpottingRound()
+                opponentSpottingScores = Dictionary(
+                    uniqueKeysWithValues: connectedPlayerNames.map { ($0, 0) }
+                )
+                spottingRoundEndTime = Date().addingTimeInterval(300)
+                // Initial tiles will arrive as tileReplaced messages from the host
+            } else {
+                if let mySquares = boards[playerName] {
+                    localBoard = BingoBoard(squares: mySquares)
+                }
+                opponentBoards = [:]
+                opponentMarked = [:]
+                for (name, squares) in boards where name != playerName {
+                    opponentBoards[name] = squares
+                    opponentMarked[name] = [BingoSquare.freeSquareID]
+                }
+                completedLine = nil
+                resetRound()
+                earnTokens(2, reason: "Round start")
+            }
             screen = .game
 
         case .squareToggled(let position, let isMarked):
@@ -1130,24 +1208,35 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             )
             evaluateChallenges(event: .roundEnded(context: endCtx))
 
-        case .playAgain(let boards, let activePackIDs, _): // TODO: gameType wired in Task 7
+        case .playAgain(let boards, let activePackIDs, let gameType):
+            self.gameType = gameType
             self.activePackIDs = activePackIDs
             rollDailyChallengesIfNeeded()
-            if let mySquares = boards[playerName] {
-                localBoard = BingoBoard(squares: mySquares)
-            }
-            opponentBoards = [:]
-            opponentMarked = [:]
             recentOpponentMarks = []
             pruningTask?.cancel()
             pruningTask = nil
-            for (name, squares) in boards where name != playerName {
-                opponentBoards[name] = squares
-                opponentMarked[name] = [BingoSquare.freeSquareID]
+
+            if gameType == .spottingRace {
+                resetSpottingRound()
+                opponentSpottingScores = Dictionary(
+                    uniqueKeysWithValues: connectedPlayerNames.map { ($0, 0) }
+                )
+                spottingRoundEndTime = Date().addingTimeInterval(300)
+                // Tiles arrive as tileReplaced messages
+            } else {
+                if let mySquares = boards[playerName] {
+                    localBoard = BingoBoard(squares: mySquares)
+                }
+                opponentBoards = [:]
+                opponentMarked = [:]
+                for (name, squares) in boards where name != playerName {
+                    opponentBoards[name] = squares
+                    opponentMarked[name] = [BingoSquare.freeSquareID]
+                }
+                completedLine = nil
+                resetRound()
+                earnTokens(2, reason: "Round start")
             }
-            completedLine = nil
-            resetRound()
-            earnTokens(2, reason: "Round start")   // round-start bonus for joiner
             screen = .game
 
         case .difficultyChosen(let byName, let difficulty):
@@ -1202,6 +1291,84 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             guard toPlayer == playerName, tokens > 0 else { return }
             tokenBalance += tokens
             multipeerSession?.send(.tokenEarned(byName: playerName, newBalance: tokenBalance))
+
+        case .lockTile(let slotID, let squareID, let byName, let timestamp):
+            guard let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID && $0.square.id == squareID }) else { return }
+            if spottingRaceTiles[idx].lockedBy == playerName,
+               let myTimestamp = spottingRaceTiles[idx].lockTimestamp {
+                if myTimestamp <= timestamp {
+                    // Local claim wins — ignore peer's lock
+                    return
+                } else {
+                    // Peer wins — cancel our pending finalize and show denial
+                    softClaimTasks[slotID]?.cancel()
+                    softClaimTasks.removeValue(forKey: slotID)
+                    spottingRaceTiles[idx].lockedBy = byName
+                    spottingRaceTiles[idx].lockTimestamp = timestamp
+                    pendingToast = ToastEvent(message: "❌ \(byName) was faster!", style: .threat)
+                }
+            } else if spottingRaceTiles[idx].lockedBy == nil {
+                spottingRaceTiles[idx].lockedBy = byName
+                spottingRaceTiles[idx].lockTimestamp = timestamp
+            }
+
+        case .releaseTile(let slotID, let byName):
+            if let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID }),
+               spottingRaceTiles[idx].lockedBy == byName {
+                spottingRaceTiles[idx].lockedBy = nil
+                spottingRaceTiles[idx].lockTimestamp = nil
+            }
+
+        case .claimTile(let slotID, _, let byName, _):
+            if let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID }) {
+                let score = spottingRaceTiles[idx].square.rarity.spottingRaceScore
+                let tileName = spottingRaceTiles[idx].square.text
+                let emoji = spottingRaceTiles[idx].square.emoji ?? "📍"
+                spottingRaceTiles[idx].claimedBy = byName
+                opponentSpottingScores[byName, default: 0] += score
+                pendingToast = ToastEvent(
+                    message: "\(byName) claimed \(emoji) \(tileName) · +\(score) pts",
+                    style: .opponentClaim
+                )
+                // Host replaces the slot after 2-second stamp hold
+                if isHost {
+                    Task { @MainActor [weak self] in
+                        try? await Task.sleep(nanoseconds: 2_000_000_000)
+                        self?.replaceSpottingSlot(slotID: slotID)
+                    }
+                }
+            }
+
+        case .tileReplaced(let slotID, let replacement, let expiresAt):
+            // Non-host peers update their local tile grid
+            if !isHost {
+                if let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID }) {
+                    spottingRaceTiles[idx] = SpottingRaceTile(
+                        id: slotID,
+                        square: replacement,
+                        expiresAt: expiresAt
+                    )
+                } else {
+                    // Initial fill from host — slot doesn't exist yet
+                    spottingRaceTiles.append(SpottingRaceTile(
+                        id: slotID,
+                        square: replacement,
+                        expiresAt: expiresAt
+                    ))
+                }
+            }
+
+        case .spottingRoundEnded(let scores):
+            spottingTimerTask?.cancel()
+            spottingTimerTask = nil
+            softClaimTasks.values.forEach { $0.cancel() }
+            softClaimTasks = [:]
+            mySpottingScore = scores[playerName] ?? mySpottingScore
+            opponentSpottingScores = scores.filter { $0.key != playerName }
+            let winner = scores.max(by: { $0.value < $1.value })?.key ?? playerName
+            lastRoundWinner = winner
+            winHistory[winner, default: 0] += 1
+            screen = .win(winnerName: winner)
         }
     }
 
