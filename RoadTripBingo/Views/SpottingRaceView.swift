@@ -167,7 +167,7 @@ struct SpottingRaceView: View {
                             // Empty slot (pool exhausted)
                             RoundedRectangle(cornerRadius: 14)
                                 .fill(Color.white.opacity(0.05))
-                                .frame(height: 284)
+                                .frame(height: 364)
                         }
                     }
                 }
