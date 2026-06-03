@@ -784,7 +784,6 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
             do {
                 while let self {
                     try await Task.sleep(nanoseconds: 1_000_000_000)
-                    guard let self else { return }
 
                     // Round end check
                     if let endTime = self.spottingRoundEndTime, Date() >= endTime {
