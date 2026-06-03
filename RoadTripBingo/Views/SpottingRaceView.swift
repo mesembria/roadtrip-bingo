@@ -1,4 +1,5 @@
 // RoadTripBingo/Views/SpottingRaceView.swift
+import Combine
 import SwiftUI
 
 struct SpottingRaceView: View {
@@ -7,11 +8,12 @@ struct SpottingRaceView: View {
     @State private var toastMessage: String? = nil
     @State private var activeToastID: UUID? = nil
     @State private var toastStyle: ToastStyle = .earn
+    @State private var timerCancellable: AnyCancellable? = nil
 
-    private let timerTick = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    private let timerPublisher = Timer.publish(every: 1, on: .main, in: .common)
 
     var body: some View {
-        GeometryReader { geo in
+        GeometryReader { _ in
             ZStack {
                 AmericanaTheme.gridBackground().ignoresSafeArea()
 
@@ -38,8 +40,14 @@ struct SpottingRaceView: View {
                 }
             }
         }
-        .onReceive(timerTick) { _ in updateTimer() }
-        .onAppear { updateTimer() }
+        .onAppear {
+            updateTimer()
+            timerCancellable = timerPublisher.autoconnect().sink { _ in updateTimer() }
+        }
+        .onDisappear {
+            timerCancellable?.cancel()
+            timerCancellable = nil
+        }
         .onChange(of: appState.pendingToast) { toast in
             guard let toast else { return }
             toastStyle = toast.style
