@@ -298,7 +298,9 @@ struct GameView: View {
                     RoundedRectangle(cornerRadius: 8)
                         .strokeBorder(.white.opacity(0.15), lineWidth: 1)
                 )
+                .accessibilityLabel("Exit game")
         }
+        .buttonStyle(.plain)
     }
 
     private var exitConfirmMessage: String {
