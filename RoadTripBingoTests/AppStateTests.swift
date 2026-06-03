@@ -411,4 +411,27 @@ final class AppStateTests: XCTestCase {
 
         XCTAssertFalse(state.gameEndedByHost)
     }
+
+    func test_exitGame_navigatesToHome() {
+        let state = AppState()
+        state.playerName = "Liam"
+        state.screen = .game
+
+        state.exitGame()
+
+        // exitGame() calls goHome() (directly for non-host, via asyncAfter for host)
+        // For non-host (no session), it calls goHome() synchronously
+        XCTAssertEqual(state.screen, .home)
+    }
+
+    func test_exitGame_asHostWithNoSession_callsGoHomeImmediately() {
+        let state = AppState()
+        state.playerName = "Liam"
+        state.isHost = true  // isHost = true but multipeerSession = nil (solo-like scenario)
+        state.screen = .game
+
+        state.exitGame()
+
+        XCTAssertEqual(state.screen, .home)
+    }
 }

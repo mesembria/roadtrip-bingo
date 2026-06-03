@@ -39,6 +39,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     @Published var connectedPlayerNames: [String] = []
     @Published var foundGameNames: [String] = []
     @Published var connectingToGame: String? = nil   // set while MC handshake is in flight
+    var hostPlayerName: String? = nil                // set on joiners when game starts
     @Published var playerDifficulty: BoardDifficulty = .backseat
     @Published var playerDifficulties: [String: BoardDifficulty] = [:]
 
@@ -391,6 +392,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         connectedPlayerNames = []
         foundGameNames = []
         connectingToGame = nil
+        hostPlayerName = nil
         localBoard = nil
         completedLine = nil
         opponentMarked = [:]
@@ -417,10 +419,12 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
     }
 
     func exitGame() {
-        if isHost && multipeerSession != nil {
-            multipeerSession?.send(.hostLeft)
+        guard isHost, multipeerSession != nil else { goHome(); return }
+        multipeerSession?.send(.hostLeft)
+        // Give the reliable packet a brief window to reach peers before tearing down the session
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+            self?.goHome()
         }
-        goHome()
     }
 
     // MARK: - Lobby (host only)
@@ -1154,6 +1158,7 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         switch message {
         case .gameStarted(let boards, let activePackIDs, let gameType):
             self.gameType = gameType
+            if !isHost { hostPlayerName = peerName }   // record host identity for dropout detection
             self.activePackIDs = activePackIDs
             rollDailyChallengesIfNeeded()
             recentOpponentMarks = []
@@ -1399,6 +1404,15 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         tokenBalances.removeValue(forKey: peerName)
         consecutiveLosses.removeValue(forKey: peerName)
         recentOpponentMarks.removeAll { $0.opponentName == peerName }
+        // If the host drops while we're mid-game as a joiner, surface the "Game Ended" alert
+        if !isHost && peerName == hostPlayerName {
+            let inActiveGame: Bool
+            switch screen {
+            case .game, .win, .playAgain: inActiveGame = true
+            default: inActiveGame = false
+            }
+            if inActiveGame { gameEndedByHost = true }
+        }
     }
 
     func multipeerSession(_ session: MultipeerSession, foundPeer peerName: String) {
