@@ -5,9 +5,9 @@ struct SpottingRaceTile: Identifiable {
     let id: UUID
     let square: BingoSquare
     let expiresAt: Date
-    var claimedBy: String?     // nil = unclaimed
-    var lockedBy: String?      // nil = free; set during soft-claim window
-    var lockTimestamp: Date?   // used for conflict resolution
+    var claimedBy: String? = nil     // nil = unclaimed
+    var lockedBy: String? = nil      // nil = free; set during soft-claim window
+    var lockTimestamp: Date? = nil   // used for conflict resolution
 
     /// True when fewer than 3 seconds remain before expiry.
     var isExpiring: Bool { expiresAt.timeIntervalSinceNow < 3 }
