@@ -6,15 +6,17 @@ struct TokenToastView: View {
 
     private var backgroundColor: Color {
         switch style {
-        case .earn:   return AmericanaTheme.yellow
-        case .threat: return AmericanaTheme.red
+        case .earn:          return AmericanaTheme.yellow
+        case .threat:        return AmericanaTheme.red
+        case .opponentClaim: return AmericanaTheme.brown.opacity(0.85)
         }
     }
 
     private var textColor: Color {
         switch style {
-        case .earn:   return AmericanaTheme.ink
-        case .threat: return .white
+        case .earn:          return AmericanaTheme.ink
+        case .threat:        return .white
+        case .opponentClaim: return .white
         }
     }
 

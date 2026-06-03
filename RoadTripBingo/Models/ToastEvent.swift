@@ -1,6 +1,6 @@
 import Foundation
 
-enum ToastStyle: Equatable { case earn, threat }
+enum ToastStyle: Equatable { case earn, threat, opponentClaim }
 
 struct ToastEvent: Equatable, Identifiable {
     let id = UUID()
