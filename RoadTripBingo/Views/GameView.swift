@@ -10,6 +10,7 @@ struct GameView: View {
     @State private var showChallenges = false
     @State private var powerUpTrigger: UUID? = nil
     @State private var threatCount: Int = 0
+    @State private var showExitConfirm = false
 
     var body: some View {
         ZStack {
@@ -69,6 +70,23 @@ struct GameView: View {
                 completedIDs: appState.dailyState.completedIDs
             )
             .presentationDetents([.medium, .large])
+        }
+        .alert("Exit Game?", isPresented: $showExitConfirm) {
+            Button("Exit Game", role: .destructive) {
+                if appState.isHost {
+                    appState.exitGame()
+                } else {
+                    appState.goHome()
+                }
+            }
+            Button("Keep Playing", role: .cancel) {}
+        } message: {
+            Text(exitConfirmMessage)
+        }
+        .alert("Game Ended", isPresented: $appState.gameEndedByHost) {
+            Button("OK") { appState.goHome() }
+        } message: {
+            Text("The host ended the game.")
         }
         .onAppear {
             if appState.activeModifier != nil {
@@ -184,6 +202,9 @@ struct GameView: View {
                 .frame(width: gridWidth)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+            .overlay(alignment: .topTrailing) {
+                exitButton.padding(8)
+            }
 
             // Right sidebar: power-up strip
             powerUpStrip(isVertical: true)
@@ -216,6 +237,8 @@ struct GameView: View {
                 }
                 .buttonStyle(.plain)
             }
+            exitButton
+                .padding(.leading, 8)
         }
         .padding(.horizontal, 16)
         if !appState.opponentMarked.isEmpty {
@@ -261,5 +284,30 @@ struct GameView: View {
             }
         )
         .padding(.horizontal, isVertical ? 0 : 16)
+    }
+
+    private var exitButton: some View {
+        Button { showExitConfirm = true } label: {
+            Image(systemName: "xmark")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(.white.opacity(0.6))
+                .frame(width: 32, height: 32)
+                .background(Color.black.opacity(0.4))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(.white.opacity(0.15), lineWidth: 1)
+                )
+        }
+    }
+
+    private var exitConfirmMessage: String {
+        if appState.gameMode == .solo {
+            return "Your progress will be lost."
+        } else if appState.isHost {
+            return "You're the host. Leaving will end the game for all players."
+        } else {
+            return "You'll return to the home screen. The other players can keep going."
+        }
     }
 }
