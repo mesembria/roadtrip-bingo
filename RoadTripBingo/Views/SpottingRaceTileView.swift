@@ -174,21 +174,40 @@ struct SpottingRaceTileView: View {
 
     private var stampView: some View {
         let isMine = tileState == .softClaimMine || tileState == .claimedMine
-        return VStack(spacing: 2) {
-            Text(isMine ? "SPOTTED" : "TAKEN")
-                .font(AmericanaTheme.rye(isMine ? 22 : 18))
-                .foregroundColor(isMine ? AmericanaTheme.green : AmericanaTheme.yellow)
-            if !isMine, let claimer = tile.claimedBy {
-                Text("+\(tile.square.rarity.spottingRaceScore) pts · \(claimer)")
-                    .font(AmericanaTheme.barlowSemiBold(10))
-                    .foregroundColor(AmericanaTheme.yellow.opacity(0.85))
+        let bgColor: Color = isMine
+            ? Color(red: 0.039, green: 0.196, blue: 0.098).opacity(0.90)
+            : Color(red: 0.235, green: 0.137, blue: 0.000).opacity(0.90)
+        let borderColor: Color = isMine ? AmericanaTheme.green : AmericanaTheme.yellow
+        let wordColor: Color = isMine
+            ? Color(red: 0.659, green: 0.941, blue: 0.753)
+            : Color(red: 1.000, green: 0.878, blue: 0.565)
+        let scoreColor: Color = isMine
+            ? Color(red: 0.490, green: 0.910, blue: 0.659)
+            : Color(red: 1.000, green: 0.816, blue: 0.376)
+        let nameColor: Color = isMine
+            ? Color(red: 0.659, green: 0.941, blue: 0.753).opacity(0.65)
+            : Color(red: 1.000, green: 0.863, blue: 0.510).opacity(0.65)
+        let claimerName: String = isMine ? "You" : (tile.claimedBy ?? "")
+
+        return ZStack {
+            Circle().fill(bgColor)
+            Circle().strokeBorder(borderColor, lineWidth: 3)
+            VStack(spacing: 1) {
+                Text(isMine ? "SPOTTED" : "TAKEN")
+                    .font(AmericanaTheme.barlowBold(10))
+                    .kerning(2)
+                    .foregroundColor(wordColor)
+                Text("+\(tile.square.rarity.spottingRaceScore) pts")
+                    .font(AmericanaTheme.rye(17))
+                    .foregroundColor(scoreColor)
+                Text(claimerName)
+                    .font(AmericanaTheme.barlowBold(8))
+                    .kerning(1.5)
+                    .foregroundColor(nameColor)
             }
         }
-        .padding(.horizontal, 12).padding(.vertical, 8)
-        .background(
-            RoundedRectangle(cornerRadius: 6)
-                .strokeBorder(isMine ? AmericanaTheme.green : AmericanaTheme.yellow, lineWidth: 3)
-        )
+        .frame(width: 82, height: 82)
+        .shadow(color: borderColor.opacity(0.4), radius: 6, x: 0, y: 0)
     }
 
     private var opponentLockOverlay: some View {
