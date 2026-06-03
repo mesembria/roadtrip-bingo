@@ -242,10 +242,123 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         screen = .game
     }
 
+    func startSpottingRaceSolo() {
+        // Tear down any existing session (mirrors startSoloGame)
+        multipeerSession?.disconnect()
+        multipeerSession = nil
+        connectedPlayerNames = []
+        foundGameNames = []
+        connectingToGame = nil
+        opponentBoards = [:]
+        opponentMarked = [:]
+        recentOpponentMarks = []
+        pruningTask?.cancel()
+        pruningTask = nil
+        lastRoundWinner = nil
+        consecutiveLosses = [:]
+        tokenBalance = 0
+        tokenBalances = [:]
+        pendingToast = nil
+        completedLine = nil
+        localBoard = nil
+        reserveSquares = []
+        playerDifficulties = [:]
+        resetRound()
+        resetSpottingRound()
+
+        gameMode = .solo
+        isHost = true  // solo acts as its own host for tile management
+
+        // Build and shuffle the tile pool
+        let baseTiles = SquarePool.load()
+        let namedPacks = PackManager.packs(forIDs: activePackIDs)
+        let activePacks = [SquarePool.loadBasePack()] + namedPacks
+        tilePool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks).shuffled()
+
+        // Populate 6 initial slots
+        spottingRaceTiles = (0..<6).compactMap { _ -> SpottingRaceTile? in
+            guard let sq = drawWeightedTile(), sq.id != BingoSquare.freeSquareID else { return nil }
+            return SpottingRaceTile(id: UUID(), square: sq, expiresAt: Date().addingTimeInterval(60))
+        }
+
+        spottingRoundEndTime = Date().addingTimeInterval(300)  // 5 minutes
+        startSpottingTimerLoop()
+        screen = .game
+    }
+
     private func soloRandomModifier() -> RoundModifier {
         var candidates: [RoundModifier] = [.hotStreak, .doubleDown, .noPowers]
         candidates += PatternShape.allCases.map { .patternWin($0) }
         return candidates.randomElement()!
+    }
+
+    func startSpottingRaceGame() {
+        guard isHost else { return }
+
+        let baseTiles = SquarePool.load()
+        let namedPacks = PackManager.packs(forIDs: activePackIDs)
+        let activePacks = [SquarePool.loadBasePack()] + namedPacks
+        tilePool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks).shuffled()
+
+        resetSpottingRound()
+        opponentSpottingScores = Dictionary(
+            uniqueKeysWithValues: connectedPlayerNames.map { ($0, 0) }
+        )
+
+        spottingRaceTiles = (0..<6).compactMap { _ -> SpottingRaceTile? in
+            guard let sq = drawWeightedTile(), sq.id != BingoSquare.freeSquareID else { return nil }
+            return SpottingRaceTile(id: UUID(), square: sq, expiresAt: Date().addingTimeInterval(60))
+        }
+
+        spottingRoundEndTime = Date().addingTimeInterval(300)
+
+        multipeerSession?.stopAdvertising()
+        multipeerSession?.send(.gameStarted(boards: [:], activePackIDs: activePackIDs, gameType: .spottingRace))
+
+        // Broadcast the 6 initial tiles to peers
+        for tile in spottingRaceTiles {
+            multipeerSession?.send(.tileReplaced(
+                slotID: tile.id,
+                replacement: tile.square,
+                expiresAt: tile.expiresAt
+            ))
+        }
+
+        startSpottingTimerLoop()
+        screen = .game
+    }
+
+    func requestPlayAgainSpottingRace() {
+        guard isHost, gameType == .spottingRace else { return }
+
+        let baseTiles = SquarePool.load()
+        let namedPacks = PackManager.packs(forIDs: activePackIDs)
+        let activePacks = [SquarePool.loadBasePack()] + namedPacks
+        tilePool = SquarePool.buildPool(base: baseTiles, activePacks: activePacks).shuffled()
+
+        resetSpottingRound()
+        opponentSpottingScores = Dictionary(
+            uniqueKeysWithValues: connectedPlayerNames.map { ($0, 0) }
+        )
+
+        spottingRaceTiles = (0..<6).compactMap { _ -> SpottingRaceTile? in
+            guard let sq = drawWeightedTile(), sq.id != BingoSquare.freeSquareID else { return nil }
+            return SpottingRaceTile(id: UUID(), square: sq, expiresAt: Date().addingTimeInterval(60))
+        }
+
+        spottingRoundEndTime = Date().addingTimeInterval(300)
+
+        multipeerSession?.send(.playAgain(boards: [:], activePackIDs: activePackIDs, gameType: .spottingRace))
+        for tile in spottingRaceTiles {
+            multipeerSession?.send(.tileReplaced(
+                slotID: tile.id,
+                replacement: tile.square,
+                expiresAt: tile.expiresAt
+            ))
+        }
+
+        startSpottingTimerLoop()
+        screen = .game
     }
 
     func inviteGame(named name: String) {
@@ -304,9 +417,17 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func startGame() {
         guard isHost else { return }
-        dealAndLaunchRound { [weak self] boards in
-            self?.multipeerSession?.stopAdvertising()
-            self?.multipeerSession?.send(.gameStarted(boards: boards, activePackIDs: self?.activePackIDs ?? [], gameType: .bingo))
+        if gameType == .spottingRace {
+            startSpottingRaceGame()
+        } else {
+            dealAndLaunchRound { [weak self] boards in
+                self?.multipeerSession?.stopAdvertising()
+                self?.multipeerSession?.send(.gameStarted(
+                    boards: boards,
+                    activePackIDs: self?.activePackIDs ?? [],
+                    gameType: .bingo
+                ))
+            }
         }
     }
 
@@ -407,6 +528,10 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
 
     func requestPlayAgain() {
         guard isHost else { return }
+        if gameType == .spottingRace {
+            requestPlayAgainSpottingRace()
+            return
+        }
         // Update consecutive-loss streaks based on last winner.
         if let winner = lastRoundWinner {
             let allNames = [playerName] + connectedPlayerNames
@@ -609,6 +734,45 @@ final class AppState: ObservableObject, MultipeerSessionDelegate {
         spottingTimerTask = nil
         softClaimTasks.values.forEach { $0.cancel() }
         softClaimTasks = [:]
+    }
+
+    /// Draws one tile from `tilePool` using rarity-weighted probability.
+    /// Removes the drawn tile from the pool. Returns nil when pool is empty.
+    private func drawWeightedTile() -> BingoSquare? {
+        guard !tilePool.isEmpty else { return nil }
+        let totalWeight = tilePool.reduce(0) { $0 + $1.rarity.spottingRaceWeight }
+        guard totalWeight > 0 else { return tilePool.removeFirst() }
+        var pick = Int.random(in: 0..<totalWeight)
+        for (idx, square) in tilePool.enumerated() {
+            pick -= square.rarity.spottingRaceWeight
+            if pick < 0 {
+                tilePool.remove(at: idx)
+                return square
+            }
+        }
+        return tilePool.removeFirst()
+    }
+
+    /// Fills a slot with a freshly drawn tile. If pool is exhausted the slot is removed.
+    /// Host-only. Broadcasts `tileReplaced` to peers.
+    private func replaceSpottingSlot(slotID: UUID) {
+        guard let idx = spottingRaceTiles.firstIndex(where: { $0.id == slotID }) else { return }
+        if let next = drawWeightedTile() {
+            let newTile = SpottingRaceTile(
+                id: slotID,  // keep slot ID stable for SwiftUI animation
+                square: next,
+                expiresAt: Date().addingTimeInterval(60)
+            )
+            spottingRaceTiles[idx] = newTile
+            multipeerSession?.send(.tileReplaced(
+                slotID: slotID,
+                replacement: next,
+                expiresAt: newTile.expiresAt
+            ))
+        } else {
+            // Pool exhausted — remove this slot gracefully
+            spottingRaceTiles.remove(at: idx)
+        }
     }
 
     private func checkBonuses(for board: BingoBoard) {
