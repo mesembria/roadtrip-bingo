@@ -79,7 +79,7 @@ struct SpottingRaceTileView: View {
             imageZone
                 .frame(height: 220)
             labelBand
-                .frame(height: 52)
+                .frame(height: 64)
         }
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay(
@@ -191,23 +191,23 @@ struct SpottingRaceTileView: View {
 
         return ZStack {
             Circle().fill(bgColor)
-            Circle().strokeBorder(borderColor, lineWidth: 3)
+            Circle().strokeBorder(borderColor, lineWidth: 4.5)
             VStack(spacing: 1) {
                 Text(isMine ? "SPOTTED" : "TAKEN")
-                    .font(AmericanaTheme.barlowBold(10))
+                    .font(AmericanaTheme.barlowBold(15))
                     .kerning(2)
                     .foregroundColor(wordColor)
                 Text("+\(tile.square.rarity.spottingRaceScore) pts")
-                    .font(AmericanaTheme.rye(17))
+                    .font(AmericanaTheme.rye(26))
                     .foregroundColor(scoreColor)
                 Text(claimerName)
-                    .font(AmericanaTheme.barlowBold(8))
+                    .font(AmericanaTheme.barlowBold(12))
                     .kerning(1.5)
                     .foregroundColor(nameColor)
             }
         }
-        .frame(width: 82, height: 82)
-        .shadow(color: borderColor.opacity(0.4), radius: 6, x: 0, y: 0)
+        .frame(width: 123, height: 123)
+        .shadow(color: borderColor.opacity(0.4), radius: 9, x: 0, y: 0)
     }
 
     private var opponentLockOverlay: some View {
@@ -234,7 +234,7 @@ struct SpottingRaceTileView: View {
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(tile.square.text)
-                        .font(AmericanaTheme.barlowSemiBold(13))
+                        .font(AmericanaTheme.barlowSemiBold(20))
                         .foregroundColor(.white)
                         .lineLimit(1)
                         .truncationMode(.tail)
